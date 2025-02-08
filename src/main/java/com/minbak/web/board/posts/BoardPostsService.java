@@ -34,5 +34,10 @@ public class BoardPostsService {
         int offset = (page-1)*size;
         return boardPostsMapper.findPostsByLimitAndOffsetByCategoryId(size, offset, categoryId);
     }
+
+    public BoardPostDto findPostById(int id){
+        return boardPostsMapper.findPostById(id);
+    }
+
 }
 

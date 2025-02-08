@@ -1,0 +1,19 @@
+/board -> 게시판 홈
+/board/post/{id} -> 게시글 상세보기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/board/admin -> 관리자 홈
+/board/admin/categories -> 관리자 카테고리 관리
+/board/admin/categories/create -> 관리자 카테고리 추가

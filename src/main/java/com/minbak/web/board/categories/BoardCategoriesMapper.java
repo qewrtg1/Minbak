@@ -10,6 +10,9 @@ public interface BoardCategoriesMapper {
     // 카테고리 목록 조회
     List<BoardCategoryDto> findAllCategories();
 
+    // 카테고리 순서대로 목록 조회
+    List<BoardCategoryDto> findOrderedCategories();
+
     // 카테고리 추가
     void createCategory(String categoryName);
 
@@ -18,6 +21,8 @@ public interface BoardCategoriesMapper {
 
     // 카테고리 삭제
     void deleteCategory(int id);
+
+    void updateCategoryOrder(Integer id, int order);
 
     // 특정 카테고리 조회
     BoardCategoryDto findCategoryById(int id);

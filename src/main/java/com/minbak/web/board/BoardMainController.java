@@ -32,7 +32,7 @@ public class BoardMainController {
         //카테고리 목록받아서 사이드에 보여주고, 게시글 정보를 받아서 BoardPageDto객체에 넣고 BoardPageDto 전달.
 
         //카테고리 목록 받아서 model로 전달
-        List<BoardCategoryDto> boardCategories= boardCategoriesService.findAllCategories();
+        List<BoardCategoryDto> boardCategories= boardCategoriesService.findOrderedCategories();
         model.addAttribute("boardCategories",boardCategories);
 
         if(categoryId == 0){
@@ -52,17 +52,27 @@ public class BoardMainController {
             //카테고리의 게시글이 0개면 error-page리턴
             if(totalItems == 0){
                 model.addAttribute("message","카테고리가 없습니다.");
-                return "/board/error-page";
+                return "/board/user/error-page";
             }
 
             //해당하는 카테고리의 게시글을 가져온 후 BoardPageDto 생성 후 model로 전달
             List<BoardPostDto> boardPosts = boardPostsService.findPostsByLimitAndOffsetByCategoryId(page,size,categoryId);
             BoardPageDto<BoardPostDto> boardPageDto = new BoardPageDto<>(page,size,totalItems,boardPosts);
             model.addAttribute("boardPageDto",boardPageDto);
+
+            //카테고리 이름 보내주기
+            model.addAttribute("categoryName",boardCategoriesService.findCategoryById(categoryId).getName());
         }
 
         //categoryId 전달
         model.addAttribute("categoryId",categoryId);
-        return "/board/main";
+        return "/board/user/main";
     }
+
+    @GetMapping("/admin")
+    public String adminMainPage(){
+        return "/board/admin/main";
+    }
+
+
 }
