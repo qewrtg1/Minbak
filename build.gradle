@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-validation' //유효성검사 의존성
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4' //mybatis
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4' //mybatis
 	runtimeOnly 'com.mysql:mysql-connector-j' //mysql

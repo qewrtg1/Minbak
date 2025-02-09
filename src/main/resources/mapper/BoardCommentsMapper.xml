@@ -11,13 +11,21 @@
         WHERE post_id = #{postId}
     </select>
 
+    <!--댓글 id로 해당 게시글 조회-->
+    <select id="findPostByCommentId" resultType="com.minbak.web.board.posts.BoardPostDto">
+        SELECT b.*
+        FROM board_posts b
+        JOIN board_comments c ON b.id = c.post_id
+        WHERE c.id = #{id}
+    </select>
+
     <!-- 댓글 추가 -->
     <insert id="createComment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO board_comments (post_id, author, content)
         VALUES (#{postId}, #{author}, #{content})
     </insert>
 
-    <!-- 댓글 수정 -->
+    <!-- 댓글 수정 사용X-->
     <update id="updateComment">
         UPDATE board_comments
         SET content = #{content}
@@ -30,7 +38,7 @@
         WHERE id = #{id}
     </delete>
 
-    <!-- 댓글 조회 -->
+    <!-- 댓글 조회 사용X-->
     <select id="findCommentById" resultType="com.minbak.web.board.comments.BoardCommentDto">
         SELECT *
         FROM board_comments

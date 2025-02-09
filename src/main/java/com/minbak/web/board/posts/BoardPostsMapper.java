@@ -7,13 +7,13 @@ import java.util.List;
 @Mapper
 public interface BoardPostsMapper {
 
-    // 게시글 목록 조회
+    // 게시글 목록 조회 사용X
     List<BoardPostDto> findAllPosts();
 
     // 게시글 추가
     void createPost(BoardPostDto post);
 
-    // 게시글 수정
+    // 게시글 수정 사용X
     void updatePost(BoardPostDto post);
 
     // 게시글 삭제

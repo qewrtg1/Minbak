@@ -3,6 +3,7 @@ package com.minbak.web.board.posts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.plaf.PanelUI;
 import java.util.List;
 
 @Service
@@ -35,9 +36,19 @@ public class BoardPostsService {
         return boardPostsMapper.findPostsByLimitAndOffsetByCategoryId(size, offset, categoryId);
     }
 
+    //id로 Post찾기
     public BoardPostDto findPostById(int id){
         return boardPostsMapper.findPostById(id);
     }
 
+    //id로 Post지우기
+    public void deletePost(int id){
+        boardPostsMapper.deletePost(id);
+    }
+
+    //게시글 생성
+    public void createPost(BoardPostDto boardPostDto){
+        boardPostsMapper.createPost(boardPostDto);
+    }
 }
 

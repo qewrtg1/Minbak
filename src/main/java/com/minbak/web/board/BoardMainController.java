@@ -75,4 +75,17 @@ public class BoardMainController {
     }
 
 
+    //유저관리페이지 미구현
+    @GetMapping("/admin/users")
+    public String adminUserPage(Model model){
+        model.addAttribute("message","유저 관리 페이지");
+        return "/board/admin/admin-error-page";
+    }
+
+    //게시글 관리페이지 미구현
+    @GetMapping("/admin/posts")
+    public String adminPostPage(Model model){
+        model.addAttribute("message","게시글 관리 페이지");
+        return "/board/admin/admin-error-page";
+    }
 }
