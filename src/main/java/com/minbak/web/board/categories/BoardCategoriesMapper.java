@@ -22,6 +22,7 @@ public interface BoardCategoriesMapper {
     // 카테고리 삭제
     void deleteCategory(int id);
 
+    //카테고리id랑 카테고리order 받아서 카데고리 순서 업데이트
     void updateCategoryOrder(Integer id, int order);
 
     // 특정 카테고리 조회

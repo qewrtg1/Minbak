@@ -1,19 +1,12 @@
+ 도메인(서버)을 나눠서 작업하진 않았지만,
+관리자페이지를 가능한 RESTful 요청을 사용하고 유저페이지를 thymeleaf로 활용함(반대).
+
+- user -
 /board -> 게시판 홈
 /board/post/{id} -> 게시글 상세보기
+/board/post/create -> 게시글 쓰기
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+- admin -
 /board/admin -> 관리자 홈
 /board/admin/categories -> 관리자 카테고리 관리
 /board/admin/categories/create -> 관리자 카테고리 추가

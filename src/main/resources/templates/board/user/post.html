@@ -4,6 +4,24 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{board/base/base}">
 <head>
+  <th:block layout:fragment="css">
+
+    <style>
+      .custom-hr {
+        margin: 5px;  /* 상하 여백을 조정하고 가운데 정렬 */
+        border: 1px solid #aaa;  /* 색상과 두께를 변경 */
+      }
+      /* 작성자 스타일링 */
+      .author {
+        font-size: 14px;  /* 폰트 사이즈를 더 작게 설정 */
+        color: #888;      /* 색상 */
+        margin-top: -5px; /* 제목과 작성자 사이의 간격을 없애고 위로 붙임 */
+        margin-left: 10px;
+        padding-top: 0;    /* 패딩을 없애서 더 위로 붙도록 설정 */
+      }
+    </style>
+
+  </th:block>
 
 </head>
 <body>
@@ -15,7 +33,19 @@
     <h4>
       <strong><span id="subject" style="font-size:18px;" th:text="[+${boardPost.subject}+]">말머리</span></strong>
       <span th:text="${boardPost.title}">게시글 제목: 1번 게시글</span>
+      <a th:href="@{/board/post/delete/{id}(id=${boardPost.id})}" class="btn btn-danger btn-sm" style="float:right; font-size: 12px; padding: 5px 10px;">
+        삭제
+      </a>
     </h4>
+
+    <div class="author" style="display: flex; justify-content: space-between; align-items: center;">
+      <!-- 작성자 표시 -->
+      <span th:text="'작성자 - ' + ${boardPost.author}">작성자</span>
+
+      <!-- 작성일 표시 타임리프 포맷형식-->
+      <span th:text="${#temporals.format(boardPost.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+    </div>
+
     </br>
 
     <!-- 게시글 내용 -->
@@ -36,7 +66,13 @@
       <ul class="list-group">
 
         <li class="list-group-item" th:each="comment : ${boardComments}">
-          <strong th:text="${comment.author}">댓글작성자1</strong>:
+          <strong th:text="${comment.author}">댓글작성자1</strong>
+          <a class="btn btn-danger btn-sm"
+             style="float:right; font-size:10px; text-decoration: none; display: inline-block; padding: 5px 10px; text-align: center;"
+             th:onclick="'return confirmDeleteAndRedirect(\'/board/comment/delete/' + ${comment.id} + '\')'">
+            삭제
+          </a>
+          <hr class="custom-hr">
           <p th:text="${comment.content}">댓글 내용 1번입니다. 게시글에 대한 첫 번째 댓글입니다.</p>
         </li>
 
@@ -112,6 +148,15 @@
       errorMessage.style.display = 'none';
       return true;  // 폼 제출 허용
     });
+    function confirmDeleteAndRedirect(url) {
+      // 사용자에게 확인 메시지 출력
+      var confirmDelete = confirm("댓글을 삭제하시겠습니까?");
+      if (confirmDelete) {
+        // 확인을 누르면 해당 URL로 이동
+        window.location.href = url;
+      }
+      return false;  // 기본 링크 클릭 동작을 취소
+    }
   </script>
 </th:block>
 
