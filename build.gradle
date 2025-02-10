@@ -24,19 +24,23 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-validation' //유효성검사 의존성
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5' //JWT
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' //JWT
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' //JWT
 	implementation 'org.springframework.boot:spring-boot-starter-security' //스프링 세큐리티
 	testImplementation 'org.springframework.security:spring-security-test' //스프링 세큐리티
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' //csrf 설정
+	implementation 'org.springframework.boot:spring-boot-starter-validation' //유효성검사 의존성
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4' //mybatis
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4' //mybatis
-	runtimeOnly 'com.mysql:mysql-connector-j' //sql
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	runtimeOnly 'com.mysql:mysql-connector-j' //mysql
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' //타임리프
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' //타임리프 레이아웃
+	implementation 'org.springframework.boot:spring-boot-starter-web' //spring-web
+	compileOnly 'org.projectlombok:lombok' //롬복
+	annotationProcessor 'org.projectlombok:lombok' //롬복
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' //기본
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //기본
 }
 
 tasks.named('test') {

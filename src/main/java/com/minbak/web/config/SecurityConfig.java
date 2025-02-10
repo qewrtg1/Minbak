@@ -1,32 +1,49 @@
 package com.minbak.web.config;
 
+import com.minbak.web.spring_security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration  //해당 클래스가 Config(설정) 클래스라는 걸 정의하는 어노테이션.
 @EnableWebSecurity  // Spring Security설정을 한다는 어노테이션.
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean  // 해당 메서드가 빈에 등록된다는 어노테이션.
+    @Order(1)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // http(HttpSecurity) 객체는 보안 관련 설정을 담당하는 객체
         http
+                .securityMatcher("/admin/**")  // API 요청에만 적용
                 .authorizeHttpRequests(auth -> auth  // HTTP 요청에 대한 접근 권한을 설정합니다.
-                        .requestMatchers("/host/**").hasAnyRole("ADMIN","HOST")  // "/host/**" 경로는 "ADMIN" or "HOST" 역할을 가진 사용자만 접근
-                        .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")  // "/my/**" 경로는 "ADMIN" or "USER" 역할을 가진 사용자만 접근
-                        .anyRequest().permitAll()  // 나머지 모든 요청은 다 허가
+                        .requestMatchers("/admin/login", "/admin/file/**").permitAll()
+                        .requestMatchers("/admin/user/{id}").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // 그 외는 인증을 요구
+                        .anyRequest().authenticated()
                 )
 
                 .formLogin(auth -> auth
-                        .loginPage("/login") //로그인 페이지를 /login으로 설정한다는 매서드(GetMapping)
+                        .loginPage("/admin/login") //로그인 페이지를 설정한다는 매서드(GetMapping)
                         //loginProcessingUrl은 UserDetailsService를 상속받은 클래스를 실행시키는 중요한 설정.
-                        .loginProcessingUrl("/login") //로그인 버튼을(PostMapping) /login으로 연결한다는 의미
+                        .loginProcessingUrl("/admin/login") //로그인 버튼을(PostMapping) /login으로 연결한다는 의미
+                        .defaultSuccessUrl("/admin", true)
                         .permitAll() // 위 경로를 누구나 접근하게 허용
                 )
 
@@ -57,10 +74,37 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(2)
+    // API 서버용 시큐리티 설정 (JSON 기반)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .securityMatcher("/api/**")  // API 요청에만 적용
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 또는 Stateless 환경
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/public/**").permitAll() // 공개 API
+                        .requestMatchers("/api/login", "/api/refresh", "/api/signup").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
     //BCrypt를 권장한다고 함 spring security가.
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    //인증을 처리하는 핵심 컴포넌트 UsernamePasswordAuthenticationToken와 같은 인증요청객체 사용시 필요
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
 }
