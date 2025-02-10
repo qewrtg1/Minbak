@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.users.UsersMapper">
+
+    <!-- 회원가입 -->
+    <insert id="createUser" parameterType="com.minbak.web.users.UserDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (name, email, phone_number, password)
+        VALUES (#{name}, #{email}, #{phoneNumber}, #{password})
+    </insert>
+
+    <!-- 역할 조회 -->
+    <select id="findRoleByRoleId" resultType="String">
+        SELECT role FROM roles WHERE role_id = #{roleId}
+    </select>
+
+    <!-- 특정 사용자 ID로 역할 조회 -->
+    <select id="findRolesByUserId" resultType="com.minbak.web.users.RoleDto">
+        SELECT r.*
+        FROM roles r
+        JOIN user_roles ur ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <!-- 사용자 역할 삽입 -->
+    <insert id="createUserRoleByUserIdAndRoleId">
+        INSERT INTO user_roles (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <!-- 이메일로 사용자 조회 -->
+    <select id="findUserEmailByEmail" resultType="String">
+        SELECT email FROM users WHERE email = #{email}
+    </select>
+
+    <!-- 이메일로 사용자 전체 조회 -->
+    <select id="findUserByEmail" resultType="com.minbak.web.users.UserDto">
+        SELECT *
+        FROM users WHERE email = #{email}
+    </select>
+
+</mapper>
+<!--        CREATE TABLE Users (-->
+<!--        id INT AUTO_INCREMENT PRIMARY KEY,-->
+<!--        name VARCHAR(100) NOT NULL,-->
+<!--        email VARCHAR(100) NOT NULL UNIQUE,-->
+<!--        phone_number VARCHAR(15),-->
+<!--        password VARCHAR(255) NOT NULL,-->
+<!--        enabled BOOLEAN DEFAULT TRUE,-->
+<!--        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,-->
+<!--        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP-->
+<!--        );-->
+
+<!--        create table roles (-->
+<!--        role_id int not null auto_increment primary key,-->
+<!--        role varchar(50) unique not null-->
+<!--        );-->
+
+<!--        create table user_roles (-->
+<!--        user_id int not null,-->
+<!--        role_id int not null,-->
+<!--        primary key (user_id, role_id),-->
+<!--        foreign key (user_id) references users(user_id)-->
+<!--        on delete cascade,-->
+<!--        foreign key (role_id) references roles(role_id)-->
+<!--        on delete cascade-->
+<!--        );-->
