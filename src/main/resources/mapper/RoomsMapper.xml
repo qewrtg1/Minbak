@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.rooms.RoomsMapper">
+    <!-- INSERT -->
+    <insert id="insertRoom" parameterType="RoomsDto">
+        INSERT INTO `rooms` (`name`, `content`, `address`, `price`, `use_guide`)
+        VALUES (#{name}, #{content}, #{address}, #{price}, #{useGuide});
+    </insert>
+
+    <!-- UPDATE -->
+    <update id="updateRoom" parameterType="RoomsDto">
+        UPDATE `rooms`
+        SET `name` = #{name},
+        `content` = #{content},
+        `address` = #{address},
+        `price` = #{price},
+        `use_guide` = #{useGuide}
+        WHERE `room_id` = #{roomId};
+    </update>
+
+    <!-- SELECT: 모든 숙박 시설 조회 -->
+    <select id="selectAllRooms" resultType="RoomsDto">
+        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
+        FROM `rooms`;
+    </select>
+
+    <select id="countTotalRooms" resultType="int">
+        SELECT COUNT(*) FROM `rooms`;
+    </select>
+
+    <select id="selectRoomsByPage" resultType="RoomDto">
+        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
+        FROM `rooms`
+        ORDER BY `room_id` DESC
+        LIMIT #{size} OFFSET #{offset};
+    </select>
+
+    <!-- SELECT: 특정 숙박 시설 조회 -->
+    <select id="selectRoomById" parameterType="int" resultType="RoomsDto">
+        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
+        FROM `rooms`
+        WHERE `room_id` = #{roomId};
+    </select>
+
+    <!-- SELECT: 가격을 기준으로 정렬하여 숙박 시설 조회 -->
+    <select id="selectRoomsByPrice" resultType="RoomsDto">
+        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
+        FROM `rooms`
+        ORDER BY `price` ASC;
+    </select>
+
+    <!-- DELETE -->
+    <delete id="deleteRoom" parameterType="int">
+        DELETE FROM `rooms`
+        WHERE `room_id` = #{roomId};
+    </delete>
+</mapper>
+
+
+<!--더미데이터-->
+
+<!--        INSERT INTO `rooms` (`name`, `content`, `address`, `price`, `use_guide`)-->
+<!--        SELECT-->
+<!--        CONCAT('숙박 시설 ', FLOOR(RAND() * 1000)),  &#45;&#45; 랜덤 숙박 시설 이름-->
+<!--        '더미 숙박 시설 설명',                       &#45;&#45; 고정된 설명-->
+<!--        CONCAT('서울시 ', FLOOR(RAND() * 100) + 1, '구'),  &#45;&#45; 랜덤 주소-->
+<!--        FLOOR(RAND() * 500000) + 50000,  &#45;&#45; 랜덤 가격 (50,000 ~ 500,000)-->
+<!--        '이용 안내는 체크인 시 제공됩니다.'  &#45;&#45; 고정된 이용 안내-->
+<!--        FROM-->
+<!--        information_schema.tables  &#45;&#45; 시스템 테이블을 사용하여 가상의 데이터 삽입-->
+<!--        LIMIT 10;  &#45;&#45; 10개의 더미 데이터 생성-->
+
+
+
+
