@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.users.UsersMapper">
+
+    <!-- 회원가입 -->
+    <insert id="createUser" parameterType="com.minbak.web.users.UserDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (name, email, phone_number, password)
+        VALUES (#{name}, #{email}, #{phoneNumber}, #{password})
+    </insert>
+
+    <!-- 역할 조회 -->
+    <select id="findRoleByRoleId" resultType="String">
+        SELECT role FROM roles WHERE role_id = #{roleId}
+    </select>
+
+    <!-- 특정 사용자 ID로 역할 조회 -->
+    <select id="findRolesByUserId" resultType="com.minbak.web.users.RoleDto">
+        SELECT r.*
+        FROM roles r
+        JOIN user_roles ur ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+
+    <!-- 사용자 역할 삽입 -->
+    <insert id="createUserRoleByUserIdAndRoleId">
+        INSERT INTO user_roles (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <!-- 이메일로 사용자 조회 -->
+    <select id="findUserEmailByEmail" resultType="String">
+        SELECT email FROM users WHERE email = #{email}
+    </select>
+
+    <!-- 이메일로 사용자 전체 조회 -->
+    <select id="findUserByEmail" resultType="com.minbak.web.users.UserDto">
+        SELECT *
+        FROM users WHERE email = #{email}
+    </select>
+
+    <!-- limit와 offset값에 따라 게시글 조회 -->
+    <select id="findUsersByLimitAndOffset" resultType="com.minbak.web.users.UserDto">
+        select * from users
+        order by user_id DESC
+        limit #{limit} offset #{offset};
+    </select>
+
+    <!-- 모든 유저 수 체크 -->
+    <select id="countAllUsers" resultType="int">
+        select count(*) from users;
+    </select>
+</mapper>
