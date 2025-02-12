@@ -13,6 +13,7 @@ public class BoardCategoriesService {
 
     //모든 카테고리 가져오기
     public List<BoardCategoryDto> findAllCategories(){
+
         return boardCategoriesMapper.findAllCategories();
     }
 
@@ -47,6 +48,7 @@ public class BoardCategoriesService {
 
     //카테고리 삭제
     public void deleteCategory(int id){
+
         boardCategoriesMapper.deleteCategory(id);
     }
 

@@ -15,7 +15,7 @@ public interface ReviewMapper {
     List<ReviewDto> findOrderedReview();
 
     // 리뷰 추가
-    void createReview(String reviewName);
+    void createReview(ReviewDto reviewDto);
 
     // 리뷰 수정
     void updateReview(ReviewDto review);
@@ -23,7 +23,7 @@ public interface ReviewMapper {
     // 리뷰 삭제
     void deleteReview(int id);
 
-    //리뷰 id랑 리뷰 order 받아서 카데고리 순서 업데이트
+    //리뷰 id랑 리뷰 order 받아서 리뷰 순서 업데이트
     void updateReviewOrder(Integer id, int order);
 
     // 특정 리뷰 조회

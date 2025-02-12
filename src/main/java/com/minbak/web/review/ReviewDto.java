@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Setter
 public class ReviewDto {
 
-    private Integer reviewId;  // 리뷰 ID (Primary Key)
+    private Integer reviewId;   // 리뷰 고유 ID
 
-    private int userId;           // 리뷰 작성자 ID
-    private int accommodationId;  // 민박/숙소 ID
-    private int rating;        // 평점 (1~5)
-    private String comment;        // 리뷰 내용
+    private int userId;     // 작성한 회원 ID
+    private int bookId;     // 리뷰 대상 예약 ID
+    private String content; // 리뷰 내용
+    private int score;      // 리뷰 점수
 
     private LocalDateTime createdAt; // 리뷰 작성 일시
     private LocalDateTime updatedAt; // 리뷰 수정 일시
