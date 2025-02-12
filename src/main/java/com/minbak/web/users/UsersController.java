@@ -89,7 +89,7 @@ public class UsersController {
 //    }
 
 
-    @GetMapping("users")
+    @GetMapping("/users")
     public String adminMainPage(@RequestParam(name ="page", defaultValue = "1")int page,
                                 @RequestParam(name ="size", defaultValue = "10")int size,
                                 Model model){
@@ -120,7 +120,24 @@ public class UsersController {
         return "/users/user-main";
     }
 
+    @GetMapping("/users/edit/{id}")
+    public String userEditPage(@PathVariable("id") int userId,Model model){
 
+        model.addAttribute("userDto",usersService.findUserByUserId(userId));
+
+        return "/users/edit";
+    }
+
+    @PostMapping("/users/update")
+    public String userEditPage(@ModelAttribute UserDto userDto,Model model){
+
+        usersService.updateUserByIdWithoutPassword(userDto);
+
+        model.addAttribute("message", "수정되었습니다.");
+        model.addAttribute("userDto",usersService.findUserByUserId(userDto.getUserId()));
+
+        return "/users/edit";
+    }
 
 
 }

@@ -128,13 +128,13 @@
         <tr th:each="user : ${userPageDto.objects}">
             <td th:text="${user.userId}">1</td>
             <td th:text="${user.name}">John Doe</td>
-            <td th:text="${user.email}">johndoe@example.com</td>
+            <td><a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" th:text="${user.email}">johndoe@example.com</a></td>
             <td th:text="${user.createdAt}">2022-03-15</td>
             <td th:text="${user.enabled ? 'Active' : 'Inactive'}">Active</td>
             <td th:text="${user.phoneNumber}">Admin</td>
             <td>
-                <button class="btn btn-primary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
+                <a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" class="btn btn-primary btn-sm">Edit</a>
+                <a href="delete-page.html" class="btn btn-danger btn-sm">Delete</a>
             </td>
         </tr>
 

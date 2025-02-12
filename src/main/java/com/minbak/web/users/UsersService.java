@@ -67,4 +67,13 @@ public class UsersService {
     public List<Map<Integer, Integer>> countUsersJoinedByWeekday(){
         return usersMapper.countUsersJoinedByWeekday();
     }
+
+    public UserDto findUserByUserId(int userId){
+        return usersMapper.findUserByUserId(userId);
+    }
+
+    public void updateUserByIdWithoutPassword(UserDto userDto){
+        usersMapper.updateUserByIdWithoutPassword(userDto);
+    }
+
 }

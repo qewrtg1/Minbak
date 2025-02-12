@@ -1,38 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title><!DOCTYPE html>
-      <html lang="en">
-      <head>
-      <meta charset="UTF-8">
-      <title>User Information Update</title>
+  <meta charset="UTF-8">
+  <title>User Information Update</title>
   <style>
+    /* 전체 콘텐츠를 flex로 배치 */
     .main-content {
         width: 1200px;
         background-color: rgba(0, 0, 0, 0.2);
         padding: 20px;
         margin: 0 auto;
+        display: flex;
+        justify-content: space-between; /* 두 박스를 양옆에 배치 */
+        flex-wrap: wrap; /* 작은 화면에서도 자연스럽게 줄 바꿈 */
     }
+
+    /* 제목 위치 상단에 고정 */
+    h2 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* 왼쪽 수정 폼 */
     .form-container {
-        width: 50%;
-        margin: 20px auto;
+        width: 45%; /* 45%로 크기 조정 */
         padding: 20px;
         background-color: white;
         border-radius: 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    /* 오른쪽 추가 정보 박스 */
+    .info-container {
+        width: 45%; /* 45%로 크기 조정 */
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: 500px; /* 세로 길이 설정 */
+        overflow-y: auto; /* 내용이 넘칠 경우 스크롤 생기도록 */
+    }
+
+    /* 입력 폼 및 버튼 스타일 */
     .form-container input,
     .form-container select {
         width: 100%;
-        padding: 10px;
+        padding: 12px; /* 좀 더 넉넉한 여백 */
         margin: 10px 0;
         border: 1px solid #ccc;
         border-radius: 5px;
+        box-sizing: border-box; /* padding 포함하여 크기 계산 */
     }
+
     .form-container label {
         font-weight: bold;
     }
+
     .form-container button {
         background-color: #4caf50;
         color: white;
@@ -41,47 +65,72 @@
         border-radius: 5px;
         cursor: pointer;
     }
+
     .form-container button:hover {
         background-color: #45a049;
     }
+
+    /* 작은 화면에서의 폼 레이아웃 조정 */
+    @media (max-width: 768px) {
+        .form-container,
+        .info-container {
+            width: 100%;
+        }
+    }
+
   </style>
 </head>
 <body>
+
+<script th:if="${message}">
+  alert("[[${message}]]");
+</script>
+
+
 <main class="main-content">
-  <h2>Edit User Information</h2>
+  <!-- 제목을 상단에 위치 -->
+  <h2>유저 정보 수정 페이지</h2>
 
-  <!-- 유저 수정 폼 -->
+  <!-- 왼쪽 유저 수정 폼 -->
+  <!-- 유저 수정 폼 (패스워드 변경 제거) -->
   <div class="form-container">
-    <form action="/update-user" method="POST">
-      <input type="hidden" name="userId" value="${user.userId}">  <!-- 사용자 ID (hidden) -->
+    <form action="/admin/users/update" method="POST">
+      <input type="hidden" name="userId" th:value="${userDto.userId}">  <!-- 사용자 ID (hidden) -->
 
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" value="${user.name}" required>
+      <label for="name">이름 :</label>
+      <input type="text" id="name" name="name" th:value="${userDto.name}" required>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" value="${user.email}" required>
+      <label for="email">이메일 :</label>
+      <input type="email" id="email" name="email" th:value="${userDto.email}" required>
 
-      <label for="phoneNumber">Phone Number:</label>
-      <input type="text" id="phoneNumber" name="phoneNumber" value="${user.phoneNumber}" pattern="^\d{3}-\d{3,4}-\d{4}$" required>
+      <label for="phoneNumber">전화번호 :</label>
+      <input type="text" id="phoneNumber" name="phoneNumber" th:value="${userDto.phoneNumber}" pattern="^\d{3}-\d{3,4}-\d{4}$" required>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" value="${user.password}" required>
-
-      <label for="enabled">Account Status:</label>
+      <label for="enabled">계정 상태 :</label>
       <select id="enabled" name="enabled">
-        <option value="true" ${user.enabled ? 'selected' : ''}>Active</option>
-        <option value="false" ${!user.enabled ? 'selected' : ''}>Inactive</option>
+        <option value="true" ${userDto.enabled ? 'selected' : ''}>Active</option>
+        <option value="false" ${!userDto.enabled ? 'selected' : ''}>Inactive</option>
       </select>
 
-      <button type="submit">Update</button>
+      <!-- 패스워드 변경 대신 패스워드 초기화 안내 -->
+      <p>패스워드 변경 요청시 이메일 발송</p>
+
+      <button type="submit">수정</button>
     </form>
   </div>
-</main>
-</body>
-</html>
-</title>
-</head>
-<body>
+  </div>
 
+  <!-- 오른쪽 추가 정보 박스 -->
+  <div class="info-container">
+    <h3>Additional Information</h3>
+    <p>Here you can add more details about the user or any relevant data.</p>
+    <ul>
+      <li>해당 유저 정보(같이 지워질 데이터)</li>
+      <li>Information item 2</li>
+      <li>Information item 3</li>
+      <li>Information item 4</li>
+    </ul>
+  </div>
+</main>
 </body>
 </html>

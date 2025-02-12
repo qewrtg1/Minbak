@@ -48,5 +48,7 @@ public interface UsersMapper {
     //지난 7일동안 가입한 유저 수 Map으로 가져오기
     public List<Map<Integer, Integer>> countUsersJoinedByWeekday();
 
-    // 페이지에 보여줄 유저 조회하는데, String 받아서 name이랑 email조회
+    public UserDto findUserByUserId(int userId);
+
+    public void updateUserByIdWithoutPassword(UserDto userDto);
 }
