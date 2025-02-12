@@ -1,10 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>accomodation</title>
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/accommodation.css">
 </head>
 <body>
+  <div id="template">
 
+    <section id="sidebar">
+      <a href="./admin_dashboard.html" class="logo">
+        <span class="logoImg">로고</span>
+        <span class="logoText sidebarText">&nbspMINBAK</span>
+      </a>
+      <ul class="sidebarMenu">
+        <li class="">
+          <a href="./admin_dashboard.html">
+            <i class="menuIcons fa-solid fa-table-columns"></i>
+            <span class="sidebarText">대시보드</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="./admin_user.html">
+            <i class="menuIcons fa-solid fa-users"></i>
+            <span class="sidebarText">유저관리</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="./admin_accommodation.html">
+            <i class="menuIcons fa-solid fa-person-shelter"></i>
+            <span class="sidebarText">숙소관리</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="sidebarOption">
+        <li>
+          <a href="#">
+            <i class="menuIcons fa-solid fa-gear"></i>
+            <span class="sidebarText">옵션</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="signOut">
+            <i class="menuIcons fa-solid fa-power-off"></i>
+            <span class="sidebarText">로그아웃</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="content">
+      <div class="topbar">
+        <i class="barBtn fa-solid fa-bars"></i>
+        <form action="">
+          <input class="topSearchBox" type="text">
+          <button class="topSearchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+      </div>
+      <div id="accomodation" class="contentBox">
+        <h1 class="contentTitle">숙소 관리</h1>
+        <!-- ↓↓↓↓↓↓↓↓↓↓ 여기에 컨텐츠 집어넣으면 됨 ↓↓↓↓↓↓↓↓↓↓ -->
+        <div id="list">
+          <h3 class="listTitle">숙소 목록</h3>
+          <div class="listWrap">
+
+            <table>
+              <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Content</th>
+                    <th>Address</th>
+                    <th>Price</th>
+                    <th>Use Guide</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>user_email</th>
+                </tr>
+                </thead>
+              <tbody>
+              <tr th:each="room : ${roomsPage.rooms}">
+                <td th:text="${room.roomId}"></td>
+                <td>
+                  <a th:href="@{/admin/{room_id}(room_id=${room.roomId})}" th:text="${room.name}"></a>
+                </td>
+                <td th:text="${room.content}"></td>
+                <td th:text="${room.address}"></td>
+                <td th:text="${room.price}"></td>
+                <td th:text="${room.useGuide}"></td>
+                <td th:text="${room.latitude}"></td>
+                <td th:text="${room.longitude}"></td>
+                <td th:text="${room.userEmail}"></td>
+              </tr>
+              </tbody>
+          </table>
+
+          </div>
+        </div>
+        <!-- ↑↑↑↑↑↑↑↑↑↑ 여기에 컨텐츠 집어넣으면 됨 ↑↑↑↑↑↑↑↑↑↑ -->
+      </div>
+    </section>
+
+  </div>
+  <script src="/js/layout.js"></script>
+  <script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--타임리프와 타임리프 레이아웃 의존성 추가와 참고할 HTML(board/base/base)설정-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{board/base/base}">
+<head>
+
+</head>
+<body>
+<!-- 메인 콘텐츠 영역 -->
+<th:block layout:fragment="content">
+
+  <main class="main-content">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <p th:text="${categoryId == 0 ? '전체 게시글' : categoryName}"></p>
+      <!-- 게시글쓰기 버튼 -->
+      <a th:href="@{/board/post/create}" class="btn btn-primary btn-sm" style="font-size: 12px; padding: 5px 10px;">
+        게시글 쓰기
+      </a>
+    </div>
+    <h4>게시판</h4>
+    <div class="list-group">
+      <!--게시글-->
+      <a th:each="post : ${boardPageDto.objects}" th:href="@{/board/post/{id}(id=${post.id})}" class="list-group-item list-group-item-action" style="padding-top: 10px; padding-bottom: 0px;">
+        <h5>
+          <strong th:text="'['+${post.subject}+']'"></strong>
+          <span th:text="${post.title}"></span>
+          <span th:text="${post.createdAt}" style="font-size: small; float: right; color: gray;"></span>
+        </h5>
+      </a>
+    </div>
+
+    <!-- 페이징 -->
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${boardPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/board?page={page}(page=${boardPageDto.currentPage - 1})}">«</a></li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(boardPageDto.startPage, boardPageDto.endPage)}">
+          <a class="page-link" th:classappend="${boardPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/board?page={i}&category={categoryId}(i=${i},categoryId=${categoryId})}" th:text="${i}"></a>
+        </li>
+        <li th:class="${boardPageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/board?page={page}(page=${boardPageDto.currentPage + 1})}">»</a></li>
+      </ul>
+    </nav>
+  </main>
+</th:block>
+
+</body>
+</html>

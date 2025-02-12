@@ -17,7 +17,7 @@
         `address` = #{address},
         `price` = #{price},
         `use_guide` = #{useGuide}
-        WHERE `room_id` = #{room_id};
+        WHERE `room_id` = #{roomId};
     </update>
 
     <!-- SELECT: 모든 숙박 시설 조회 -->
@@ -47,12 +47,9 @@
 
     <!-- SELECT: 특정 숙박 시설 조회 -->
     <select id="selectRoomById" parameterType="int" resultType="com.minbak.web.rooms.RoomsDto">
-        SELECT
-        r.room_id, r.name, r.content, r.address, r.price, r.use_guide,
-        r.latitude, r.longitude, u.email AS userEmail
-        FROM rooms r
-        LEFT JOIN users u ON r.user_id = u.user_id
-        WHERE r.room_id = #{room_id}
+        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
+        FROM `rooms`
+        WHERE `room_id` = #{roomId};
     </select>
 
     <!-- SELECT: 가격을 기준으로 정렬하여 숙박 시설 조회 -->
@@ -64,18 +61,18 @@
 
     <resultMap id="roomsWithUserResultMap" type="com.minbak.web.rooms.RoomsDto">
         <!-- rooms 테이블의 컬럼들 매핑 -->
-        <id property="roomId" column="room_id"/>
+        <id property="room_id" column="room_id"/>
         <result property="name" column="name"/>
         <result property="content" column="content"/>
         <result property="address" column="address"/>
         <result property="price" column="price"/>
-        <result property="useGuide" column="use_guide"/>
+        <result property="use_guide" column="use_guide"/>
         <result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
 
         <!-- users 테이블의 컬럼들 매핑 -->
         <result property="user_id" column="user_id"/>
-        <result property="userEmail" column="email"/>
+        <result property="user_email" column="email"/>
     </resultMap>
     <!--users id 연결-->
     <select id="selectRoomsWithUser" resultMap="roomsWithUserResultMap">
@@ -93,7 +90,7 @@
     <!-- DELETE -->
     <delete id="deleteRoom" parameterType="int">
         DELETE FROM `rooms`
-        WHERE `room_id` = #{room_id};
+        WHERE `room_id` = #{roomId};
     </delete>
 </mapper>
 

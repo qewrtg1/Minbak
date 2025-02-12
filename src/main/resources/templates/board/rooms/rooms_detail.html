@@ -1,10 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숙소 상세보기</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/accommodation.css">
 </head>
 <body>
+<div id="template">
+    <section id="sidebar">
+        <a href="./admin_dashboard.html" class="logo">
+            <span class="logoImg">로고</span>
+            <span class="logoText sidebarText">&nbspMINBAK</span>
+        </a>
+        <ul class="sidebarMenu">
+            <li><a href="./admin_dashboard.html"><i class="menuIcons fa-solid fa-table-columns"></i> <span class="sidebarText">대시보드</span></a></li>
+            <li><a href="./admin_user.html"><i class="menuIcons fa-solid fa-users"></i> <span class="sidebarText">유저관리</span></a></li>
+            <li class="active"><a href="./admin_accommodation.html"><i class="menuIcons fa-solid fa-person-shelter"></i> <span class="sidebarText">숙소관리</span></a></li>
+        </ul>
+    </section>
 
+    <section id="content">
+        <div class="topbar">
+            <i class="barBtn fa-solid fa-bars"></i>
+            <form action="">
+                <input class="topSearchBox" type="text">
+                <button class="topSearchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+
+        <div class="contentBox">
+            <h1 class="contentTitle">숙소 상세보기</h1>
+            <div class="detailWrap">
+                <table class="detailTable">
+                    <tr>
+                        <th>ID</th>
+                        <td th:text="${room.roomId}"></td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td th:text="${room.name}"></td>
+                    </tr>
+                    <tr>
+                        <th>Content</th>
+                        <td th:text="${room.content}"></td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td th:text="${room.address}"></td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td th:text="${room.price}"></td>
+                    </tr>
+                    <tr>
+                        <th>Use Guide</th>
+                        <td th:text="${room.useGuide}"></td>
+                    </tr>
+                    <tr>
+                        <th>Latitude</th>
+                        <td th:text="${room.latitude}"></td>
+                    </tr>
+                    <tr>
+                        <th>Longitude</th>
+                        <td th:text="${room.longitude}"></td>
+                    </tr>
+                    <tr>
+                        <th>User Email</th>
+                        <td th:text="${room.userEmail}"></td>
+                    </tr>
+                </table>
+                <div class="btnWrap">
+                    <!-- 현재 페이지와 사이즈를 포함하여 목록 페이지로 돌아가기 -->
+                    <a th:href="@{/admin/board/rooms/rooms_list(page=${page}, size=${size})}" class="btn">목록으로</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="/js/layout.js"></script>
+<script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
 </body>
 </html>

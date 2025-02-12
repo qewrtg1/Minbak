@@ -17,10 +17,4 @@ public class RoomsService {
         int totalElements = roomsMapper.countTotalRooms();
         return new RoomsPageDto(page,size,totalElements,rooms);
     }
-
-    public RoomsDto selectRoomById(int roomId){
-        return roomsMapper.selectRoomById(roomId);
-    }
-
-
 }
