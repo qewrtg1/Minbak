@@ -3,10 +3,7 @@ package com.minbak.web.rooms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -43,5 +40,17 @@ public class RoomsController {
         return "board/rooms/rooms_list";
 }
 
+    @GetMapping("/rooms/edit/{roomId}")
+    public String updateRoom(@PathVariable("roomId") int roomId, Model model){
+        RoomsDto room = roomsService.selectRoomById(roomId);
+        model.addAttribute("room", room);
+        return "board/rooms/rooms_edit";
+    }
+
+    @PostMapping("/rooms/update")
+    public String updateRoom(RoomsDto room){
+        roomsService.updateRoom(room);
+        return "redirect:/board/rooms/rooms_detail";
+    }
 
 }

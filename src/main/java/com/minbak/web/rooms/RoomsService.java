@@ -22,5 +22,9 @@ public class RoomsService {
         return roomsMapper.selectRoomById(roomId);
     }
 
+    public RoomsDto updateRoom(RoomsDto roomsDto){
+        return roomsMapper.updateRoom(roomsDto);
+    }
+
 
 }

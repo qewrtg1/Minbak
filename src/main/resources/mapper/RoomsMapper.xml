@@ -11,13 +11,16 @@
 
     <!-- UPDATE -->
     <update id="updateRoom" parameterType="com.minbak.web.rooms.RoomsDto">
-        UPDATE `rooms`
-        SET `name` = #{name},
-        `content` = #{content},
-        `address` = #{address},
-        `price` = #{price},
-        `use_guide` = #{useGuide}
-        WHERE `room_id` = #{room_id};
+        UPDATE `rooms` r
+        LEFT JOIN `users` u ON r.user_id = u.user_id
+        SET
+        r.name = #{name},
+        r.content = #{content},
+        r.address = #{address},
+        r.price = #{price},
+        r.use_guide = #{useGuide},
+        u.email = #{userEmail}  <!-- users 테이블의 이메일을 업데이트 -->
+        WHERE r.room_id = #{roomId};
     </update>
 
     <!-- SELECT: 모든 숙박 시설 조회 -->

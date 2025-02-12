@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숙소 수정</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/accommodation.css">
+</head>
+<body>
+<div id="template">
+
+    <section id="sidebar">
+        <a href="./admin_dashboard.html" class="logo">
+            <span class="logoImg">로고</span>
+            <span class="logoText sidebarText">&nbspMINBAK</span>
+        </a>
+        <ul class="sidebarMenu">
+            <li class="">
+                <a href="./admin_dashboard.html">
+                    <i class="menuIcons fa-solid fa-table-columns"></i>
+                    <span class="sidebarText">대시보드</span>
+                </a>
+            </li>
+            <li class="">
+                <a href="./admin_user.html">
+                    <i class="menuIcons fa-solid fa-users"></i>
+                    <span class="sidebarText">유저관리</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="./admin_accommodation.html">
+                    <i class="menuIcons fa-solid fa-person-shelter"></i>
+                    <span class="sidebarText">숙소관리</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="sidebarOption">
+            <li>
+                <a href="#">
+                    <i class="menuIcons fa-solid fa-gear"></i>
+                    <span class="sidebarText">옵션</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="signOut">
+                    <i class="menuIcons fa-solid fa-power-off"></i>
+                    <span class="sidebarText">로그아웃</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section id="content2">
+        <div class="topbar">
+            <i class="barBtn fa-solid fa-bars"></i>
+            <form action="">
+                <input class="topSearchBox" type="text">
+                <button class="topSearchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+
+        <div id="accomodation" class="contentBox">
+            <h1 class="contentTitle">숙소 수정</h1>
+
+            <div id="editForm">
+                <form th:action="@{/admin/rooms/update}" method="post">
+                    <input type="hidden" th:name="roomId" th:value="${room.roomId}" />
+
+                    <label for="name">Room Name:</label>
+                    <input type="text" id="name" name="name" th:value="${room.name}" />
+
+                    <label for="content">Room Content:</label>
+                    <textarea id="content" name="content" th:text="${room.content}"></textarea>
+
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" th:value="${room.address}" />
+
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" th:value="${room.price}" />
+
+                    <label for="useGuide">Use Guide:</label>
+                    <input type="text" id="useGuide" name="useGuide" th:value="${room.useGuide}" />
+
+                    <label for="latitude">Latitude:</label>
+                    <input type="text" id="latitude" name="latitude" th:value="${room.latitude}" />
+
+                    <label for="longitude">Longitude:</label>
+                    <input type="text" id="longitude" name="longitude" th:value="${room.longitude}" />
+
+                    <label for="userEmail">User Email:</label>
+                    <input type="email" id="userEmail" name="userEmail" th:value="${room.userEmail}" />
+
+                    <button type="submit">Update Room</button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<script src="/js/layout.js"></script>
+<script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
+</body>
+</html>
