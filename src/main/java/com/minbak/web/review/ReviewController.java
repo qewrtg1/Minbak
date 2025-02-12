@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Controller
-@RequestMapping("/review/admin")
+@RequestMapping("/admin/review")
 public class ReviewController {
 
     @Autowired
@@ -18,8 +18,8 @@ public class ReviewController {
     @GetMapping
     public String adminReviewPage(Model model){
         // 모든 리뷰 목록을 서비스에서 가져와서 모델에 추가
-        List<ReviewDto> reviews = reviewService.findAllReview();
-        model.addAttribute("reviews", reviews);  // "reviews"라는 이름으로 템플릿에 전달
-        return "review";  // review.html 파일을 렌더링
+        List<ReviewDto> review = reviewService.findAllReview();
+        model.addAttribute("review", review);  // "reviews"라는 이름으로 템플릿에 전달
+        return "review/review";  // review.html 파일을 렌더링
     }
 }
