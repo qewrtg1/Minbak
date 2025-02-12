@@ -47,8 +47,53 @@
         limit #{limit} offset #{offset};
     </select>
 
+    <!-- limit와 offset값, 그리고 문자열값에 따라 게시글 조회 -->
+    <select id="findUsersByLimitAndOffsetAndString" resultType="com.minbak.web.users.UserDto">
+        SELECT *
+        FROM users
+        WHERE name LIKE CONCAT('%', #{search}, '%') OR email LIKE CONCAT('%', #{search}, '%')
+        ORDER BY user_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <!-- 모든 유저 수 체크 -->
     <select id="countAllUsers" resultType="int">
         select count(*) from users;
+    </select>
+
+    <!--검색에 해당하는 유저 수 체크-->
+    <select id="countUsersBySearch" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+        WHERE name LIKE CONCAT('%', #{search}, '%') OR email LIKE CONCAT('%', #{search}, '%')
+    </select>
+
+    <!--해당 role을 가진 유저 가져오기-->
+    <select id="countUserRolesByRoleId" resultType="int">
+        SELECT COUNT(*)
+        FROM user_roles
+        WHERE role_id = #{roleId}
+    </select>
+
+    <!--오늘 가입한 유저 수 가져오기-->
+    <select id="countUsersJoinedToday" resultType="int">
+        SELECT count(*)
+        FROM users
+        WHERE DATE(created_at) = CURRENT_DATE
+    </select>
+
+    <!--지난 7일간 요일별 가입자 수-->
+    <select id="countUsersJoinedByWeekday" resultType="map">
+        SELECT
+        DAYOFWEEK(created_at) AS weekday,
+        COUNT(*) AS count
+        FROM
+        users
+        WHERE
+        created_at >= CURDATE() - INTERVAL 7 DAY
+        GROUP BY
+        DAYOFWEEK(created_at)
+        ORDER BY
+        weekday
     </select>
 </mapper>

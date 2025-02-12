@@ -2,7 +2,9 @@ package com.minbak.web.users;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UsersMapper {
@@ -28,8 +30,23 @@ public interface UsersMapper {
     // 페이지에 보여줄 유저 조회
     public List<UserDto> findUsersByLimitAndOffset(int limit, int offset);
 
+    //limit와 offset값, 그리고 문자열값에 따라 게시글 조회
+    public List<UserDto> findUsersByLimitAndOffsetAndString(int limit, int offset, String search);
+
     //모든 유저 수 조회
     public int countAllUsers();
+
+    //모든 HOST(role_id = 2)조회
+    public int countUserRolesByRoleId(int roleId);
+
+    //오늘 가입한 유저 수 가져오기
+    public int countUsersJoinedToday();
+
+    //검색에 해당하는 유저 수 가져오기
+    public int countUsersBySearch(String search);
+
+    //지난 7일동안 가입한 유저 수 Map으로 가져오기
+    public List<Map<Integer, Integer>> countUsersJoinedByWeekday();
 
     // 페이지에 보여줄 유저 조회하는데, String 받아서 name이랑 email조회
 }

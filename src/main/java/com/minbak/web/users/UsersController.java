@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -99,9 +100,27 @@ public class UsersController {
 
         UserPageDto<UserDto> userPageDto = new UserPageDto<>(page,size,totalItems,userDtos);
 
+        int allHostNum = usersService.countUserRolesByRoleId(2);
+
+        int UsersJoinedTodayNum = usersService.countUsersJoinedToday();
+
+        int allAdminNum = usersService.countUserRolesByRoleId(3);
+
+        // Map<Integer, Integer> 형태로 결과를 가져옴
+        List<Map<Integer, Integer>> weekdayUserCounts = usersService.countUsersJoinedByWeekday();
+
+        model.addAttribute("usersByWeekday", weekdayUserCounts);
+
+        model.addAttribute("allAdminNum", allAdminNum);
+        model.addAttribute("UsersJoinedTodayNum", UsersJoinedTodayNum);
+        model.addAttribute("allHostNum", allHostNum);
         model.addAttribute("userPageDto",userPageDto);
+        // 모델에 데이터 전달
 
         return "/users/user-main";
     }
+
+
+
 
 }

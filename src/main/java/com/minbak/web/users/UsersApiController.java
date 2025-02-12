@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UsersApiController {
-    @Value("${jwt.refresh-token-expiration-time}")
-    private long REFRESH_TOKEN_EXPIRATION_TIME;
+//    @Value("${jwt.refresh-token-expiration-time}")
+//    private long REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final UsersService usersService;
 //    private final AuthenticationManager authenticationManager;
@@ -119,15 +119,26 @@ public class UsersApiController {
 //        return ResponseEntity.ok("사용자 페이지: " + username);
 //    }
 
-    private Cookie createRefreshCookie(String key, String value) {
+//    private Cookie createRefreshCookie(String key, String value) {
+//
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//        cookie.setMaxAge((int) REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+//
+//        return cookie;
+//    }
 
-        Cookie cookie = new Cookie(key, value);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+    @GetMapping("/users")
+    public UserPageDto<UserDto> searchUsers(
+            @RequestParam("search") String search,    // 검색어
+            @RequestParam("page") int page,           // 현재 페이지
+            @RequestParam("size") int size            // 페이지 크기
+    ) {
 
-        return cookie;
+        return usersService.findUsersByLimitAndOffsetAndString(page, size, search);
+
     }
 
 }

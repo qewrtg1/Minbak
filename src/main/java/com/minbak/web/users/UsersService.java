@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UsersService {
@@ -43,7 +44,27 @@ public class UsersService {
         return usersMapper.findUsersByLimitAndOffset(size, offset);
     }
 
+    public UserPageDto<UserDto> findUsersByLimitAndOffsetAndString(int page, int size, String search){
+
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countUsersBySearch(search);
+        List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffsetAndString(size, offset, search);
+        return new UserPageDto<>(page,size,totalItems,userDtos);
+    }
+
     public int countAllUsers(){
         return usersMapper.countAllUsers();
+    }
+
+    public int countUserRolesByRoleId(int roleId){
+        return usersMapper.countUserRolesByRoleId(roleId);
+    }
+
+    public int countUsersJoinedToday(){
+        return usersMapper.countUsersJoinedToday();
+    }
+
+    public List<Map<Integer, Integer>> countUsersJoinedByWeekday(){
+        return usersMapper.countUsersJoinedByWeekday();
     }
 }
