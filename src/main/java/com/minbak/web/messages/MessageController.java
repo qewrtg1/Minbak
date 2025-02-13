@@ -1,6 +1,7 @@
 package com.minbak.web.messages;
 
 
+import com.minbak.web.users.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +13,14 @@ import java.util.List;
 
 @Controller
 //리퀘스트 맵핑 부분 admin 인지 보드인지...
-@RequestMapping("/message")
+@RequestMapping("/admin/message")
 public class MessageController {
 
     @Autowired
     MessageService messageService;
 
 //    유저조회
-    @GetMapping("/admin/userMessages")
+    @GetMapping("/user")
     public String userMessages(Model model){
 
         //유저 정보를 받아서 UserDto객체에 넣고 MessageDto 전달.
@@ -31,9 +32,12 @@ public class MessageController {
     }
 
 //    특정 유저 메세지 확인
-    @GetMapping("/admin/userMessages/{user_id}")
-    public String userMessagesById(@PathVariable("user_id") int user_id){
-        messageService.
+    @GetMapping("/user/{user_id}")
+    public String userMessagesById(@PathVariable("user_id") int user_id,Model model){
+        model.addAttribute("user_id",user_id);
+        model.addAttribute("messages", messageService.findMessagesById(user_id)  );
+    return "/message/userMessageDetail";
+
 
     }
 
