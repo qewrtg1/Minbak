@@ -13,7 +13,7 @@ public interface RoomsMapper {
     RoomsDto selectRoomById(int id);
     List<RoomsDto> selectRoomsByPage(@Param("size") int size, @Param("offset") int offset);
     int countTotalRooms();
-    RoomsDto updateRoom(RoomsDto roomsDto);
+    int updateRoom(RoomsDto roomsDto);
     void deleteRoom(int id);
     List<RoomsDto> selectRoomsWithUser(@Param("size") int size, @Param("offset") int offset);
 }

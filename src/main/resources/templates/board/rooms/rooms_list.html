@@ -84,7 +84,7 @@
               <tr th:each="room : ${roomsPage.rooms}">
                 <td th:text="${room.roomId}"></td>
                 <td>
-                  <a th:href="@{/admin/{room_id}(room_id=${room.roomId})}" th:text="${room.name}"></a>
+                  <a th:href="@{/admin/rooms/{room_id}(room_id=${room.roomId})}" th:text="${room.name}"></a>
                 </td>
                 <td th:text="${room.content}"></td>
                 <td th:text="${room.address}"></td>

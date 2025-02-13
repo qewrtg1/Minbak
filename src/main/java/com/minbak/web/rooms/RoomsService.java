@@ -17,13 +17,17 @@ public class RoomsService {
         int totalElements = roomsMapper.countTotalRooms();
         return new RoomsPageDto(page,size,totalElements,rooms);
     }
-
+    // 상세 보기
     public RoomsDto selectRoomById(int roomId){
         return roomsMapper.selectRoomById(roomId);
     }
-
-    public RoomsDto updateRoom(RoomsDto roomsDto){
+    // 수정 기능
+    public int updateRoom(RoomsDto roomsDto){
         return roomsMapper.updateRoom(roomsDto);
+    }
+    // 삭제 기능
+    public void deleteRoom(int roomId){
+        roomsMapper.deleteRoom(roomId);
     }
 
 

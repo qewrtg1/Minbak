@@ -13,7 +13,7 @@ public class RoomsController {
     private RoomsService roomsService;
 
 //
-    @GetMapping
+    @GetMapping("/rooms/list")
     public String roomsList(@RequestParam(name="page", defaultValue = "1") int page,
                              @RequestParam(name="size", defaultValue = "10") int size,
                              Model model){
@@ -23,9 +23,8 @@ public class RoomsController {
         return "board/rooms/rooms_list";
     }
 //  숙소 이름을 클릭 했을 때 상세보기
-    @GetMapping("/{room_id}")
+    @GetMapping("/rooms/{room_id}")
     public String roomsDetail(@PathVariable int room_id, Model model){
-        System.out.println("room_id in controller: " + room_id);
         RoomsDto room = roomsService.selectRoomById(room_id);
         model.addAttribute("room", room);
         return "board/rooms/rooms_detail";
@@ -39,18 +38,24 @@ public class RoomsController {
         model.addAttribute("roomsPage", roomsPage);
         return "board/rooms/rooms_list";
 }
-
+    // 상세보기 페이지
     @GetMapping("/rooms/edit/{roomId}")
     public String updateRoom(@PathVariable("roomId") int roomId, Model model){
         RoomsDto room = roomsService.selectRoomById(roomId);
         model.addAttribute("room", room);
         return "board/rooms/rooms_edit";
     }
-
+    // 업데이트 클릭시 상세보기로 리다이렉팅
     @PostMapping("/rooms/update")
     public String updateRoom(RoomsDto room){
         roomsService.updateRoom(room);
-        return "redirect:/board/rooms/rooms_detail";
+        return "redirect:/admin/rooms/" + room.getRoomId();
+    }
+    // 삭제 버튼 클릭시 삭제
+    @PostMapping("/rooms/delete/{roomId}")
+    public String deleteRoom(@PathVariable int roomId){
+        roomsService.deleteRoom(roomId);
+        return "redirect:/admin/board/rooms/rooms_list";
     }
 
 }

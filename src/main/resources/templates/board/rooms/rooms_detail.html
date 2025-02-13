@@ -77,6 +77,11 @@
                 </div>
                 <!-- 수정하기 링크 추가 -->
                 <a th:href="@{/admin/rooms/edit/{roomId}(roomId=${room.roomId})}">수정하기</a>
+                <!-- 삭제하기 링크 추가 -->
+                <form th:action="@{/admin/rooms/delete/{roomId}(roomId=${room.roomId})}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn">삭제하기</button>
+                </form>
             </div>
         </div>
     </section>
