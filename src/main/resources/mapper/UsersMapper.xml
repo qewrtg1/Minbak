@@ -113,4 +113,28 @@
         enabled = #{enabled}
         WHERE user_id = #{userId}
     </update>
+
+    <!--해당 유저의 간략 결제 정보 가져오기-->
+    <select id="findUsersPaymentsCompactInfoByLimitAndOffsetAndUserId" resultType="com.minbak.web.payments.PaymentDto">
+        SELECT
+        p.payment_id,
+        p.amount,
+        p.created_at,
+        r.name AS room_name
+        FROM
+        payments p
+        JOIN
+        books b ON p.book_id = b.book_id
+        JOIN
+        rooms r ON b.room_id = r.room_id
+        WHERE
+        p.user_id = #{userId}
+    </select>
+
+    <!--해당 유저의 결제 개수-->
+    <select id="countPaymentsByUserId">
+        SELECT COUNT(*)
+        FROM payments
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

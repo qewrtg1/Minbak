@@ -90,23 +90,32 @@ public class UsersController {
 
 
     @GetMapping("/users")
+    //어드민 메인페이지 페이지네이션
     public String adminMainPage(@RequestParam(name ="page", defaultValue = "1")int page,
                                 @RequestParam(name ="size", defaultValue = "10")int size,
                                 Model model){
 
-        List<UserDto> userDtos = usersService.findUsersByLimitAndOffset(page, size);
+        //페이지에 보여줄 유저 정보 가져오기
+        List<UserResponseDto> userResponseDtosDtos = usersService.findUsersByLimitAndOffset(page, size);
 
+        //총 페이지 수 int로 가져오기
         int totalItems = usersService.countAllUsers();
 
-        UserPageDto<UserDto> userPageDto = new UserPageDto<>(page,size,totalItems,userDtos);
+        //page, size(보여줄 유저 정보 개수), 총 페이지 수, 페이지에 보여줄 유저 정보들
+        //위 네 정보로 PageDto생성
+        UserPageDto<UserResponseDto> userPageDto = new UserPageDto<>(page,size,totalItems,userResponseDtosDtos);
 
+        //호스트 숫자 가져오기
         int allHostNum = usersService.countUserRolesByRoleId(2);
 
+        //오늘 가입한 가입자 수 가져오기
         int UsersJoinedTodayNum = usersService.countUsersJoinedToday();
 
+        //모든 관리자 수 가져오기
         int allAdminNum = usersService.countUserRolesByRoleId(3);
 
-        // Map<Integer, Integer> 형태로 결과를 가져옴
+        //이번 주 요일별 가입자 수
+        // Map<Integer, Integer> 형태로 결과를 가져옴 0 = 일요일 6 = 토요일
         List<Map<Integer, Integer>> weekdayUserCounts = usersService.countUsersJoinedByWeekday();
 
         model.addAttribute("usersByWeekday", weekdayUserCounts);
@@ -138,6 +147,5 @@ public class UsersController {
 
         return "/users/edit";
     }
-
 
 }

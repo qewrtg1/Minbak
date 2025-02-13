@@ -1,9 +1,11 @@
 package com.minbak.web.users;
 
+import com.minbak.web.payments.PaymentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,17 +41,37 @@ public class UsersService {
 
     }
 
-    public List<UserDto> findUsersByLimitAndOffset(int page, int size){
+    public List<UserResponseDto> findUsersByLimitAndOffset(int page, int size){
         int offset = (page-1)*size;
-        return usersMapper.findUsersByLimitAndOffset(size, offset);
+        List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffset(size, offset);
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+
+        for (UserDto userDto : userDtos) {
+            UserResponseDto userResponseDto = new UserResponseDto(userDto);
+            userResponseDtos.add(userResponseDto);
+        }
+
+        return userResponseDtos;
     }
 
-    public UserPageDto<UserDto> findUsersByLimitAndOffsetAndString(int page, int size, String search){
+    public UserPageDto<UserResponseDto> findUsersByLimitAndOffsetAndString(int page, int size, String search){
 
         int offset = (page-1)*size;
+        
+        //검색창에 적은 String을 email이나 name에 포함한 유저수 가져오기
         int totalItems = usersMapper.countUsersBySearch(search);
+        
+        //검색창에 적은 String을 이용해 보여줄 페이지 가져오기
         List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffsetAndString(size, offset, search);
-        return new UserPageDto<>(page,size,totalItems,userDtos);
+
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+
+        for (UserDto userDto : userDtos) {
+            UserResponseDto userResponseDto = new UserResponseDto(userDto);
+            userResponseDtos.add(userResponseDto);
+        }
+        //위 정보로 UserPageDto만들고 리턴
+        return new UserPageDto<>(page,size,totalItems,userResponseDtos);
     }
 
     public int countAllUsers(){
@@ -74,6 +96,17 @@ public class UsersService {
 
     public void updateUserByIdWithoutPassword(UserDto userDto){
         usersMapper.updateUserByIdWithoutPassword(userDto);
+    }
+
+    public UserPageDto<PaymentDto> findPaymentsByLimitAndOffsetAndUserId(int page, int size, int userId){
+
+        int offset = (page-1)*size;
+        List<PaymentDto> paymentDtos = usersMapper.findUsersPaymentsCompactInfoByLimitAndOffsetAndUserId(size,offset,userId);
+
+        int totalItems = usersMapper.countPaymentsByUserId(userId);
+
+        //위 정보로 UserPageDto만들고 리턴
+        return new UserPageDto<>(page,size,totalItems,paymentDtos);
     }
 
 }

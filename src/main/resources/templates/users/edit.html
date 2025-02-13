@@ -3,134 +3,257 @@
 <head>
   <meta charset="UTF-8">
   <title>User Information Update</title>
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* 전체 콘텐츠를 flex로 배치 */
     .main-content {
-        width: 1200px;
-        background-color: rgba(0, 0, 0, 0.2);
+        max-width: 1200px;
+        background-color: rgba(0, 0, 0, 0.05);
         padding: 20px;
-        margin: 0 auto;
+        margin: 30px auto;
         display: flex;
-        justify-content: space-between; /* 두 박스를 양옆에 배치 */
-        flex-wrap: wrap; /* 작은 화면에서도 자연스럽게 줄 바꿈 */
+        gap: 20px;
+        flex-wrap: wrap;
     }
 
-    /* 제목 위치 상단에 고정 */
-    h2 {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    /* 왼쪽 수정 폼 */
-    .form-container {
-        width: 45%; /* 45%로 크기 조정 */
-        padding: 20px;
-        background-color: white;
-        border-radius: 5px;
+    .form-container, .info-container {
+        flex: 1;
+        min-width: 48%;
+        background: white;
+        border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* 오른쪽 추가 정보 박스 */
-    .info-container {
-        width: 45%; /* 45%로 크기 조정 */
         padding: 20px;
-        background-color: white;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        height: 500px; /* 세로 길이 설정 */
-        overflow-y: auto; /* 내용이 넘칠 경우 스크롤 생기도록 */
     }
 
-    /* 입력 폼 및 버튼 스타일 */
-    .form-container input,
-    .form-container select {
-        width: 100%;
-        padding: 12px; /* 좀 더 넉넉한 여백 */
-        margin: 10px 0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box; /* padding 포함하여 크기 계산 */
+    #payment-table{
+      border-collapse: collapse;
+    }
+    #payment-table tr{
+      text-align: center;
+      border: none;
+    }
+    #payment-table th{
+      font-size:13px;
+      padding:0px;
+      text-align: center;
+      border: none;
+    }
+    #payment-table td{
+      border: none;
+
     }
 
-    .form-container label {
-        font-weight: bold;
-    }
-
-    .form-container button {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .form-container button:hover {
-        background-color: #45a049;
-    }
-
-    /* 작은 화면에서의 폼 레이아웃 조정 */
     @media (max-width: 768px) {
-        .form-container,
-        .info-container {
-            width: 100%;
-        }
+      .form-container, .info-container {
+          min-width: 100%;
+      }
     }
-
   </style>
 </head>
 <body>
 
-<script th:if="${message}">
-  alert("[[${message}]]");
-</script>
+<!--<script th:if="${message}">-->
+<!--  alert("[[${message}]]");-->
+<!--</script>-->
 
+<main class="main-content d-flex flex-wrap">
+  <h2 class="w-100 text-center mb-4">유저 정보 수정 페이지</h2>
 
-<main class="main-content">
-  <!-- 제목을 상단에 위치 -->
-  <h2>유저 정보 수정 페이지</h2>
-
-  <!-- 왼쪽 유저 수정 폼 -->
-  <!-- 유저 수정 폼 (패스워드 변경 제거) -->
-  <div class="form-container">
+  <!-- 유저 수정 폼 -->
+  <div class="form-container p-4">
     <form action="/admin/users/update" method="POST">
-      <input type="hidden" name="userId" th:value="${userDto.userId}">  <!-- 사용자 ID (hidden) -->
+      <input id="userId" type="hidden" name="userId" th:value="${userDto.userId}">
 
-      <label for="name">이름 :</label>
-      <input type="text" id="name" name="name" th:value="${userDto.name}" required>
+      <div class="mb-3">
+        <label for="name" class="form-label">이름</label>
+        <input type="text" id="name" name="name" th:value="${userDto.name}" class="form-control" required>
+      </div>
 
-      <label for="email">이메일 :</label>
-      <input type="email" id="email" name="email" th:value="${userDto.email}" required>
+      <div class="mb-3">
+        <label for="email" class="form-label">이메일</label>
+        <input type="email" id="email" name="email" th:value="${userDto.email}" class="form-control" required>
+      </div>
 
-      <label for="phoneNumber">전화번호 :</label>
-      <input type="text" id="phoneNumber" name="phoneNumber" th:value="${userDto.phoneNumber}" pattern="^\d{3}-\d{3,4}-\d{4}$" required>
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">전화번호</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" th:value="${userDto.phoneNumber}" pattern="^\d{3}-\d{3,4}-\d{4}$" class="form-control" required>
+      </div>
 
-      <label for="enabled">계정 상태 :</label>
-      <select id="enabled" name="enabled">
-        <option value="true" ${userDto.enabled ? 'selected' : ''}>Active</option>
-        <option value="false" ${!userDto.enabled ? 'selected' : ''}>Inactive</option>
-      </select>
+      <div class="mb-3">
+        <label for="enabled" class="form-label">계정 상태</label>
+        <select id="enabled" name="enabled" class="form-select">
+          <option value="true" th:selected="${userDto.enabled}">Active</option>
+          <option value="false" th:selected="${!userDto.enabled}">Inactive</option>
+        </select>
+      </div>
 
-      <!-- 패스워드 변경 대신 패스워드 초기화 안내 -->
-      <p>패스워드 변경 요청시 이메일 발송</p>
+      <p class="text-muted">패스워드 변경 요청 시 이메일 발송</p>
 
-      <button type="submit">수정</button>
+      <button type="submit" class="btn btn-primary w-30">수정</button>
     </form>
   </div>
-  </div>
 
-  <!-- 오른쪽 추가 정보 박스 -->
-  <div class="info-container">
-    <h3>Additional Information</h3>
-    <p>Here you can add more details about the user or any relevant data.</p>
-    <ul>
-      <li>해당 유저 정보(같이 지워질 데이터)</li>
-      <li>Information item 2</li>
-      <li>Information item 3</li>
-      <li>Information item 4</li>
-    </ul>
+  <!-- 유저 추가 정보 -->
+  <div class="info-container p-4">
+
+    <div class="info-box border-bottom pb-3 mb-3">
+      <h4>📅 최근 접속일</h4>
+      <p class="fw-bold">2025-02-13 (리프레시 토큰으로 구현?)</p>
+    </div>
+
+    <div class="info-box border-bottom pb-3 mb-3">
+      <h4>🏠 보유 숙소</h4>
+      <ul id="property-list" class="list-group"></ul>
+<!--      <nav aria-label="Page navigation" class="page-nav" id="pagination-1">-->
+<!--        <ul class="pagination justify-content-center">-->
+<!--          <li class="page-item" th:classappend="${userPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage - 1})}">«</a></li>-->
+<!--          <li class="page-item" th:each="i : ${#numbers.sequence(userPageDto.startPage, userPageDto.endPage)}">-->
+<!--            <a class="page-link" th:classappend="${userPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/admin/users?page={i}(i=${i})}" th:text="${i}">1</a>-->
+<!--          </li>-->
+<!--          <li class="page-item" th:classappend="${userPageDto.hasNext} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage + 1})}">»</a></li>-->
+<!--        </ul>-->
+<!--      </nav>-->
+    </div>
+
+    <div class="info-box">
+      <h4>💳 결제 내역</h4>
+      <table id="payment-table" class="table table-bordered">
+        <thead class="table-white">
+        <tr>
+          <th>숙소 이름</th>
+          <th>가격</th>
+          <th>결제일</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <!-- 결제 정보가 여기에 동적으로 추가될 것입니다. -->
+        </tbody>
+      </table>
+
+      <nav aria-label="Page navigation" class="page-nav" id="pagination-2">
+
+      </nav>
+    </div>
   </div>
 </main>
+<!--axios-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+  let currentPage1 = 1;
+  let currentPage2 = 1;
+  const pageSize = 5;  // 페이지당 표시할 데이터 수
+  const userId = document.getElementById("userId").value;
+
+  window.onload = function() {
+   filterUsersPayments(); // 페이지 로드 시 결제 내역을 가져옵니다.
+  };
+
+  function filterUsersPayments() {
+
+      // axios를 사용해서 서버로 요청을 보냅니다.
+      axios.get('/api/users/payments', {
+          params: {
+              userId: userId,   // 유저id
+              page: currentPage2,     // 현재 페이지
+              size: pageSize         // 페이지 크기
+          }
+      })
+      .then(response => {
+          const data = response.data;
+
+          renderTable2(data.objects);  // 테이블을 갱신합니다.
+          renderPagination2(data);      // 페이지네이션을 갱신합니다.
+      })
+      .catch(error => {
+          console.error("Error fetching data", error);
+      });
+  }
+
+  // 테이블에 데이터를 렌더링하는 함수
+  function renderTable2(payments) {
+      const tbody = document.querySelector("#payment-table tbody");
+      tbody.innerHTML = "";  // 기존 데이터를 초기화
+
+      payments.forEach(payment => {
+        const date = new Date(payment.createdAt);
+        const formattedDate = date.toLocaleDateString('ko-KR');
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                <td><a href="/admin/payments/${payment.paymentId}">${payment.roomName}</a></td>
+                <td>${payment.amount}</td>
+                <td>${formattedDate}</td>
+          `;
+          tbody.appendChild(row);
+      });
+  }
+
+
+  function renderPagination2(data) {
+  let paginationDiv = document.getElementById("pagination-2");
+  paginationDiv.innerHTML = "";  // 기존 페이지네이션 초기화
+
+  const currentPage = data.currentPage;  // 현재 페이지
+  const totalItems = data.totalItems;    // 전체 유저 수
+  const totalPages = data.totalPages;    // 전체 페이지 수
+  const startPage = data.startPage;      // 페이지 네비게이션 시작 페이지
+  const endPage = data.endPage;          // 페이지 네비게이션 끝 페이지
+  const hasPrev = data.hasPrev;          // 이전 페이지 여부
+  const hasNext = data.hasNext;          // 다음 페이지 여부
+
+  // 페이지 네비게이션을 위한 HTML 시작
+  let paginationHTML = `
+      <ul class="pagination justify-content-center pagination-sm">
+          <!-- 이전 버튼 -->
+          <li class="page-item ${hasPrev ? '' : 'disabled'}">
+              <a class="page-link" href="#" aria-label="Previous" onclick="changePage(${currentPage - 1})">«</a>
+          </li>
+  `;
+
+  // 페이지 번호 버튼들
+  for (let i = startPage; i <= endPage; i++) {
+      paginationHTML += `
+          <li class="page-item ${currentPage === i ? 'active' : ''}">
+              <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+          </li>
+      `;
+  }
+
+  // 다음 버튼
+  paginationHTML += `
+          <li class="page-item ${hasNext ? '' : 'disabled'}">
+              <a class="page-link" href="#" aria-label="Next" onclick="changePage(${currentPage + 1})">»</a>
+          </li>
+      </ul>
+  `;
+
+  // 페이지 네비게이션을 DOM에 삽입
+      paginationDiv.innerHTML = paginationHTML;
+  }
+
+      function changePage(page) {
+
+        // 페이지 변경 로직 (검색어와 페이지 크기, 페이지 번호 등)
+        axios.get('/api/users/payments', {
+            params: {
+                userId: userId,        // 검색어
+                page: page,            // 새 페이지 번호
+                size: pageSize         // 페이지 크기
+            }
+        })
+        .then(response => {
+            const data = response.data;
+            renderTable2(data.objects);  // 유저 목록 렌더링
+            renderPagination2(data);     // 페이지 네비게이션 렌더링
+        })
+        .catch(error => {
+            console.error("페이지를 로드하는 데 실패했습니다:", error);
+        });
+    }
+</script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 package com.minbak.web.users;
 
+import com.minbak.web.payments.PaymentDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -51,4 +51,8 @@ public interface UsersMapper {
     public UserDto findUserByUserId(int userId);
 
     public void updateUserByIdWithoutPassword(UserDto userDto);
+
+    public List<PaymentDto> findUsersPaymentsCompactInfoByLimitAndOffsetAndUserId(int limit, int offset, int userId);
+
+    public int countPaymentsByUserId(int userId);
 }

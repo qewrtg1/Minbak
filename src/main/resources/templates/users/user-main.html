@@ -22,7 +22,7 @@
         .stat-card {
             width: 200px;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
             text-align: center;
             font-size: 18px;
@@ -72,6 +72,9 @@
         #statusChart {
             margin: 0 auto;
         }
+        #userTable{
+            background-color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -118,9 +121,9 @@
             <th>ID</th>
             <th>이름</th>
             <th>이메일</th>
-            <th>생성일</th>
-            <th>활성화</th>
             <th>전화번호</th>
+            <th>활성화</th>
+            <th>생성일</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -129,9 +132,9 @@
             <td th:text="${user.userId}">1</td>
             <td th:text="${user.name}">John Doe</td>
             <td><a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" th:text="${user.email}">johndoe@example.com</a></td>
-            <td th:text="${user.createdAt}">2022-03-15</td>
-            <td th:text="${user.enabled ? 'Active' : 'Inactive'}">Active</td>
             <td th:text="${user.phoneNumber}">Admin</td>
+            <td th:text="${user.enabled ? 'Active' : 'Inactive'}">Active</td>
+            <td th:text="${user.createdAt}">2022-03-15</td>
             <td>
                 <a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" class="btn btn-primary btn-sm">Edit</a>
                 <a href="delete-page.html" class="btn btn-danger btn-sm">Delete</a>
@@ -146,9 +149,9 @@
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${userPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage - 1})}">«</a></li>
             <li class="page-item" th:each="i : ${#numbers.sequence(userPageDto.startPage, userPageDto.endPage)}">
-                <a class="page-link" th:classappend="${userPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/admin/users?page={i}(i=${i})}" th:text="${i}"></a>
+                <a class="page-link" th:classappend="${userPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/admin/users?page={i}(i=${i})}" th:text="${i}">1</a>
             </li>
-            <li th:class="${userPageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage + 1})}">»</a></li>
+            <li class="page-item" th:classappend="${userPageDto.hasNext} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage + 1})}">»</a></li>
         </ul>
     </nav>
 </main>
@@ -263,12 +266,12 @@
             row.innerHTML = `
                 <td>${user.userId}</td>
                 <td>${user.name}</td>
-                <td>${user.email}</td>
-                <td>${user.createdAt}</td>
-                <td>${user.enabled ? 'Active' : 'Inactive'}</td>
+                <td><a href="/admin/users/edit/${user.userId}">${user.email}</a></td>
                 <td>${user.phoneNumber}</td>
+                <td>${user.enabled ? 'Active' : 'Inactive'}</td>
+                <td>${user.createdAt}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm">Edit</button>
+                    <a href="/admin/users/edit/${user.userId}" class="btn btn-primary btn-sm">Edit</a>
                     <button class="btn btn-danger btn-sm">Delete</button>
                 </td>
             `;

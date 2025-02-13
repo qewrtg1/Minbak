@@ -3,12 +3,8 @@ package com.minbak.web.users;
 //import com.minbak.web.spring_security.CustomUserDetails;
 //import com.minbak.web.spring_security.CustomUserDetailsService;
 //import com.minbak.web.spring_security.jwt.JwtUtil;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.minbak.web.payments.PaymentDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.authentication.AuthenticationManager;
 //import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,10 +14,6 @@ import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -131,7 +123,7 @@ public class UsersApiController {
 //    }
 
     @GetMapping("/users")
-    public UserPageDto<UserDto> searchUsers(
+    public UserPageDto<UserResponseDto> searchUsers(
             @RequestParam("search") String search,    // 검색어
             @RequestParam("page") int page,           // 현재 페이지
             @RequestParam("size") int size            // 페이지 크기
@@ -139,6 +131,15 @@ public class UsersApiController {
 
         return usersService.findUsersByLimitAndOffsetAndString(page, size, search);
 
+    }
+
+    @GetMapping("/users/payments")
+    public UserPageDto<PaymentDto> getPaymentByUserPageing(
+            @RequestParam("userId") int userId,    // 검색어
+            @RequestParam("page") int page,           // 현재 페이지
+            @RequestParam("size") int size            // 페이지 크기
+    ){
+        return usersService.findPaymentsByLimitAndOffsetAndUserId(page, size, userId);
     }
 
 }
