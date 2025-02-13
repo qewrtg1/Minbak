@@ -19,13 +19,13 @@
     <select id="findRolesByUserId" resultType="com.minbak.web.users.RoleDto">
         SELECT r.*
         FROM roles r
-        JOIN user_roles ur ON ur.role_id = r.role_id
+        JOIN users_roles ur ON ur.role_id = r.role_id
         WHERE ur.user_id = #{userId}
     </select>
 
     <!-- 사용자 역할 삽입 -->
     <insert id="createUserRoleByUserIdAndRoleId">
-        INSERT INTO user_roles (user_id, role_id)
+        INSERT INTO users_roles (user_id, role_id)
         VALUES (#{userId}, #{roleId})
     </insert>
 
@@ -77,7 +77,7 @@
     <!--해당 role을 가진 유저 가져오기-->
     <select id="countUserRolesByRoleId" resultType="int">
         SELECT COUNT(*)
-        FROM user_roles
+        FROM users_roles
         WHERE role_id = #{roleId}
     </select>
 
