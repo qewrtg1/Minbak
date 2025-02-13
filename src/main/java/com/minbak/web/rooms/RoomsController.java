@@ -24,8 +24,12 @@ public class RoomsController {
     }
 //  숙소 이름을 클릭 했을 때 상세보기
     @GetMapping("/rooms/{room_id}")
-    public String roomsDetail(@PathVariable int room_id, Model model){
-        RoomsDto room = roomsService.selectRoomById(room_id);
+    public String roomsDetail(@PathVariable int roomId, Model model){
+        // 해당 데이터가 없을 때 예외처리
+        RoomsDto room = roomsService.selectRoomById(roomId);
+        if(room == null){
+            throw new RoomException("데이터를 찾을 수 없습니다.");
+        }
         model.addAttribute("room", room);
         return "board/rooms/rooms_detail";
     }
@@ -42,6 +46,9 @@ public class RoomsController {
     @GetMapping("/rooms/edit/{roomId}")
     public String updateRoom(@PathVariable("roomId") int roomId, Model model){
         RoomsDto room = roomsService.selectRoomById(roomId);
+        if (room == null) {
+            throw new RoomException("데이터를 찾을 수 없습니다.");
+        }
         model.addAttribute("room", room);
         return "board/rooms/rooms_edit";
     }
@@ -54,8 +61,12 @@ public class RoomsController {
     // 삭제 버튼 클릭시 삭제
     @PostMapping("/rooms/delete/{roomId}")
     public String deleteRoom(@PathVariable int roomId){
-        roomsService.deleteRoom(roomId);
-        return "redirect:/admin/board/rooms/rooms_list";
+        RoomsDto room = roomsService.selectRoomById(roomId); // 삭제할 방 조회
+        if (room == null) {
+            throw new RoomException("데이터가 이미 삭제 되었거나 찾을 수 없습니다.");
+        }
+        roomsService.deleteRoom(roomId); // 해당 방 삭제
+        return "redirect:/admin/board/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트
     }
 
 }
