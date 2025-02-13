@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.books.BooksMapper">
+    <insert id="insertBook" parameterType="com.minbak.web.books.BooksDto">
+        insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
+        values(#{startDate}, #{endDate}, #{guestNum}, #{request}, #{status}, #{userId}, #{roomId})
+    </insert>
+    <select id="selectBookById" parameterType="Integer" resultType="com.minbak.web.books.BooksDto">
+        select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
+        from books
+        where book_id = #{bookId}
+    </select>
+    <select id="selectBooksByPage" resultType="com.minbak.web.books.BooksDto">
+        select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
+        from books
+        order by book_id
+        limit #{size} offset #{offset}
+    </select>
+    <select id="countTotalBooks" resultType="int">
+        select count(*) from books
+    </select>
+    <select id="selectBooksWithUser" resultType="com.minbak.web.books.BooksDto">
+        select b.book_id, b.start_date, b.end_date, b.guests_num, b.request, b.status,
+        u.user_id as user_id
+        FROM books b
+        LEFT JOIN users u ON b.user_id = u.user_id
+        ORDER BY b.book_id desc
+    </select>
+    <update id="updateBook" parameterType="com.minbak.web.books.BooksDto">
+        update books
+        set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestNum}, request=#{request},
+            status=#{status}, user_id=#{userId}, room_id=#{roomId}
+        where book_id=#{bookId}
+    </update>
+    <delete id="deleteBook" parameterType="Integer">
+        delete from books
+        where book_id=#{bookId}
+    </delete>
+</mapper>

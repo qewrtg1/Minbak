@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 정보 보기</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="main">
+    <header>
+        <h1>예약 정보 리스트</h1>
+        <div class="menu">
+            <a href="/admin/books/save">예약하기</a>
+            <a href="/admin/books">전체 회원</a>
+        </div>
+        <hr>
+    </header>
+    <list>
+        <table>
+            <tr>
+                <th>예약 번호</th>
+                <th>유저 ID</th>
+                <th>체크인 날짜</th>
+                <th>체크아웃 날짜</th>
+                <th>예약인원 수</th>
+                <th>특별 요청사항</th>
+                <th>예약 상태</th>
+            </tr>
+            <tr th:each="books : ${booksPage.books}">
+                <td th:text="${books.bookId}"></td>
+                <td><a th:text="${books.userId}" th:href="@{|/admin/books/${books.bookId}|}"></a></td>
+                <td th:text="${books.startDate}"></td>
+                <td th:text="${books.endDate}"></td>
+                <td th:text="${books.guestNum}"></td>
+                <td th:text="${books.request}"></td>
+                <td th:text="${books.status}"></td>
+            </tr>
+        </table>
+    </list>
+    <footer>
+        <hr>
+        <h3>Copyright &copy; All rights reserved.</h3>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>예약하기</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="main">
+    <header>
+        <h1>예약 정보 리스트</h1>
+        <div class="menu">
+            <a href="/admin/save">예약하기</a>
+            <a href="/admin">전체 회원</a>
+        </div>
+        <hr>
+    </header>
+    <section>
+        <h1>예약하기</h1>
+    </section>
+    <save>
+        <form action="/admin/books" method="post">
+            체크인 날짜: <input type="date" name="startDate"><br>
+            체크아웃 날짜: <input type="date" name="endDate"><br>
+            예약인원 수: <input type="number" name="guestsNum"><br>
+            특별 요청사항: <input type="text" name="request"><br>
+            예약상태: <input type="text" name="status"><br>
+            유저ID: <input type="number" name="userId"><br>
+            숙소ID: <input type="number" name="roomId"><br>
+            <input type="submit" value="작성하기">
+        </form>
+    </save>
+    <footer>
+        <hr>
+        <h3>Copyright &copy; All rights reserved.</h3>
+    </footer>
+</div>
+</body>
+</html>

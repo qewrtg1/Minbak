@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예약정보 상세보기</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="main">
+  <header>
+    <h1>예약 정보 리스트</h1>
+    <div class="menu">
+      <a href="/admin/books/save">예약하기</a>
+      <a href="/admin/books">전체 회원</a>
+    </div>
+    <hr>
+  </header>
+  <section>
+    <table>
+      <tr>
+        <th>예약 번호</th>
+        <td th:text="${books.bookId}"></td>
+      </tr>
+      <tr>
+        <th>체크인 날짜</th>
+        <td th:text="${books.startDate}"></td>
+      </tr>
+      <tr>
+        <th>체크아웃 날짜</th>
+        <td th:text="${books.endDate}"></td>
+      </tr>
+      <tr>
+        <th>예약인원 수</th>
+        <td th:text="${books.guestNum}"></td>
+      </tr>
+      <tr>
+        <th>특별 요청사항</th>
+        <td th:text="${books.request}"></td>
+      </tr>
+      <tr>
+        <th>예약 상태</th>
+        <td th:text="${books.status}"></td>
+      </tr>
+      <tr>
+        <th>유저 ID</th>
+        <td th:text="${books.userId}"></td>
+      </tr>
+      <tr>
+        <th>숙소 ID</th>
+        <td th:text="${books.roomId}"></td>
+      </tr>
+    </table>
+    <button onclick="updateReq()">수정</button>
+    <button onclick="deleteReq()">삭제</button>
+  </section>
+  <footer>
+    <hr>
+    <h3>Copyright &copy; All rights reserved.</h3>
+  </footer>
+</div>
+</body>
+<script th:inline="javascript">
+  const updateReq = () => {
+    location.href = `/update/[[${books.bookId}]]`;
+  }
+  const deleteReq = () => {
+    location.href = `/delete/[[${books.bookId}]]`;
+  }
+</script>
+</html>

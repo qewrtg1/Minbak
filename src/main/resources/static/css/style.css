@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+.main, header, list, table, form {
+  margin: 0 auto;
+}
+
+h1, h3 {
+  text-align: center;
+}
+
+.menu {
+  padding: 10px;
+  border: 1px solid green;
+  background-color: yellow;
+}
+
+form {
+  width: 300px;
+}
+
+a {
+  padding: 10px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px;
+}
+
+table, tr, th, td {
+  border: 1px solid green;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+}
