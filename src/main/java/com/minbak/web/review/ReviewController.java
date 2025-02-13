@@ -15,6 +15,8 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+
+
     @GetMapping
     public String adminReviewPage(Model model){
         // 모든 리뷰 목록을 서비스에서 가져와서 모델에 추가

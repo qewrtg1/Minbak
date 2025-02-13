@@ -1,0 +1,41 @@
+<!-- 리뷰 상세 페이지 (review/detail.html) -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리뷰 상세</title>
+  <style>
+    /* 스타일 생략 (위와 동일) */
+  </style>
+  <script>
+    function loadReviewDetail() {
+      const reviewId = new URLSearchParams(window.location.search).get('id');
+
+      // 서버에서 해당 리뷰의 상세 정보를 가져오는 부분
+      const review = { reviewId: reviewId, userId: 'user1', content: 'Great place!', score: 5 };
+
+      document.getElementById('reviewContent').innerText = review.content;
+      document.getElementById('reviewScore').innerText = `점수: ${review.score}`;
+    }
+
+    window.onload = loadReviewDetail;
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>리뷰 상세</h1>
+  </div>
+
+  <div>
+    <p><strong>작성자:</strong> <span id="reviewUserId">user1</span></p>
+    <p><strong>리뷰 내용:</strong></p>
+    <p id="reviewContent">리뷰 내용 로딩...</p>
+    <p id="reviewScore">점수: 로딩 중...</p>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,3 +1,4 @@
+<!-- 관리자 페이지 (admin.html) -->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
@@ -14,8 +15,8 @@
     }
 
     .container {
-        width: 1200px; /* 페이지 넓이 1200px */
-        margin: 0 auto; /* 가운데 정렬 */
+        width: 1200px;
+        margin: 0 auto;
         padding: 20px;
         background-color: #ffffff;
     }
@@ -102,7 +103,6 @@
     </tr>
     </thead>
     <tbody>
-    <!-- 리뷰 목록 반복 출력 (Thymeleaf 구문 사용) -->
     <tr th:each="review : ${reviews}">
       <td th:text="${review.reviewId}"></td>
       <td th:text="${review.userId}"></td>
