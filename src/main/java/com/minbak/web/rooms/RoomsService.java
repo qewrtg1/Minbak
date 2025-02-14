@@ -14,6 +14,7 @@ public class RoomsService {
     public RoomsPageDto getRooms(int page, int size){
         int offset = (page -1) * size;
         List<RoomsDto> rooms = roomsMapper.selectRoomsWithUser(size,offset);
+
         int totalElements = roomsMapper.countTotalRooms();
         return new RoomsPageDto(page,size,totalElements,rooms);
     }

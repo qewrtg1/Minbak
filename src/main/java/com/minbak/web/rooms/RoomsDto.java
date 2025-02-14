@@ -2,10 +2,11 @@ package com.minbak.web.rooms;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.List;
+
+
+//@AllArgsConstructor
+//@NoArgsConstructor
 @Data
 public class RoomsDto {
     private int roomId;              // 숙소 고유 ID
@@ -16,10 +17,10 @@ public class RoomsDto {
     private String useGuide;    // 숙소 이용 안내
     private double latitude;          // 숙소 위도 y
     private double longitude;         // 숙소 경도 x
-    private Integer user_id;
+    private Integer userId;
     private String userEmail;
 
-
+    private List<ReviewDto> reviews;
 
 
 //    usersDto 받아올 예정

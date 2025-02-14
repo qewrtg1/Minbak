@@ -20,7 +20,7 @@ public class RoomsController {
         RoomsPageDto roomsPage = roomsService.getRooms(page, size);
         model.addAttribute("roomsPage" , roomsPage);
 
-        return "board/rooms/rooms_list";
+        return "rooms/rooms_list";
     }
 //  숙소 이름을 클릭 했을 때 상세보기
     @GetMapping("/rooms/{room_id}")
@@ -31,16 +31,16 @@ public class RoomsController {
             throw new RoomException("데이터를 찾을 수 없습니다.");
         }
         model.addAttribute("room", room);
-        return "board/rooms/rooms_detail";
+        return "rooms/rooms_detail";
     }
 //  목록으로 돌아가기
-    @GetMapping("/board/rooms/rooms_list")
+    @GetMapping("/rooms/rooms_list")
     public String returnList(@RequestParam(name = "page", defaultValue = "1") int page,
                             @RequestParam(name = "size", defaultValue = "10") int size,
                             Model model) {
         RoomsPageDto roomsPage = roomsService.getRooms(page, size);
         model.addAttribute("roomsPage", roomsPage);
-        return "board/rooms/rooms_list";
+        return "rooms/rooms_list";
 }
     // 상세보기 페이지
     @GetMapping("/rooms/edit/{roomId}")
@@ -50,7 +50,7 @@ public class RoomsController {
             throw new RoomException("데이터를 찾을 수 없습니다.");
         }
         model.addAttribute("room", room);
-        return "board/rooms/rooms_edit";
+        return "rooms/rooms_edit";
     }
     // 업데이트 클릭시 상세보기로 리다이렉팅
     @PostMapping("/rooms/update")
@@ -66,7 +66,7 @@ public class RoomsController {
             throw new RoomException("데이터가 이미 삭제 되었거나 찾을 수 없습니다.");
         }
         roomsService.deleteRoom(roomId); // 해당 방 삭제
-        return "redirect:/admin/board/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트
+        return "redirect:/admin/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트
     }
 
 }

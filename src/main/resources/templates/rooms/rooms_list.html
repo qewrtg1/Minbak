@@ -68,18 +68,19 @@
 
             <table>
               <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Content</th>
-                    <th>Address</th>
-                    <th>Price</th>
-                    <th>Use Guide</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <th>user_email</th>
-                </tr>
-                </thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Content</th>
+                <th>Address</th>
+                <th>Price</th>
+                <th>Use Guide</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>User Email</th>
+                <th>Reviews</th>
+              </tr>
+              </thead>
               <tbody>
               <tr th:each="room : ${roomsPage.rooms}">
                 <td th:text="${room.roomId}"></td>
@@ -93,9 +94,15 @@
                 <td th:text="${room.latitude}"></td>
                 <td th:text="${room.longitude}"></td>
                 <td th:text="${room.userEmail}"></td>
+                <td>
+                  <div th:each="review : ${room.reviews}">
+                    <p th:text="'Review: ' + ${review.reviewContent}"></p>
+                    <p th:text="'Rating: ' + ${review.reviewScore}"></p>
+                  </div>
+                </td>
               </tr>
               </tbody>
-          </table>
+            </table>
 
           </div>
         </div>

@@ -16,4 +16,6 @@ public interface RoomsMapper {
     int updateRoom(RoomsDto roomsDto);
     void deleteRoom(int id);
     List<RoomsDto> selectRoomsWithUser(@Param("size") int size, @Param("offset") int offset);
+
+
 }

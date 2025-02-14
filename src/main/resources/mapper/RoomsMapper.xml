@@ -66,31 +66,54 @@
     </select>
 
     <resultMap id="roomsWithUserResultMap" type="com.minbak.web.rooms.RoomsDto">
-        <!-- rooms 테이블의 컬럼들 매핑 -->
         <id property="roomId" column="room_id"/>
         <result property="name" column="name"/>
-        <result property="content" column="content"/>
+        <result property="content" column="aa"/>
         <result property="address" column="address"/>
         <result property="price" column="price"/>
         <result property="useGuide" column="use_guide"/>
         <result property="latitude" column="latitude"/>
         <result property="longitude" column="longitude"/>
 
-        <!-- users 테이블의 컬럼들 매핑 -->
-        <result property="user_id" column="user_id"/>
+        <result property="userId" column="user_id"/>
         <result property="userEmail" column="email"/>
+
+        <collection property="reviews" ofType="com.minbak.web.rooms.ReviewDto">
+            <result property="reviewId" column="review_id"/>
+            <result property="reviewContent" column="reviewContent"/>
+            <result property="reviewScore" column="Score"/>
+        </collection>
     </resultMap>
 
     <!--users id 연결-->
     <select id="selectRoomsWithUser" resultMap="roomsWithUserResultMap">
         SELECT
-        r.room_id, r.name, r.content, r.address, r.price, r.use_guide,
-        r.latitude, r.longitude,
-        u.email AS email
-        FROM rooms r
+        r.room_id,
+        r.name,
+        r.content as aa,
+        r.address,
+        r.content,
+        r.price ,
+        r.use_guide ,
+        r.latitude ,
+        r.longitude ,
+        u.email ,
+        rv.review_id ,
+        rv.content AS reviewContent,
+        rv.score
+        FROM (
+        SELECT room_id
+        FROM rooms
+        where room_id = 1
+
+        ) temp
+        JOIN rooms r ON temp.room_id = r.room_id
         LEFT JOIN users u ON r.user_id = u.user_id
-        ORDER BY r.room_id DESC
-        LIMIT #{size} OFFSET #{offset};
+        LEFT JOIN books b ON r.room_id = b.room_id
+        LEFT JOIN review rv ON b.book_id = rv.book_id
+        ORDER BY r.room_id DESC, rv.review_id DESC
+
+
     </select>
 
 

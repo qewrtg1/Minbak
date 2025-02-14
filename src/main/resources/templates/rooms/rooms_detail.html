@@ -73,7 +73,7 @@
                 </table>
                 <div class="btnWrap">
                     <!-- 현재 페이지와 사이즈를 포함하여 목록 페이지로 돌아가기 -->
-                    <a th:href="@{/admin/board/rooms/rooms_list(page=${page}, size=${size})}" class="btn">목록으로</a>
+                    <a th:href="@{/admin/rooms/rooms_list(page=${page}, size=${size})}" class="btn">목록으로</a>
                 </div>
                 <!-- 수정하기 링크 추가 -->
                 <a th:href="@{/admin/rooms/edit/{roomId}(roomId=${room.roomId})}">수정하기</a>
