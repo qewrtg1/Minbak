@@ -238,7 +238,7 @@
         const searchValue = document.getElementById("userSearch").value;
 
         // axios를 사용해서 서버로 요청을 보냅니다.
-        axios.get('/api/users', {
+        axios.get('/admin/api/users', {
             params: {
                 search: searchValue,   // 검색어
                 page: currentPage,     // 현재 페이지
@@ -326,7 +326,7 @@
         const searchValue = document.getElementById("userSearch").value;
         const currentScrollPosition = window.scrollY; // 현재 스크롤 위치를 저장
         // 페이지 변경 로직 (검색어와 페이지 크기, 페이지 번호 등)
-        axios.get('/api/users', {
+        axios.get('/admin/api/users', {
             params: {
                 search: searchValue,   // 검색어
                 page: page,            // 새 페이지 번호

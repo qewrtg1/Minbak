@@ -1,6 +1,7 @@
 package com.minbak.web.users;
 
 import com.minbak.web.payments.PaymentDto;
+import com.minbak.web.rooms.RoomsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -107,6 +108,17 @@ public class UsersService {
 
         //위 정보로 UserPageDto만들고 리턴
         return new UserPageDto<>(page,size,totalItems,paymentDtos);
+    }
+
+    public UserPageDto<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int page, int size, int userId){
+
+        int offset = (page-1)*size;
+        List<RoomsDto> roomsDtos = usersMapper.findRoomsByLimitAndOffsetAndUserId(size,offset,userId);
+
+        int totalItems = usersMapper.countRoomsByUserId(userId);
+
+        //위 정보로 UserPageDto만들고 리턴
+        return new UserPageDto<>(page,size,totalItems,roomsDtos);
     }
 
 }

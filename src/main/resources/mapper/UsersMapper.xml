@@ -112,6 +112,7 @@
         phone_number = #{phoneNumber},
         enabled = #{enabled}
         WHERE user_id = #{userId}
+
     </update>
 
     <!--해당 유저의 간략 결제 정보 가져오기-->
@@ -129,12 +130,26 @@
         rooms r ON b.room_id = r.room_id
         WHERE
         p.user_id = #{userId}
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <!--해당 유저의 결제 개수-->
     <select id="countPaymentsByUserId">
         SELECT COUNT(*)
         FROM payments
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findRoomsByLimitAndOffsetAndUserId" resultType="com.minbak.web.rooms.RoomsDto">
+        SELECT *
+        FROM rooms
+        WHERE user_id = #{userId}
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countRoomsByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM rooms
         WHERE user_id = #{userId}
     </select>
 </mapper>

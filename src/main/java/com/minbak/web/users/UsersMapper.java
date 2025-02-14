@@ -1,6 +1,7 @@
 package com.minbak.web.users;
 
 import com.minbak.web.payments.PaymentDto;
+import com.minbak.web.rooms.RoomsDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -55,4 +56,8 @@ public interface UsersMapper {
     public List<PaymentDto> findUsersPaymentsCompactInfoByLimitAndOffsetAndUserId(int limit, int offset, int userId);
 
     public int countPaymentsByUserId(int userId);
+
+    public int countRoomsByUserId(int userId);
+
+    public List<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
 }
