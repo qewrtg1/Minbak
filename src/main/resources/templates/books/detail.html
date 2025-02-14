@@ -17,6 +17,9 @@
     <hr>
   </header>
   <section>
+    <h1>예약 정보 상세보기</h1>
+  </section>
+  <section>
     <table>
       <tr>
         <th>예약 번호</th>
@@ -32,7 +35,7 @@
       </tr>
       <tr>
         <th>예약인원 수</th>
-        <td th:text="${books.guestNum}"></td>
+        <td th:text="${books.guestsNum}"></td>
       </tr>
       <tr>
         <th>특별 요청사항</th>
@@ -62,10 +65,10 @@
 </body>
 <script th:inline="javascript">
   const updateReq = () => {
-    location.href = `/update/[[${books.bookId}]]`;
+    location.href = `/admin/books/update/[[${books.bookId}]]`;
   }
   const deleteReq = () => {
-    location.href = `/delete/[[${books.bookId}]]`;
+    location.href = `/admin/books/delete/[[${books.bookId}]]`;
   }
 </script>
 </html>

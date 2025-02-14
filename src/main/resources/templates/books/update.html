@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www/thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>예약 정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="main">
+    <header>
+        <h1>예약 정보 리스트</h1>
+        <div class="menu">
+            <a href="/admin/books/save">예약하기</a>
+            <a href="/admin/books">전체 회원</a>
+        </div>
+        <hr>
+    </header>
+    <section>
+        <h1>예약 수정하기</h1>
+    </section>
+    <form th:action="@{|/admin/books/update/${books.bookId}|}" method="post">
+        체크인 날짜: <input type="date" name="startDate" th:value="${books.startDate}"><br>
+        체크아웃 날짜: <input type="date" name="endDate" th:value="${books.endDate}"><br>
+        예약인원 수: <input type="number" name="guestsNum" th:value="${books.guestsNum}"><br>
+        특별 요청사항: <input type="text" name="request" th:value="${books.request}"><br>
+        예약 상태: <input type="text" name="status" th:value="${books.status}"><br>
+        유저 ID: <input type="number" name="userId" th:value="${books.userId}"><br>
+        숙소 ID: <input type="number" name="roomId" th:value="${books.roomId}"><br>
+        <input type="submit" value="작성하기">
+    </form>
+    <footer>
+        <hr>
+        <h3>Copyright &copy; All rights reserved.</h3>
+    </footer>
+</div>
+</body>
+</html>

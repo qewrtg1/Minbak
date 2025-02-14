@@ -3,7 +3,7 @@
 <mapper namespace="com.minbak.web.books.BooksMapper">
     <insert id="insertBook" parameterType="com.minbak.web.books.BooksDto">
         insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
-        values(#{startDate}, #{endDate}, #{guestNum}, #{request}, #{status}, #{userId}, #{roomId})
+        values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{status}, #{userId}, #{roomId})
     </insert>
     <select id="selectBookById" parameterType="Integer" resultType="com.minbak.web.books.BooksDto">
         select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
@@ -28,7 +28,7 @@
     </select>
     <update id="updateBook" parameterType="com.minbak.web.books.BooksDto">
         update books
-        set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestNum}, request=#{request},
+        set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestsNum}, request=#{request},
             status=#{status}, user_id=#{userId}, room_id=#{roomId}
         where book_id=#{bookId}
     </update>

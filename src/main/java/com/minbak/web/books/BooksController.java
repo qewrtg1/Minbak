@@ -20,18 +20,18 @@ public class BooksController {
                             Model model){
         BooksPageDto booksPage = booksService.getBooks(page, size);
         model.addAttribute("booksPage" , booksPage);
-        return "board/books/list";
+        return "books/list";
     }
 
     @GetMapping("/save")
     public String save() {
-        return "board/books/save";
+        return "books/save";
     }
 
     @PostMapping("/save")
-    public String save(BooksDto booksDto) {
+    public String save(@ModelAttribute BooksDto booksDto) {
         booksService.insertBook(booksDto);
-        return "redirect:/list";
+        return "redirect:/admin/books";
     }
 
     @GetMapping("/{bookId}")
@@ -39,27 +39,27 @@ public class BooksController {
         BooksDto booksDto = booksService.selectBookById(bookId);
         model.addAttribute("books", booksDto);
         System.out.println("booksDto = " + booksDto);
-        return "board/books/detail";
+        return "books/detail";
     }
 
     @GetMapping("/update/{bookId}")
     public String updateBook(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto dto = booksService.selectBookById(bookId);
-        model.addAttribute("dto = " + dto);
-        return "board/books/update";
+        model.addAttribute("books", dto);
+        return "books/update";
     }
 
     @PostMapping("/update/{bookId}")
     public String updateBook(BooksDto booksDto, Model model) {
         booksService.updateBook(booksDto);
         BooksDto dto = booksService.selectBookById(booksDto.getBookId());
-        model.addAttribute("dto = " + dto);
-        return "board/books/detail";
+        model.addAttribute("books", dto);
+        return "books/detail";
     }
 
     @GetMapping("/delete/{bookId}")
     public String deleteBook(@PathVariable("bookId") Integer bookId) {
         booksService.deleteBook(bookId);
-        return "redirect:/list";
+        return "redirect:/admin/books";
     }
 }
