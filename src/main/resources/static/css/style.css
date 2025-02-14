@@ -1,15 +1,26 @@
 @charset "UTF-8";
-
-body {
-  width: 1200px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .main, header, list, table, form {
   margin: 0 auto;
 }
 
+.main {
+  max-width: 1200px;
+  background-color: rgb(241, 241, 241);
+}
+
 h1, h3 {
   text-align: center;
+  justify-content: center;
+}
+
+header h1 {
+    padding: 20px 0;
 }
 
 .menu {
@@ -31,6 +42,10 @@ button {
   padding: 10px;
 }
 
+section button {
+  align-items: center;
+}
+
 table, tr, th, td {
   border: 1px solid green;
   border-collapse: collapse;
@@ -38,4 +53,52 @@ table, tr, th, td {
 
 th, td {
   padding: 10px;
+}
+
+#fsearch {
+    width: 1000px;
+}
+
+.w100 {
+    width: 100px;
+}
+
+.tbl_frm01 th, .tbl_frm01 td {
+ padding: 8px 14px;
+ height: 23px;
+ text-align: left;
+ vertical-align: middle;
+}
+
+.tbl_frm01 th {
+ font-weight: 200;
+}
+
+.tbl_frm01 td label {
+    margin-right: 7px;
+}
+
+.tbl_frm01 td label input {
+    margin-right: 3px;
+}
+
+.sound_only {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+    border: 0;
+    overflow: hidden;
+}
+
+.w80 {
+    width: 80px;
+}
+
+footer h3 {
+    padding: 15px 0;
 }
