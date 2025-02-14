@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+body {
+  width: 1200px;
+}
+
 .main, header, list, table, form {
   margin: 0 auto;
 }
