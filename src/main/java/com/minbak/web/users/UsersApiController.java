@@ -64,10 +64,14 @@ public class UsersApiController {
             String accessToken = jwtUtil.generateAccessToken(username, roles);
             String refreshToken = jwtUtil.generateRefreshToken(username);
 
+
             // HttpOnly(JS로 수정 불가능) 쿠키 설정 (Refresh Token) 바로 클라이언트서버의 쿠키에 저장함
 
             //토큰을 createRefreshCookie메서드(아래정의됨)로 쿠키에 추가
             response.addCookie(createRefreshCookie("refreshToken", refreshToken));
+
+            //발급한 토큰 데이터베이스에 저장
+            usersService.createRefreshTokenData(username,refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
 
             //리턴받은 accessToken을 로컬에 저장하고 api요청시마다 헤더에 요청
             return ResponseEntity.ok(Map.of("accessToken", accessToken));
@@ -99,6 +103,12 @@ public class UsersApiController {
         //Refresh Rotate(리프레시토큰 재발급)
         String newRefreshToken = jwtUtil.generateRefreshToken(username);
         response.addCookie(createRefreshCookie("refreshToken", newRefreshToken));
+
+        //발급한 토큰 데이터베이스에 저장
+        usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
+
+        //발급했던 토큰 데이터 삭제
+        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
         
         //accessToken 전달(클라이언트서버에서 로컬에 저장)
         String newAccessToken = jwtUtil.generateAccessToken(username, roles);
@@ -129,5 +139,6 @@ public class UsersApiController {
 
         return cookie;
     }
+
 
 }

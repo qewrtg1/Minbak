@@ -1,8 +1,11 @@
 package com.minbak.web.users;
 
+import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class UsersService {
@@ -34,5 +37,21 @@ public class UsersService {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
+    }
+
+    public void createRefreshTokenData(String username,String refreshToken, Long expirationMs){
+
+        Date date = new Date(System.currentTimeMillis()+expirationMs);
+
+        RefreshTokenDto refreshTokenDto = new RefreshTokenDto();
+        refreshTokenDto.setUsername(username);
+        refreshTokenDto.setRefreshToken(refreshToken);
+        refreshTokenDto.setExpiration(date.toString());
+
+        usersMapper.createRefreshTokenData(refreshTokenDto);
+    }
+
+    public void deleteRefreshTokenDataByRefreshToken(String refreshToken){
+        usersMapper.deleteRefreshTokenDataByRefreshToken(refreshToken);
     }
 }

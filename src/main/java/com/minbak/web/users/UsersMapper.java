@@ -1,5 +1,6 @@
 package com.minbak.web.users;
 
+import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -24,4 +25,9 @@ public interface UsersMapper {
 
     // 사용자 ID로 역할 조회
     public List<RoleDto> findRolesByUserId(Integer userId);
+
+    //리프레시 토큰 저장
+    public void createRefreshTokenData(RefreshTokenDto RefreshTokenDto);
+
+    public void deleteRefreshTokenDataByRefreshToken(String refreshToken);
 }
