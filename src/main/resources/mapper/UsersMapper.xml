@@ -19,13 +19,13 @@
     <select id="findRolesByUserId" resultType="com.minbak.web.users.RoleDto">
         SELECT r.*
         FROM roles r
-        JOIN user_roles ur ON ur.role_id = r.role_id
+        JOIN users_roles ur ON ur.role_id = r.role_id
         WHERE ur.user_id = #{userId}
     </select>
 
     <!-- 사용자 역할 삽입 -->
     <insert id="createUserRoleByUserIdAndRoleId">
-        INSERT INTO user_roles (user_id, role_id)
+        INSERT INTO users_roles (user_id, role_id)
         VALUES (#{userId}, #{roleId})
     </insert>
 
@@ -49,6 +49,11 @@
         DELETE FROM refresh_tokens WHERE refresh_token = #{refreshToken}
     </delete>
 
+    <select id="checkRefreshTokenIsExpired" resultType="Boolean">
+        SELECT 1 > COUNT(*)
+        FROM refresh_tokens
+        WHERE refresh_token = #{refreshToken}
+    </select>
 </mapper>
 <!--        CREATE TABLE Users (-->
 <!--        id INT AUTO_INCREMENT PRIMARY KEY,-->

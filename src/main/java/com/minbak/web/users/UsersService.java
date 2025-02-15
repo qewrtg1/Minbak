@@ -54,4 +54,8 @@ public class UsersService {
     public void deleteRefreshTokenDataByRefreshToken(String refreshToken){
         usersMapper.deleteRefreshTokenDataByRefreshToken(refreshToken);
     }
+
+    public Boolean checkRefreshTokenIsExpired(String refreshToken){
+        return usersMapper.checkRefreshTokenIsExpired(refreshToken);
+    }
 }

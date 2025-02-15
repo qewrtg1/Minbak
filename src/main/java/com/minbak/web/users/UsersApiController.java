@@ -129,6 +129,33 @@ public class UsersApiController {
         return ResponseEntity.ok("사용자 페이지: " + username);
     }
 
+    @PostMapping("/logout")
+    //로그아웃 구현, 프론트에서 로컬스토리지에 있는 엑세스토큰 삭제해야함.
+    public ResponseEntity<Map<String, String>> userLogout(HttpServletRequest request,HttpServletResponse response){
+
+        String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
+
+        if(refreshToken == null){
+            return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST)
+                    .body(Map.of("message", "로그인된 상태가 아닙니다."));
+        }
+
+        if(usersService.checkRefreshTokenIsExpired(refreshToken)){
+            return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST)
+                    .body(Map.of("message", "이미 로그아웃 되었습니다."));
+        }
+
+        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
+
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+        return ResponseEntity.status(HttpServletResponse.SC_OK)
+                .body(Map.of("message", "로그아웃 되었습니다."));
+    }
+
     private Cookie createRefreshCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);

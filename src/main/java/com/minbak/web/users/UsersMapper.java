@@ -30,4 +30,6 @@ public interface UsersMapper {
     public void createRefreshTokenData(RefreshTokenDto RefreshTokenDto);
 
     public void deleteRefreshTokenDataByRefreshToken(String refreshToken);
+
+    public Boolean checkRefreshTokenIsExpired(String refreshToken);
 }

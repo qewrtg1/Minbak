@@ -89,7 +89,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/refresh", "/api/signup").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //UsernamePasswordAuthenticationFilter 전에 jwtAuthenticationFilter 실행
+                .logout(AbstractHttpConfigurer::disable //로그아웃 비활성화
+                );
 
         return http.build();
     }
