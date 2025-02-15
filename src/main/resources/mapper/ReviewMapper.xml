@@ -13,7 +13,7 @@
     <!-- 리뷰 목록 순서대로 조회 -->
     <select id="findOrderedReview" resultType="com.minbak.web.review.ReviewDto">
         SELECT * FROM review
-        ORDER BY `order` ASC
+        ORDER BY `order` DESC
     </select>
 
     <!-- 리뷰 상세 조회 (특정 리뷰 조회) -->

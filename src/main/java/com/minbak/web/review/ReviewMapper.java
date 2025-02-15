@@ -27,6 +27,6 @@ public interface ReviewMapper {
     void updateReviewOrder(Integer id, int order);
 
     // 특정 리뷰 조회
-    ReviewDto findReviewById(int id);
+    ReviewDto findReviewById(int reviewId);
 
 }

@@ -28,12 +28,14 @@ public class ReviewService {
         return reviewMapper.findReviewById(reviewId);
     }
 
-    // 리뷰 수정 (리뷰의 id를 받아 리뷰의 Dto 객체 생성 후 업데이트)
-    public void updateReview(int id) {
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewId(id);
+    // 리뷰 수정 ()
+    public void updateReview(ReviewDto review) {
+        ReviewDto existingReview = findReviewById(review.getReviewId());
+        if (existingReview == null) {
+            throw new IllegalArgumentException("해당 리뷰가 존재하지 않습니다: " + review.getReviewId());
+        }
 
-        reviewMapper.updateReview(reviewDto);
+        reviewMapper.updateReview(review);
     }
 
     // 리뷰 삭제
