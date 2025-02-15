@@ -11,10 +11,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -87,5 +84,16 @@ public class UsersController {
         }
 
         return "redirect:/";
+    }
+
+    @GetMapping("/clear/refresh")
+    public String clearRefreshTokenData(Model model){
+        try {
+            usersService.deleteExpiredRefreshTokens();
+        }catch (Exception e){
+            model.addAttribute("message","에러남");
+            return null;
+        }
+        return "/spring-security/home";
     }
 }

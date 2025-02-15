@@ -89,6 +89,7 @@ public class UsersApiController {
 
         if (!jwtUtil.validateToken(refreshToken)) {
             //401에러 전달 로그인페이지로 이동시켜야함
+            //로컬데이터에 엑세스토큰삭제해야함
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid Refresh Token"));
         }
 

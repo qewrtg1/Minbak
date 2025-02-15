@@ -3,6 +3,7 @@ package com.minbak.web.users;
 import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Mapper
@@ -32,4 +33,6 @@ public interface UsersMapper {
     public void deleteRefreshTokenDataByRefreshToken(String refreshToken);
 
     public Boolean checkRefreshTokenIsExpired(String refreshToken);
+
+    public void deleteExpiredRefreshTokens(Timestamp timestamp);
 }

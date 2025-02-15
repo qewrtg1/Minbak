@@ -2,6 +2,7 @@ package com.minbak.web.spring_security.jwt;
 
 
 import com.minbak.web.spring_security.CustomUserDetails;
+import com.minbak.web.users.UsersController;
 import com.minbak.web.users.UsersMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -48,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             //jwtToken이 유효하지 않으면 401에러 반환해서 /refresh 메서드 실행
             if (!jwtUtil.validateToken(jwtToken)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Token expired or invalid");
+
                 return;  // 필터 체인 중단
             }
 

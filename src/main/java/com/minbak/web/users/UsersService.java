@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -41,12 +45,15 @@ public class UsersService {
 
     public void createRefreshTokenData(String username,String refreshToken, Long expirationMs){
 
-        Date date = new Date(System.currentTimeMillis()+expirationMs);
+        //현 시간에 expirationMs 값 추가
+        LocalDateTime expirationDate = LocalDateTime.now().plus(Duration.ofMillis(expirationMs));
+
+        Timestamp timestamp = Timestamp.valueOf(expirationDate);
 
         RefreshTokenDto refreshTokenDto = new RefreshTokenDto();
         refreshTokenDto.setUsername(username);
         refreshTokenDto.setRefreshToken(refreshToken);
-        refreshTokenDto.setExpiration(date.toString());
+        refreshTokenDto.setExpiration(timestamp);
 
         usersMapper.createRefreshTokenData(refreshTokenDto);
     }
@@ -57,5 +64,11 @@ public class UsersService {
 
     public Boolean checkRefreshTokenIsExpired(String refreshToken){
         return usersMapper.checkRefreshTokenIsExpired(refreshToken);
+    }
+
+    public void deleteExpiredRefreshTokens(){
+        LocalDateTime now = LocalDateTime.now();
+        Timestamp currentTime = Timestamp.valueOf(now);
+        usersMapper.deleteExpiredRefreshTokens(currentTime);
     }
 }
