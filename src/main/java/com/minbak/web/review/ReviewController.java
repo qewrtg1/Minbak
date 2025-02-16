@@ -35,21 +35,19 @@ public class ReviewController {
     @GetMapping("/update/{id}")
     public String reviewUpdate(@PathVariable("id") int id, Model model){
         ReviewDto review = reviewService.findReviewById(id);
+        if (review == null) {
+            throw new ReviewException("데이터를 찾을 수 없습니다.");
+        }
         model.addAttribute("review", review);
         return "review/review-update";
     }
 
+    // 업데이트 클릭시 상세보기로 리다이렉팅
     @PostMapping("/update")
-    public String updateReview(@ModelAttribute ReviewDto review) {
-        System.out.println("🔍 리뷰 업데이트 요청: " + review); // 디버깅용 로그 추가
-
-        if (review.getReviewId() == null) {
-            throw new IllegalArgumentException("리뷰 ID가 없습니다.");
-        }
-
+    public String updateReview(ReviewDto review) {
         reviewService.updateReview(review);
-        return "redirect:/admin/review/detail/" + review.getReviewId();
-    }
+        return "redirect:/admin/review/" + review.getReviewId();
+        }
 
     @PostMapping("/delete/{id}")
     public String deleteReview(@PathVariable("id") int id, Model model){
