@@ -35,9 +35,9 @@ public class ReviewController {
     @GetMapping("/update/{id}")
     public String reviewUpdate(@PathVariable("id") int id, Model model){
         ReviewDto review = reviewService.findReviewById(id);
-        if (review == null) {
-            throw new ReviewException("데이터를 찾을 수 없습니다.");
-        }
+//        if (review == null) {
+//            throw new ReviewException("데이터를 찾을 수 없습니다.");
+//        }
         model.addAttribute("review", review);
         return "review/review-update";
     }
@@ -46,8 +46,8 @@ public class ReviewController {
     @PostMapping("/update")
     public String updateReview(ReviewDto review) {
         reviewService.updateReview(review);
-        return "redirect:/admin/review/" + review.getReviewId();
-        }
+        return "redirect:/admin/review/detail/" + review.getReviewId();
+    }
 
     @PostMapping("/delete/{id}")
     public String deleteReview(@PathVariable("id") int id, Model model){

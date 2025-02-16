@@ -19,8 +19,8 @@ public class ReviewDto {
     private String content; // 리뷰 내용
     private double score;      // 리뷰 점수
 
-    private LocalDateTime createdAt; // 리뷰 작성 일시
-    private LocalDateTime updatedAt; // 리뷰 수정 일시
+//    private LocalDateTime createdAt; // 리뷰 작성 일시
+//    private LocalDateTime updatedAt; // 리뷰 수정 일시
 
     @Override
     public String toString() {
@@ -30,8 +30,8 @@ public class ReviewDto {
                 ", bookId=" + bookId +
                 ", content='" + content + '\'' +
                 ", score=" + score +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+//                ", createdAt=" + createdAt +
+//                ", updatedAt=" + updatedAt +
                 '}';
     }
 
