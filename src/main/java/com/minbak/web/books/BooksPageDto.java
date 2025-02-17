@@ -27,7 +27,7 @@ public class BooksPageDto {
         this.totalPages = (int) Math.ceil((double) totalElements / size);
 
 //        시작 페이지
-        this.start = ((page -1) / pageGroupSize) * pageGroupSize + 1;
+        this.start = ((page - 1) / pageGroupSize) * pageGroupSize + 1;
 
 //        끝 페이지
         this.end = Math.min(start + pageGroupSize - 1 , totalPages);

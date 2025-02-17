@@ -1,6 +1,5 @@
 @charset "UTF-8";
 * {
-  margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
@@ -11,12 +10,10 @@
 
 .main {
   max-width: 1200px;
-  background-color: rgb(241, 241, 241);
 }
 
 h1, h3 {
   text-align: center;
-  justify-content: center;
 }
 
 header h1 {
@@ -34,7 +31,12 @@ form {
 }
 
 a {
-  padding: 10px;
+  text-decoration: none;
+  color: blue;
+}
+
+a:hover {
+    color: blueviolet;
 }
 
 button {
@@ -56,7 +58,7 @@ th, td {
 }
 
 #fsearch {
-    width: 1000px;
+    width: 100%;
 }
 
 .w100 {
@@ -99,6 +101,54 @@ th, td {
     width: 80px;
 }
 
-footer h3 {
-    padding: 15px 0;
+.btn_confirm {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn_confirm input {
+    padding: 8px 15px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+#btn_srch {
+    background: #333;
+    border: 1px solid #333;
+}
+
+#btn_srch:hover {
+    background: #222;
+    border: 1px solid #222;
+}
+
+#btn_init {
+    background: #999;
+    border: 1px solid #999;
+}
+
+#btn_init:hover {
+    background: #777;
+    border: 1px solid #777;
+}
+
+#blist {
+    margin-top: 50px;
+}
+
+.page_slice {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.page_slice span {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    text-align: center;
 }

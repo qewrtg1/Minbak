@@ -80,10 +80,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="confirmBtn"></div>
+            <div class="btn_confirm">
+                <input type="submit" value="검색" id="btn_srch">
+                <input type="button" value="초기화" id="btn_init">
+            </div>
         </form>
     </div>
-    <section>
+    <section id="blist">
         <h1>예약 리스트</h1>
     </section>
     <list>
@@ -107,6 +110,15 @@
                 <td th:text="${books.status}"></td>
             </tr>
         </table>
+        <div class="page_slice">
+            <a th:href="@{/admin/books(page=${booksPage.start - 1}, size=${booksPage.size})}" th:if="${booksPage.prev}"
+               th:text="이전"></a>
+            <!-- 페이지 번호는 몇 번 반복 -->
+            <span th:each="pageNum : ${#numbers.sequence(booksPage.start, booksPage.end)}">
+              <a th:href="@{/admin/books(page=${pageNum}, size=${booksPage.size})}" th:text="${pageNum}"></a>
+            </span>
+            <a th:href="@{/admin/books(page=${booksPage.end + 1}, size=${booksPage.size})}" th:if="${booksPage.next}" th:text="다음"></a>
+        </div>
     </list>
     <footer>
         <hr>

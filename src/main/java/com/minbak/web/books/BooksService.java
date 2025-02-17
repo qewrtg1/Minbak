@@ -13,7 +13,7 @@ public class BooksService {
 
     public BooksPageDto getBooks(Integer page, Integer size) {
         int offset = (page -1) * size;
-        List<BooksDto> books = booksMapper.selectBooksWithUser(size,offset);
+        List<BooksDto> books = booksMapper.selectBooksByPage(size,offset);
         int totalElements = booksMapper.countTotalBooks();
         return new BooksPageDto(page, size, totalElements, books);
     }

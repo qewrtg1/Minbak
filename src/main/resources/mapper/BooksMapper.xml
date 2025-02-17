@@ -19,13 +19,6 @@
     <select id="countTotalBooks" resultType="int">
         select count(*) from books
     </select>
-    <select id="selectBooksWithUser" resultType="com.minbak.web.books.BooksDto">
-        select b.book_id, b.start_date, b.end_date, b.guests_num, b.request, b.status,
-        u.user_id as user_id
-        FROM books b
-        LEFT JOIN users u ON b.user_id = u.user_id
-        ORDER BY b.book_id desc
-    </select>
     <update id="updateBook" parameterType="com.minbak.web.books.BooksDto">
         update books
         set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestsNum}, request=#{request},
