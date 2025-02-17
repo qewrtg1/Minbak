@@ -20,5 +20,25 @@
         WHERE sender_id = #{user_id} OR receiver_id = #{user_id}
 
     </select>
+    
+    <!--오늘 메세지 목록 뽑아서 카운트로 세기    -->
+    <select id="countMessagesToday" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+        WHERE DATE(sent_at) = CURRENT_DATE
+    </select>
+
+    <!--전체 메세지 목록 뽑아서 카운트로 세기    -->
+    <select id="countAllMessages" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+    </select>
+
+    <select id="findMessagesByLimitAndOffset" resultType="com.minbak.web.messages.MessageDto">
+        select * from message
+        order by sent_at DESC
+        limit #{limit} offset #{offset};
+    </select>
+
 
 </mapper>

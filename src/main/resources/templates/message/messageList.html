@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--타임리프와 타임리프 레이아웃 의존성 추가와 참고할 HTML(board/base/base)설정-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{board/base/base}">
+<head>
+    <meta charset="UTF-8">
+    <title>메세지리스트</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+<!--메세지 리스트-->
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>메시지 ID</th>
+                <th>보낸 사람 ID</th>
+                <th>받은 사람 ID</th>
+                <th>메시지 내용</th>
+                <th>보낸 시간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="message : ${messagePageDto.objects}">
+                <td th:text="${message.messageId}"></td>
+                <td th:text="${message.senderId}"></td>
+                <td th:text="${message.receiverId}"></td>
+                <td th:text="${message.content}"></td>
+                <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+            </tbody>
+        </table>
+<!--페이지네이션-->
+        <nav aria-label="Page navigation" style="display:flex">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${messagePageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/message/list?page={page}(page=${messagePageDto.currentPage} - 1)}">«</a></li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(messagePageDto.startPage, messagePageDto.endPage)}">
+                    <a class="page-link" th:classappend="${messagePageDto.currentPage == i} ? 'active text-white' : ''" th:href="@{/admin/message/list?page={i}(i=${i})}" th:text="${i}"></a>
+                </li>
+                <li th:class="${messagePageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/admin/message/list?page={page}(page=${messagePageDto.currentPage} + 1)}">»</a></li>
+            </ul>
+        </nav>
+    </div>
+</th:block>
+</body>
+</html>
