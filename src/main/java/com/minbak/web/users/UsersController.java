@@ -28,7 +28,7 @@ public class UsersController {
         return "/spring-security/login";
     }
 
-    @GetMapping("/admin")
+    @GetMapping
     public String adminPage() {
         return "/spring-security/admin";
     }

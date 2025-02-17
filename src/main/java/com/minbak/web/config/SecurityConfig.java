@@ -47,6 +47,9 @@ public class SecurityConfig {
                         .permitAll() // 위 경로를 누구나 접근하게 허용
                 )
 
+                //매 인증마다 인증정보를 http헤더에 넣어보내는 설정 비활성화
+                .httpBasic(basic -> basic.disable())
+
                 .logout(auth -> auth
                         .logoutUrl("/logout") //get메서드로 로그아웃 할 수 있게 함
                         .logoutSuccessUrl("/")
