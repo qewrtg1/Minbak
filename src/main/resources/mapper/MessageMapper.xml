@@ -40,5 +40,11 @@
         limit #{limit} offset #{offset};
     </select>
 
+    <delete id="deleteMessage">
+        delete from message
+        where message_id = #{message_id}
+
+    </delete>
+
 
 </mapper>

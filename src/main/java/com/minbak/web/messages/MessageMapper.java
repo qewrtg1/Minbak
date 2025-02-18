@@ -17,9 +17,13 @@ public interface MessageMapper {
 //    오늘자 메세지 개수 조회
     int countMessagesToday();
 
-    //    전체 메세지 개수 조회
+//    전체 메세지 개수 조회
     int countAllMessages();
 
 //    메세지 id순 내림차순 정렬, 페이지네이션 적용
     List<MessageDto> findMessagesByLimitAndOffset(int limit, int offset);
+
+//    메세지 삭제
+    void deleteMessage(int message_id);
+
 }

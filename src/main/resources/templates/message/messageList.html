@@ -11,6 +11,9 @@
 <th:block layout:fragment="content">
 <!--메세지 리스트-->
     <div>
+        <div th:if="${deleteOk != null}">
+            <p th:text="${deleteOk}" style="color:red"></p>
+        </div>
         <table>
             <thead>
             <tr>
@@ -28,6 +31,11 @@
                 <td th:text="${message.receiverId}"></td>
                 <td th:text="${message.content}"></td>
                 <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <form th:action="@{/admin/message/list/delete/{message_id}(message_id=${message.messageId})}" method="get">
+                        <button type="submit">메세지 삭제</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>

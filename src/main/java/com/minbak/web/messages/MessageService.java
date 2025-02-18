@@ -35,4 +35,8 @@ public class MessageService {
         int offset = (page-1)*size;
         return messageMapper.findMessagesByLimitAndOffset(size, offset);
     }
+    // 메세지 삭제
+    public void deleteMessage(int message_id){
+        messageMapper.deleteMessage(message_id);
+    }
 }

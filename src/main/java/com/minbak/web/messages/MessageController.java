@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -57,5 +58,13 @@ public class MessageController {
         model.addAttribute("messagePageDto",messagePageDto);
         return"/message/messageList";
     }
+//    메세지 삭제
+    @GetMapping("/list/delete/{message_id}")
+    public String deleteMessage(@PathVariable("message_id") int message_id,RedirectAttributes redirectAttributes){
+        messageService.deleteMessage(message_id);
+        redirectAttributes.addFlashAttribute("deleteOk","메세지 아이디 "+message_id +" 삭제 완료");
 
+
+        return "redirect:/admin/message/list";
+    }
 }
