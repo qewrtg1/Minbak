@@ -1,37 +1,148 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www/thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org/">
 <head>
-    <meta charset="UTF-8">
-    <title>예약 정보 수정</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books</title> <!-- 🔥타이틀변경🔥 -->
+  <link rel="stylesheet" href="/css/admin-layout.css?v=2">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-<div class="main">
-    <header>
-        <h1>예약 관리</h1>
-        <div class="menu">
-            <a href="/admin/books/save">예약하기</a>
-            <a href="/admin/books">예약 리스트 조회</a>
-        </div>
-        <hr>
-    </header>
-    <section>
-        <h1>예약 수정하기</h1>
+<body class="">
+  <div class="layout-template">
+    <section class="layout-sidebar">
+      <ul class="layout-logoBox">
+        <li>
+          <a href="#" class="layout-logo"> <!-- 🔥경로지정🔥 -->
+            <span class="layout-logoImg"></span>
+            <span class="layout-logoText"></span>
+          </a>
+        </li>
+      </ul>
+      <ul class="layout-sideMenu">
+        <li class=""> <!-- 🔥클래스변경🔥 -->
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon fa-solid fa-chart-simple"></i>
+            <span class="layout-menuText">대시보드</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon fa-solid fa-user-group"></i>
+            <span class="layout-menuText">유저관리</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon fa-solid fa-bed"></i>
+            <span class="layout-menuText">숙소관리</span>
+          </a>
+        </li>
+        <li class="layout-active">
+          <a href="/admin/books">
+            <i class="layout-menuIcon fa-solid fa-calendar-days"></i>
+            <span class="layout-menuText">예약관리</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon fa-solid fa-star-half-stroke"></i>
+            <span class="layout-menuText">리뷰관리</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon fa-solid fa-bullhorn"></i>
+            <span class="layout-menuText">공지사항</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon fa-solid fa-comments"></i>
+            <span class="layout-menuText">메세지</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="layout-sideOption">
+        <li>
+          <a class="layout-sideOptionBtn">
+            <i class="layout-menuIcon layout-option fa-solid fa-gear"></i>
+            <span class="layout-menuText">설정</span>
+          </a>
+        </li>
+        <li>
+          <a href="#"> <!-- 🔥경로지정🔥 -->
+            <i class="layout-menuIcon layout-logout fa-solid fa-power-off"></i>
+            <span class="layout-menuText layout-logout">로그아웃</span>
+          </a>
+        </li>
+      </ul>
     </section>
-    <form th:action="@{|/admin/books/update/${books.bookId}|}" method="post">
-        체크인 날짜: <input type="date" name="startDate" th:value="${books.startDate}"><br>
-        체크아웃 날짜: <input type="date" name="endDate" th:value="${books.endDate}"><br>
-        예약인원 수: <input type="number" name="guestsNum" th:value="${books.guestsNum}"><br>
-        특별 요청사항: <input type="text" name="request" th:value="${books.request}"><br>
-        예약 상태: <input type="text" name="status" th:value="${books.status}"><br>
-        유저 ID: <input type="number" name="userId" th:value="${books.userId}"><br>
-        숙소 ID: <input type="number" name="roomId" th:value="${books.roomId}"><br>
-        <input type="submit" value="작성하기">
-    </form>
-    <footer>
-        <hr>
-        <h3>Copyright &copy; All rights reserved.</h3>
-    </footer>
-</div>
+    <section class="layout-main">
+      <nav class="layout-topbar">
+        <i class="layout-sizeBtn fa-solid fa-bars"></i>
+        <ul class="layout-topNav">
+          <li><a href="/admin/books" class="layout-menuText">예약관리</a></li>
+          <li><a href="/admin/books/update" class="layout-menuText currPath">예약수정</a></li>
+        </ul>
+        <div class="layout-topOption">
+          <i class="layout-themeBtn"></i>
+          <i class="layout-alarmBtn fa-solid fa-bell"></i>
+          <span class="layout-userAvatar"><img src="/css/dummy_img/dummy-avatar.png" alt="userAvatar"></span> <!-- 🔥더미데이터🔥 -->
+        </div>
+      </nav>
+      <h3 class="layout-contentTitle">예약수정</h3>
+      <div class="layout-contentWrap">
+        <div class="layout-content">
+        <!------------ 👇👇👇👇 여기에 컨텐츠 집어넣으면 됨 👇👇👇👇 ------------>
+          <div class="main">
+            <header>
+                <h1>예약 관리</h1>
+                <div class="menu">
+                    <a href="/admin/books/save">예약등록</a>
+                    <a href="/admin/books">예약목록</a>
+                </div>
+            </header>
+            <section>
+                <h1>예약 수정하기</h1>
+            </section>
+            <form th:action="@{|/admin/books/update/${books.bookId}|}" method="post">
+                체크인 날짜: <input type="date" name="startDate" th:value="${books.startDate}"><br>
+                체크아웃 날짜: <input type="date" name="endDate" th:value="${books.endDate}"><br>
+                예약인원 수: <input type="number" name="guestsNum" th:value="${books.guestsNum}"><br>
+                특별 요청사항: <input type="text" name="request" th:value="${books.request}"><br>
+                예약 상태: <input type="text" name="status" th:value="${books.status}"><br>
+                유저 ID: <input type="number" name="userId" th:value="${books.userId}"><br>
+                숙소 ID: <input type="number" name="roomId" th:value="${books.roomId}"><br>
+                <input type="submit" value="작성하기">
+            </form>
+            <footer>
+                <hr>
+                <h3>Copyright &copy; All rights reserved.</h3>
+            </footer>
+          </div>
+        <!------------ 👆👆👆👆 여기에 컨텐츠 집어넣으면 됨 👆👆👆👆 ------------>
+        </div>
+      </div>
+      <div class="layout-sideOptionModal">
+        <a href="#" class="layout-modalText">내 프로필</a> <!-- 🔥경로지정🔥 -->
+        <a href="#" class="layout-modalText">설정</a> <!-- 🔥경로지정🔥 -->
+      </div>
+      <div class="layout-topOptionModal">
+        <a href="#" class="layout-modalText">내 프로필</a> <!-- 🔥경로지정🔥 -->
+        <a href="#" class="layout-modalText">설정</a> <!-- 🔥경로지정🔥 -->
+        <a href="#" class="layout-modalText layout-logout">로그아웃</a> <!-- 🔥경로지정🔥 -->
+      </div>
+      <div class="layout-alarmModal">
+        <a href="#" class="layout-modalText">알람1<i class="layout-alarmCloseBtn fa-solid fa-xmark"></i></a> <!-- 🔥더미데이터🔥 -->
+        <a href="#" class="layout-modalText">알람2<i class="layout-alarmCloseBtn fa-solid fa-xmark"></i></a> <!-- 🔥더미데이터🔥 -->
+        <a href="#" class="layout-modalText">알람3<i class="layout-alarmCloseBtn fa-solid fa-xmark"></i></a> <!-- 🔥더미데이터🔥 -->
+        <a href="#" class="layout-modalText">알람 내용이 겁나 길면 이렇게 됩니다아<i class="layout-alarmCloseBtn fa-solid fa-xmark"></i></a> <!-- 🔥더미데이터🔥 -->
+        <div class="layout-empty">아무런 알람이 없네요!&nbsp;<i class="fa-regular fa-face-grin-wink"></i></div>
+      </div>
+    </section>
+  </div>
+  <script src=""></script> <!-- 🔥경로지정🔥 -->
+  <script src="/js/admin-layout.js"></script>
+  <script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
 </body>
 </html>

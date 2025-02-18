@@ -9,21 +9,22 @@
 }
 
 .main {
-  max-width: 1200px;
+  max-width: 100%;
 }
 
-h1, h3 {
-  text-align: center;
-}
-
-header h1 {
+.main h1, .main h3 {
     padding: 20px 0;
+    text-align: center;
 }
 
 .menu {
   padding: 10px;
-  border: 1px solid green;
-  background-color: yellow;
+  border: 1px solid orange;
+  background-color: var(--orange1);
+}
+
+.menu a {
+    margin-right: 10px;
 }
 
 form {
@@ -115,13 +116,13 @@ th, td {
 }
 
 #btn_srch {
-    background: #333;
-    border: 1px solid #333;
+    background: var(--orange1);
+    border: 1px solid var(--orange1);
 }
 
 #btn_srch:hover {
-    background: #222;
-    border: 1px solid #222;
+    background: orange;
+    border: 1px solid orange;
 }
 
 #btn_init {
