@@ -1,11 +1,13 @@
 package com.minbak.web.users;
 
+import com.minbak.web.spring_security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -52,8 +54,10 @@ public class UsersController {
 
 
     @GetMapping("/my/info")
-    public String myPage(Model model) {
+    public String myPage(Model model,
+                         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        System.out.println(userDetails.getUserId());
         //세션의 현재 사용자 id, 현 프로젝트에서는 email
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
