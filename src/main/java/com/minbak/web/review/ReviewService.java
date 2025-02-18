@@ -23,6 +23,16 @@ public class ReviewService {
         return reviewMapper.findOrderedReview();
     }
 
+    /** 페이지네이션을 적용하여 특정 개수의 리뷰를 조회*/
+    public List<ReviewDto> getReviewsWithPagination(int offset, int limit) {
+        return reviewMapper.findReviewsWithPagination(offset, limit); // MyBatis에서 페이징된 리뷰 가져오기
+    }
+
+    /** 전체 리뷰 개수를 조회*/
+    public int getTotalReviewCount() {
+        return reviewMapper.getTotalReviewCount(); // 총 리뷰 개수 조회
+    }
+
     // 리뷰 상세보기
     public ReviewDto findReviewById(int reviewId) {
         return reviewMapper.findReviewById(reviewId);
@@ -37,6 +47,7 @@ public class ReviewService {
 
         reviewMapper.updateReview(review);
     }
+
 
     // 리뷰 삭제
     public void deleteReview(int id) {

@@ -15,13 +15,18 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    /** 리뷰 목록 페이지 (기본 1페이지, 5개씩 출력) */
     @GetMapping
-    public String adminReviewPage(Model model){
-        // 모든 리뷰 목록을 서비스에서 가져와서 모델에 추가
-        List<ReviewDto> review = reviewService.findAllReview();
-        model.addAttribute("reviews", review);  // "reviews"라는 이름으로 템플릿에 전달
-        return "review/review";  // review.html 파일을 반환
+    public String getReviews(
+            @RequestParam(name="page", defaultValue = "1") int page,  // 현재 페이지 (기본값: 1)
+            @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
+            Model model) {
 
+        List<ReviewDto> review = reviewService.getReviewsWithPagination(page, size); // 리뷰 목록 가져오기
+        int totalReviews = reviewService.getTotalReviewCount(); // 전체 리뷰 개수 조회
+        ReviewPageDto<ReviewDto> reviewPageDto = new ReviewPageDto<>(page,size,totalReviews,review);
+        model.addAttribute("reviewPageDto", reviewPageDto);
+        return "review/review"; // Thymeleaf 리뷰 페이지 반환
     }
 
     @GetMapping("/detail/{id}"  )
@@ -29,7 +34,7 @@ public class ReviewController {
         ReviewDto review = reviewService.findReviewById(id);
         model.addAttribute("review", review); // "reviews" 라는 이름으러 템플릿에 전달
 
-     return  "review/review-detail"; // review.html 파일을 반환
+        return  "review/review-detail"; // review.html 파일을 반환
     }
 
     @GetMapping("/update/{id}")

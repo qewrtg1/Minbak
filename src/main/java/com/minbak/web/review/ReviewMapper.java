@@ -2,6 +2,7 @@ package com.minbak.web.review;
 
 import com.minbak.web.board.categories.BoardCategoryDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,6 +14,12 @@ public interface ReviewMapper {
 
     // 리뷰 순서대로 목록 조회
     List<ReviewDto> findOrderedReview();
+
+    /** 페이지네이션을 적용하여 리뷰 리스트 조회*/
+    List<ReviewDto> findReviewsWithPagination(@Param("offset") int offset, @Param("limit") int limit);
+
+    /** 전체 리뷰 개수 조회*/
+    int getTotalReviewCount();
 
     // 리뷰 추가
     void createReview(ReviewDto reviewDto);
@@ -28,5 +35,6 @@ public interface ReviewMapper {
 
     // 특정 리뷰 조회
     ReviewDto findReviewById(int reviewId);
+
 
 }
