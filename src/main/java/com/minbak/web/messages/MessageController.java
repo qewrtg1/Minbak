@@ -38,6 +38,7 @@ public class MessageController {
     public String userMessagesById(@PathVariable("user_id") int user_id,Model model){
         model.addAttribute("user_id",user_id);
         model.addAttribute("messages", messageService.findMessagesById(user_id)  );
+
     return "/message/userMessageDetail";
     }
 
