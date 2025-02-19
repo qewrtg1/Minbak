@@ -1,0 +1,30 @@
+#accomodation #list {
+  width: 100%;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 5px solid #2E236C;
+  background: #2E236C;
+}
+
+#accomodation #list .listTitle {
+  display: flex;
+  align-items: center;
+  color: #C8ACD6;
+  padding: 0 20px;
+  width: 100%;
+  height: 50px;
+  /* background: white; */
+}
+
+#accomodation #list .listWrap {
+  width: 100%;
+  flex-grow: 1;
+  /* background: ; */
+}
+
+#editForm > * {
+    color: black;
+}

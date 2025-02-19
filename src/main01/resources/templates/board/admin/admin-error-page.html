@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--아이콘 링크-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <style>
+        .container {
+          width: 1000px;
+          margin: 100px auto;
+        }
+        .content-wrapper {
+          display: flex;
+        }
+        .sidebar {
+          width: 200px;
+          background-color: #f8f9fa;
+          padding: 20px;
+        }
+        .main-content {
+          flex-grow: 1;
+          padding: 20px;
+          overflow-y: auto;
+        }
+        .pagination {
+          margin-top: 10px;
+        }
+        .pagination .page-link {
+          color: #6c757d;
+        }
+        .pagination .page-link:hover {
+          color: #495057;
+        }
+        .sidebar h4 {
+          align-items: center;
+        }
+        .category-add-btn {
+          cursor: pointer;
+          font-size: 24px;
+          color: #6c757d;
+        }
+        .category-add-btn:hover {
+          color: #495057;
+        }
+        .btn-primary {
+          margin: 5px;
+        }
+        .btn-danger {
+          margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="content-wrapper">
+        <!-- 왼쪽 사이드바 (관리자 메뉴) -->
+        <div class="sidebar">
+            <h4><a href="/board"><i class="bi bi-house-door"></i></a> 관리자 메뉴</h4>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/board/admin/categories" style="text-decoration:none; color:green;">카테고리 관리</a></li>
+                <li class="list-group-item"><a href="/board/admin/posts" style="text-decoration:none; color:green;">게시글 관리</a></li>
+                <li class="list-group-item"><a href="/board/admin/users" style="text-decoration:none; color:green;">사용자 관리</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="main-content">
+            <h1 th:text="${message}">에러메시지</h1>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
