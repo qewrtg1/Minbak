@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>카테고리 수정</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>카테고리 수정</h1>
+<form th:action="@{/admin/categories/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
+  <!-- 업데이트 시 URL의 id 값으로 해당 카테고리 식별 -->
+  <div>
+    <label for="name">카테고리:</label>
+    <input type="text" id="name" th:field="*{name}" placeholder="Enter category name" required />
+  </div>
+  <div>
+    <button type="submit">수정</button>
+  </div>
+</form>
+<p>
+  <a th:href="@{/admin/categories}">카테고리 목록으로 돌아갑니다</a>
+</p>
+</body>
+</html>
