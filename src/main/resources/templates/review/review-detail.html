@@ -1,130 +1,105 @@
-<!-- 리뷰 상세 페이지 (review/detail.html) -->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>리뷰 상세</title>
-  <style>
-    <style>
-  /* 전체 페이지 스타일 */
-  body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f9fa;
-  }
 
-  /* 컨테이너 */
-  .container {
-      width: 1200px;
+  <!-- 부트스트랩 CSS 추가 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* 전체 페이지 스타일 */
+    .container-fluid {
+      width: 1680px;
       margin: 50px auto;
       padding: 20px;
       background: #ffffff;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 10px;
-  }
+    }
 
-  /* 헤더 스타일 */
-  .header {
+    /* 헤더 스타일 */
+    .header {
       text-align: center;
       margin-bottom: 30px;
       padding: 15px;
       background: #007bff;
       color: white;
       border-radius: 10px;
-  }
+    }
 
-  /* 리뷰 상세 정보 스타일 */
-  .review-detail {
+    /* 리뷰 상세 정보 스타일 */
+    .review-detail {
       padding: 20px;
       background: #f1f1f1;
       border-radius: 8px;
-  }
+    }
 
-  .review-detail p {
+    .review-detail p {
       font-size: 18px;
       margin: 10px 0;
-  }
+    }
 
-  /* 버튼 스타일 */
-  .button-group {
-      text-align: center;
-      margin-top: 20px;
-  }
-
-  .btn {
-      display: inline-block;
-      padding: 10px 20px;
+    /* 버튼 스타일 */
+    .btn-edit, .btn-delete {
       font-size: 16px;
-      border: none;
-      cursor: pointer;
+      padding: 10px 20px;
       border-radius: 5px;
       text-decoration: none;
       transition: 0.3s;
-  }
+    }
 
-  .btn-edit {
+    .btn-edit {
       background: #28a745;
       color: white;
-  }
+    }
 
-  .btn-edit:hover {
+    .btn-edit:hover {
       background: #218838;
-  }
+    }
 
-  .btn-delete {
+    .btn-delete {
       background: #dc3545;
       color: white;
       margin-left: 10px;
-  }
+    }
 
-  .btn-delete:hover {
+    .btn-delete:hover {
       background: #c82333;
-  }
+    }
   </style>
-  </style>
-  <script>
-<!--    function loadReviewDetail() {-->
-<!--      const reviewId = new URLSearchParams(window.location.search).get('id');-->
-
-<!--      // 서버에서 해당 리뷰의 상세 정보를 가져오는 부분-->
-<!--      const review = { reviewId: reviewId, userId: 'user1', content: 'Great place!', score: 5 };-->
-
-<!--      document.getElementById('reviewContent').innerText = review.content;-->
-<!--      document.getElementById('reviewScore').innerText = `점수: ${review.score}`;-->
-<!--    }-->
-
-<!--    window.onload = loadReviewDetail;-->
-  </script>
 </head>
 <body>
 
-<div class="container">
+<div class="container-fluid">
   <div class="header">
     <h1>리뷰 상세</h1>
   </div>
 
-  <div>
+  <!-- 리뷰 상세 내용 -->
+  <div class="review-detail">
     <p><strong>작성자:</strong> <span id="reviewUserId" th:text="${review.email}"></span></p>
     <p><strong>리뷰 내용:</strong></p>
     <p id="reviewContent" th:text="${#strings.replace(review.content, '^[0-9]+', '')}"></p>
-    <p id="reviewScore" th:text="${review.score}"></p>
+    <p><strong>별점:</strong> <span id="reviewScore" th:text="${review.score}"></span></p>
   </div>
 
-<div>
-  <!-- 수정 버튼 -->
-  <a th:href="@{/admin/review/edit/{id}(id=${review.reviewId})}" class="btn btn-edit">수정하기</a>
+  <!-- 수정, 삭제 버튼 그룹 -->
+  <div class="button-group mt-4 text-center">
+    <!-- 수정 버튼 -->
+    <a th:href="@{/admin/review/edit/{id}(id=${review.reviewId})}" class="btn btn-edit">수정하기</a>
 
-  <!-- 삭제 버튼 -->
-  <form th:action="@{/admin/review/delete/{id}(id=${review.reviewId})}" method="post" style="display:inline;">
-    <input type="hidden" name="_method" value="DELETE">
-    <button type="submit" class="btn btn-delete">삭제하기</button>
-  </form>
+    <!-- 삭제 버튼 -->
+    <form th:action="@{/admin/review/delete/{id}(id=${review.reviewId})}" method="post" style="display:inline;">
+      <input type="hidden" name="_method" value="DELETE">
+      <button type="submit" class="btn btn-delete">삭제하기</button>
+    </form>
+  </div>
 </div>
 
-
-</div>
+<!-- 부트스트랩 JS 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

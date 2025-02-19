@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <title>Room Not Found</title>
 </head>
+<style>
+    /* Custom width */
+    .main-content {
+        width: 1680px;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+</style>
 <body>
+<div class="main-content">
 <h1>Error: Room Not Found</h1>
 <p th:text="${errorMessage}"></p>
 <a href="/admin/board/rooms/rooms_list">Back to Room List</a>
+</div>
 </body>
 </html>

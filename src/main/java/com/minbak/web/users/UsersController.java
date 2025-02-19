@@ -146,7 +146,7 @@ public class UsersController {
 
         usersService.deleteUserByUserId(userId);
 
-        return "/users/detail/{id}";
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/users/detail/{id}")

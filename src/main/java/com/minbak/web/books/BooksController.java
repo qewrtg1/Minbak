@@ -30,10 +30,9 @@ public class BooksController {
                               @RequestParam(name="endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                               @RequestParam(name="statusFilter", required = false) String statusFilter,
                               Model model) {
-        int totalItems = booksService.countTotalBooks();
-        List<BooksDto> booksDtoList = booksService.searchBooks(searchType, keyword, dateType, startDate, endDate, statusFilter, page, size);
-        BooksPageDto<BooksDto> booksPageDto = new BooksPageDto<>(page,size,totalItems,booksDtoList);
-        model.addAttribute("booksPage",booksPageDto);
+
+        model.addAttribute("booksPage",booksService.searchBooks(searchType, keyword, dateType, startDate, endDate, statusFilter, page, size));
+
         return "books/list";
     }
 

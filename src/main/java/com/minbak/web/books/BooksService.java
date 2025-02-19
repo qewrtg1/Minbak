@@ -14,18 +14,18 @@ public class BooksService {
     @Autowired
     private BooksMapper booksMapper;
 
-    public BooksPageDto getBooks(Integer page, Integer size) {
+    public BooksPageDto<BooksDto> getBooks(Integer page, Integer size) {
         int offset = (page - 1) * size;
         List<BooksDto> books = booksMapper.selectBooksByPage(size,offset);
         int totalElements = booksMapper.countTotalBooks();
-        return new BooksPageDto(page, size, totalElements, books);
+        return new BooksPageDto<>(page, size, totalElements, books);
     }
 
     public int countTotalBooks(){
         return booksMapper.countTotalBooks();
     }
 
-    public BooksPageDto searchBooks(String searchType, String keyword, String dateType,
+    public BooksPageDto<BooksDto> searchBooks(String searchType, String keyword, String dateType,
                                     LocalDate startDate, LocalDate endDate, String statusFilter,
                                     Integer page, Integer size) {
         int offset = (page - 1) * size;
@@ -38,7 +38,7 @@ public class BooksService {
         }
         List<BooksDto> books = booksMapper.searchBooks(searchType, keyword, dateType, startDate, endDate, statusFilter, size, offset);
         int totalElements = booksMapper.countSearchedBooks(searchType, keyword, dateType, startDate, endDate, statusFilter);
-        return new BooksPageDto(page, size, totalElements, books);
+        return new BooksPageDto<>(page, size, totalElements, books);
     }
 
     public void createBook(BooksDto booksDto) {

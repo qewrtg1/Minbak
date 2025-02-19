@@ -9,79 +9,63 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container-fluid {
-            max-width: 1800px;
+            max-width: 1680px;
             margin: 0 auto;
         }
     </style>
 
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <!-- 사이드바 -->
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar py-3">
-            <div class="position-sticky">
-                <h4 class="text-center">MINBAK</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a href="./admin_dashboard.html" class="nav-link">대시보드</a></li>
-                    <li class="nav-item"><a href="./admin_user.html" class="nav-link">유저관리</a></li>
-                    <li class="nav-item active"><a href="./admin_accommodation.html" class="nav-link">숙소관리</a></li>
-                </ul>
-            </div>
-        </nav>
+    <!-- 본문 내용 -->
+    <main class="col-md-10 ms-sm-auto px-md-4 py-4 container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">숙소 상세보기</h1>
+        </div>
+        <div class="card shadow-sm p-4">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td th:text="${room.name}"></td>
+                </tr>
+                <tr>
+                    <th>Content</th>
+                    <td th:text="${room.content}"></td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td th:text="${room.address}"></td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td th:text="${room.price}"></td>
+                </tr>
+                <tr>
+                    <th>Use Guide</th>
+                    <td th:text="${room.useGuide}"></td>
+                </tr>
+                <tr>
+                    <th>Latitude</th>
+                    <td th:text="${room.latitude}"></td>
+                </tr>
+                <tr>
+                    <th>Longitude</th>
+                    <td th:text="${room.longitude}"></td>
+                </tr>
+                </tbody>
+            </table>
 
-        <!-- 본문 내용 -->
-        <main class="col-md-10 ms-sm-auto px-md-4 py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3">숙소 상세보기</h1>
+            <!-- 버튼들 -->
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/rooms}" class="btn btn-secondary">목록으로</a>
+                <a th:href="@{/admin/rooms/edit/{roomId}(roomId=${room.roomId})}" class="btn btn-primary">수정하기</a>
+                <form th:action="@{/admin/rooms/delete/{roomId}(roomId=${room.roomId})}" method="post" class="d-inline">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">삭제하기</button>
+                </form>
             </div>
-            <div class="card shadow-sm p-4">
-                <table class="table table-striped table-bordered">
-                    <tbody>
-                    <tr>
-                        <th>Name</th>
-                        <td th:text="${room.name}"></td>
-                    </tr>
-                    <tr>
-                        <th>Content</th>
-                        <td th:text="${room.content}"></td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td th:text="${room.address}"></td>
-                    </tr>
-                    <tr>
-                        <th>Price</th>
-                        <td th:text="${room.price}"></td>
-                    </tr>
-                    <tr>
-                        <th>Use Guide</th>
-                        <td th:text="${room.useGuide}"></td>
-                    </tr>
-                    <tr>
-                        <th>Latitude</th>
-                        <td th:text="${room.latitude}"></td>
-                    </tr>
-                    <tr>
-                        <th>Longitude</th>
-                        <td th:text="${room.longitude}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!-- 버튼들 -->
-                <div class="d-flex gap-2">
-                    <a th:href="@{/admin/rooms}" class="btn btn-secondary">목록으로</a>
-                    <a th:href="@{/admin/rooms/edit/{roomId}(roomId=${room.roomId})}" class="btn btn-primary">수정하기</a>
-                    <form th:action="@{/admin/rooms/delete/{roomId}(roomId=${room.roomId})}" method="post" class="d-inline">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-danger">삭제하기</button>
-                    </form>
-                </div>
-            </div>
-        </main>
-    </div>
-</div>
+        </div>
+    </main>
 
 <script src="/js/layout.js"></script>
 <script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
