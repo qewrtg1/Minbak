@@ -17,7 +17,7 @@ public class RoomsController {
     private RoomsService roomsService;
 
 // 리스트
-    @GetMapping("/rooms/list")
+    @GetMapping("/rooms")
     public String roomsList(@RequestParam(name="page", defaultValue = "1") int page,
                              @RequestParam(name="size", defaultValue = "10") int size,
                              Model model){
@@ -38,15 +38,22 @@ public class RoomsController {
 
         return "rooms/rooms_detail";
     }
+
+    @GetMapping("/rooms/rooms_detail/{roomId}")
+    public String getRoomDetail(@PathVariable int roomId, Model model) {
+        RoomsDto room = roomsService.getRoomById(roomId);  // 서비스에서 해당 roomId로 방 정보를 가져옴
+        model.addAttribute("room", room);  // 모델에 방 정보를 담아서 뷰로 전달
+        return "rooms/rooms_detail";  // rooms/detail.html 페이지로 이동
+    }
 //  목록으로 돌아가기
-    @GetMapping("/rooms/rooms_list")
-    public String returnList(@RequestParam(name = "page", defaultValue = "1") int page,
-                            @RequestParam(name = "size", defaultValue = "10") int size,
-                            Model model) {
-        RoomsPageDto roomsPage = roomsService.getRooms(page, size);
-        model.addAttribute("roomsPage", roomsPage);
-        return "rooms/rooms_list";
-}
+//    @GetMapping("/rooms/rooms_list")
+//    public String returnList(@RequestParam(name = "page", defaultValue = "1") int page,
+//                            @RequestParam(name = "size", defaultValue = "10") int size,
+//                            Model model) {
+//        RoomsPageDto roomsPage = roomsService.getRooms(page, size);
+//        model.addAttribute("roomsPage", roomsPage);
+//        return "rooms/rooms_list";
+//}
     // 수정하기 페이지
     @GetMapping("/rooms/edit/{roomId}")
     public String updateRoom(@PathVariable int roomId, Model model){
@@ -64,12 +71,7 @@ public class RoomsController {
         roomsService.updateRoom(roomsDto);
         return "redirect:/admin/rooms/rooms_detail/" + roomId;
     }
-    @GetMapping("/rooms/rooms_detail/{roomId}")
-    public String getRoomDetail(@PathVariable int roomId, Model model) {
-        RoomsDto room = roomsService.getRoomById(roomId);  // 서비스에서 해당 roomId로 방 정보를 가져옴
-        model.addAttribute("room", room);  // 모델에 방 정보를 담아서 뷰로 전달
-        return "rooms/rooms_detail";  // rooms/detail.html 페이지로 이동
-    }
+
     // 삭제 버튼 클릭시 삭제
     @PostMapping("/rooms/delete/{roomId}")
     public String deleteRoom(@PathVariable int roomId){
