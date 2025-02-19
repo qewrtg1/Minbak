@@ -58,22 +58,27 @@ public class RoomsController {
         return "rooms/rooms_edit";
     }
     // 업데이트 클릭시 상세보기로 리다이렉팅
-
-    @PostMapping("/rooms/update")
-    public String updateRoom(RoomsDto room){
-        roomsService.updateRoom(room);
-        return "redirect:/admin/rooms/" + room.getRoomId();
+    @PostMapping("/rooms/update/{roomId}")
+    public String updateRoom(@PathVariable int roomId, RoomsDto roomsDto){
+        roomsDto.setRoomId(roomId);
+        roomsService.updateRoom(roomsDto);
+        return "redirect:/admin/rooms/rooms_detail/" + roomId;
+    }
+    @GetMapping("/rooms/rooms_detail/{roomId}")
+    public String getRoomDetail(@PathVariable int roomId, Model model) {
+        RoomsDto room = roomsService.getRoomById(roomId);  // 서비스에서 해당 roomId로 방 정보를 가져옴
+        model.addAttribute("room", room);  // 모델에 방 정보를 담아서 뷰로 전달
+        return "rooms/rooms_detail";  // rooms/detail.html 페이지로 이동
     }
     // 삭제 버튼 클릭시 삭제
-
-    //@PostMapping("/rooms/delete/{roomId}")
-   // public String deleteRoom(@PathVariable int roomId){
-   //     RoomsDto room = roomsService.selectRoomById(roomId); // 삭제할 방 조회
-    //    if (room == null) {
-   //         throw new RoomException("데이터가 이미 삭제 되었거나 찾을 수 없습니다.");
-   //     }
-   //     roomsService.deleteRoomWithReservation(roomId); // 해당 방 삭제
-   //     return "redirect:/admin/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트
-   // }
+    @PostMapping("/rooms/delete/{roomId}")
+    public String deleteRoom(@PathVariable int roomId){
+        RoomsDto room = roomsService.getRoomById(roomId); // 삭제할 방 조회
+        if (room == null) {
+            throw new RoomException("데이터가 이미 삭제 되었거나 찾을 수 없습니다.");
+        }
+        roomsService.deleteRoom(roomId); // 해당 방 삭제
+        return "redirect:/admin/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트
+    }
 
 }

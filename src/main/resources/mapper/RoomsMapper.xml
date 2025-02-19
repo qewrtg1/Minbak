@@ -38,7 +38,7 @@
     <!-- 방 상세 정보 조회 -->
     <select id="getRoomById" parameterType="int" resultType="com.minbak.web.rooms.dto.RoomsDto">
         SELECT room_id AS roomId,
-        name AS roomName,
+        name,
         content,
         address,
         price,
@@ -52,7 +52,7 @@
     <!-- 방 상세 정보 업데이트 -->
     <update id="updateRoom" parameterType="com.minbak.web.rooms.dto.RoomsDto">
         UPDATE rooms
-        SET name = #{roomName},
+        SET name = #{name},
         content = #{content},
         address = #{address},
         price = #{price},
@@ -61,8 +61,11 @@
         longitude = #{longitude}
         WHERE room_id = #{roomId}
     </update>
-
-
+    <!-- 방 정보 삭제 -->
+    <delete id="deleteRoom" parameterType="int">
+        DELETE FROM rooms
+        WHERE room_id = #{roomId}
+    </delete>
 
 
 
