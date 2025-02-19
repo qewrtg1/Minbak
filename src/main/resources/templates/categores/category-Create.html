@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>카테고리 생성</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>카테고리 생성</h1>
+<form th:action="@{/admin/categories}" th:object="${category}" method="post">
+  <div>
+    <label for="name">카테고리 이름:</label>
+    <input type="text" id="name" th:field="*{name}" placeholder="Enter category name" required />
+  </div>
+  <div>
+    <button type="submit">생성</button>
+  </div>
+</form>
+<p>
+  <a th:href="@{/admin/categories}">카테고리 목록으로 돌아갑니다</a>
+</p>
+</body>
+</html>
