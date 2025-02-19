@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리뷰 목록</title>
+
+  <!--부트스트랩 css 추가-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+    .container {
+        width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+    .stars {
+        color: gold;
+        font-size: 18px;
+    }
+    .btn {
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .btn-detail {
+        background: #007bff;
+        color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>리뷰 목록</h1>
+
+  <table>
+    <thead>
+    <tr>
+      <th>작성자</th>
+      <th>작성 일시</th>
+      <th>리뷰 내용</th>
+      <th>별점</th>
+      <th>관리</th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="review : ${reviewPageDto.objects}">
+      <td th:text="${review.email}"></td>
+      <td th:text="${review.createdAt}"></td>
+      <td th:text="${review.content}"></td>
+      <td>
+        <span class="stars" th:with="stars=${#strings.repeat('★', review.score)}" th:text="${stars}"></span>
+        (<span th:text="${review.score}"></span>/5)
+      </td>
+      <td>
+        <a th:href="@{'/admin/review/detail/' + ${review.reviewId}}" class="btn btn-detail">상세 보기</a>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이징 -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${reviewPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/review?page={page}(page=${ reviewPageDto.currentPage - 1})}">«</a></li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(reviewPageDto.startPage, reviewPageDto.endPage)}">
+        <a class="page-link" th:classappend="${reviewPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/admin/review?page={i}(i=${i})}" th:text="${i}"></a>
+      </li>
+      <li th:class="${reviewPageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/admin/review?page={page}(page=${reviewPageDto.currentPage + 1})}">»</a></li>
+    </ul>
+  </nav>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

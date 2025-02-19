@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>리뷰 수정</title>
+  <link rel="stylesheet" href="/css/style.css"> <!-- 필요시 스타일 추가 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2>리뷰 수정</h2>
+<form th:action="@{/admin/review/edit}" method="post">
+  <input type="hidden" name="reviewId" th:value="${review.reviewId}">
+  <input type="hidden" name="bookId" th:value="${review.bookId}">
+
+  <label>사용자 이름:</label>
+  <input type="text" name="userId" th:value="${review.userId}" readonly>
+
+  <label>별점:</label>
+  <select name="score">
+    <option th:each="i : ${#numbers.sequence(1, 5)}" th:value="${i}" th:text="${i}" th:selected="${review.score == i}"></option>
+  </select>
+
+  <label>리뷰 내용:</label>
+  <textarea name="content" th:text="${review.content}" required></textarea>
+
+  <button type="submit">수정 완료</button>
+  <a href="/admin/review">취소</a>
+</form>
+</body>
+</html>
