@@ -3,7 +3,7 @@ package com.minbak.web.payments;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -16,9 +16,8 @@ public class PaymentDto {
     private String status;
     private String method;
     private String transactionId;
-    private LocalDateTime paidAt;
-    private LocalDateTime createdAt;
+    private Date paidAt;
+    private Date createdAt;
     private String roomName;
-
 
 }
