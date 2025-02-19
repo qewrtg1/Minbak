@@ -60,11 +60,12 @@
       <th>리뷰 내용</th>
       <th>별점</th>
       <th>관리</th>
+
     </tr>
     </thead>
     <tbody>
-    <tr th:each="review : ${reviews}">
-      <td th:text="${review.userId}"></td>
+    <tr th:each="review : ${reviewPageDto.objects}">
+      <td th:text="${review.email}"></td>
       <td th:text="${review.content}"></td>
       <td>
         <span class="stars" th:with="stars=${#strings.repeat('★', review.score)}" th:text="${stars}"></span>
@@ -73,6 +74,7 @@
       <td>
         <a th:href="@{'/admin/review/detail/' + ${review.reviewId}}" class="btn btn-detail">상세 보기</a>
       </td>
+
     </tr>
     </tbody>
   </table>

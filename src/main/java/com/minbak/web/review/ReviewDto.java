@@ -18,30 +18,7 @@ public class ReviewDto {
     private int bookId;     // 리뷰 대상 예약 ID
     private String content; // 리뷰 내용
     private double score;      // 리뷰 점수
-
+    private String email; // users_eamil
 //    private LocalDateTime createdAt; // 리뷰 작성 일시
 //    private LocalDateTime updatedAt; // 리뷰 수정 일시
-
-    // 페이징 관련 추가
-    private int page;           // 현재 페이지 번호
-    private int pageSize;       // 한 페이지 당 리뷰 개수
-    private int totalPages;     // 전체 페이지 수
-    private long totalItems;    // 전체 리뷰 개수
-
-    @Override
-    public String toString() {
-        return "ReviewDto{" +
-                "reviewId=" + reviewId +
-                ", userId=" + userId +
-                ", bookId=" + bookId +
-                ", content='" + content + '\'' +
-                ", score=" + score +
-//                ", createdAt=" + createdAt +
-//                ", updatedAt=" + updatedAt +
-                ", page=" + page +
-                ", pageSize=" + pageSize +
-                ", totalPages=" + totalPages +
-                ", totalItems=" + totalItems + '}';
-    }
-
 }
