@@ -6,6 +6,8 @@ import com.minbak.web.users.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,6 +22,19 @@ public class MessageService {
     // 유저 아이디에 따른 메세지 내용 조회
     public List<MessageDto> findMessagesById(int user_id) {
         return  messageMapper.findMessagesById(user_id);
+    }
+    // 오늘자 메세지 조회
+    MessagePageDto<MessageDto> findMessagesToday(int page, int size){
+
+        //        오늘 메세지 조회
+        LocalDate currentDate = LocalDate.now();
+        Date formattedDate = Date.valueOf(currentDate);
+
+        int offset = (page-1)*size;
+        int totalItems = messageMapper.countMessagesToday();
+        List<MessageDto> messageDtos =messageMapper.findMessagesToday(size, offset,formattedDate);
+        MessagePageDto<MessageDto> messagePageDto = new MessagePageDto<>(page,size,totalItems,messageDtos);
+        return messagePageDto;
     }
     // 오늘자 메세지 개수 조회
     public int countMessagesToday(){

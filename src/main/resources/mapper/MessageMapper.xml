@@ -27,6 +27,13 @@
         FROM message
         WHERE DATE(sent_at) = CURRENT_DATE
     </select>
+    <!--오늘 메세지 조회    -->
+    <select id="findMessagesToday" resultType="com.minbak.web.messages.MessageDto">
+        select * from message
+        where DATE(sent_at) = #{currentDate}
+        order by sent_at DESC
+        limit #{limit} offset #{offset};
+    </select>
 
     <!--전체 메세지 목록 뽑아서 카운트로 세기    -->
     <select id="countAllMessages" resultType="int">

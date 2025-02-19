@@ -11,6 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -57,6 +60,19 @@ public class MessageController {
         MessagePageDto<MessageDto> messagePageDto= messageService.findMessagesByLimitAndOffset(page,size);
         model.addAttribute("messagePageDto",messagePageDto);
         return"/message/messageList";
+    }
+// 오늘자 메세지만 조회
+    @GetMapping("/list/today")
+    public String messageListToday(@RequestParam(name ="page", defaultValue = "1")int page,
+                                   @RequestParam(name ="size", defaultValue = "20")int size
+            ,Model model){
+    //        오늘 메세지 조회
+
+
+        MessagePageDto<MessageDto> messagePageDto=messageService.findMessagesToday(page,size);
+        model.addAttribute("messagePageDto",messagePageDto);
+
+    return "/message/messageList";
     }
 
 //   ------------------------------------메세지 생성 관련-----------------------------------------

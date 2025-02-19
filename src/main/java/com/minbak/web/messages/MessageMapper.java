@@ -4,6 +4,7 @@ package com.minbak.web.messages;
 import com.minbak.web.users.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Date;
 import java.util.List;
 
 @Mapper
@@ -17,7 +18,8 @@ public interface MessageMapper {
 //    유저 이메일에 따른 유저 id 조회
     int findUserIdByEmail(String email);
 
-
+//    오늘자 메세지 조회
+    List<MessageDto> findMessagesToday (int limit, int offset, Date currentDate);
 //    오늘자 메세지 개수 조회
     int countMessagesToday();
 

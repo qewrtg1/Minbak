@@ -14,6 +14,15 @@
         <div th:if="${deleteOk != null}">
             <p th:text="${deleteOk}" style="color:red"></p>
         </div>
+        <div>
+            <a th:href="@{/admin/message/list/today}">오늘 메세지 보기</a>
+            <a href="">일주일 메세지 보기</a>
+            <a href="">한달 메세지 보기</a>
+            <a href="">1년 메세지 보기</a>
+        </div>
+        <div th:if="${currentDate} != null">
+            <p th:text="${currentDate}+' 메세지보기'"></p>
+        </div>
         <table>
             <thead>
             <tr>
