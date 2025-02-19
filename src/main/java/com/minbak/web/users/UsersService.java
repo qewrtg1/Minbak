@@ -42,17 +42,21 @@ public class UsersService {
 
     }
 
-    public List<UserResponseDto> findUsersByLimitAndOffset(int page, int size){
+    public UserPageDto<UserResponseDto> findUsersByLimitAndOffset(int page, int size){
         int offset = (page-1)*size;
         List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffset(size, offset);
         List<UserResponseDto> userResponseDtos = new ArrayList<>();
 
+        //유저 수 가져오기
+        int totalItems = usersMapper.countAllUsers();
+
+        //가져온 유저 정보의 날짜를 String 형식으로 변환
         for (UserDto userDto : userDtos) {
             UserResponseDto userResponseDto = new UserResponseDto(userDto);
             userResponseDtos.add(userResponseDto);
         }
-
-        return userResponseDtos;
+        //pageDto 생성 후 반환
+        return new UserPageDto<>(page,size,totalItems,userResponseDtos);
     }
 
     public UserPageDto<UserResponseDto> findUsersByLimitAndOffsetAndString(int page, int size, String search){
@@ -121,4 +125,7 @@ public class UsersService {
         return new UserPageDto<>(page,size,totalItems,roomsDtos);
     }
 
+    public void deleteUserByUserId(int userId){
+        usersMapper.deleteUserByUserId(userId);
+    }
 }

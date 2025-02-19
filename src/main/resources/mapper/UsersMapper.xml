@@ -140,6 +140,7 @@
         WHERE user_id = #{userId}
     </select>
 
+    <!--유저아이디를 갖고 해당 유저의 룸 페지징데이터 가져오기-->
     <select id="findRoomsByLimitAndOffsetAndUserId" resultType="com.minbak.web.rooms.RoomsDto">
         SELECT *
         FROM rooms
@@ -147,9 +148,17 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!--해당 유저의 방 개수 가져오기-->
     <select id="countRoomsByUserId" resultType="int">
         SELECT COUNT(*)
         FROM rooms
         WHERE user_id = #{userId}
     </select>
+
+    <!-- 사용자 삭제 -->
+    <delete id="deleteUserByUserId" parameterType="int">
+        DELETE FROM users
+        WHERE user_id = #{userId}
+    </delete>
+
 </mapper>

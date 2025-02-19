@@ -96,14 +96,7 @@ public class UsersController {
                                 Model model){
 
         //페이지에 보여줄 유저 정보 가져오기
-        List<UserResponseDto> userResponseDtosDtos = usersService.findUsersByLimitAndOffset(page, size);
-
-        //총 페이지 수 int로 가져오기
-        int totalItems = usersService.countAllUsers();
-
-        //page, size(보여줄 유저 정보 개수), 총 페이지 수, 페이지에 보여줄 유저 정보들
-        //위 네 정보로 PageDto생성
-        UserPageDto<UserResponseDto> userPageDto = new UserPageDto<>(page,size,totalItems,userResponseDtosDtos);
+        UserPageDto<UserResponseDto> userPageDto = usersService.findUsersByLimitAndOffset(page, size);
 
         //호스트 숫자 가져오기
         int allHostNum = usersService.countUserRolesByRoleId(2);
@@ -146,6 +139,22 @@ public class UsersController {
         model.addAttribute("userDto",usersService.findUserByUserId(userDto.getUserId()));
 
         return "/users/edit";
+    }
+
+    @GetMapping("/users/delete/{id}")
+    public String userDelete(@PathVariable("id") int userId){
+
+        usersService.deleteUserByUserId(userId);
+
+        return "/users/detail/{id}";
+    }
+
+    @GetMapping("/users/detail/{id}")
+    public String userDetail(@PathVariable("id") int userId,Model model){
+
+        model.addAttribute("userDto",usersService.findUserByUserId(userId));
+
+        return "/users/user-detail";
     }
 
 }

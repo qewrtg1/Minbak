@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
+//날짜정보를 받아서 string으로 변환하는 코드
 public class UserResponseDto {
     private Integer userId;
     private String name;
