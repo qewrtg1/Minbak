@@ -27,4 +27,8 @@ public interface PaymentsMapper {
 
     // 특정 예약에 대한 결제 정보 조회
     List<PaymentDto> findPaymentsByBookId(int bookId);
+
+    List<PaymentDto> findPaymentsWithLimitAndOffset(int limit, int offset);
+
+    int countPayments();
 }

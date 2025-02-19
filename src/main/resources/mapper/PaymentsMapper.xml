@@ -51,4 +51,19 @@
     FROM payments
     WHERE book_id = #{bookId}
     </select>
+
+    <!-- 결제 정보 페이징 조회 -->
+    <select id="findPaymentsWithLimitAndOffset" resultType="com.minbak.web.payments.PaymentDto">
+        SELECT *
+        FROM payments
+        ORDER BY payment_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 결제 정보 총 개수 조회 -->
+    <select id="countPayments" resultType="int">
+        SELECT COUNT(*)
+        FROM payments
+    </select>
+
 </mapper>

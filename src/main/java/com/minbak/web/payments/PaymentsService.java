@@ -1,5 +1,6 @@
 package com.minbak.web.payments;
 
+import com.minbak.web.common.dto.PageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,4 +46,16 @@ public class PaymentsService {
     public List<PaymentDto> getPaymentsByBookId(int bookId) {
         return paymentsMapper.findPaymentsByBookId(bookId);
     }
+
+    //페이징
+    public PageDto<PaymentDto> findPaymentsWithLimitAndOffset(int page, int size){
+        int offset = (page-1)*size;
+
+        List<PaymentDto> paymentDtos = paymentsMapper.findPaymentsWithLimitAndOffset(size,offset);
+
+        int totalPage = paymentsMapper.countPayments();
+
+        return new PageDto<PaymentDto>(page,size,totalPage,paymentDtos);
+    }
+
 }

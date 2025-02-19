@@ -14,8 +14,12 @@ public class PaymentsController {
 
     // 결제 정보 목록 조회
     @GetMapping
-    public String getAllPayments(Model model) {
-        model.addAttribute("payments", paymentsService.getAllPayments());
+    public String getAllPayments(@RequestParam(name ="page", defaultValue = "1")int page,
+                                 @RequestParam(name ="size", defaultValue = "5")int size,
+                                 Model model) {
+
+        model.addAttribute("pageDto", paymentsService.findPaymentsWithLimitAndOffset(page,size));
+
         return "payments/payment-list";  // payments/paymentList.html로 이동
     }
 
@@ -42,7 +46,7 @@ public class PaymentsController {
 
     // 결제 정보 수정 폼
     @GetMapping("/edit/{paymentId}")
-    public String editPaymentForm(@PathVariable int paymentId, Model model) {
+    public String editPaymentForm(@PathVariable("paymentId") int paymentId, Model model) {
         model.addAttribute("paymentDto", paymentsService.getPaymentById(paymentId));
         return "payments/payment-form";  // payments/paymentForm.html로 이동
     }
