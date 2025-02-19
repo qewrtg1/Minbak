@@ -13,6 +13,10 @@
       <p th:text="${errorMessage}"></p>
     </div>
   </div>
+  <div th:if="${createMessageOk != null}">
+    <p th:text="${createMessageOk}"></p>
+  </div>
+
 <!-- 메세지 생성 -->
   <div>
     <form action="/admin/message/create" method="post" id="createMessageForm">

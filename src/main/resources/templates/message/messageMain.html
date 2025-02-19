@@ -10,10 +10,15 @@
   <p>오늘 발생한 메세지 수 :<span th:text="${countMessagesToday}"></span> 건  </p>
 </div>
 <!--관리자메세지보기-->
-    <button>관리자 메세지보기(미구현)</button>
-<!--유저메세지보기, 클릭시 유저 목록 조회 페이지로-->
+    <button>관리자 메세지보기(미구현,에어비앤비에 기능없음)</button>
+<!--유저별 메세지확인-->
 <div>
-   <a th:href="@{/admin/message/list}">유저메세지보기</a>
+    <a th:href="@{/admin/message/user}">유저별 메세지확인</a>
+</div>
+<!--유저메세지보기, 클릭시 유저 목록 조회 페이지로-->
+
+<div>
+   <a th:href="@{/admin/message/list}">메세지리스트확인</a>
 </div>
 <!--주의 메세지 관리알림: 메세지 내용 부적합, 도배, 매크로 의심 발생 건수-->
 <div>
@@ -21,7 +26,7 @@
 </div>
 <!--중요메세지 저장소-->
 <div>
-    <button>메세지 저장소</button>
+    <button>메세지 저장소(에어비앤비 없는 기능)</button>
 </div>
 </th:block>
 

@@ -30,26 +30,26 @@ public class MessageService {
         return messageMapper.countAllMessages();
     }
     // 메세지 조회 ,페이지네이션
-    public List<MessageDto> findMessagesByLimitAndOffset(int page, int size){
+    public MessagePageDto<MessageDto> findMessagesByLimitAndOffset(int page, int size){
 
         int offset = (page-1)*size;
-        return messageMapper.findMessagesByLimitAndOffset(size, offset);
+        int totalItems = messageMapper.countAllMessages();
+        List<MessageDto> messageDtos =messageMapper.findMessagesByLimitAndOffset(size, offset);
+        MessagePageDto<MessageDto> messagePageDto = new MessagePageDto<>(page,size,totalItems,messageDtos);
+        return messagePageDto;
     }
     // 메세지 삭제
     public void deleteMessage(int message_id){
         messageMapper.deleteMessage(message_id);
     }
-//    메세지 생성
-    public void  createMessage(MessageDto messageDto){
+//    아이디 입력하여 메세지 생성
+    public void  createMessage(String receiverEmail,MessageDto messageDto){
+//        이메일로 id조회해서 바꿈
+        int receiverId=messageMapper.findUserIdByEmail(receiverEmail);
+        messageDto.setReceiverId(receiverId);
+//        샌더 아이디 임시 입력 *수정필요*
+        messageDto.setSenderId(8);
+//        메세지 생성
         messageMapper.createMessage(messageDto);
-//        메세지 sender_id 임시저장 1로 *수정필요*
-        messageDto.setSenderId(1);
-    }
-// 이메일로 유저 찾고 유저id 반환
-    public int getUserIdByEmail(String email) {
-        // 이메일로 유저를 찾고, 유저 ID를 반환하는 로직
-        int userId = messageMapper.findUserIdByEmail(email);
-
-        return userId;
     }
 }

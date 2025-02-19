@@ -20,7 +20,7 @@ public class MessageController {
 
     @Autowired
     MessageService messageService;
-
+//---------------------------------------메세지 조회 관련---------------------------------------------
 //    유저조회
     @GetMapping("/user")
     public String userMessages(Model model){
@@ -53,13 +53,43 @@ public class MessageController {
     @GetMapping("/list")
     public String messagesList(@RequestParam(name ="page", defaultValue = "1")int page,
                                @RequestParam(name ="size", defaultValue = "20")int size,Model model){
-        int totalItems = messageService.countAllMessages();
-        List<MessageDto> messageDtos =messageService.findMessagesByLimitAndOffset(page, size);
-        MessagePageDto<MessageDto> messagePageDto = new MessagePageDto<>(page,size,totalItems,messageDtos);
+
+        MessagePageDto<MessageDto> messagePageDto= messageService.findMessagesByLimitAndOffset(page,size);
         model.addAttribute("messagePageDto",messagePageDto);
         return"/message/messageList";
     }
-//    메세지 삭제
+
+//   ------------------------------------메세지 생성 관련-----------------------------------------
+
+//    메세지 생성페이지
+    @GetMapping("/create")
+    public String createMessage(){
+        return "/message/messageCreate";
+    }
+//    메세지 생성 요청(이메일로 보냄)
+@PostMapping("/create")
+    public String postCreateMessage(@RequestParam String receiverEmail, @ModelAttribute MessageDto messageDto,RedirectAttributes redirectAttributes,BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+
+            model.addAttribute("errorMessage", "백앤드 유효성검사 통과 실패!" );
+
+            return "redirect:/admin/message/create";
+
+        }
+        try {
+        // 서비스에서 메시지 생성
+        messageService.createMessage(receiverEmail, messageDto);
+            redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
+        } catch (Exception e) {
+        model.addAttribute("errorMessage", "메시지 생성 중 오류 발생!");
+        return "redirect:/admin/message/create";
+        }
+
+    return "redirect:/admin/message/create";
+}
+    //---------------------------------------메세지 삭제 관련---------------------------------------------
+    //    메세지 삭제
     @GetMapping("/list/delete/{message_id}")
     public String deleteMessage(@PathVariable("message_id") int message_id,RedirectAttributes redirectAttributes){
         messageService.deleteMessage(message_id);
@@ -68,34 +98,5 @@ public class MessageController {
 
         return "redirect:/admin/message/list";
     }
-//    메세지 생성
-    @GetMapping("/create")
-    public String createMessage(){
-        return "/message/messageCreate";
-    }
-//    메세지 생성 요청
-@PostMapping("/create")
-    public String postCreateMessage(@RequestParam String receiverEmail, @ModelAttribute MessageDto messageDto, BindingResult bindingResult, Model model){
 
-        if(bindingResult.hasErrors()){
-
-            model.addAttribute("errorMessage", "백앤드 유효성검사 통과 실패!" );
-
-            return "redirect:/admin/message/create";
-
-        }else {
-            //메시지 추가
-            int receiverId=messageService.getUserIdByEmail(receiverEmail);
-            messageDto.setReceiverId(receiverId);
-//            샌더 수정필요
-
-            messageDto.setSenderId(8);
-            messageService.createMessage(messageDto);
-
-
-            //추가한 메세지 불러오기(객체참조사용)
-            return "redirect:/admin/message/create";
-        }
-
-    }
 }
