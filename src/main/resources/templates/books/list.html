@@ -93,16 +93,26 @@
       <div class="layout-contentWrap">
         <div class="layout-content">
         <!------------ 👇👇👇👇 여기에 컨텐츠 집어넣으면 됨 👇👇👇👇 ------------>
-        <div class="main">
-          <header>
-            <h1>예약 관리</h1>
+        <div class="books">
+          <div class="booksHead">
+            <h3>예약 관리</h3>
             <div class="menu">
-              <a href="/admin/books/save">예약등록</a>
+              <a href="/admin/books/create">예약등록</a>
               <a href="/admin/books">예약목록</a>
             </div>
-          </header>
+          </div>
           <div class="search">
-            <h1>기본 검색</h1>
+            <h3>기본 검색</h3>
+            <script>
+              function searchBooks() {
+                  let keyword = document.getElementsByName("keyword")[0].value.trim();
+                  if (keyword === "") {
+                      window.location.href = "/admin/books"; // 검색어 없으면 전체 리스트 불러오기
+                  } else {
+                      document.getElementById("fsearch").submit(); // 검색어 있으면 검색 실행
+                  }
+              }
+            </script>
             <form name="fsearch" id="fsearch" method="get">
               <div class="tbl_frm01">
                 <table>
@@ -114,51 +124,72 @@
                   <tr>
                     <th scope="row">검색어</th>
                     <td>
-                      <select>
-                        <option selected>예약번호</option>
-                        <option>회원아이디</option>
-                        <option>주문자명</option>
-                        <option>입금자명</option>
+                      <select name="searchType">
+                        <option value="예약번호">예약번호</option>
+                        <option value="유저 ID">유저 ID</option>
                       </select>
-                      <input>
+                      <input type="text" name="keyword">
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">기간검색</th>
                     <td>
-                      <select>
-                        <option>예약일</option>
-                        <option>입금완료일</option>
-                        <option>체크인</option>
-                        <option>체크아웃</option>
+                      <script>
+                        document.getElementById("fr_date").addEventListener("change", function() {
+                          const startDate = document.getElementById("fr_date").value;
+                          const endDate = document.getElementById("to_date").value;
+                          const dateType = document.querySelector('input[name="dateType"]:checked')?.value;
+
+                          if (dateType === '체크인') {
+                            // 체크인 날짜만 입력되면 종료일(endDate)을 비워둡니다.
+                            if (startDate && !endDate) {
+                              document.getElementById("to_date").value = "";  // 종료일을 빈 값으로 설정
+                            }
+                          }
+                        });
+
+                        // 체크아웃 처리
+                        document.querySelector('input[name="dateType"]').addEventListener("change", function() {
+                          const dateType = document.querySelector('input[name="dateType"]:checked')?.value;
+                          if (dateType === '체크아웃') {
+                            // 체크아웃을 선택한 경우 종료일은 필수
+                            document.getElementById("to_date").required = true;
+                          } else {
+                            document.getElementById("to_date").required = false;
+                          }
+                        });
+                      </script>
+                      <select name="dateType">
+                        <option value="체크인">체크인</option>
+                        <option value="체크아웃">체크아웃</option>
                       </select>
                       <label for="fr_date" class="sound_only">시작일</label>
-                      <input type="text" name="fr_date" value id="fr_date" class="w80" maxlength="10">
+                      <input type="date" name="startDate" value id="fr_date" class="w80" maxlength="10">
                       ~
                       <label for="to_date" class="sound_only">종료일</label>
-                      <input type="text" name="to_date" value id="to_date" class="w80" maxlength="10">
+                      <input type="date" name="endDate" value id="to_date" class="w80" maxlength="10">
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">예약상태</th>
                     <td>
                       <label>
-                        <input type="radio" name="od_status" value checked="checked">전체
+                        <input type="radio" name="statusFilter" value="" checked="checked">전체
                       </label>
                       <label>
-                        <input type="radio" name="od_status" value="1">대기
+                        <input type="radio" name="statusFilter" value="대기">대기
                       </label>
                       <label>
-                        <input type="radio" name="od_status" value="2">완료
+                        <input type="radio" name="statusFilter" value="완료">완료
                       </label>
                       <label>
-                        <input type="radio" name="od_status" value="3">만료
+                        <input type="radio" name="statusFilter" value="만료">만료
                       </label>
                       <label>
-                        <input type="radio" name="od_status" value="4">이용자 취소
+                        <input type="radio" name="statusFilter" value="이용자 취소">이용자 취소
                       </label>
                       <label>
-                        <input type="radio" name="od_status" value="5">숙박업자 취소
+                        <input type="radio" name="statusFilter" value="숙박업자 취소">숙박업자 취소
                       </label>
                     </td>
                   </tr>
@@ -167,13 +198,13 @@
               </div>
               <div class="btn_confirm">
                 <input type="submit" value="검색" id="btn_srch">
-                <input type="button" value="초기화" id="btn_init">
+                <input type="button" value="초기화" id="btn_init" onclick="location.href='/admin/books'">
               </div>
             </form>
           </div>
-          <section id="blist">
-            <h1>예약 리스트</h1>
-          </section>
+          <div id="blist">
+            <h3>예약 리스트</h3>
+          </div>
           <list>
             <table>
               <tr>
@@ -196,20 +227,21 @@
                 <td><a th:href="@{|/admin/books/${books.bookId}|}">상세보기</a></td>
               </tr>
             </table>
-            <div class="page_slice">
-              <a th:href="@{/admin/books(page=${booksPage.start - 1}, size=${booksPage.size})}" th:if="${booksPage.prev}"
-                 th:text="이전"></a>
-              <!-- 페이지 번호는 몇 번 반복 -->
-              <span th:each="pageNum : ${#numbers.sequence(booksPage.start, booksPage.end)}">
-            <a th:href="@{/admin/books(page=${pageNum}, size=${booksPage.size})}" th:text="${pageNum}"></a>
-          </span>
-              <a th:href="@{/admin/books(page=${booksPage.end + 1}, size=${booksPage.size})}" th:if="${booksPage.next}" th:text="다음"></a>
+            <!-- 페이징 -->
+            <div aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${boardPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/board?page={page}(page=${boardPageDto.currentPage - 1})}">«</a></li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(boardPageDto.startPage, boardPageDto.endPage)}">
+                  <a class="page-link" th:classappend="${boardPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/board?page={i}&category={categoryId}(i=${i},categoryId=${categoryId})}" th:text="${i}"></a>
+                </li>
+                <li th:class="${boardPageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/board?page={page}(page=${boardPageDto.currentPage + 1})}">»</a></li>
+              </ul>
             </div>
           </list>
-          <footer>
+          <div class="booksFoot">
             <hr>
-            <h3>Copyright &copy; All rights reserved.</h3>
-          </footer>
+            <h4>Copyright &copy; All rights reserved.</h4>
+          </div>
         </div>
         <!------------ 👆👆👆👆 여기에 컨텐츠 집어넣으면 됨 👆👆👆👆 ------------>
         </div>

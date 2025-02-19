@@ -1,10 +1,16 @@
 package com.minbak.web.books;
 
+import com.minbak.web.board.BoardPageDto;
+import com.minbak.web.board.posts.BoardPostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/books")
@@ -15,22 +21,30 @@ public class BooksController {
     private final BooksService booksService;
 
     @GetMapping
-    public String booksList(@RequestParam(name="page", defaultValue = "1") int page,
-                            @RequestParam(name="size", defaultValue = "10") int size,
-                            Model model){
-        BooksPageDto booksPage = booksService.getBooks(page, size);
-        model.addAttribute("booksPage" , booksPage);
+    public String searchBooks(@RequestParam(name="page", defaultValue = "1") int page,
+                              @RequestParam(name="size", defaultValue = "10") int size,
+                              @RequestParam(name="searchType", required = false) String searchType,
+                              @RequestParam(name="keyword", required = false) String keyword,
+                              @RequestParam(name="dateType", required = false) String dateType,
+                              @RequestParam(name="startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                              @RequestParam(name="endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                              @RequestParam(name="statusFilter", required = false) String statusFilter,
+                              Model model) {
+        int totalItems = booksService.countTotalBooks();
+        List<BooksDto> booksDtoList = booksService.searchBooks(searchType, keyword, dateType, startDate, endDate, statusFilter, page, size);
+        BooksPageDto<BooksDto> booksPageDto = new BooksPageDto<>(page,size,totalItems,booksDtoList);
+        model.addAttribute("booksPage",booksPageDto);
         return "books/list";
     }
 
-    @GetMapping("/save")
-    public String save() {
-        return "books/save";
+    @GetMapping("/create")
+    public String create() {
+        return "books/create";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute BooksDto booksDto) {
-        booksService.insertBook(booksDto);
+    @PostMapping("/create")
+    public String create(@ModelAttribute BooksDto booksDto) {
+        booksService.createBook(booksDto);
         return "redirect:/admin/books";
     }
 
@@ -42,16 +56,16 @@ public class BooksController {
         return "books/detail";
     }
 
-    @GetMapping("/update/{bookId}")
-    public String updateBook(@PathVariable("bookId") Integer bookId, Model model) {
+    @GetMapping("/edit/{bookId}")
+    public String editBook(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto dto = booksService.selectBookById(bookId);
         model.addAttribute("books", dto);
-        return "books/update";
+        return "books/edit";
     }
 
-    @PostMapping("/update/{bookId}")
-    public String updateBook(BooksDto booksDto, Model model) {
-        booksService.updateBook(booksDto);
+    @PostMapping("/edit/{bookId}")
+    public String editBook(BooksDto booksDto, Model model) {
+        booksService.editBook(booksDto);
         BooksDto dto = booksService.selectBookById(booksDto.getBookId());
         model.addAttribute("books", dto);
         return "books/detail";

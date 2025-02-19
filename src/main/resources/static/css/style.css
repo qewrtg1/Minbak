@@ -4,15 +4,15 @@
   box-sizing: border-box;
 }
 
-.main, header, list, table, form {
+.books, .booksHead, list, table, form {
   margin: 0 auto;
 }
 
-.main {
+.books {
   max-width: 100%;
 }
 
-.main h1, .main h3 {
+.books h3, .booksFoot h4 {
     padding: 20px 0;
     text-align: center;
 }
@@ -137,19 +137,4 @@ th, td {
 
 #blist {
     margin-top: 50px;
-}
-
-.page_slice {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 10px;
-    align-items: center;
-}
-
-.page_slice span {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ccc;
-    text-align: center;
 }

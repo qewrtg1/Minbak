@@ -82,7 +82,7 @@
         <i class="layout-sizeBtn fa-solid fa-bars"></i>
         <ul class="layout-topNav">
           <li><a href="/admin/books" class="layout-menuText">예약관리</a></li>
-          <li><a href="/admin/books/save" class="layout-menuText currPath">예약등록</a></li>
+          <li><a href="/admin/books/update" class="layout-menuText currPath">예약수정</a></li>
         </ul>
         <div class="layout-topOption">
           <i class="layout-themeBtn"></i>
@@ -90,37 +90,35 @@
           <span class="layout-userAvatar"><img src="/css/dummy_img/dummy-avatar.png" alt="userAvatar"></span> <!-- 🔥더미데이터🔥 -->
         </div>
       </nav>
-      <h3 class="layout-contentTitle">예약 상세보기</h3>
+      <h3 class="layout-contentTitle">예약수정</h3>
       <div class="layout-contentWrap">
         <div class="layout-content">
         <!------------ 👇👇👇👇 여기에 컨텐츠 집어넣으면 됨 👇👇👇👇 ------------>
-          <div class="main">
-            <header>
-              <h1>예약 관리</h1>
-              <div class="menu">
-                <a href="/admin/books/save">예약등록</a>
-                <a href="/admin/books">예약목록</a>
-              </div>
-            </header>
-            <section>
-              <h1>예약등록</h1>
-            </section>
-            <save>
-              <form th:action="@{/admin/books/save}" method="post">
-                체크인 날짜: <input type="date" name="startDate"><br>
-                체크아웃 날짜: <input type="date" name="endDate"><br>
-                예약인원 수: <input type="number" name="guestsNum"><br>
-                특별 요청사항: <input type="text" name="request"><br>
-                예약상태: <input type="text" name="status"><br>
-                유저ID: <input type="number" name="userId"><br>
-                숙소ID: <input type="number" name="roomId"><br>
+          <div class="books">
+            <div class="booksHead">
+                <h3>예약 관리</h3>
+                <div class="menu">
+                    <a href="/admin/books/create">예약등록</a>
+                    <a href="/admin/books">예약목록</a>
+                </div>
+            </div>
+            <div class="booksSec">
+                <h3>예약 수정하기</h3>
+            </div>
+            <form th:action="@{|/admin/books/edit/${books.bookId}|}" method="post">
+                체크인 날짜: <input type="date" name="startDate" th:value="${books.startDate}"><br>
+                체크아웃 날짜: <input type="date" name="endDate" th:value="${books.endDate}"><br>
+                예약인원 수: <input type="number" name="guestsNum" th:value="${books.guestsNum}"><br>
+                특별 요청사항: <input type="text" name="request" th:value="${books.request}"><br>
+                예약 상태: <input type="text" name="status" th:value="${books.status}"><br>
+                유저 ID: <input type="number" name="userId" th:value="${books.userId}"><br>
+                숙소 ID: <input type="number" name="roomId" th:value="${books.roomId}"><br>
                 <input type="submit" value="작성하기">
-              </form>
-            </save>
-            <footer>
-              <hr>
-              <h3>Copyright &copy; All rights reserved.</h3>
-            </footer>
+            </form>
+            <div class="booksFoot">
+                <hr>
+                <h4>Copyright &copy; All rights reserved.</h4>
+            </div>
           </div>
         <!------------ 👆👆👆👆 여기에 컨텐츠 집어넣으면 됨 👆👆👆👆 ------------>
         </div>

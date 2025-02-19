@@ -94,17 +94,17 @@
       <div class="layout-contentWrap">
         <div class="layout-content">
         <!------------ 👇👇👇👇 여기에 컨텐츠 집어넣으면 됨 👇👇👇👇 ------------>
-          <div class="main">
-            <header>
-              <h1>예약 관리</h1>
+          <div class="books">
+            <div class="booksHead">
+              <h3>예약 관리</h3>
               <div class="menu">
-                <a href="/admin/books/save">예약등록</a>
+                <a href="/admin/books/create">예약등록</a>
                 <a href="/admin/books">예약목록</a>
               </div>
-            </header>
-            <section>
-              <h1>예약 정보 상세보기</h1>
-            </section>
+            </div>
+            <div class="booksSec">
+              <h3>예약 정보 상세보기</h3>
+            </div>
             <section>
               <table>
                 <tr>
@@ -140,13 +140,13 @@
                   <td th:text="${books.roomId}"></td>
                 </tr>
               </table>
-              <button onclick="updateReq()">수정</button>
+              <button onclick="editReq()">수정</button>
               <button onclick="deleteReq()">삭제</button>
             </section>
-            <footer>
+            <div class="booksFoot">
               <hr>
-              <h3>Copyright &copy; All rights reserved.</h3>
-            </footer>
+              <h4>Copyright &copy; All rights reserved.</h4>
+            </div>
           </div>
         <!------------ 👆👆👆👆 여기에 컨텐츠 집어넣으면 됨 👆👆👆👆 ------------>
         </div>
@@ -170,8 +170,8 @@
     </section>
   </div>
   <script th:inline="javascript">
-    const updateReq = () => {
-      location.href = `/admin/books/update/[[${books.bookId}]]`;
+    const editReq = () => {
+      location.href = `/admin/books/edit/[[${books.bookId}]]`;
     }
     const deleteReq = () => {
       location.href = `/admin/books/delete/[[${books.bookId}]]`;

@@ -1,30 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.books.BooksMapper">
-    <insert id="insertBook" parameterType="com.minbak.web.books.BooksDto">
+    <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
         insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
         values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{status}, #{userId}, #{roomId})
     </insert>
+
     <select id="selectBookById" parameterType="Integer" resultType="com.minbak.web.books.BooksDto">
         select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
         from books
         where book_id = #{bookId}
     </select>
+
     <select id="selectBooksByPage" resultType="com.minbak.web.books.BooksDto">
         select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
         from books
         order by book_id
         limit #{size} offset #{offset}
     </select>
+
+    <select id="searchBooks" resultType="com.minbak.web.books.BooksDto">
+        SELECT * FROM books
+        WHERE 1=1
+        <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+            <choose>
+                <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
+                <when test="searchType == '유저 ID'"> AND user_id = #{keyword} </when>
+            </choose>
+        </if>
+        <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
+            <choose>
+                <when test="dateType == '체크인'"> AND (start_date >= #{startDate}) AND (#{startDate} >= start_date) </when>
+                <when test="dateType == '체크아웃'"> AND (end_date >= #{endDate}) AND (#{endDate} >= end_date) </when>
+            </choose>
+        </if>
+        <if test="statusFilter != null and statusFilter != ''">
+            AND status = #{statusFilter}
+        </if>
+        ORDER BY book_id
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countSearchedBooks" resultType="int">
+        SELECT COUNT(*) FROM books
+        WHERE 1=1
+        <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+            <choose>
+                <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
+                <when test="searchType == '회원아이디'"> AND user_id = #{keyword} </when>
+            </choose>
+        </if>
+        <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
+            <choose>
+                <when test="dateType == '체크인'"> AND (start_date >= #{startDate}) AND (#{startDate} >= start_date) </when>
+                <when test="dateType == '체크아웃'"> AND (end_date >= #{endDate}) AND (#{endDate} >= end_date) </when>
+            </choose>
+        </if>
+        <if test="statusFilter != null and statusFilter != ''">
+            AND status = #{statusFilter}
+        </if>
+    </select>
+
     <select id="countTotalBooks" resultType="int">
         select count(*) from books
     </select>
-    <update id="updateBook" parameterType="com.minbak.web.books.BooksDto">
+
+    <update id="editBook" parameterType="com.minbak.web.books.BooksDto">
         update books
         set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestsNum}, request=#{request},
-            status=#{status}, user_id=#{userId}, room_id=#{roomId}
+        status=#{status}
         where book_id=#{bookId}
     </update>
+
     <delete id="deleteBook" parameterType="Integer">
         delete from books
         where book_id=#{bookId}
