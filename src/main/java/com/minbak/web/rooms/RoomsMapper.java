@@ -19,7 +19,7 @@ public interface RoomsMapper {
     RoomsDto getRoomById(int roomId);
     // 수정 기능
     void updateRoom(RoomsDto roomsDto);
-
+    void deleteRoom(int roomId);
     //void insertRoom (RoomsDto roomsDto);
     //RoomsDto selectRoomById(int id);
     //RoomsDto selectRoomByIdWithUser(int roomId);

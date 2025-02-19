@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class RoomsDto {
     private Integer roomId;
-    private String roomName;
+    private String name;
     private String content;
     private String address;
     private double price;

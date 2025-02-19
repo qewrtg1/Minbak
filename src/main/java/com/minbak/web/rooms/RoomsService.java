@@ -11,9 +11,13 @@ import java.util.List;
 @Service
 public class RoomsService {
     @Autowired
-    private RoomsMapper roomsMapper;
+    private final RoomsMapper roomsMapper;
 
-//    목록 페이징
+    public RoomsService(RoomsMapper roomsMapper) {
+        this.roomsMapper = roomsMapper;
+    }
+
+    //    목록 페이징
     public RoomsPageDto getRooms(int page, int size){
         int offset = (page -1) * size;
         int totalElements = roomsMapper.selectTotalRoomsCount();
@@ -34,7 +38,9 @@ public class RoomsService {
         roomsMapper.updateRoom(roomsDto);
     }
     // 삭제 기능
-
+    public void deleteRoom(int roomId){
+        roomsMapper.deleteRoom(roomId);
+    }
 
 
 
