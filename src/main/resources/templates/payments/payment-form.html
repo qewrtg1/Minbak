@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>결제 정보</title>
+</head>
+<body>
+<h1 th:text="${paymentDto.paymentId == null ? '결제 추가' : '결제 수정'}"></h1>
+
+<form th:action="@{/payments/create}" th:object="${paymentDto}" method="post">
+  <div>
+    <label for="userId">회원 ID:</label>
+    <input type="text" id="userId" name="userId" />
+  </div>
+  <div>
+    <label for="bookId">예약 ID:</label>
+    <input type="text" id="bookId" name="bookId" />
+  </div>
+  <div>
+    <label for="amount">금액:</label>
+    <input type="text" id="amount" name="amount" />
+  </div>
+  <div>
+    <label for="status">상태:</label>
+    <input type="text" id="status" name="status" />
+  </div>
+  <div>
+    <label for="method">결제 방법:</label>
+    <input type="text" id="method" name="method" />
+  </div>
+  <div>
+    <label for="transactionId">트랜잭션 ID:</label>
+    <input type="text" id="transactionId" name="transactionId" />
+  </div>
+  <div>
+    <label for="paidAt">결제 완료 시간:</label>
+    <input type="datetime-local" id="paidAt" name="paidAt" />
+  </div>
+  <div>
+    <button type="submit">저장</button>
+  </div>
+</form>
+
+<a href="/admin/payments">목록으로 돌아가기</a>
+</body>
+</html>

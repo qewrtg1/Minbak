@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>결제 목록</title>
+</head>
+<body>
+<h1>결제 목록</h1>
+<table>
+  <thead>
+  <tr>
+    <th>결제 ID</th>
+    <th>회원 ID</th>
+    <th>예약 ID</th>
+    <th>금액</th>
+    <th>상태</th>
+    <th>결제 방법</th>
+    <th>결제 완료 시간</th>
+    <th>작업</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="payment : ${payments}">
+    <td th:text="${payment.paymentId}"></td>
+    <td th:text="${payment.userId}"></td>
+    <td th:text="${payment.bookId}"></td>
+    <td th:text="${payment.amount}"></td>
+    <td th:text="${payment.status}"></td>
+    <td th:text="${payment.method}"></td>
+    <td th:text="${payment.paidAt}"></td>
+    <td>
+      <!-- 수정, 삭제 링크 추가 -->
+      <a th:href="@{admin/payments/edit/{paymentId}(paymentId=${payment.paymentId})}">수정</a> |
+      <a th:href="@{admin/payments/delete/{paymentId}(paymentId=${payment.paymentId})}">삭제</a> |
+      <!-- 결제 상세보기 링크 추가 -->
+      <a th:href="@{/admin/payments/{paymentId}(paymentId=${payment.paymentId})}">상세보기</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<a href="/admin/payments/new">새 결제 추가</a>
+</body>
+</html>
