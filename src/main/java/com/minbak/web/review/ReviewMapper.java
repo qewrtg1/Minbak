@@ -25,13 +25,13 @@ public interface ReviewMapper {
     void createReview(ReviewDto reviewDto);
 
     // 리뷰 수정
-    void updateReview(ReviewDto review);
+    void editReview(ReviewDto review);
 
     // 리뷰 삭제
     void deleteReview(int id);
 
     //리뷰 id랑 리뷰 order 받아서 리뷰 순서 업데이트
-    void updateReviewOrder(Integer id, int order);
+    void editReviewOrder(Integer id, int order);
 
     // 특정 리뷰 조회
     ReviewDto findReviewById(int reviewId);

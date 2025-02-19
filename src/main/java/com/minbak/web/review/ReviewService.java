@@ -40,13 +40,13 @@ public class ReviewService {
     }
 
     // 리뷰 수정 ()
-    public void updateReview(ReviewDto review) {
+    public void editReview(ReviewDto review) {
         ReviewDto existingReview = reviewMapper.findReviewById(review.getReviewId());
         if (existingReview == null) {
             throw new IllegalArgumentException("해당 리뷰가 존재하지 않습니다: " + review.getReviewId());
         }
 
-        reviewMapper.updateReview(review);
+        reviewMapper.editReview(review);
     }
 
 

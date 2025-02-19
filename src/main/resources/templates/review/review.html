@@ -57,15 +57,18 @@
     <thead>
     <tr>
       <th>작성자</th>
+      <th>작성 일시</th>
       <th>리뷰 내용</th>
       <th>별점</th>
       <th>관리</th>
+
 
     </tr>
     </thead>
     <tbody>
     <tr th:each="review : ${reviewPageDto.objects}">
       <td th:text="${review.email}"></td>
+      <td th:text="${review.createdAt}"></td>
       <td th:text="${review.content}"></td>
       <td>
         <span class="stars" th:with="stars=${#strings.repeat('★', review.score)}" th:text="${stars}"></span>

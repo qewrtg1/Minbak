@@ -8,7 +8,7 @@
 </head>
 <body>
 <h2>리뷰 수정</h2>
-<form th:action="@{/admin/review/update}" method="post">
+<form th:action="@{/admin/review/edit}" method="post">
   <input type="hidden" name="reviewId" th:value="${review.reviewId}">
   <input type="hidden" name="bookId" th:value="${review.bookId}">
 
