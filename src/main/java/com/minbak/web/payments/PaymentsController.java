@@ -24,7 +24,7 @@ public class PaymentsController {
     }
 
     // 결제 정보 조회
-    @GetMapping("/{paymentId}")
+    @GetMapping("/detail/{paymentId}")
     public String getPaymentById(@PathVariable int paymentId, Model model) {
         model.addAttribute("payment", paymentsService.getPaymentById(paymentId));
         return "payments/payment-detail";  // payments/paymentDetail.html로 이동
