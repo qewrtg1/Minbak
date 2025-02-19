@@ -85,11 +85,11 @@
   <!-- 페이징 -->
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
-      <li class="page-item" th:classappend="${reviewPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/review?page={page}(page=${ reviewPageDto.currentPage - 1})}">«</a></li>
+      <li class="page-item" th:classappend="${reviewPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/review?page={page}(page=${ reviewPageDto.currentPage - 1})}">«</a></li>
       <li class="page-item" th:each="i : ${#numbers.sequence(reviewPageDto.startPage, reviewPageDto.endPage)}">
-        <a class="page-link" th:classappend="${reviewPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/review?page={i}(i=${i})}" th:text="${i}"></a>
+        <a class="page-link" th:classappend="${reviewPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/admin/review?page={i}(i=${i})}" th:text="${i}"></a>
       </li>
-      <li th:class="${reviewPageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/review  ?page={page}(page=${reviewPageDto.currentPage + 1})}">»</a></li>
+      <li th:class="${reviewPageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/admin/review?page={page}(page=${reviewPageDto.currentPage + 1})}">»</a></li>
     </ul>
   </nav>
 

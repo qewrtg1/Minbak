@@ -22,7 +22,7 @@ public class ReviewController {
             @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
             Model model) {
 
-        List<ReviewDto> review = reviewService.getReviewsWithPagination(page, size); // 리뷰 목록 가져오기
+        List<ReviewDto> review = reviewService.getReviewsWithPagination(page*5-size, size); // 리뷰 목록 가져오기
         int totalReviews = reviewService.getTotalReviewCount(); // 전체 리뷰 개수 조회
         ReviewPageDto<ReviewDto> reviewPageDto = new ReviewPageDto<>(page,size,totalReviews,review);
         model.addAttribute("reviewPageDto", reviewPageDto);

@@ -18,7 +18,6 @@ public class ReviewService {
         return reviewMapper.findAllReview();
     }
 
-
     //모든 리뷰 순서대로 가져오기
     public List<ReviewDto> findOrderedReview() {
         return reviewMapper.findOrderedReview();
