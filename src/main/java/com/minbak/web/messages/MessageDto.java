@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class MessageDto {
 
-    private int messageId;
+    private Integer messageId;
     private int senderId;
     private int receiverId;
     private String content;

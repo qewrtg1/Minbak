@@ -39,4 +39,17 @@ public class MessageService {
     public void deleteMessage(int message_id){
         messageMapper.deleteMessage(message_id);
     }
+//    메세지 생성
+    public void  createMessage(MessageDto messageDto){
+        messageMapper.createMessage(messageDto);
+//        메세지 sender_id 임시저장 1로 *수정필요*
+        messageDto.setSenderId(1);
+    }
+// 이메일로 유저 찾고 유저id 반환
+    public int getUserIdByEmail(String email) {
+        // 이메일로 유저를 찾고, 유저 ID를 반환하는 로직
+        int userId = messageMapper.findUserIdByEmail(email);
+
+        return userId;
+    }
 }

@@ -2,13 +2,13 @@ package com.minbak.web.messages;
 
 
 import com.minbak.web.users.UserDto;
+import jakarta.validation.Valid;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -67,5 +67,35 @@ public class MessageController {
 
 
         return "redirect:/admin/message/list";
+    }
+//    메세지 생성
+    @GetMapping("/create")
+    public String createMessage(){
+        return "/message/messageCreate";
+    }
+//    메세지 생성 요청
+@PostMapping("/create")
+    public String postCreateMessage(@RequestParam String receiverEmail, @ModelAttribute MessageDto messageDto, BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+
+            model.addAttribute("errorMessage", "백앤드 유효성검사 통과 실패!" );
+
+            return "redirect:/admin/message/create";
+
+        }else {
+            //메시지 추가
+            int receiverId=messageService.getUserIdByEmail(receiverEmail);
+            messageDto.setReceiverId(receiverId);
+//            샌더 수정필요
+
+            messageDto.setSenderId(8);
+            messageService.createMessage(messageDto);
+
+
+            //추가한 메세지 불러오기(객체참조사용)
+            return "redirect:/admin/message/create";
+        }
+
     }
 }
