@@ -31,8 +31,6 @@
   box-sizing: border-box;
 }
 
-a,span {
-  text-decoration: none !important;
 }
 
 li {
@@ -248,7 +246,6 @@ body {
 }
 
 .layout-topNav {
-  margin: 0 !important;
   flex-grow: 1;
   height: 50px;
   display: flex;
@@ -329,7 +326,6 @@ body {
   line-height: 72px;
   padding-left: 20px;
   font-size: 28px;
-  margin: 0 !important;
 }
 
 .layout-contentTitle::after {
@@ -494,151 +490,3 @@ body {
   display: flex;
 }
 
-/* ===========================
-   다크모드
-=========================== */
-
-body.dark {
-  background: var(--darkBG);
-}
-
-body.dark .layout-menuText,
-body.dark .layout-menuIcon,
-body.dark .layout-sizeBtn,
-body.dark .layout-alarmBtn,
-body.dark .layout-contentTitle {
-  color: var(--dark4);
-}
-
-body.dark .layout-sidebar .layout-sideMenu li.layout-active * {
-  color: var(--orange1);
-}
-
-body.dark .layout-sidebar .layout-sideMenu li:hover * {
-  color: var(--orange1);
-  transition: color 0.3s;
-}
-
-body.dark .layout-template,
-body.dark .layout-sidebar .layout-sideMenu li *,
-body.dark .layout-sidebar .layout-sideOption li * {
-  background: var(--dark1);
-}
-
-body.dark .layout-userAvatar {
-  background: var(--dark4);
-  border: 2px solid var(--dark4);
-}
-
-body.dark .layout-sidebar .layout-sideMenu li.layout-active,
-body.dark .layout-contentWrap,
-body.dark .layout-contentTitle {
-  background: var(--dark2);
-}
-
-body.dark .layout-sidebar .layout-sideMenu li.layout-active::after {
-  box-shadow: 15px 15px 0 var(--dark2);
-}
-
-body.dark .layout-sidebar .layout-sideMenu li.layout-active::before {
-  box-shadow: 15px -15px 0 var(--dark2);
-}
-
-body.dark .layout-contentTitle::after {
-  box-shadow: -15px -15px 0 var(--dark1);
-}
-
-body.dark .layout-sideOptionModal,
-body.dark .layout-topOptionModal,
-body.dark .layout-alarmModal {
-  background: var(--dark1);
-  border: 1px solid var(--dark2);
-}
-
-body.dark .layout-modalText {
-  position: relative;
-  color: var(--dark4);
-  transition: background 0.5s;
-}
-
-body.dark .layout-modalText:hover {
-  background: var(--dark2);
-}
-
-body.dark, body.dark * {
-  visibility: visible;
-}
-
-/* ===========================
-   라이트모드
-=========================== */
-
-body.light {
-  background: white;
-}
-
-body.light .layout-menuText,
-body.light .layout-menuIcon,
-body.light .layout-sizeBtn,
-body.light .layout-alarmBtn,
-body.light .layout-contentTitle {
-  color: var(--dark1);
-}
-
-body.light .layout-sidebar .layout-sideMenu li.layout-active * {
-  color: var(--orange1);
-}
-
-body.light .layout-sidebar .layout-sideMenu li:hover * {
-  color: var(--orange1);
-  transition: color 0.3s;
-}
-
-body.light .layout-template,
-body.light .layout-sidebar .layout-sideMenu li *,
-body.light .layout-sidebar .layout-sideOption li * {
-  background: white;
-}
-
-body.light .layout-userAvatar {
-  background: var(--dark4);
-  border: 2px solid var(--dark4);
-}
-
-body.light .layout-sidebar .layout-sideMenu li.layout-active,
-body.light .layout-contentWrap,
-body.light .layout-contentTitle {
-  background: var(--light3);
-}
-
-body.light .layout-sidebar .layout-sideMenu li.layout-active::after {
-  box-shadow: 15px 15px 0 var(--light3);
-}
-
-body.light .layout-sidebar .layout-sideMenu li.layout-active::before {
-  box-shadow: 15px -15px 0 var(--light3);
-}
-
-body.light .layout-contentTitle::after {
-  box-shadow: -15px -15px 0 white;
-}
-
-body.light .layout-sideOptionModal,
-body.light .layout-topOptionModal,
-body.light .layout-alarmModal {
-  background: white;
-  border: 1px solid var(--light2);
-}
-
-body.light .layout-modalText {
-  color: var(--dark1);
-  transition: background 0.5s;
-}
-
-body.light .layout-modalText:hover {
-  background: var(--light3);
-}
-
-body.light, body.light * {
-  visibility: visible;
-}

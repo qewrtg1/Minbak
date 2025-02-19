@@ -1,0 +1,140 @@
+@charset "UTF-8";
+* {
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.books, .booksHead, list, table, form {
+  margin: 0 auto;
+}
+
+.books {
+  max-width: 100%;
+}
+
+.books h3, .booksFoot h4 {
+    padding: 20px 0;
+    text-align: center;
+}
+
+.menu {
+  padding: 10px;
+  border: 1px solid orange;
+  background-color: var(--orange1);
+}
+
+.menu a {
+    margin-right: 10px;
+}
+
+form {
+  width: 300px;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+a:hover {
+    color: blueviolet;
+}
+
+button {
+  margin: 10px;
+  padding: 10px;
+}
+
+section button {
+  align-items: center;
+}
+
+table, tr, th, td {
+  border: 1px solid green;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+}
+
+#fsearch {
+    width: 100%;
+}
+
+.w100 {
+    width: 100px;
+}
+
+.tbl_frm01 th, .tbl_frm01 td {
+ padding: 8px 14px;
+ height: 23px;
+ text-align: left;
+ vertical-align: middle;
+}
+
+.tbl_frm01 th {
+ font-weight: 200;
+}
+
+.tbl_frm01 td label {
+    margin-right: 7px;
+}
+
+.tbl_frm01 td label input {
+    margin-right: 3px;
+}
+
+.sound_only {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+    border: 0;
+    overflow: hidden;
+}
+
+.w80 {
+    width: 80px;
+}
+
+.btn_confirm {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn_confirm input {
+    padding: 8px 15px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+#btn_srch {
+    background: var(--orange1);
+    border: 1px solid var(--orange1);
+}
+
+#btn_srch:hover {
+    background: orange;
+    border: 1px solid orange;
+}
+
+#btn_init {
+    background: #999;
+    border: 1px solid #999;
+}
+
+#btn_init:hover {
+    background: #777;
+    border: 1px solid #777;
+}
+
+#blist {
+    margin-top: 50px;
+}
