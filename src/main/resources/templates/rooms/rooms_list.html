@@ -1,117 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>accomodation</title>
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/accommodation.css">
+  <title>숙소 관리</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div id="template">
 
-    <section id="sidebar">
-      <a href="./admin_dashboard.html" class="logo">
-        <span class="logoImg">로고</span>
-        <span class="logoText sidebarText">&nbspMINBAK</span>
-      </a>
-      <ul class="sidebarMenu">
-        <li class="">
-          <a href="./admin_dashboard.html">
-            <i class="menuIcons fa-solid fa-table-columns"></i>
-            <span class="sidebarText">대시보드</span>
-          </a>
-        </li>
-        <li class="">
-          <a href="./admin_user.html">
-            <i class="menuIcons fa-solid fa-users"></i>
-            <span class="sidebarText">유저관리</span>
-          </a>
-        </li>
-        <li class="active">
-          <a href="./admin_accommodation.html">
-            <i class="menuIcons fa-solid fa-person-shelter"></i>
-            <span class="sidebarText">숙소관리</span>
-          </a>
-        </li>
-      </ul>
-      <ul class="sidebarOption">
-        <li>
-          <a href="#">
-            <i class="menuIcons fa-solid fa-gear"></i>
-            <span class="sidebarText">옵션</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="signOut">
-            <i class="menuIcons fa-solid fa-power-off"></i>
-            <span class="sidebarText">로그아웃</span>
-          </a>
-        </li>
-      </ul>
-    </section>
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="bg-dark text-white p-3 vh-100" style="width: 250px;">
+    <a href="./admin_dashboard.html" class="text-white text-decoration-none d-flex align-items-center mb-3">
+      <span class="fs-4 fw-bold">MINBAK</span>
+    </a>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a href="./admin_dashboard.html" class="nav-link text-white"><i class="fa-solid fa-table-columns me-2"></i>대시보드</a>
+      </li>
+      <li class="nav-item">
+        <a href="./admin_user.html" class="nav-link text-white"><i class="fa-solid fa-users me-2"></i>유저관리</a>
+      </li>
+      <li class="nav-item">
+        <a href="./admin_accommodation.html" class="nav-link text-white active bg-secondary"><i class="fa-solid fa-person-shelter me-2"></i>숙소관리</a>
+      </li>
+    </ul>
+    <hr>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a href="#" class="nav-link text-white"><i class="fa-solid fa-gear me-2"></i>옵션</a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link text-danger"><i class="fa-solid fa-power-off me-2"></i>로그아웃</a>
+      </li>
+    </ul>
+  </nav>
 
-    <section id="content">
-      <div class="topbar">
-        <i class="barBtn fa-solid fa-bars"></i>
-        <form action="">
-          <input class="topSearchBox" type="text">
-          <button class="topSearchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </form>
+  <!-- Content -->
+  <div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="fw-bold">숙소 관리</h1>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="검색" aria-label="검색">
+        <button class="btn btn-outline-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+    </div>
+
+    <!-- 숙소 목록 -->
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">숙소 목록</h3>
       </div>
-      <div id="accomodation" class="contentBox">
-        <h1 class="contentTitle">숙소 관리</h1>
-        <!-- ↓↓↓↓↓↓↓↓↓↓ 여기에 컨텐츠 집어넣으면 됨 ↓↓↓↓↓↓↓↓↓↓ -->
-        <div id="list">
-          <h3 class="listTitle">숙소 목록</h3>
-          <div class="listWrap">
-
-            <table>
-              <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Content</th>
-                <th>Address</th>
-                <th>Price</th>
-                <th>Use Guide</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>User Email</th>
-                <th>Reviews</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="room : ${roomsPage.rooms}">
-                <td th:text="${room.roomId}"></td>
-                <td>
-                  <a th:href="@{/admin/rooms/{room_id}(room_id=${room.roomId})}" th:text="${room.name}"></a>
-                </td>
-                <td th:text="${room.content}"></td>
-                <td th:text="${room.address}"></td>
-                <td th:text="${room.price}"></td>
-                <td th:text="${room.useGuide}"></td>
-                <td th:text="${room.latitude}"></td>
-                <td th:text="${room.longitude}"></td>
-                <td th:text="${room.userEmail}"></td>
-                <td>
-                  <div th:each="review : ${room.reviews}">
-                    <p th:text="'Review: ' + ${review.reviewContent}"></p>
-                    <p th:text="'Rating: ' + ${review.reviewScore}"></p>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-
-          </div>
-        </div>
-        <!-- ↑↑↑↑↑↑↑↑↑↑ 여기에 컨텐츠 집어넣으면 됨 ↑↑↑↑↑↑↑↑↑↑ -->
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead class="table-dark">
+          <tr>
+            <th scope="col">Name</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="room : ${roomsPage.rooms}">
+            <td>
+              <a th:href="@{/admin/rooms/detail/{room_id}(room_id=${room.roomId})}" th:text="${room.name}" class="text-decoration-none"></a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-    </section>
+    </div>
 
   </div>
-  <script src="/js/layout.js"></script>
-  <script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

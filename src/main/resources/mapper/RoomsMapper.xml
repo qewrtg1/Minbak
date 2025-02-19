@@ -3,125 +3,70 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.rooms.RoomsMapper">
-    <!-- INSERT -->
-    <insert id="insertRoom" parameterType="com.minbak.web.rooms.RoomsDto">
-        INSERT INTO `rooms` (`name`, `content`, `address`, `price`, `use_guide`)
-        VALUES (#{name}, #{content}, #{address}, #{price}, #{useGuide});
-    </insert>
 
-    <!-- UPDATE -->
-    <update id="updateRoom" parameterType="com.minbak.web.rooms.RoomsDto">
-        UPDATE `rooms` r
-        LEFT JOIN `users` u ON r.user_id = u.user_id
-        SET
-        r.name = #{name},
-        r.content = #{content},
-        r.address = #{address},
-        r.price = #{price},
-        r.use_guide = #{useGuide},
-        u.email = #{userEmail}  <!-- users 테이블의 이메일을 업데이트 -->
-        WHERE r.room_id = #{roomId};
+
+
+    <!-- 리스트 -->
+    <!-- rooms 테이블에서 room_id와 name만 가져오는 쿼리 -->
+    <select id="selectRoomNames" resultType="com.minbak.web.rooms.dto.RoomsListDto">
+        SELECT r.room_id AS roomId, r.name
+        FROM rooms r
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <!-- 전체 rooms의 개수를 가져오는 쿼리 (페이지네이션) -->
+    <select id="selectTotalRoomsCount" resultType="int">
+        SELECT COUNT(*) FROM rooms r
+    </select>
+
+
+
+    <!-- 상세보기 -->
+    <select id="getRoomsList" resultType="com.minbak.web.rooms.dto.RoomsDto">
+        SELECT room_id AS roomId,
+        name AS roomName,
+        content,
+        address,
+        price,
+        use_guide AS useGuide,
+        latitude,
+        longitude
+        FROM rooms
+        WHERE room_id = #{roomId}
+    </select>
+
+    <!-- 방 상세 정보 조회 -->
+    <select id="getRoomById" parameterType="int" resultType="com.minbak.web.rooms.dto.RoomsDto">
+        SELECT room_id AS roomId,
+        name AS roomName,
+        content,
+        address,
+        price,
+        use_guide AS useGuide,
+        latitude,
+        longitude
+        FROM rooms
+        WHERE room_id = #{roomId}
+    </select>
+
+    <!-- 방 상세 정보 업데이트 -->
+    <update id="updateRoom" parameterType="com.minbak.web.rooms.dto.RoomsDto">
+        UPDATE rooms
+        SET name = #{roomName},
+        content = #{content},
+        address = #{address},
+        price = #{price},
+        use_guide = #{useGuide},
+        latitude = #{latitude},
+        longitude = #{longitude}
+        WHERE room_id = #{roomId}
     </update>
 
-    <!-- SELECT: 모든 숙박 시설 조회 -->
-    <select id="selectAllRooms" resultType="com.minbak.web.rooms.RoomsDto">
-        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
-        FROM `rooms`;
-    </select>
-
-    <select id="countTotalRooms" resultType="int">
-        SELECT COUNT(*) FROM `rooms`;
-    </select>
-
-    <select id="selectRoomsByPage" resultType="com.minbak.web.rooms.RoomsDto">
-        SELECT
-        `room_id`,
-        `name`,
-        `content`,
-        `address`,
-        `price`,
-        `use_guide`,
-        `latitude`,  -- 위도 추가
-        `longitude`  -- 경도 추가
-        FROM `rooms`
-        ORDER BY `room_id` DESC
-        LIMIT #{size} OFFSET #{offset};
-    </select>
-
-    <!-- SELECT: 특정 숙박 시설 조회 -->
-    <select id="selectRoomById" parameterType="int" resultType="com.minbak.web.rooms.RoomsDto">
-        SELECT
-        r.room_id, r.name, r.content, r.address, r.price, r.use_guide,
-        r.latitude, r.longitude, u.email AS userEmail
-        FROM rooms r
-        LEFT JOIN users u ON r.user_id = u.user_id
-        WHERE r.room_id = #{room_id}
-    </select>
-
-    <!-- SELECT: 가격을 기준으로 정렬하여 숙박 시설 조회 -->
-    <select id="selectRoomsByPrice" resultType="com.minbak.web.rooms.RoomsDto">
-        SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
-        FROM `rooms`
-        ORDER BY `price` ASC;
-    </select>
-
-    <resultMap id="roomsWithUserResultMap" type="com.minbak.web.rooms.RoomsDto">
-        <id property="roomId" column="room_id"/>
-        <result property="name" column="name"/>
-        <result property="content" column="aa"/>
-        <result property="address" column="address"/>
-        <result property="price" column="price"/>
-        <result property="useGuide" column="use_guide"/>
-        <result property="latitude" column="latitude"/>
-        <result property="longitude" column="longitude"/>
-
-        <result property="userId" column="user_id"/>
-        <result property="userEmail" column="email"/>
-
-        <collection property="reviews" ofType="com.minbak.web.rooms.ReviewDto">
-            <result property="reviewId" column="review_id"/>
-            <result property="reviewContent" column="reviewContent"/>
-            <result property="reviewScore" column="Score"/>
-        </collection>
-    </resultMap>
-
-    <!--users id 연결-->
-    <select id="selectRoomsWithUser" resultMap="roomsWithUserResultMap">
-        SELECT
-        r.room_id,
-        r.name,
-        r.content as aa,
-        r.address,
-        r.content,
-        r.price ,
-        r.use_guide ,
-        r.latitude ,
-        r.longitude ,
-        u.email ,
-        rv.review_id ,
-        rv.content AS reviewContent,
-        rv.score
-        FROM (
-        SELECT room_id
-        FROM rooms
-        where room_id = 1
-
-        ) temp
-        JOIN rooms r ON temp.room_id = r.room_id
-        LEFT JOIN users u ON r.user_id = u.user_id
-        LEFT JOIN books b ON r.room_id = b.room_id
-        LEFT JOIN review rv ON b.book_id = rv.book_id
-        ORDER BY r.room_id DESC, rv.review_id DESC
 
 
-    </select>
 
 
-    <!-- DELETE -->
-    <delete id="deleteRoom" parameterType="int">
-        DELETE FROM `rooms`
-        WHERE `room_id` = #{room_id};
-    </delete>
+
 </mapper>
 
 

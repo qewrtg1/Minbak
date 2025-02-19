@@ -1,5 +1,8 @@
 package com.minbak.web.rooms;
 
+import com.minbak.web.rooms.dto.RoomsDto;
+import com.minbak.web.rooms.dto.RoomsListDto;
+import com.minbak.web.rooms.dto.RoomsPageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +16,26 @@ public class RoomsService {
 //    목록 페이징
     public RoomsPageDto getRooms(int page, int size){
         int offset = (page -1) * size;
-        List<RoomsDto> rooms = roomsMapper.selectRoomsWithUser(size,offset);
+        int totalElements = roomsMapper.selectTotalRoomsCount();
+        List<RoomsListDto> rooms = roomsMapper.selectRoomNames(offset,size);
 
-        int totalElements = roomsMapper.countTotalRooms();
         return new RoomsPageDto(page,size,totalElements,rooms);
     }
     // 상세 보기
-    public RoomsDto selectRoomById(int roomId){
-        return roomsMapper.selectRoomById(roomId);
+    public RoomsDto getRoomList(int roomId){
+        return roomsMapper.getRoomsList(roomId);
+    }
+    // 수정 페이지
+    public RoomsDto getRoomById(int roomId){
+        return roomsMapper.getRoomById(roomId);
     }
     // 수정 기능
-    public int updateRoom(RoomsDto roomsDto){
-        return roomsMapper.updateRoom(roomsDto);
+    public void updateRoom(RoomsDto roomsDto){
+        roomsMapper.updateRoom(roomsDto);
     }
     // 삭제 기능
-    public void deleteRoom(int roomId){
-        roomsMapper.deleteRoom(roomId);
-    }
+
+
 
 
 }

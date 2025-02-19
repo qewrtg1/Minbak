@@ -1,14 +1,10 @@
-package com.minbak.web.rooms;
+package com.minbak.web.rooms.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 public class RoomsPageDto {
     private int page;
     private int size;
@@ -19,10 +15,10 @@ public class RoomsPageDto {
     private int end;
     private boolean prev;
     private boolean next;
-    private List<RoomsDto> rooms;
+    private List<RoomsListDto> rooms;
 
 
-    public RoomsPageDto(int page, int size, int totalElements, List<RoomsDto> rooms) {
+    public RoomsPageDto(int page, int size, int totalElements, List<RoomsListDto> rooms) {
         this.page = page;
         this.size = size;
         this.totalElements = totalElements;
