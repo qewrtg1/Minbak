@@ -1,5 +1,6 @@
 package com.minbak.web.users;
 
+import com.minbak.web.common.dto.PageDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -8,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -89,38 +92,38 @@ public class UsersController {
 //    }
 
 
-    @GetMapping("/users")
-    //어드민 메인페이지 페이지네이션
-    public String adminMainPage(@RequestParam(name ="page", defaultValue = "1")int page,
-                                @RequestParam(name ="size", defaultValue = "10")int size,
-                                Model model){
-
-        //페이지에 보여줄 유저 정보 가져오기
-        UserPageDto<UserResponseDto> userPageDto = usersService.findUsersByLimitAndOffset(page, size);
-
-        //호스트 숫자 가져오기
-        int allHostNum = usersService.countUserRolesByRoleId(2);
-
-        //오늘 가입한 가입자 수 가져오기
-        int UsersJoinedTodayNum = usersService.countUsersJoinedToday();
-
-        //모든 관리자 수 가져오기
-        int allAdminNum = usersService.countUserRolesByRoleId(3);
-
-        //이번 주 요일별 가입자 수
-        // Map<Integer, Integer> 형태로 결과를 가져옴 0 = 일요일 6 = 토요일
-        List<Map<Integer, Integer>> weekdayUserCounts = usersService.countUsersJoinedByWeekday();
-
-        model.addAttribute("usersByWeekday", weekdayUserCounts);
-
-        model.addAttribute("allAdminNum", allAdminNum);
-        model.addAttribute("UsersJoinedTodayNum", UsersJoinedTodayNum);
-        model.addAttribute("allHostNum", allHostNum);
-        model.addAttribute("userPageDto",userPageDto);
-        // 모델에 데이터 전달
-
-        return "/users/user-main";
-    }
+//    @GetMapping("/users/sample")
+//    //어드민 메인페이지 페이지네이션
+//    public String adminMainPageSample(@RequestParam(name ="page", defaultValue = "1")int page,
+//                                @RequestParam(name ="size", defaultValue = "10")int size,
+//                                Model model){
+//
+//        //페이지에 보여줄 유저 정보 가져오기
+//        UserPageDto<UserResponseDto> userPageDto = usersService.findUsersByLimitAndOffset(page, size);
+//
+//        //호스트 숫자 가져오기
+//        int allHostNum = usersService.countUserRolesByRoleId(2);
+//
+//        //오늘 가입한 가입자 수 가져오기
+//        int UsersJoinedTodayNum = usersService.countUsersJoinedToday();
+//
+//        //모든 관리자 수 가져오기
+//        int allAdminNum = usersService.countUserRolesByRoleId(3);
+//
+//        //이번 주 요일별 가입자 수
+//        // Map<Integer, Integer> 형태로 결과를 가져옴 0 = 일요일 6 = 토요일
+//        List<Map<Integer, Integer>> weekdayUserCounts = usersService.countUsersJoinedByWeekday();
+//
+//        model.addAttribute("usersByWeekday", weekdayUserCounts);
+//
+//        model.addAttribute("allAdminNum", allAdminNum);
+//        model.addAttribute("UsersJoinedTodayNum", UsersJoinedTodayNum);
+//        model.addAttribute("allHostNum", allHostNum);
+//        model.addAttribute("userPageDto",userPageDto);
+//        // 모델에 데이터 전달
+//
+//        return "/users/user-main";
+//    }
 
     @GetMapping("/users/edit/{id}")
     public String userEditPage(@PathVariable("id") int userId,Model model){
@@ -155,6 +158,67 @@ public class UsersController {
         model.addAttribute("userDto",usersService.findUserByUserId(userId));
 
         return "/users/user-detail";
+    }
+
+//여기서부터 어드민페이지 real구현
+
+    @GetMapping("/users")
+    //어드민 유저페이지 페이지네이션
+    public String adminUserMainPage(@RequestParam(name ="page", defaultValue = "1")int page,
+                                @RequestParam(name ="size", defaultValue = "10")int size,
+                                @RequestParam(required = false) String name,
+                                @RequestParam(required = false) String email,
+                                @RequestParam(required = false) Boolean enabled,
+                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                @RequestParam(required = false) Integer bookCount,
+                                Model model){
+
+        //페이지에 보여줄 유저 정보 가져오기
+        PageDto<UserResponseDto> userPageDto = usersService.searchUsersWithBookCount(page, size, name, email, enabled, startDate, endDate, bookCount);
+
+        // 모델에 데이터 전달
+        model.addAttribute("userPageDto",userPageDto);
+
+        // 검색 필드 값 모델에 추가
+        model.addAttribute("name", name);
+        model.addAttribute("email", email);
+        model.addAttribute("enabled", enabled);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("bookCount", bookCount);
+
+        return "/users/main";
+    }
+
+
+    @GetMapping("/users/host")
+    //어드민 유저페이지 페이지네이션
+    public String adminUserHostPage(@RequestParam(name ="page", defaultValue = "1")int page,
+                                    @RequestParam(name ="size", defaultValue = "10")int size,
+                                    @RequestParam(required = false) String name,
+                                    @RequestParam(required = false) String email,
+                                    @RequestParam(required = false) Boolean enabled,
+                                    @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                    @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                    @RequestParam(required = false) Integer bookCount,
+                                    Model model){
+
+        //페이지에 보여줄 유저 정보 가져오기
+        PageDto<HostResponseDto> hostPageDto = usersService.searchHostsWithRoomCount(page, size, name, email, enabled, startDate, endDate, bookCount);
+
+        // 모델에 데이터 전달
+        model.addAttribute("hostPageDto",hostPageDto);
+
+        // 검색 필드 값 모델에 추가
+        model.addAttribute("name", name);
+        model.addAttribute("email", email);
+        model.addAttribute("enabled", enabled);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("bookCount", bookCount);
+
+        return "/users/host";
     }
 
 }

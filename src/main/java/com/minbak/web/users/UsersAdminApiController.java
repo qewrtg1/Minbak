@@ -14,16 +14,16 @@ public class UsersAdminApiController {
 
     private final UsersService usersService;
 
-    @GetMapping("/users")
-    public UserPageDto<UserResponseDto> searchUsers(
-            @RequestParam("search") String search,    // 검색어
-            @RequestParam("page") int page,           // 현재 페이지
-            @RequestParam("size") int size            // 페이지 크기
-    ) {
-
-        return usersService.findUsersByLimitAndOffsetAndString(page, size, search);
-
-    }
+//    @GetMapping("/users")
+//    public UserPageDto<UserResponseDto> searchUsers(
+//            @RequestParam("search") String search,    // 검색어
+//            @RequestParam("page") int page,           // 현재 페이지
+//            @RequestParam("size") int size            // 페이지 크기
+//    ) {
+//
+//        return usersService.findUsersByLimitAndOffsetAndString(page, size, search);
+//
+//    }
 
     @GetMapping("/users/payments")
     public UserPageDto<PaymentDto> getPaymentByUserPageing(

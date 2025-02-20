@@ -4,6 +4,8 @@ import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -62,4 +64,34 @@ public interface UsersMapper {
     public List<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
 
     public void deleteUserByUserId(int userId);
+
+    public List<UserDto> searchUsers(int limit, int offset, String name, String email, Boolean enabled,
+                                     LocalDate startDate, LocalDate endDate, Integer bookCount);
+
+    public Integer countSearchUsers(String name, String email, Boolean enabled, LocalDate startDate, LocalDate endDate, Integer bookCount);
+
+    public List<UserResponseDto> searchUsersWithBookCount(int limit, int offset, String name, String email, Boolean enabled,
+                                                          LocalDate startDate, LocalDate endDate, Integer bookCount);
+
+    List<HostResponseDto> searchHostsWithRoomCount(
+            int limit,
+            int offset,
+            String name,
+            String email,
+            Boolean enabled,
+            LocalDate startDate,
+            LocalDate endDate,
+            Integer roomCount
+    );
+
+    public Integer countHostsWithRoomCount(String name,
+                                       String email,
+                                       Boolean enabled,
+                                       LocalDate startDate,
+                                       LocalDate endDate,
+                                       Integer roomCount);
+
+
+
+
 }

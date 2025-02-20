@@ -1,11 +1,14 @@
 package com.minbak.web.users;
 
+import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,42 +45,6 @@ public class UsersService {
 
     }
 
-    public UserPageDto<UserResponseDto> findUsersByLimitAndOffset(int page, int size){
-        int offset = (page-1)*size;
-        List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffset(size, offset);
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
-
-        //유저 수 가져오기
-        int totalItems = usersMapper.countAllUsers();
-
-        //가져온 유저 정보의 날짜를 String 형식으로 변환
-        for (UserDto userDto : userDtos) {
-            UserResponseDto userResponseDto = new UserResponseDto(userDto);
-            userResponseDtos.add(userResponseDto);
-        }
-        //pageDto 생성 후 반환
-        return new UserPageDto<>(page,size,totalItems,userResponseDtos);
-    }
-
-    public UserPageDto<UserResponseDto> findUsersByLimitAndOffsetAndString(int page, int size, String search){
-
-        int offset = (page-1)*size;
-        
-        //검색창에 적은 String을 email이나 name에 포함한 유저수 가져오기
-        int totalItems = usersMapper.countUsersBySearch(search);
-        
-        //검색창에 적은 String을 이용해 보여줄 페이지 가져오기
-        List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffsetAndString(size, offset, search);
-
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
-
-        for (UserDto userDto : userDtos) {
-            UserResponseDto userResponseDto = new UserResponseDto(userDto);
-            userResponseDtos.add(userResponseDto);
-        }
-        //위 정보로 UserPageDto만들고 리턴
-        return new UserPageDto<>(page,size,totalItems,userResponseDtos);
-    }
 
     public int countAllUsers(){
         return usersMapper.countAllUsers();
@@ -128,4 +95,26 @@ public class UsersService {
     public void deleteUserByUserId(int userId){
         usersMapper.deleteUserByUserId(userId);
     }
+
+    public PageDto<UserResponseDto> searchUsersWithBookCount(int page, int size, String name, String email, Boolean enabled,
+                                        LocalDate startDate, LocalDate endDate, Integer bookCount){
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countSearchUsers(name,email,enabled,startDate,endDate,bookCount);
+
+        List<UserResponseDto> userDtos = usersMapper.searchUsersWithBookCount(size,offset,name,email,enabled,startDate,endDate,bookCount);
+
+        return new PageDto<>(page,size,totalItems,userDtos);
+    }
+
+    public PageDto<HostResponseDto> searchHostsWithRoomCount(int page, int size, String name, String email, Boolean enabled,
+                                                LocalDate startDate, LocalDate endDate, Integer bookCount){
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countHostsWithRoomCount(name,email,enabled,startDate,endDate,bookCount);
+
+        List<HostResponseDto> hosts = usersMapper.searchHostsWithRoomCount(size,offset,name,email,enabled,startDate,endDate,bookCount);
+
+        return new PageDto<>(page,size,totalItems,hosts);
+    }
+
+
 }
