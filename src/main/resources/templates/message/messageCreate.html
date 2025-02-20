@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>메세지 생성페이지</title>
+</head>
+<body>
+
+<div>
+<!--  에러메세지 출력-->
+  <div th:if="${errorMessage !=null}">
+    <div>
+      <p th:text="${errorMessage}"></p>
+    </div>
+  </div>
+  <div th:if="${createMessageOk != null}">
+    <p th:text="${createMessageOk}"></p>
+  </div>
+
+<!-- 메세지 생성 -->
+  <div>
+    <form action="/admin/message/create" method="post" id="createMessageForm">
+      <div class="mb-3">
+        <label for="createMessageToReceiver" class="form-label">받는이(유저 email)</label>
+        <input type="email" class="form-control" name="receiverEmail" id="createMessageToReceiver" placeholder="받는이 이메일 입력" required>
+        <label for="createMessageContent" class="form-label">메세지내용</label>
+        <input type="text" name="content" class="form-control" id="createMessageContent" required>
+        <div id="errorMessage" style="color: red; font-size: 0.875em; display: none;"></div>
+      </div>
+      <button type="submit" class="btn btn-primary">보내기</button>
+    </form>
+  </div>
+  
+  
+  
+<!--  sender_id 가 들어가지 않아 not null 이라면 오류 발생-->
+  
+  
+</div>
+
+</body>
+<!--<script>-->
+<!--  // 카테고리 추가 폼 제출 시 실행되는 함수-->
+<!--  document.getElementById('createMessageForm').addEventListener('submit', function(event) {-->
+<!--    event.preventDefault();  // 기본 폼 제출 동작 방지-->
+
+<!--    const userEmail = document.getElementById('createMessageToReceiver').value.trim();-->
+<!--    const messageContent = document.getElementById('createMessageContent').value;-->
+<!--    const errorMessageElement = document.getElementById('errorMessage');-->
+
+<!--    // 유효성 검사-->
+<!--    if (userEmail === '') {-->
+<!--      errorMessageElement.textContent = '이메일은  필수 항목입니다.';-->
+<!--      errorMessageElement.style.display = 'block';-->
+<!--      return;-->
+<!--    }-->
+
+<!--    // 최소 1자 이상이어야 함-->
+<!--    if (userEmail.length < 1) {-->
+<!--      errorMessageElement.textContent = '이메일은 최소 1자 이상이어야 합니다.';-->
+<!--      errorMessageElement.style.display = 'block';-->
+<!--      return;-->
+<!--    }-->
+
+<!--    // 최대 40자 이내여야 함-->
+<!--    if (userEmail.length > 40) {-->
+<!--      errorMessageElement.textContent = '이메일은 최대 40자 이내여야 합니다.';-->
+<!--      errorMessageElement.style.display = 'block';-->
+<!--      return;-->
+<!--    }-->
+
+
+<!--    // 에러 메시지 초기화-->
+<!--    errorMessageElement.style.display = 'none';-->
+
+<!--    // 백엔드에 메세지 보내기 요청-->
+<!--    fetch('/admin/message/create', {-->
+<!--      method: 'POST',-->
+<!--      headers: {-->
+<!--        'Content-Type': 'application/json'-->
+<!--      },-->
+<!--      body: JSON.stringify({ receiverId: userEmail ,content: messageContent })-->
+<!--    })-->
+<!--    .then(response => response.json())-->
+<!--    .then(data => {-->
+<!--      console.log('메세지보내기 완료', data);-->
+<!--      alert('메세지보내기 완료');-->
+<!--      window.location.href = '/admin/message/messageCreate';  // 메세지 보내기 후 리다이렉트-->
+<!--    })-->
+<!--    .catch(error => {-->
+<!--      console.error('메세지 보내기 중 오류 발생:', error);-->
+<!--      alert('메세지보내기 오류! 다시 시도해주세요.');-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
+</html>

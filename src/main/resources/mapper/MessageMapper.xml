@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.messages.MessageMapper">
+
+<!--    유저조회해서 클릭하면 해당 유저의 메세지목록 전부 다 출력-->
+<!--    필요쿼리문 : 유저 조회, 해당 유저 메세지 조회, -->
+
+    <!-- 유저 조회 -->
+    <select id="findAllUsers" resultType="com.minbak.web.users.UserDto">
+        SELECT user_id, name
+        FROM users
+    </select>
+
+    <!--샌더,리시버에 00번 아이디가 들어간 튜플 전체조회    -->
+    <select id="findMessagesById" resultType="com.minbak.web.messages.MessageDto">
+        SELECT message_id, sender_id, receiver_id, content, sent_at
+        FROM message
+        WHERE sender_id = #{user_id} OR receiver_id = #{user_id}
+
+    </select>
+    
+    <!--오늘 메세지 목록 뽑아서 카운트로 세기    -->
+    <select id="countMessagesToday" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+        WHERE DATE(sent_at) = CURRENT_DATE
+    </select>
+    <!--오늘 메세지 조회    -->
+    <select id="findMessagesToday" resultType="com.minbak.web.messages.MessageDto">
+        select * from message
+        where DATE(sent_at) = #{currentDate}
+        order by sent_at DESC
+        limit #{limit} offset #{offset};
+    </select>
+
+    <!--전체 메세지 목록 뽑아서 카운트로 세기    -->
+    <select id="countAllMessages" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+    </select>
+<!--    이메일로 id 조회하기-->
+    <select id="findUserIdByEmail" resultType="int">
+        SELECT user_id
+        FROM users where email=#{email}
+    </select>
+<!--메세지 조회, 페이징-->
+    <select id="findMessagesByLimitAndOffset" resultType="com.minbak.web.messages.MessageDto">
+        select * from message
+        order by sent_at DESC
+        limit #{limit} offset #{offset};
+    </select>
+<!--메세지 삭제-->
+    <delete id="deleteMessage">
+        delete from message
+        where message_id = #{message_id}
+    </delete>
+<!--메세지 생성-->
+    <insert id="createMessage" useGeneratedKeys="true" keyProperty="messageId">
+        INSERT INTO message (sender_id ,receiver_id, content)
+        VALUES (#{senderId}, #{receiverId}, #{content})
+    </insert>
+
+</mapper>
