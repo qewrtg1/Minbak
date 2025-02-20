@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf/org">
+<head>
+    <meta charset="UTF-8">
+    <title>월별 예약현황</title>
+</head>
+<body>
+<main>
+  <div class="books">
+    <!--헤더-->
+    <div class="booksHead">
+      <h3 class="text-center">예약 관리</h3>
+      <div class="menu">
+        <a href="/admin/books" class="btn btn-primary">예약목록</a>
+        <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
+      </div>
+    </div>
+
+    <div class="MonthlyBook">
+      <table>
+        <thead>
+          <tr>
+            <th>숙소명</th>
+            <th th:each="date : ${dateInMonth}" th:text="${#temporals.format(date, 'dd(E)')}"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>room1</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!--푸터-->
+    <div class="booksFoot">
+      <hr>
+      <h4>Copyright &copy; All rights reserved.</h4>
+    </div>
+  </div>
+  </div>
+</main>
+</body>
+</html>

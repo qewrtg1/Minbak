@@ -1,7 +1,5 @@
 package com.minbak.web.books;
 
-import com.minbak.web.board.BoardPageDto;
-import com.minbak.web.board.posts.BoardPostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/books")
@@ -51,7 +48,6 @@ public class BooksController {
     public String selectBookById(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto booksDto = booksService.selectBookById(bookId);
         model.addAttribute("books", booksDto);
-        System.out.println("booksDto = " + booksDto);
         return "books/detail";
     }
 

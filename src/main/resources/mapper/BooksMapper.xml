@@ -26,12 +26,15 @@
             <choose>
                 <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
                 <when test="searchType == '유저 ID'"> AND user_id = #{keyword} </when>
+                <when test="searchType == '숙소 ID'"> AND room_id = #{keyword} </when>
             </choose>
         </if>
         <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
             <choose>
-                <when test="dateType == '체크인'"> AND (start_date >= #{startDate}) AND (#{startDate} >= start_date) </when>
-                <when test="dateType == '체크아웃'"> AND (end_date >= #{endDate}) AND (#{endDate} >= end_date) </when>
+                <when test="dateType == '체크인'"> AND (start_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= start_date) </when>
+                <when test="dateType == '체크아웃'"> AND (end_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= end_date) </when>
             </choose>
         </if>
         <if test="statusFilter != null and statusFilter != ''">
@@ -47,13 +50,16 @@
         <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
             <choose>
                 <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
-                <when test="searchType == '회원아이디'"> AND user_id = #{keyword} </when>
+                <when test="searchType == '유저 ID'"> AND user_id = #{keyword} </when>
+                <when test="searchType == '숙소 ID'"> AND room_id = #{keyword} </when>
             </choose>
         </if>
         <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
             <choose>
-                <when test="dateType == '체크인'"> AND (start_date >= #{startDate}) AND (#{startDate} >= start_date) </when>
-                <when test="dateType == '체크아웃'"> AND (end_date >= #{endDate}) AND (#{endDate} >= end_date) </when>
+                <when test="dateType == '체크인'"> AND (start_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= start_date) </when>
+                <when test="dateType == '체크아웃'"> AND (end_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= end_date) </when>
             </choose>
         </if>
         <if test="statusFilter != null and statusFilter != ''">
@@ -76,4 +82,12 @@
         delete from books
         where book_id=#{bookId}
     </delete>
+    
+    <!--월별 예약현황 매퍼-->
+    <select id="findMonthlyBooks" resultType="map">
+        select r.name as roomName, b.start_date, b.end_date, b.status
+        from books b
+        join rooms r on b.room_id = r.room_id
+        where year(b.start_date) = #{year} and month(b.start_date) = #{month};
+    </select>
 </mapper>
