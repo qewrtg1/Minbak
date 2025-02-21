@@ -149,5 +149,11 @@ public class UsersService {
         usersMapper.updateReportStatus(userReportDto);
     }
 
+    public void updateUser(UserDto userDto) {
+        usersMapper.updateUser(userDto); // MyBatis XML 매퍼 호출
+    }
 
+    public void updateHost(HostDto hostDto) {
+        usersMapper.updateHost(hostDto);
+    }
 }

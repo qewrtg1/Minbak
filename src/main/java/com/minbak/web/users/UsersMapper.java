@@ -117,4 +117,8 @@ public interface UsersMapper {
     public UserReportDto getReportById(int reportId);
 
     public void updateReportStatus(UserReportDto userReportDto);
+
+    void updateUser(UserDto userDto);
+
+    void updateHost(HostDto hostDto);
 }

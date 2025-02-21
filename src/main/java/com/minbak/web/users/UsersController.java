@@ -133,16 +133,16 @@ public class UsersController {
         return "/users/edit";
     }
 
-    @PostMapping("/users/update")
-    public String userEditPage(@ModelAttribute UserDto userDto,Model model){
-
-        usersService.updateUserByIdWithoutPassword(userDto);
-
-        model.addAttribute("message", "수정되었습니다.");
-        model.addAttribute("userDto",usersService.findUserByUserId(userDto.getUserId()));
-
-        return "/users/edit";
-    }
+//    @PostMapping("/users/update")
+//    public String userEditPage(@ModelAttribute UserDto userDto,Model model){
+//
+//        usersService.updateUserByIdWithoutPassword(userDto);
+//
+//        model.addAttribute("message", "수정되었습니다.");
+//        model.addAttribute("userDto",usersService.findUserByUserId(userDto.getUserId()));
+//
+//        return "/users/edit";
+//    }
 
     @GetMapping("/users/delete/{id}")
     public String userDelete(@PathVariable("id") int userId){
@@ -256,5 +256,24 @@ public class UsersController {
         model.addAttribute("endProcessedAt", endProcessedAt);
 
         return "users/report";
+    }
+
+    @PostMapping("/users/update")
+    public String updateUser(@ModelAttribute UserDto userDto, Model model) {
+        try {
+            usersService.updateUser(userDto);
+            model.addAttribute("message", "유저 정보가 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            model.addAttribute("message", "유저 정보 수정에 실패했습니다.");
+        }
+
+        return "redirect:/admin/users/detail/" + userDto.getUserId();
+    }
+
+    @PostMapping("/users/hosts/update")
+    public String updateHost(@ModelAttribute HostDto hostDto, Model model) {
+        usersService.updateHost(hostDto);
+        model.addAttribute("message", "호스트 정보가 성공적으로 수정되었습니다.");
+        return "redirect:/admin/users/detail/" + hostDto.getUserId();
     }
 }

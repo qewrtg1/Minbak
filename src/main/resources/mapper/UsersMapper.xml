@@ -372,4 +372,27 @@
         INSERT INTO users_roles (user_id, role_id)
         VALUES (#{user_id}, 3)  <!-- user_id 값은 동적으로 받아오며, role_id는 3으로 고정 -->
     </insert>
+
+    <update id="updateUser">
+        UPDATE users
+        SET
+        name = #{name},
+        email = #{email},
+        phone_number = #{phoneNumber},
+        <if test="password != null">password = #{password},</if>
+        enabled = #{enabled},
+        updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateHost">
+        UPDATE host
+        SET
+            <if test="hobby != null">hobby = #{hobby},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="isVerified != null">is_verified = #{isVerified},</if>
+            <if test="accountNumber != null">account_number = #{accountNumber},</if>
+            updated_at = NOW()
+        WHERE host_id = #{hostId}
+    </update>
 </mapper>

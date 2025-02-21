@@ -139,7 +139,7 @@
       <tr th:each="host : ${hostPageDto.objects}">
         <td th:text="${host.hostId}">1</td>
         <td th:text="${host.name}">John Doe</td>
-        <td><a th:href="@{/admin/hosts/detail/{id}(id=${host.hostId})}" th:text="${host.email}">johndoe@example.com</a></td>
+        <td><a th:href="@{/admin/users/detail/{id}(id=${host.hostId})}" th:text="${host.email}">johndoe@example.com</a></td>
         <td th:text="${host.phoneNumber}">Admin</td>
         <td th:text="${host.userEnabled ? 'Active' : 'Inactive'}">Active</td>
         <td th:text="${host.isVerified ? 'Active' : 'Inactive'}">Active</td>

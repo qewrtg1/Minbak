@@ -62,9 +62,9 @@
 </head>
 <body>
 
-<!--<script th:if="${message}">-->
-<!--  alert("[[${message}]]");-->
-<!--</script>-->
+<script th:if="${message}">
+  alert("[[${message}]]");
+</script>
 <th:block layout:fragment="content">
 
     <main class="main-content d-flex flex-wrap">
@@ -112,17 +112,17 @@
             </div>
             <form action="/admin/users/hosts/update" method="POST" th:if="${hostDto != null}">
                 <input id="hostId" type="hidden" name="hostId" th:value="${hostDto.hostId}">
-
+                <input type="hidden" name="userId" th:value="${userDto.userId}">
                 <!-- 취미 -->
                 <div class="mb-3">
-                    <label for="hostHobby" class="form-label">호스트 취미</label>
-                    <input type="text" id="hostHobby" name="hostHobby" th:value="${hostDto.hobby}" class="form-control">
+                    <label for="hobby" class="form-label">호스트 취미</label>
+                    <input type="text" id="hobby" name="hobby" th:value="${hostDto.hobby}" class="form-control">
                 </div>
 
                 <!-- 소개 -->
                 <div class="mb-3">
-                    <label for="hostIntroduction" class="form-label">호스트 소개</label>
-                    <textarea id="hostIntroduction" name="hostIntroduction" class="form-control" rows="4" th:text="${hostDto.introduction}"></textarea>
+                    <label for="introduction" class="form-label">호스트 소개</label>
+                    <textarea id="introduction" name="introduction" class="form-control" rows="4" th:text="${hostDto.introduction}"></textarea>
                 </div>
 
                 <!-- 검증 여부 -->
