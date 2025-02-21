@@ -53,6 +53,20 @@ public class MessageService {
         MessagePageDto<MessageDto> messagePageDto = new MessagePageDto<>(page,size,totalItems,messageDtos);
         return messagePageDto;
     }
+//    페이지 필터 검색 조회
+
+    //    필터링 메세지 조회
+    MessagePageDto<ResponseMessageDto> findMessagesWithUser(RequestMessageFilterDto requestMessageFilterDto,int page,int size){
+
+        int offset = (page-1)*size;
+        int totalItems = messageMapper.countFilteredMessages(requestMessageFilterDto);
+        List<ResponseMessageDto> responseMessageDtos=messageMapper.findMessagesWithUser(requestMessageFilterDto,size,offset);
+        MessagePageDto<ResponseMessageDto> filteredMessagePageDto= new MessagePageDto<>(page,size,totalItems,responseMessageDtos);
+
+        return filteredMessagePageDto;
+    }
+
+
     // 메세지 삭제
     public void deleteMessage(int message_id){
         messageMapper.deleteMessage(message_id);

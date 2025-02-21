@@ -75,6 +75,21 @@ public class MessageController {
     return "/message/messageList";
     }
 
+
+    @PostMapping("/filterList")
+    public String filterMessageList(@RequestParam RequestMessageFilterDto requestMessageFilterDto,
+                                    @RequestParam(name ="page", defaultValue = "1")int page,
+                                    @RequestParam(name ="size", defaultValue = "10")int size,
+                                    Model model){
+
+        MessagePageDto<ResponseMessageDto> filteredResponseMessageDto=
+                messageService.findMessagesWithUser(requestMessageFilterDto,page,size);
+
+        model.addAttribute("messagePageDto",filteredResponseMessageDto);
+
+        return "/message/messageList";
+    }
+
 //   ------------------------------------메세지 생성 관련-----------------------------------------
 
 //    메세지 생성페이지

@@ -29,7 +29,17 @@ public interface MessageMapper {
 //    메세지 id순 내림차순 정렬, 페이지네이션 적용
     List<MessageDto> findMessagesByLimitAndOffset(int limit, int offset);
 
-//    메세지 삭제
+//    필터링 검색한 메시지 조회
+    List<ResponseMessageDto> findMessagesWithUser (RequestMessageFilterDto requestMessageFilterDto,int limit,int offset);
+//    List<ResponseMessageDto> findMessagesWithUser (RequestMessageFilterDto requestMessageFilterDto);
+
+
+
+//    필터링 메세지 개수 조회
+    int countFilteredMessages(RequestMessageFilterDto requestMessageFilterDto);
+
+
+    //    메세지 삭제
     void deleteMessage(int message_id);
 //메세지 생성
     void createMessage(MessageDto messageDto);

@@ -51,6 +51,70 @@
         order by sent_at DESC
         limit #{limit} offset #{offset};
     </select>
+
+    <!--    필터링,검색한 메시지 개수 조회-->
+
+    <select id="countFilteredMessages" resultType="int">
+        SELECT count(*)
+        FROM message m
+        LEFT JOIN users s ON m.sender_id = s.user_id
+        LEFT JOIN users r ON m.receiver_id = r.user_id
+        WHERE
+        (m.message_id = #{messageId} OR #{messageId} IS NULL) AND
+        ((m.sender_id = #{userId} OR #{userId} IS NULL) OR
+        (m.receiver_id = #{userId} OR #{userId} IS NULL)) AND
+        (m.content LIKE CONCAT('%', #{keyword}, '%') OR #{keyword} IS NULL) AND
+        ((m.sent_at &gt;= #{startDate} OR #{startDate} IS NULL) AND
+        (m.sent_at &lt;= #{endDate} OR #{endDate} IS NULL)) AND
+        (s.name = #{userName} OR #{userName} IS NULL) AND
+        (r.name = #{userEmail} OR #{userEmail} IS NULL) AND
+        (s.email = #{userEmail} OR #{userEmail} IS NULL) AND
+        (r.email = #{userEmail} OR #{userEmail} IS NULL) AND
+        (s.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL) AND
+        (r.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL)
+    </select>
+
+    <!--    필터링,검색한 메시지 조회-->
+    <select id="findMessagesWithUser" resultType="com.minbak.web.messages.ResponseMessageDto">
+        SELECT m.message_id, m.sender_id, m.receiver_id,
+        m.content, m.sent_at,
+        s.name AS sender_name, s.email AS sender_email,
+        r.name AS receiver_name, r.email AS receiver_email,
+        s.phone_number AS sender_phone_number, r.phone_number AS receiver_phone_number
+        FROM message m
+        LEFT JOIN users s ON m.sender_id = s.user_id
+        LEFT JOIN users r ON m.receiver_id = r.user_id
+        WHERE
+        (m.message_id = #{messageId} OR #{messageId} IS NULL) AND
+        ((m.sender_id = #{userId} OR #{userId} IS NULL) OR
+        (m.receiver_id = #{userId} OR #{userId} IS NULL)) AND
+        (m.content LIKE CONCAT('%', #{keyword}, '%') OR #{keyword} IS NULL) AND
+        ((m.sent_at &gt;= #{startDate} OR #{startDate} IS NULL) AND
+        (m.sent_at &lt;= #{endDate} OR #{endDate} IS NULL)) AND
+        ((s.name = #{userName} OR #{userName} IS NULL) or
+        (r.name = #{userName} OR #{userName} IS NULL)) AND
+        ((s.email = #{userEmail} OR #{userEmail} IS NULL) or
+        (r.email = #{userEmail} OR #{userEmail} IS NULL)) AND
+        ((s.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL) or
+        (r.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL))
+        LIMIT #{limit} OFFSET #{offset};
+
+    </select>
+
+<!--    <resultMap id="messageWithUserResultMap" type="com.minbak.web.messages.ResponseMessageDto">-->
+<!--        <id property="messageId" column="message_id"/>-->
+<!--        <result property="content" column="content"/>-->
+<!--        <result property="sentAt" column="sent_at"/>-->
+<!--        <result property="senderName" column="sender_name"/>-->
+<!--        <result property="senderEmail" column="sender_email"/>-->
+<!--        <result property="receiverName" column="receiver_name"/>-->
+<!--        <result property="receiverEmail" column="receiver_email"/>-->
+<!--        <result property="senderContact" column="sender_contact"/>-->
+<!--        <result property="receiverContact" column="receiver_contact"/>-->
+<!--    </resultMap>-->
+
+    <!--      -->
+
 <!--메세지 삭제-->
     <delete id="deleteMessage">
         delete from message
