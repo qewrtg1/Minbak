@@ -102,6 +102,17 @@ public class UsersAdminApiController {
 
     }
 
+    @PostMapping("/users/sendMessage")
+    public ResponseEntity<Map<String, String>> sendMessageAtUserDetail(@RequestBody Integer userId, @RequestBody String message){
+
+        //로그인한 사람 id받아서 메시지 보내는 기능 구현 예정 (관리자 유저 디테일 페이지 참고)
+        
+        Map<String, String> response = new HashMap<>();
+        
+        return ResponseEntity.ok(response);
+
+    }
+
     @Setter
     @Getter
     public static class UpdateReportStatusRequest {
