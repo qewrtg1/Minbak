@@ -55,7 +55,7 @@ public class MessageController {
 //    최신순으로 메세지 조회
     @GetMapping("/list")
     public String messagesList(@RequestParam(name ="page", defaultValue = "1")int page,
-                               @RequestParam(name ="size", defaultValue = "20")int size,Model model){
+                               @RequestParam(name ="size", defaultValue = "10")int size,Model model){
 
         MessagePageDto<MessageDto> messagePageDto= messageService.findMessagesByLimitAndOffset(page,size);
         model.addAttribute("messagePageDto",messagePageDto);
@@ -64,7 +64,7 @@ public class MessageController {
 // 오늘자 메세지만 조회
     @GetMapping("/list/today")
     public String messageListToday(@RequestParam(name ="page", defaultValue = "1")int page,
-                                   @RequestParam(name ="size", defaultValue = "20")int size
+                                   @RequestParam(name ="size", defaultValue = "10")int size
             ,Model model){
     //        오늘 메세지 조회
 
@@ -75,6 +75,19 @@ public class MessageController {
     return "/message/messageList";
     }
 
+    @GetMapping("/list2")
+    public String messagesList2(@ModelAttribute RequestMessageFilterDto requestMessageFilterDto ,
+                                @RequestParam(name ="page", defaultValue = "1")int page,
+                                @RequestParam(name ="size", defaultValue = "10")int size,
+                                Model model){
+
+        MessagePageDto<ResponseMessageDto> filteredResponseMessageDto=
+                messageService.findMessagesWithUser(requestMessageFilterDto,page,size);
+
+        model.addAttribute("messagePageDto",filteredResponseMessageDto);
+
+        return"/message/messageList2";
+    }
 
     @PostMapping("/filterList")
     public String filterMessageList(@RequestParam RequestMessageFilterDto requestMessageFilterDto,
@@ -87,7 +100,7 @@ public class MessageController {
 
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
-        return "/message/messageList";
+        return "/message/messageList2";
     }
 
 //   ------------------------------------메세지 생성 관련-----------------------------------------

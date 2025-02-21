@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--타임리프와 타임리프 레이아웃 의존성 추가와 참고할 HTML(board/base/base)설정-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{board/base/base}">
+<head>
+    <meta charset="UTF-8">
+    <title>메세지리스트</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+<!--메세지 리스트-->
+    <div>
+        <div th:if="${deleteOk != null}">
+            <p th:text="${deleteOk}" style="color:red"></p>
+        </div>
+        <div>
+            <a th:href="@{/admin/message/list/today}">오늘 메세지 보기</a>
+            <a href="">일주일 메세지 보기</a>
+            <a href="">한달 메세지 보기</a>
+            <a href="">1년 메세지 보기</a>
+        </div>
+        <div th:if="${currentDate} != null">
+            <p th:text="${currentDate}+' 메세지보기'"></p>
+        </div>
+<!--        메세지 필터, 검색 조회-->
+        <div>
+            <form action="#" method="post" th:action="@{/admin/message/filterList}" th:object="${requestMessageFilterDto}">
+                <!-- 메시지 ID -->
+                <label for="messageId">Message ID</label>
+                <input type="number" id="messageId" name="messageId" placeholder="Message ID"  />
+
+                <br/>
+
+                <!-- 유저 ID -->
+                <label for="userId">User ID</label>
+                <input type="number" id="userId" name="userId" placeholder="User ID"  />
+
+                <br/>
+
+                <!-- 키워드 -->
+                <label for="keyword">Keyword</label>
+                <input type="text" id="keyword" name="keyword" placeholder="Search by keyword"  />
+
+                <br/>
+
+                <!-- 보낸 기간 -->
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" name="startDate" />
+
+                <br/>
+
+                <label for="endDate">End Date</label>
+                <input type="date" id="endDate" name="endDate"  />
+
+                <br/>
+
+                <!-- 유저 이름 -->
+                <label for="userName">User Name</label>
+                <input type="text" id="userName" name="userName" placeholder="User Name"  />
+
+                <br/>
+
+                <!-- 유저 이메일 -->
+                <label for="userEmail">User Email</label>
+                <input type="email" id="userEmail" name="userEmail" placeholder="User Email"  />
+
+                <br/>
+
+                <!-- 유저 전화번호 -->
+                <label for="userPhoneNumber">User Phone Number</label>
+                <input type="text" id="userPhoneNumber" name="userPhoneNumber" placeholder="User Phone Number" />
+
+                <br/>
+
+                <button type="submit">검색</button>
+            </form>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>메시지 ID</th>
+                <th>보낸 사람 ID</th>
+                <th>받은 사람 ID</th>
+                <th>메시지 내용</th>
+                <th>보낸 시간</th>
+            </tr>
+            </thead>
+<!--            <tbody>-->
+<!--                <div th:if="${messagePageDto} != null">-->
+<!--                    <tr th:each="message : ${messagePageDto.objects}">-->
+<!--                        <td th:text="${message.messageId}"></td>-->
+<!--                        <td th:text="${message.senderId}"></td>-->
+<!--                        <td th:text="${message.senderName}"></td>-->
+<!--                        <td th:text="${message.senderEmail}"></td>-->
+<!--                        <td th:text="${message.senderPhoneNumber}"></td>-->
+<!--                        <td th:text="${message.receiverId}"></td>-->
+<!--                        <td th:text="${message.receiverName}"></td>-->
+<!--                        <td th:text="${message.receiverEmail}"></td>-->
+<!--                        <td th:text="${message.receiverPhoneNumber}"></td>-->
+<!--                        <td th:text="${message.content}"></td>-->
+<!--                        <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>-->
+<!--                        <td>-->
+<!--                            <form th:action="@{/admin/message/list/delete/{message_id}(message_id=${message.messageId})}" method="get">-->
+<!--                                <button type="submit">메세지 삭제</button>-->
+<!--                            </form>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </div>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--페이지네이션-->
+<!--        <nav aria-label="Page navigation" style="display:flex">-->
+<!--            <ul class="pagination justify-content-center">-->
+<!--                <li class="page-item" th:classappend="${messagePageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/message/list?page={page}(page=${messagePageDto.currentPage} - 1)}">«</a></li>-->
+<!--                <li class="page-item" th:each="i : ${#numbers.sequence(messagePageDto.startPage, messagePageDto.endPage)}">-->
+<!--                    <a class="page-link" th:classappend="${messagePageDto.currentPage == i} ? 'active text-white' : ''" th:href="@{/admin/message/list?page={i}(i=${i})}" th:text="${i}"></a>-->
+<!--                </li>-->
+<!--                <li th:class="${messagePageDto.hasNext ? 'page-item' : 'page-item disabled'}"><a class="page-link" th:href="@{/admin/message/list?page={page}(page=${messagePageDto.currentPage} + 1)}">»</a></li>-->
+<!--            </ul>-->
+<!--        </nav>-->
+    </div>
+</th:block>
+</body>
+</html>

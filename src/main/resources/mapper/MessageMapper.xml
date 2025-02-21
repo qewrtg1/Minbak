@@ -60,18 +60,14 @@
         LEFT JOIN users s ON m.sender_id = s.user_id
         LEFT JOIN users r ON m.receiver_id = r.user_id
         WHERE
-        (m.message_id = #{messageId} OR #{messageId} IS NULL) AND
-        ((m.sender_id = #{userId} OR #{userId} IS NULL) OR
-        (m.receiver_id = #{userId} OR #{userId} IS NULL)) AND
-        (m.content LIKE CONCAT('%', #{keyword}, '%') OR #{keyword} IS NULL) AND
-        ((m.sent_at &gt;= #{startDate} OR #{startDate} IS NULL) AND
-        (m.sent_at &lt;= #{endDate} OR #{endDate} IS NULL)) AND
-        (s.name = #{userName} OR #{userName} IS NULL) AND
-        (r.name = #{userEmail} OR #{userEmail} IS NULL) AND
-        (s.email = #{userEmail} OR #{userEmail} IS NULL) AND
-        (r.email = #{userEmail} OR #{userEmail} IS NULL) AND
-        (s.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL) AND
-        (r.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL)
+        (#{messageId} IS NULL OR m.message_id = #{messageId}) AND
+        (#{userId} IS NULL OR m.sender_id = #{userId} OR m.receiver_id = #{userId}) AND
+        (#{keyword} IS NULL OR m.content LIKE CONCAT('%', #{keyword}, '%')) AND
+        (#{startDate} IS NULL OR m.sent_at &gt;= #{startDate}) AND
+        (#{endDate} IS NULL OR m.sent_at  &lt;= #{endDate}) AND
+        (#{userName} IS NULL OR s.name = #{userName} OR r.name = #{userName}) AND
+        (#{userEmail} IS NULL OR s.email = #{userEmail} OR r.email = #{userEmail}) AND
+        (#{userPhoneNumber} IS NULL OR s.phone_number = #{userPhoneNumber} OR r.phone_number = #{userPhoneNumber})
     </select>
 
     <!--    필터링,검색한 메시지 조회-->
@@ -85,18 +81,14 @@
         LEFT JOIN users s ON m.sender_id = s.user_id
         LEFT JOIN users r ON m.receiver_id = r.user_id
         WHERE
-        (m.message_id = #{messageId} OR #{messageId} IS NULL) AND
-        ((m.sender_id = #{userId} OR #{userId} IS NULL) OR
-        (m.receiver_id = #{userId} OR #{userId} IS NULL)) AND
-        (m.content LIKE CONCAT('%', #{keyword}, '%') OR #{keyword} IS NULL) AND
-        ((m.sent_at &gt;= #{startDate} OR #{startDate} IS NULL) AND
-        (m.sent_at &lt;= #{endDate} OR #{endDate} IS NULL)) AND
-        ((s.name = #{userName} OR #{userName} IS NULL) or
-        (r.name = #{userName} OR #{userName} IS NULL)) AND
-        ((s.email = #{userEmail} OR #{userEmail} IS NULL) or
-        (r.email = #{userEmail} OR #{userEmail} IS NULL)) AND
-        ((s.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL) or
-        (r.phone_number = #{userPhoneNumber} OR #{userPhoneNumber} IS NULL))
+        (#{messageId} IS NULL OR m.message_id = #{messageId}) AND
+        (#{userId} IS NULL OR m.sender_id = #{userId} OR m.receiver_id = #{userId}) AND
+        (#{keyword} IS NULL OR m.content LIKE CONCAT('%', #{keyword}, '%')) AND
+        (#{startDate} IS NULL OR m.sent_at &gt;= #{startDate}) AND
+        (#{endDate} IS NULL OR m.sent_at  &lt;= #{endDate}) AND
+        (#{userName} IS NULL OR s.name = #{userName} OR r.name = #{userName}) AND
+        (#{userEmail} IS NULL OR s.email = #{userEmail} OR r.email = #{userEmail}) AND
+        (#{userPhoneNumber} IS NULL OR s.phone_number = #{userPhoneNumber} OR r.phone_number = #{userPhoneNumber})
         LIMIT #{limit} OFFSET #{offset};
 
     </select>
