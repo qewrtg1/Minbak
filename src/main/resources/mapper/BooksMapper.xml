@@ -82,12 +82,23 @@
         delete from books
         where book_id=#{bookId}
     </delete>
-    
-    <!--월별 예약현황 매퍼-->
+
+    <!-- 월별 예약현황 -->
+    <!-- 예약현황표에 대기, 완료 여부만 확인 -->
     <select id="findMonthlyBooks" resultType="map">
         select r.name as roomName, b.start_date, b.end_date, b.status
         from books b
         join rooms r on b.room_id = r.room_id
-        where year(b.start_date) = #{year} and month(b.start_date) = #{month};
+        where b.status in ('대기', '완료')
+        and year(b.start_date) = #{year} and month(b.start_date) = #{month}
+    </select>
+
+    <select id="selectWaitings" resultType="map">
+        select b.start_date, r.name as roomName, u.name as userName, u.phone_number as phone, b.request
+        from books b
+        join rooms r on b.room_id = r.room_id
+        join users u on b.user_id = u.user_id
+        where b.status = '대기'
+        order by b.start_date;
     </select>
 </mapper>

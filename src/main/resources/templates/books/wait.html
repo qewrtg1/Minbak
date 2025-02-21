@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>예약대기자</title>
+</head>
+<body>
+<main class="main-container">
+    <div class="booksHead">
+        <h3 class="text-center">예약 관리</h3>
+        <div class="menu">
+            <a href="/admin/books" class="btn btn-primary">예약목록</a>
+            <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
+            <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>체크인 날짜</th>
+            <th>숙소명</th>
+            <th>예약자명</th>
+            <th>연락처</th>
+            <th>요청사항</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${waitingBooks}">
+            <td th:text="${book.startDate}"></td>
+            <td th:text="${book.roomName}"></td>
+            <td th:text="${book.userName}"></td>
+            <td th:text="${book.phone}"></td>
+            <td th:text="${book.request}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="booksFoot">
+        <hr>
+        <h4>Copyright &copy; All rights reserved.</h4>
+    </div>
+    </div>
+</main>
+</body>
+</html>

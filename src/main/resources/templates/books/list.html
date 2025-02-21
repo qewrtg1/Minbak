@@ -26,7 +26,7 @@
 
     .menu a {
       text-decoration: none;
-      color: #007bff;
+      color: #7fbdff;
       font-size: 18px;
     }
 
@@ -74,6 +74,7 @@
       <div class="menu">
         <a href="/admin/books" class="btn btn-primary">예약목록</a>
         <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
+        <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
       </div>
     </div>
 
@@ -163,27 +164,27 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>예약 번호</th>
-            <th>예약 상태</th>
+            <th>예약번호</th>
             <th>유저 ID</th>
             <th>숙소 ID</th>
             <th>체크인 날짜</th>
             <th>체크아웃 날짜</th>
             <th>예약인원 수</th>
             <th>특별 요청사항</th>
+            <th>예약상태</th>
             <th>상세보기</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="books : ${booksPage.objects}">
             <td th:text="${books.bookId}"></td>
-            <td th:text="${books.status}"></td>
             <td th:text="${books.userId}"></td>
             <td th:text="${books.roomId}"></td>
             <td th:text="${books.startDate}"></td>
             <td th:text="${books.endDate}"></td>
             <td th:text="${books.guestsNum}"></td>
             <td th:text="${books.request}"></td>
+            <td th:text="${books.status}"></td>
             <td><a th:href="@{|/admin/books/${books.bookId}|}" class="btn btn-info">상세보기</a></td>
           </tr>
         </tbody>
