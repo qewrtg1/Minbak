@@ -20,11 +20,24 @@ public class RoomsService {
     //    목록 페이징
     public RoomsPageDto getRooms(String keyword,int page, int size){
 
-        int offset = (page -1) * size;
-        List<RoomsListDto> rooms = roomsMapper.selectRoomNames(keyword,offset,size);
-        int totalElements = roomsMapper.selectTotalRoomsCount(keyword);
+        // 페이지 오프셋 계산
+        int offset = (page - 1) * size;
 
-        return new RoomsPageDto(page,size,totalElements,rooms);
+        // 검색어가 있을 경우
+        List<RoomsListDto> rooms;
+        int totalElements;// 검색어가 없으면 null로 처리
+        if (keyword != null && !keyword.isEmpty()) {
+            // 검색어에 맞는 방 목록 가져오기
+            rooms = roomsMapper.selectRoomNames(keyword, offset, size);
+            // 검색어에 맞는 방 개수 가져오기
+            totalElements = roomsMapper.selectTotalRoomsCount(keyword);
+        } else {
+            // 검색어가 없을 경우 모든 방을 가져옴
+            rooms = roomsMapper.selectAllRooms(offset, size);
+            // 모든 방의 개수 가져오기
+            totalElements = roomsMapper.selectTotalRoomsCount(null);
+        }
+        return new RoomsPageDto(page, size, totalElements, rooms);
     }
     // 상세 보기
     public RoomsDto getRoomList(int roomId){
