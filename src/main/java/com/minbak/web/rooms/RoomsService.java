@@ -18,10 +18,11 @@ public class RoomsService {
     }
 
     //    목록 페이징
-    public RoomsPageDto getRooms(int page, int size){
+    public RoomsPageDto getRooms(String keyword,int page, int size){
+
         int offset = (page -1) * size;
-        int totalElements = roomsMapper.selectTotalRoomsCount();
-        List<RoomsListDto> rooms = roomsMapper.selectRoomNames(offset,size);
+        List<RoomsListDto> rooms = roomsMapper.selectRoomNames(keyword,offset,size);
+        int totalElements = roomsMapper.selectTotalRoomsCount(keyword);
 
         return new RoomsPageDto(page,size,totalElements,rooms);
     }

@@ -20,9 +20,11 @@ public class RoomsController {
     @GetMapping("/rooms")
     public String roomsList(@RequestParam(name="page", defaultValue = "1") int page,
                              @RequestParam(name="size", defaultValue = "10") int size,
+                             @RequestParam(name="keyword", required = false) String keyword,
                              Model model){
-        RoomsPageDto roomsPage = roomsService.getRooms(page, size);
+        RoomsPageDto roomsPage = roomsService.getRooms(keyword,page, size);
         model.addAttribute("roomsPage" , roomsPage);
+        model.addAttribute("keyword",keyword);
 
         return "rooms/rooms_list";
     }

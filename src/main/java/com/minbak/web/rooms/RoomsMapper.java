@@ -13,8 +13,11 @@ public interface RoomsMapper {
     // rooms 의 디테일
     RoomsDto getRoomsList(int roomId);
     // rooms 의 전체 리스트
-    List<RoomsListDto> selectRoomNames(@Param("offset") int offset, @Param("size") int size);
-    int selectTotalRoomsCount();
+    List<RoomsListDto> selectRoomNames(@Param("keyword") String keyword,@Param("offset") int offset, @Param("size") int size);
+    int selectTotalRoomsCount(String keyword);
+
+    int selectTotalRoomsCountByKeyword(String keyword);  // 검색어가 있을 경우, 검색된 룸의 수 카운트
+    List<RoomsListDto> selectRoomsByKeyword(@Param("keyword") String keyword, @Param("offset") int offset, @Param("size") int size);  // 검색어가 있을 경우, 검색된 룸 목록 가져오기
     // 수정 페이지
     RoomsDto getRoomById(int roomId);
     // 수정 기능
