@@ -116,5 +116,38 @@ public class UsersService {
         return new PageDto<>(page,size,totalItems,hosts);
     }
 
+    public HostResponseDto findHostByUserId(int userId){
+        return usersMapper.findHostByUserId(userId);
+    }
+
+    public void makeAdmin(String userId){
+        usersMapper.makeAdmin(userId);
+    }
+
+    public PageDto<UserReportDto> searchUserReports(int page, int size,String reporterEmail,
+                                                    String reportedUserEmail,
+                                                    String reportReason,
+                                                    String status,
+                                                    LocalDate startReportDate,
+                                                    LocalDate endReportDate,
+                                                    LocalDate startProcessedAt,
+                                                    LocalDate endProcessedAt){
+
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countUserReports(reporterEmail,reportedUserEmail,reportReason,status,startReportDate,endReportDate,startProcessedAt,endProcessedAt);
+
+        List<UserReportDto> reportDtos = usersMapper.searchUserReports(size, offset,reporterEmail,reportedUserEmail,reportReason,status,startReportDate,endReportDate,startProcessedAt,endProcessedAt);
+
+        return new PageDto<>(page,size,totalItems,reportDtos);
+    };
+
+    public UserReportDto getReportById(int reportId){
+        return usersMapper.getReportById(reportId);
+    }
+
+    public void updateReportStatus(UserReportDto userReportDto){
+        usersMapper.updateReportStatus(userReportDto);
+    }
+
 
 }

@@ -146,7 +146,6 @@
         <td th:text="${host.roomCount}">5</td>  <!-- 숙소개수 출력 -->
         <td th:text="${host.createdAt}">2022-03-15</td>
         <td>
-          <a th:href="@{/admin/hosts/edit/{id}(id=${host.hostId})}" class="btn btn-primary btn-sm">Edit</a>
           <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm">Delete</a>
         </td>
       </tr>

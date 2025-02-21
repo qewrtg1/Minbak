@@ -160,7 +160,6 @@
         <td th:text="${user.bookCount}">5</td>  <!-- 예약 수 출력 -->
         <td th:text="${user.createdAt}">2022-03-15</td>
         <td>
-          <a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" class="btn btn-primary btn-sm">Edit</a>
           <a th:href="@{/admin/users/delete/{id}(id=${user.userId})}" class="btn btn-danger btn-sm">Delete</a>
         </td>
       </tr>

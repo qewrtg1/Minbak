@@ -361,6 +361,15 @@
         </if>
     </select>
 
+    <!-- 아이디로 호스트 정보 조회 -->
+    <select id="findHostByUserId" resultType="com.minbak.web.users.HostResponseDto">
+        SELECT *
+        FROM host WHERE user_id = #{UserId}
+    </select>
 
-
+<!--어드민 추가-->
+    <insert id="makeAdmin">
+        INSERT INTO users_roles (user_id, role_id)
+        VALUES (#{user_id}, 3)  <!-- user_id 값은 동적으로 받아오며, role_id는 3으로 고정 -->
+    </insert>
 </mapper>

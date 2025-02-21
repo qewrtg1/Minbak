@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
+<head>
+  <meta charset="UTF-8">
+  <title>User Reports</title>
+  <th:block layout:fragment="css">
+    <style>
+      .main-content {
+          width: 1680px;
+          height: 100vh;
+          overflow-y: auto;
+          padding: 20px;
+          margin: 0 auto;
+      }
+
+      .search-box {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 20px;
+      }
+
+      .search-box input, .search-box select {
+          padding: 10px;
+          margin-right: 10px;
+          width: 200px;
+      }
+
+      .user-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+      }
+
+      .user-table th, .user-table td {
+          padding: 10px;
+          border: 1px solid #ddd;
+          text-align: center;
+      }
+
+      .user-table th {
+          background-color: #f2f2f2;
+      }
+
+      .page-nav {
+          margin-top: 20px;
+      }
+
+      #userTable {
+          background-color: #fff;
+      }
+      .date-range {
+        margin-bottom: 15px;
+      }
+
+      .date-description {
+        font-size: 0.9em;
+        color: #555;
+        margin-bottom: 5px;
+      }
+
+      .date-range label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      /* 좌우로 배치 */
+      .date-inputs {
+        display: flex;
+        gap: 10px; /* 각 입력 필드 간격 */
+      }
+
+      .date-inputs input {
+        width: 45%; /* 각 입력 필드의 크기를 45%로 설정 */
+      }
+
+    </style>
+  </th:block>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+  <main class="main-content">
+
+    <!-- 검색 폼 -->
+    <form th:action="@{/admin/users/report}" method="get" class="search-box">
+      <input type="text" name="reporterEmail" th:value="${reporterEmail}" placeholder="신고한 유저 이메일">
+      <input type="text" name="reportedUserEmail" th:value="${reportedUserEmail}" placeholder="신고 당한 유저 이메일">
+      <input type="text" name="reportReason" th:value="${reportReason}" placeholder="신고 사유">
+
+      <select name="status">
+        <option value="" th:selected="${status == null}">상태 선택</option>
+        <option value="대기" th:selected="${status == '대기'}">대기</option>
+        <option value="진행 중" th:selected="${status == '진행 중'}">진행 중</option>
+        <option value="완료" th:selected="${status == '완료'}">완료</option>
+      </select>
+
+      <!-- 신고 날짜 범위 설명 추가 -->
+      <div class="date-range">
+        <label for="startReportDate">신고 날짜 범위</label>
+        <div class="date-description">
+          <span>시작일</span> ~ <span>종료일</span>
+        </div>
+        <div class="date-inputs">
+          <input type="date" name="startReportDate" th:value="${startReportDate}" id="startReportDate" placeholder="신고 시작일">
+          <input type="date" name="endReportDate" th:value="${endReportDate}" id="endReportDate" placeholder="신고 종료일">
+        </div>
+      </div>
+
+      <!-- 처리 날짜 범위 설명 추가 -->
+      <div class="date-range">
+        <label for="startProcessedAt">처리 날짜 범위</label>
+        <div class="date-description">
+          <span>시작일</span> ~ <span>종료일</span>
+        </div>
+        <div class="date-inputs">
+          <input type="date" name="startProcessedAt" th:value="${startProcessedAt}" id="startProcessedAt" placeholder="처리 시작일">
+          <input type="date" name="endProcessedAt" th:value="${endProcessedAt}" id="endProcessedAt" placeholder="처리 종료일">
+        </div>
+      </div>
+
+
+      <button type="submit" class="btn btn-primary">검색</button>
+    </form>
+
+
+    <br>
+    <hr>
+
+    <!-- 신고 리스트 테이블 -->
+    <table class="user-table" id="userTable">
+      <thead>
+      <tr>
+        <th>신고 ID</th>
+        <th>신고한 유저 이메일</th>
+        <th>신고 당한 유저 이메일</th>
+        <th>신고 사유</th>
+        <th>신고 접수 시간</th>
+        <th>처리 상태</th>
+        <th>처리 완료 시간</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="report : ${pageDto.objects}">
+        <td th:text="${report.reportId}">1</td>
+        <!-- 신고한 유저 이메일에 링크 추가 -->
+        <td>
+          <a th:href="@{/admin/users/detail/{id}(id=${report.reporterId})}" th:text="${report.reporterEmail}">user1@example.com</a>
+        </td>
+
+        <!-- 신고 당한 유저 이메일에 링크 추가 -->
+        <td>
+          <a th:href="@{/admin/users/detail/{id}(id=${report.reportedUserId})}" th:text="${report.reportedUserEmail}">user2@example.com</a>
+        </td>
+
+        <td th:text="${report.reportReason}">불법 광고</td>
+        <td th:text="${#temporals.format(report.reportDate, 'yyyy-MM-dd HH:mm')}">2025-01-01</td>
+        <!-- 처리 상태를 수정할 수 있는 select 요소로 변경 -->
+        <td>
+          <select name="status" class="status-select" th:data-report-id="${report.reportId}">
+            <option value="대기" th:selected="${report.status == '대기'}">대기</option>
+            <option value="진행 중" th:selected="${report.status == '진행 중'}">진행 중</option>
+            <option value="완료" th:selected="${report.status == '완료'}">완료</option>
+          </select>
+        </td>
+        <td th:text="${#temporals.format(report.processedAt, 'yyyy-MM-dd HH:mm')}">2025-02-01</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <nav aria-label="Page navigation" class="page-nav" id="pagination">
+      <div style="display: flex; justify-content: space-between; width: 100%;">
+        <ul class="pagination justify-content-center" style="flex-grow: 1;">
+          <!-- 이전 페이지 링크 -->
+          <li class="page-item" th:classappend="${pageDto.hasPrev} ? '' : 'disabled'">
+            <a class="page-link" th:href="@{/admin/users/report?page={page}(page=${pageDto.currentPage - 1}, reporterEmail=${reporterEmail}, reportedUserEmail=${reportedUserEmail}, reportReason=${reportReason}, status=${status}, startReportDate=${startReportDate}, endReportDate=${endReportDate}, startProcessedAt=${startProcessedAt}, endProcessedAt=${endProcessedAt})}">«</a>
+          </li>
+
+          <!-- 페이지 번호 링크들 -->
+          <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}">
+            <a class="page-link" th:classappend="${pageDto.currentPage == i} ? 'active' : ''"
+               th:href="@{/admin/users/report?page={i}(i=${i}, reporterEmail=${reporterEmail}, reportedUserEmail=${reportedUserEmail}, reportReason=${reportReason}, status=${status}, startReportDate=${startReportDate}, endReportDate=${endReportDate}, startProcessedAt=${startProcessedAt}, endProcessedAt=${endProcessedAt})}" th:text="${i}">1</a>
+          </li>
+
+          <!-- 다음 페이지 링크 -->
+          <li class="page-item" th:classappend="${pageDto.hasNext} ? '' : 'disabled'">
+            <a class="page-link" th:href="@{/admin/users/report?page={page}(page=${pageDto.currentPage + 1}, reporterEmail=${reporterEmail}, reportedUserEmail=${reportedUserEmail}, reportReason=${reportReason}, status=${status}, startReportDate=${startReportDate}, endReportDate=${endReportDate}, startProcessedAt=${startProcessedAt}, endProcessedAt=${endProcessedAt})}">»</a>
+          </li>
+        </ul>
+
+        <!-- 상태 수정 버튼을 오른쪽 끝에 배치 -->
+        <button class="btn btn-primary" id="updateStatusBtn">상태 일괄 수정</button>
+      </div>
+    </nav>
+
+
+  </main>
+
+</th:block>
+
+<th:block layout:fragment="js">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    document.getElementById('updateStatusBtn').addEventListener('click', function() {
+      const statusSelects = document.querySelectorAll('.status-select');
+      const updates = [];
+
+      statusSelects.forEach(function(select) {
+        const reportId = parseInt(select.getAttribute('data-report-id'));
+        console.log(reportId);
+        const status = select.value;
+        updates.push({ reportId, status });
+      });
+
+      console.log(updates);
+
+      // 상태 일괄 업데이트 요청 (fetch 사용)
+      fetch('/admin/api/users/report/update-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // JSON 데이터를 보내는 것을 명시
+        },
+        body: JSON.stringify({ updates: updates }), // body에 updates 데이터 추가
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json(); // 응답이 성공적이면 JSON 형태로 변환
+          }
+          return Promise.reject('상태 업데이트 중 오류가 발생했습니다.');
+        })
+        .then(data => {
+          alert('상태가 성공적으로 업데이트되었습니다!');
+        })
+        .catch(function(error) {
+          alert(error);
+        });
+    });
+  </script>
+</th:block>
+</body>
+</html>

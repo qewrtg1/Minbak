@@ -5,71 +5,435 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Detail</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <th:block layout:fragment="css">
-    <style>
-        .main-content {
-            width: 1680px;
-            height: 100vh;
-            overflow-y:auto;
-            padding: 20px;
-            margin: 0 auto;
-        }
-    </style>
-    </th:block>
+    <title>User Information Update</title>
 
+    <th:block layout:fragment="css">
+        <style>
+            .main-content {
+               width: 1680px;
+               height: 100vh;
+               overflow-y:auto;
+               padding: 20px;
+               margin: 0 auto;
+            }
+
+            .form-container, .info-container {
+                flex: 1;
+                min-width: 48%;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+
+            #payment-table, #room-table{
+              border-collapse: collapse;
+            }
+            #payment-table tr, #room-table tr{
+              text-align: center;
+              border: none;
+            }
+            #payment-table th, #room-table th{
+              font-size:13px;
+              padding:0px;
+              text-align: center;
+              border: none;
+            }
+            #payment-table td, #room-table td{
+              border: none;
+              font-size:14px;
+            }
+        </style>
+    </th:block>
 </head>
 <body>
+
+<!--<script th:if="${message}">-->
+<!--  alert("[[${message}]]");-->
+<!--</script>-->
 <th:block layout:fragment="content">
 
-<div class="container mt-5 main-content">
-    <h2 class="text-center mb-4">User Details</h2>
-    <div class="row">
-        <div class="col-lg-6 col-md-8 mx-auto">
-            <!-- User Detail Card -->
-            <div class="card">
-                <div class="card-header text-white bg-primary">
-                    <h4 class="mb-0">User Information</h4>
+    <main class="main-content d-flex flex-wrap">
+        <h3 class="w-100 text-center" style="font-size:25px;">유저 정보 상세 페이지</h3>
+
+        <!-- 유저 수정 폼 -->
+        <div class="form-container p-4">
+            <h4 class="text-center" style="font-size:20px;">유저 정보</h4>
+
+            <form action="/admin/users/update" method="POST">
+                <input id="userId" type="hidden" name="userId" th:value="${userDto.userId}">
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">이름</label>
+                    <input type="text" id="name" name="name" th:value="${userDto.name}" class="form-control" required>
                 </div>
-                <div class="card-body">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <strong>Name:</strong> <span th:text="${userDto.name}">User Name</span>
-                        </div>
-                        <div class="list-group-item">
-                            <strong>Email:</strong> <span th:text="${userDto.email}">user@example.com</span>
-                        </div>
-                        <div class="list-group-item">
-                            <strong>Phone Number:</strong> <span th:text="${userDto.phoneNumber}">123-456-7890</span>
-                        </div>
-                        <div class="list-group-item">
-                            <strong>Status:</strong> <span th:text="${userDto.enabled ? 'Active' : 'Inactive'}">Active</span>
-                        </div>
-                        <div class="list-group-item">
-                            <strong>Created At:</strong> <span th:text="${userDto.createdAt}">2025-02-19</span>
-                        </div>
-                        <div class="list-group-item">
-                            <strong>Updated At:</strong> <span th:text="${userDto.updatedAt}">2025-02-19</span>
-                        </div>
-                    </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="email" id="email" name="email" th:value="${userDto.email}" class="form-control" required>
                 </div>
-                <div class="card-footer text-center">
-                    <a href="/admin/users" class="btn btn-secondary">Back to User List</a>
+
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label">전화번호</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" th:value="${userDto.phoneNumber}" pattern="^\d{3}-\d{3,4}-\d{4}$" class="form-control" required>
                 </div>
+
+                <div class="mb-3">
+                    <label for="enabled" class="form-label">계정 상태</label>
+                    <select id="enabled" name="enabled" class="form-select">
+                        <option value="true" th:selected="${userDto.enabled}">Active</option>
+                        <option value="false" th:selected="${!userDto.enabled}">Inactive</option>
+                    </select>
+                </div>
+
+                <p class="text-muted">패스워드 변경 요청 시 이메일 발송</p>
+
+                <button type="submit" class="btn btn-primary w-30">수정</button>
+            </form>
+
+
+            <h4 class="text-center" style="font-size:20px;">호스팅 정보</h4>
+            <div th:if="${hostDto == null}" class="mt-5" style="height:250px; text-align:center;">
+                호스트 유저가 아닙니다.
+            </div>
+            <form action="/admin/users/hosts/update" method="POST" th:if="${hostDto != null}">
+                <input id="hostId" type="hidden" name="hostId" th:value="${hostDto.hostId}">
+
+                <!-- 취미 -->
+                <div class="mb-3">
+                    <label for="hostHobby" class="form-label">호스트 취미</label>
+                    <input type="text" id="hostHobby" name="hostHobby" th:value="${hostDto.hobby}" class="form-control">
+                </div>
+
+                <!-- 소개 -->
+                <div class="mb-3">
+                    <label for="hostIntroduction" class="form-label">호스트 소개</label>
+                    <textarea id="hostIntroduction" name="hostIntroduction" class="form-control" rows="4" th:text="${hostDto.introduction}"></textarea>
+                </div>
+
+                <!-- 검증 여부 -->
+                <div class="mb-3">
+                    <label for="isVerified" class="form-label">검증 여부</label>
+                    <select id="isVerified" name="isVerified" class="form-select">
+                        <option value="true" th:selected="${hostDto.isVerified}">검증됨</option>
+                        <option value="false" th:selected="${!hostDto.isVerified}">미검증</option>
+                    </select>
+                </div>
+
+                <!-- 계좌 번호 -->
+                <div class="mb-3">
+                    <label for="accountNumber" class="form-label">계좌 번호</label>
+                    <input type="text" id="accountNumber" name="accountNumber" th:value="${hostDto.accountNumber}" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-30">수정</button>
+            </form>
+
+        </div>
+
+
+
+        <!-- 유저 추가 정보 -->
+        <div class="info-container p-4">
+
+            <div class="info-box border-bottom pb-3 mb-3">
+                <h4>📅 최근 접속일</h4>
+                <p class="fw-bold">2025-02-13 (리프레시 토큰으로 구현?)</p>
+            </div>
+
+            <div class="info-box border-bottom pb-3 mb-3">
+                <h4>🏠 보유 숙소</h4>
+                <ul id="property-list" class="list-group"></ul>
+                <table id="room-table" class="table table-bordered">
+                    <thead class="table-white">
+                    <tr>
+                        <th>숙소 이름</th>
+                        <th>가격</th>
+                        <th>&nbsp;주소&nbsp;&nbsp;</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <!-- 결제 정보가 여기에 동적으로 추가될 것입니다. -->
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation" class="page-nav" id="pagination-1">
+
+                </nav>
+            </div>
+
+            <div class="info-box">
+                <h4>💳 결제 내역</h4>
+                <table id="payment-table" class="table table-bordered">
+                    <thead class="table-white">
+                    <tr>
+                        <th>숙소 이름</th>
+                        <th>가격</th>
+                        <th>결제일</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <!-- 결제 정보가 여기에 동적으로 추가될 것입니다. -->
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation" class="page-nav" id="pagination-2">
+
+                </nav>
+
+                <button id="make-admin-btn" class="btn btn-danger" style="position: absolute; bottom: 20px; right: 20px; z-index: 10;">
+                    관리자 등록
+                </button>
             </div>
         </div>
-    </div>
-</div>
+    </main>
 </th:block>
 <th:block layout:fragment="js">
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!--axios-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--관리자 권한 추가 요청-->
+    <script>
+        document.getElementById("make-admin-btn").addEventListener("click", function() {
+            const userId = document.getElementById("userId").value;  // 현재 유저 ID
+
+            // 관리자 등록 API 요청
+            axios.post('/admin/api/users/makeAdmin', {
+                userId: userId  // 유저 ID를 서버로 전송
+            })
+            .then(response => {
+                if (response.data.success) {
+                    alert("성공적으로 관리자로 등록되었습니다.");
+                } else {
+                    alert("관리자 등록에 실패했습니다.");
+                }
+            })
+            .catch(error => {
+                console.error("관리자 등록 오류:", error);
+                alert("오류가 발생했습니다. 다시 시도해주세요.(이미 관리자일 수 있음)");
+            });
+        });
+    </script>
+
+    <!--결제내역js-->
+    <script>
+
+        let currentPage2 = 1;
+        const pageSize = 5;  // 페이지당 표시할 데이터 수
+        const userId = document.getElementById("userId").value;
+
+        window.onload = function() {
+         filterUsersPayments(); // 페이지 로드 시 결제 내역을 가져옵니다.
+          filterUsersRooms(); // 보유 숙소(방) 불러오기
+        };
+
+        function filterUsersPayments() {
+
+            // axios를 사용해서 서버로 요청을 보냅니다.
+            axios.get('/admin/api/users/payments', {
+                params: {
+                    userId: userId,   // 유저id
+                    page: currentPage2,     // 현재 페이지
+                    size: pageSize         // 페이지 크기
+                }
+            })
+            .then(response => {
+                const data = response.data;
+
+                renderTable2(data.objects);  // 테이블을 갱신합니다.
+                renderPagination2(data);      // 페이지네이션을 갱신합니다.
+            })
+            .catch(error => {
+                console.error("Error fetching data", error);
+            });
+        }
+
+        // 테이블에 데이터를 렌더링하는 함수
+        function renderTable2(payments) {
+            const tbody = document.querySelector("#payment-table tbody");
+            tbody.innerHTML = "";  // 기존 데이터를 초기화
+
+            payments.forEach(payment => {
+              const date = new Date(payment.createdAt);
+              const formattedDate = date.toLocaleDateString('ko-KR');
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                      <td><a href="/admin/payments/${payment.paymentId}">${payment.roomName}</a></td>
+                      <td>${payment.amount}</td>
+                      <td>${formattedDate}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+
+        function renderPagination2(data) {
+        let paginationDiv = document.getElementById("pagination-2");
+        paginationDiv.innerHTML = "";  // 기존 페이지네이션 초기화
+
+        const currentPage = data.currentPage;  // 현재 페이지
+        const totalItems = data.totalItems;    // 전체 유저 수
+        const totalPages = data.totalPages;    // 전체 페이지 수
+        const startPage = data.startPage;      // 페이지 네비게이션 시작 페이지
+        const endPage = data.endPage;          // 페이지 네비게이션 끝 페이지
+        const hasPrev = data.hasPrev;          // 이전 페이지 여부
+        const hasNext = data.hasNext;          // 다음 페이지 여부
+
+        currentPage2 = currentPage;
+        // 페이지 네비게이션을 위한 HTML 시작
+        let paginationHTML = `
+            <ul class="pagination justify-content-center pagination-sm">
+                <!-- 이전 버튼 -->
+                <li class="page-item ${hasPrev ? '' : 'disabled'}">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="changePage2(${currentPage - 1})">«</a>
+                </li>
+        `;
+
+        // 페이지 번호 버튼들
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHTML += `
+                <li class="page-item ${currentPage === i ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                </li>
+            `;
+        }
+
+        // 다음 버튼
+        paginationHTML += `
+                <li class="page-item ${hasNext ? '' : 'disabled'}">
+                    <a class="page-link" href="#" aria-label="Next" onclick="changePage2(${currentPage + 1})">»</a>
+                </li>
+            </ul>
+        `;
+
+        // 페이지 네비게이션을 DOM에 삽입
+            paginationDiv.innerHTML = paginationHTML;
+        }
+
+            function changePage2(page) {
+
+              // 페이지 변경 로직 (검색어와 페이지 크기, 페이지 번호 등)
+              axios.get('/admin/api/users/payments', {
+                  params: {
+                      userId: userId,        // 검색어
+                      page: page,            // 새 페이지 번호
+                      size: pageSize         // 페이지 크기
+                  }
+              })
+              .then(response => {
+                  const data = response.data;
+                  renderTable2(data.objects);  // 유저 목록 렌더링
+                  renderPagination2(data);     // 페이지 네비게이션 렌더링
+              })
+              .catch(error => {
+                  console.error("페이지를 로드하는 데 실패했습니다:", error);
+              });
+          }
+    </script>
+    <!--보유숙소 js-->
+    <script>
+        let currentPage1 = 1;
+
+        // 유저 보유 방 목록 불러오기
+        function filterUsersRooms() {
+            axios.get('/admin/api/users/rooms', {
+                params: {
+                    userId: userId,   // 유저 ID
+                    page: currentPage1,  // 현재 페이지
+                    size: pageSize      // 페이지 크기
+                }
+            })
+            .then(response => {
+                const data = response.data;
+
+                renderTable1(data.objects);  // 방 테이블 갱신
+                renderPagination1(data);      // 페이지네이션 갱신
+            })
+            .catch(error => {
+                console.error("Error fetching rooms", error);
+            });
+        }
+
+        // 방 데이터를 테이블에 렌더링하는 함수
+        function renderTable1(rooms) {
+            const tbody = document.querySelector("#room-table tbody");
+            tbody.innerHTML = "";  // 기존 데이터를 초기화
+
+            rooms.forEach(room => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td><a href="/admin/rooms/${room.roomId}">${room.name}</a></td>
+                    <td>${room.price}</td>
+                    <td>${room.address}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 방 페이지네이션 렌더링 함수
+        function renderPagination1(data) {
+            let paginationDiv = document.getElementById("pagination-1");
+            paginationDiv.innerHTML = "";  // 기존 페이지네이션 초기화
+
+            const currentPage = data.currentPage;
+            const totalPages = data.totalPages;
+            const startPage = data.startPage;
+            const endPage = data.endPage;
+            const hasPrev = data.hasPrev;
+            const hasNext = data.hasNext;
+
+            currentPage1 = currentPage;
+            let paginationHTML = `
+                <ul class="pagination justify-content-center pagination-sm">
+                    <li class="page-item ${hasPrev ? '' : 'disabled'}">
+                        <a class="page-link" href="#" onclick="changePage1(${currentPage - 1})">«</a>
+                    </li>
+            `;
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage1(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            paginationHTML += `
+                    <li class="page-item ${hasNext ? '' : 'disabled'}">
+                        <a class="page-link" href="#" onclick="changePage1(${currentPage + 1})">»</a>
+                    </li>
+                </ul>
+            `;
+
+            paginationDiv.innerHTML = paginationHTML;
+        }
+
+        // 페이지 변경 시 방 목록을 다시 가져오는 함수
+        function changePage1(page) {
+            axios.get('/admin/api/users/rooms', {
+                params: {
+                    userId: userId,
+                    page: page,
+                    size: pageSize
+                }
+            })
+            .then(response => {
+                const data = response.data;
+                renderTable1(data.objects);
+                renderPagination1(data);
+            })
+            .catch(error => {
+                console.error("페이지를 로드하는 데 실패했습니다:", error);
+            });
+        }
+
+    </script>
 </th:block>
 
 </body>

@@ -91,7 +91,30 @@ public interface UsersMapper {
                                        LocalDate endDate,
                                        Integer roomCount);
 
+    public HostResponseDto findHostByUserId(int userId);
+
+    public void makeAdmin(String userId);
+
+    public List<UserReportDto> searchUserReports(int limit, int offset,String reporterEmail,
+                                                 String reportedUserEmail,
+                                                 String reportReason,
+                                                 String status,
+                                                 LocalDate startReportDate,
+                                                 LocalDate endReportDate,
+                                                 LocalDate startProcessedAt,
+                                                 LocalDate endProcessedAt);
+
+    public Integer countUserReports(String reporterEmail,
+                                    String reportedUserEmail,
+                                    String reportReason,
+                                    String status,
+                                    LocalDate startReportDate,
+                                    LocalDate endReportDate,
+                                    LocalDate startProcessedAt,
+                                    LocalDate endProcessedAt);
 
 
+    public UserReportDto getReportById(int reportId);
 
+    public void updateReportStatus(UserReportDto userReportDto);
 }

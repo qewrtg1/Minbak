@@ -27,7 +27,7 @@ public class UserPageDto<T> {
         this.objects = objects;
 
         // 전체 페이지 수 계산
-        this.totalPages = (int) Math.ceil((double) totalItems / pageSize);
+        this.totalPages = Math.max(1,(int) Math.ceil((double) totalItems / pageSize));
 
         // halfRange는 페이지 네비게이션에서 표시할 범위를 데이터에 맞게 동적으로 설정
         int halfRange = 2;

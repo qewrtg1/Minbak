@@ -152,15 +152,9 @@ public class UsersController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/users/detail/{id}")
-    public String userDetail(@PathVariable("id") int userId,Model model){
 
-        model.addAttribute("userDto",usersService.findUserByUserId(userId));
 
-        return "/users/user-detail";
-    }
-
-//여기서부터 어드민페이지 real구현
+//여기서부터 어드민페이지 진짜구현
 
     @GetMapping("/users")
     //어드민 유저페이지 페이지네이션
@@ -221,4 +215,46 @@ public class UsersController {
         return "/users/host";
     }
 
+    @GetMapping("/users/detail/{id}")
+    public String userDetail(@PathVariable("id") int userId,Model model){
+
+        model.addAttribute("userDto",usersService.findUserByUserId(userId));
+        model.addAttribute("hostDto",usersService.findHostByUserId(userId));
+
+
+        return "/users/user-detail";
+    }
+
+    @GetMapping("/users/report")
+    public String userReports(@RequestParam(value = "page", defaultValue = "1") int page,       // 기본값 1
+                              @RequestParam(value = "size", defaultValue = "10") int size,     // 기본값 10
+                              @RequestParam(required = false) String reporterEmail,
+                              @RequestParam(required = false) String reportedUserEmail,
+                              @RequestParam(required = false) String reportReason,
+                              @RequestParam(required = false) String status,
+                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startReportDate,
+                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endReportDate,
+                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startProcessedAt,
+                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endProcessedAt,
+                              Model model){
+
+        // 서비스 호출하여 데이터 가져오기
+        PageDto<UserReportDto> pageDto = usersService.searchUserReports(
+                page, size, reporterEmail, reportedUserEmail, reportReason, status,
+                startReportDate, endReportDate, startProcessedAt, endProcessedAt);
+
+        // 모델에 페이징 데이터 전달
+        model.addAttribute("pageDto", pageDto);
+
+        model.addAttribute("reporterEmail", reporterEmail);
+        model.addAttribute("reportedUserEmail", reportedUserEmail);
+        model.addAttribute("reportReason", reportReason);
+        model.addAttribute("status", status);
+        model.addAttribute("startReportDate", startReportDate);
+        model.addAttribute("endReportDate", endReportDate);
+        model.addAttribute("startProcessedAt", startProcessedAt);
+        model.addAttribute("endProcessedAt", endProcessedAt);
+
+        return "users/report";
+    }
 }
