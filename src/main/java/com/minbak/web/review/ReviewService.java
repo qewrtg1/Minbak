@@ -13,6 +13,21 @@ public class ReviewService {
     @Autowired
     ReviewMapper reviewMapper;
 
+    @Autowired  // Spring에서 자동으로 의존성 주입
+    public ReviewService(ReviewMapper reviewMapper) {
+        this.reviewMapper = reviewMapper;
+    }
+
+    // 검색어에 맞는 리뷰 리스트를 반환하는 메서드
+    public List<ReviewDto> getReviews(String search) {  // 리턴 타입과 메서드 이름을 명확히 작성
+        return reviewMapper.selectReviews(search);  // Mapper에서 검색된 리뷰 리스트를 반환
+    }
+
+    // 검색어에 맞는 총 후기 수를 반환하는 메서드
+    public Integer getTotalReviewCount(String search) {  // 리턴 타입을 int로 명시
+        return reviewMapper.selectTotalReviewCount(search);  // Mapper에서 총 후기 수를 반환
+    }
+
     // 모든 리뷰 목록 가져오기
     public List<ReviewDto> findAllReview() {
         return reviewMapper.findAllReview();
@@ -28,10 +43,6 @@ public class ReviewService {
         return reviewMapper.findReviewsWithPagination(offset, limit); // MyBatis에서 페이징된 리뷰 가져오기
     }
 
-    /** 전체 리뷰 개수를 조회*/
-    public int getTotalReviewCount() {
-        return reviewMapper.getTotalReviewCount(); // 총 리뷰 개수 조회
-    }
 
     // 리뷰 상세보기
     public ReviewDto findReviewById(int reviewId) {
@@ -44,7 +55,6 @@ public class ReviewService {
         if (existingReview == null) {
             throw new IllegalArgumentException("해당 리뷰가 존재하지 않습니다: " + review.getReviewId());
         }
-
         reviewMapper.editReview(review);
     }
 
