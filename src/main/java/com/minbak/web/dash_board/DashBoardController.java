@@ -45,6 +45,38 @@ public class DashBoardController {
 
         model.addAttribute("userRatio", userRatio);
 
+        // 통계 데이터 가져오기
+        Map<String, Object> statistics = dashBoardService.getStatistics();
+
+        // 모델에 데이터 추가
+        model.addAttribute("statistics", statistics);
+
+        // 최신 신고 숙소 데이터 가져오기
+        List<ReportedRoomDto> recentReportedRooms = dashBoardService.getRecentReportedRooms();
+
+        // 모델에 데이터 추가
+        model.addAttribute("recentReportedRooms", recentReportedRooms);
+
+
+        // 예약 취소 비율 데이터 가져오기
+        Map<String, Integer> reservationRatio = dashBoardService.getReservationStatusRatio();
+
+        // 모델에 데이터 추가
+        model.addAttribute("reservationRatio", reservationRatio);
+
+        // 관리자 리스트 가져오기
+        List<AdminDto> adminList = dashBoardService.getAllAdmins();
+
+        // 모델에 데이터 추가
+        model.addAttribute("adminList", adminList);
+
+        // 카테고리별 숙소 개수 데이터 추가
+        List<CategoryRoomCountDto> categoryRoomCounts = dashBoardService.getRoomsByCategory();
+        model.addAttribute("categoryRoomCounts", categoryRoomCounts);
+
+        List<OptionRoomCountDto> optionRoomCounts = dashBoardService.getRoomsByOption();
+        model.addAttribute("optionRoomCounts", optionRoomCounts);
+
         // Thymeleaf 템플릿 경로 반환
         return "dash-board";
     }

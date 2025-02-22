@@ -57,6 +57,93 @@
         ORDER BY month;
     </select>
 
+    <!-- 전체 숙소 수 -->
+    <select id="countTotalRooms" resultType="int">
+        SELECT COUNT(*) FROM rooms;
+    </select>
 
+    <!-- 오늘 가입한 사용자 수 -->
+    <select id="countTodayUsers" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+        WHERE DATE(created_at) = CURDATE();
+    </select>
+
+    <!-- 총 매출 (결제 완료된 금액 합산) -->
+    <select id="sumTotalRevenue" resultType="decimal">
+        SELECT COALESCE(SUM(amount), 0)
+        FROM payments
+        WHERE status = '결제 완료';
+    </select>
+
+    <!-- 미처리 신고 건수 -->
+    <select id="countPendingReports" resultType="int">
+        SELECT COUNT(*)
+        FROM user_reports
+        WHERE status = '대기';
+    </select>
+
+    <!-- 리뷰 평균 점수 -->
+    <select id="avgReviewScore" resultType="decimal">
+        SELECT COALESCE(AVG(score), 0)
+        FROM review;
+    </select>
+
+    <!-- 최근 신고된 숙소 최신순 5개 조회 -->
+    <select id="findRecentReportedRooms" resultType="com.minbak.web.dash_board.ReportedRoomDto">
+        SELECT
+        u.user_id,
+        u.email AS user_email,
+        r.room_id,
+        r.name AS room_name,
+        r.address,
+        r.price
+        FROM rooms_reports rr
+        JOIN rooms r ON rr.room_id = r.room_id
+        JOIN users u ON r.user_id = u.user_id
+        ORDER BY rr.report_id DESC
+        LIMIT 4
+    </select>
+
+    <!-- 전체 예약 건수 조회 -->
+    <select id="countTotalReservations" resultType="int">
+        SELECT COUNT(*) FROM books;
+    </select>
+
+    <!-- 취소된 예약 건수 조회 (취소 상태: '이용자 취소', '숙박업자 취소') -->
+    <select id="countCancelledReservations" resultType="int">
+        SELECT COUNT(*)
+        FROM books
+        WHERE status IN ('이용자 취소', '숙박업자 취소');
+    </select>
+
+    <!-- 관리자 리스트 조회 -->
+    <select id="findAllAdmins" resultType="com.minbak.web.dash_board.AdminDto">
+        SELECT u.user_id AS id, u.email, u.phone_number AS phoneNumber
+        FROM users u
+        JOIN users_roles ur ON u.user_id = ur.user_id
+        JOIN roles r ON ur.role_id = r.role_id
+        WHERE r.role = 'ROLE_ADMIN';
+    </select>
+
+    <!-- 카테고리별 숙소 개수 조회 (상위 8개) -->
+    <select id="countRoomsByCategory" resultType="com.minbak.web.dash_board.CategoryRoomCountDto">
+        SELECT c.name AS categoryName, COUNT(rc.room_id) AS roomCount
+        FROM categories c
+        LEFT JOIN rooms_categories rc ON c.category_id = rc.category_id
+        GROUP BY c.category_id
+        ORDER BY roomCount DESC
+        LIMIT 8;
+    </select>
+
+
+    <!-- 옵션별 숙소 개수 조회 -->
+    <select id="countRoomsByOption" resultType="com.minbak.web.dash_board.OptionRoomCountDto">
+        SELECT o.name AS optionName, COUNT(rro.room_id) AS roomCount
+        FROM room_options o
+        LEFT JOIN rooms_room_options rro ON o.option_id = rro.option_id
+        GROUP BY o.option_id
+        ORDER BY roomCount DESC;
+    </select>
 
 </mapper>
