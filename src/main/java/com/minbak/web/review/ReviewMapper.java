@@ -16,13 +16,13 @@ public interface ReviewMapper {
     List<ReviewDto> findOrderedReview();
 
     // 검색어에 맞는 리뷰 리스트를 가져오는 메서드
-    List<ReviewDto> selectReviews(@Param("search") String search);
+    List<ReviewDto> searchReview(@Param("offset") int offset, @Param("limit") int limit, @Param("search") String search);
 
     // 검색어에 맞는 총 후기 수를 가져오는 메서드
-    Integer selectTotalReviewCount(@Param("search") String search);
+    Integer getTotalReviewCount(@Param("search") String search);
 
     /** 페이지네이션을 적용하여 리뷰 리스트 조회*/
-    List<ReviewDto> findReviewsWithPagination(@Param("offset") int offset, @Param("limit") int limit);
+    List<ReviewDto> getReviews(@Param("offset") int offset, @Param("limit") int limit);
 
     // 리뷰 추가
     void createReview(ReviewDto reviewDto);

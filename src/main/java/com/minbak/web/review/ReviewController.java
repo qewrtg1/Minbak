@@ -35,7 +35,7 @@ public class ReviewController {
             @RequestParam(name="page", defaultValue = "1") int page,  // 현재 페이지 (기본값: 1)
             @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
             @RequestParam(value = "search", defaultValue = "") String search,  // 검색어 파라미터를 받아옴, 기본값은 빈 문자열
-            Model model) { //Thymeleaf에서 사용할 데이터를 모델에 담아 전달
+            Model model) { // Thymeleaf에서 사용할 데이터를 모델에 담아 전달
 
         List<ReviewDto> reviews = reviewService.searchReview(page*5-size, size, search);  // 서비스로부터 검색된 리뷰 리스트를 받아옴
         Integer totalReview = reviewService.getTotalReviewCount(search);  // 검색된 리뷰의 총 개수를 받아옴
@@ -44,9 +44,6 @@ public class ReviewController {
         model.addAttribute("totalReview", totalReview);  // 총 리뷰 개수
         return "review/review"; // Thymeleaf 리뷰 페이지 반환
     }
-
-
-
 
     @GetMapping("/detail/{id}"  )
     public String reviewDetail(@PathVariable ("id") int id, Model model){
