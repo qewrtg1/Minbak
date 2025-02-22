@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>예약 관리</title>
@@ -122,12 +121,12 @@
 
       <div class="booking-details">
         <h5>유저 ID</h5>
-        <div th:text="${books.userId}">유저 ID</div>
+        <div th:text="${books.user.name}">예약자명</div>
       </div>
 
       <div class="booking-details">
         <h5>숙소 ID</h5>
-        <div th:text="${books.roomId}">숙소 ID</div>
+        <div th:text="${books.room.name}">숙소명</div>
       </div>
 
       <div class="mt-4">

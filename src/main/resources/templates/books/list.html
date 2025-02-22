@@ -104,8 +104,8 @@
                 <td>
                   <select name="searchType" class="form-select">
                     <option value="예약번호">예약번호</option>
-                    <option value="유저 ID">유저 ID</option>
-                    <option value="숙소 ID">숙소 ID</option>
+                    <option value="예약자명">예약자명</option>
+                    <option value="연락처">연락처</option>
                   </select>
                   <input type="text" name="keyword" class="form-control">
                 </td>
@@ -165,11 +165,10 @@
         <thead>
           <tr>
             <th>예약번호</th>
-            <th>유저 ID</th>
-            <th>숙소 ID</th>
+            <th>예약자명</th>
+            <th>연락처</th>
             <th>체크인 날짜</th>
             <th>체크아웃 날짜</th>
-            <th>예약인원 수</th>
             <th>특별 요청사항</th>
             <th>예약상태</th>
             <th>상세보기</th>
@@ -178,11 +177,10 @@
         <tbody>
           <tr th:each="books : ${booksPage.objects}">
             <td th:text="${books.bookId}"></td>
-            <td th:text="${books.userId}"></td>
-            <td th:text="${books.roomId}"></td>
+            <td th:text="${books.user.name}"></td>
+            <td th:text="${books.user.phoneNumber}"></td>
             <td th:text="${books.startDate}"></td>
             <td th:text="${books.endDate}"></td>
-            <td th:text="${books.guestsNum}"></td>
             <td th:text="${books.request}"></td>
             <td th:text="${books.status}"></td>
             <td><a th:href="@{|/admin/books/${books.bookId}|}" class="btn btn-info">상세보기</a></td>

@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.books.BooksMapper">
+    <resultMap id="bookWithUser" type="com.minbak.web.books.BooksDto">
+        <id property="bookId" column="book_id"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="request" column="request"/>
+        <result property="status" column="status"/>
+        <association property="user" javaType="com.minbak.web.users.UserDto">
+            <result property="name" column="user_name"/>
+            <result property="phoneNumber" column="user_phone"/>
+        </association>
+        <association property="room" javaType="com.minbak.web.rooms.RoomsDto">
+            <result property="name" column="room_name"/>
+        </association>
+    </resultMap>
+
     <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
         insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
         values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{status}, #{userId}, #{roomId})
     </insert>
 
-    <select id="selectBookById" parameterType="Integer" resultType="com.minbak.web.books.BooksDto">
-        select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
-        from books
+    <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, r.name as room_name, b.start_date, b.end_date, b.guests_num, b.request, b.status
+        from books b
+        join users u on b.user_id = u.user_id
+        join rooms r on b.room_id = r.room_id
         where book_id = #{bookId}
     </select>
 
-    <select id="selectBooksByPage" resultType="com.minbak.web.books.BooksDto">
-        select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
-        from books
+    <select id="selectBooksByPage" resultMap="bookWithUser">
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, b.start_date, b.end_date, b.request, b.status
+        from books b
+        join users u on b.user_id = u.user_id
         order by book_id
         limit #{size} offset #{offset}
     </select>
 
-    <select id="searchBooks" resultType="com.minbak.web.books.BooksDto">
-        SELECT * FROM books
+    <select id="searchBooks" resultMap="bookWithUser">
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, b.start_date, b.end_date, b.request, b.status
+        from books b
+        join users u on b.user_id = u.user_id
         WHERE 1=1
         <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
             <choose>
                 <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
-                <when test="searchType == '유저 ID'"> AND user_id = #{keyword} </when>
-                <when test="searchType == '숙소 ID'"> AND room_id = #{keyword} </when>
+                <when test="searchType == '예약자명'"> AND u.name like concat('%', #{keyword}, '%') </when>
+                <when test="searchType == '연락처'"> AND u.phone_number like concat('%', #{keyword}, '%') </when>
             </choose>
         </if>
         <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
@@ -45,13 +65,14 @@
     </select>
 
     <select id="countSearchedBooks" resultType="int">
-        SELECT COUNT(*) FROM books
+        SELECT COUNT(*) FROM books b
+        JOIN users u ON b.user_id = u.user_id
         WHERE 1=1
         <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
             <choose>
                 <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
-                <when test="searchType == '유저 ID'"> AND user_id = #{keyword} </when>
-                <when test="searchType == '숙소 ID'"> AND room_id = #{keyword} </when>
+                <when test="searchType == '예약자명'"> AND u.name like concat('%', #{keyword}, '%') </when>
+                <when test="searchType == '연락처'"> AND u.phone_number like concat('%', #{keyword}, '%') </when>
             </choose>
         </if>
         <if test="dateType != null and dateType != '' and startDate != null and endDate != null">

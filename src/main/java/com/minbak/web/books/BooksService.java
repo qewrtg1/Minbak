@@ -1,8 +1,6 @@
 package com.minbak.web.books;
 
-import com.minbak.web.board.posts.BoardPostDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +11,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BooksService {
 
-    @Autowired
     private final BooksMapper booksMapper;
 
     public BooksPageDto<BooksDto> getBooks(Integer page, Integer size) {
