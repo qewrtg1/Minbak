@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.dash_board.DashBoardMapper">
+
+    <!-- 유저 신고 미해결 건수 조회 -->
+    <select id="countUserReports" resultType="int">
+        SELECT COUNT(*)
+        FROM user_reports
+        WHERE status = '대기'
+    </select>
+
+    <!-- 숙소 신고 미해결 건수 조회 -->
+    <select id="countRoomReports" resultType="int">
+        SELECT COUNT(*)
+        FROM rooms_reports
+        WHERE status = 'PENDING'
+    </select>
+
+    <!-- 호스트 인증 신청 건수 조회 (is_verified = 0 인 경우) -->
+    <select id="countHostVerifications" resultType="int">
+        SELECT COUNT(*)
+        FROM host
+        WHERE is_verified = 0
+    </select>
+
+    <!-- 전체 유저 수 조회 -->
+    <select id="countTotalUsers" resultType="int">
+        SELECT COUNT(*) FROM users;
+    </select>
+
+    <!-- 호스트 유저 수 조회 -->
+    <select id="countHosts" resultType="int">
+        SELECT COUNT(*) FROM users_roles WHERE role_id = 2;
+    </select>
+
+    <!--지금으로부터 5개월까지의 예약 데이터 개수 가져오기-->
+    <select id="findMonthlyReservations" resultType="com.minbak.web.dash_board.MonthlyReservationDto">
+        SELECT DATE_FORMAT(start_date, '%Y-%m') AS month,
+        COUNT(*) AS book_count
+        FROM books
+        WHERE start_date >= LAST_DAY(DATE_SUB(NOW(), INTERVAL 5 MONTH)) + INTERVAL 1 DAY
+        AND  LAST_DAY(DATE_ADD(NOW(), INTERVAL 1 MONTH)) + INTERVAL 1 DAY > start_date
+        GROUP BY month
+        ORDER BY month;
+    </select>
+
+
+    <!-- 월별 매출 데이터 조회 -->
+    <select id="findMonthlyRevenue" resultType="com.minbak.web.dash_board.MonthlyRevenueDto">
+        SELECT DATE_FORMAT(paid_at, '%Y-%m') AS month,
+        SUM(amount) AS revenue
+        FROM payments
+        WHERE paid_at >= LAST_DAY(DATE_SUB(NOW(), INTERVAL 5 MONTH)) + INTERVAL 1 DAY
+        AND LAST_DAY(NOW()) + INTERVAL 1 DAY > paid_at
+            AND status = '결제 완료'  <!-- 결제 완료된 건만 포함 -->
+        GROUP BY month
+        ORDER BY month;
+    </select>
+
+
+
+</mapper>

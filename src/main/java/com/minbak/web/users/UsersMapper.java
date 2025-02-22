@@ -81,7 +81,8 @@ public interface UsersMapper {
             Boolean enabled,
             LocalDate startDate,
             LocalDate endDate,
-            Integer roomCount
+            Integer roomCount,
+            Boolean isVerified
     );
 
     public Integer countHostsWithRoomCount(String name,
@@ -121,4 +122,6 @@ public interface UsersMapper {
     void updateUser(UserDto userDto);
 
     void updateHost(HostDto hostDto);
+
+
 }

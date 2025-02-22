@@ -12,7 +12,7 @@
           height: 100vh;
           overflow-y:auto;
           padding: 20px;
-          margin: 0 auto;
+          margin: 50px auto;
       }
       .stats-container {
           display: flex;
@@ -36,7 +36,7 @@
       }
       .search-box input {
           padding: 10px;
-          width: 300px;
+          width: 200px;
           border: 1px solid #ccc;
           border-radius: 5px;
       }
@@ -78,13 +78,13 @@
         <!-- 이름 입력 필드 -->
         <div class="col-auto">
           <label for="name" class="mr-2">이름:</label>
-          <input type="text" id="name" name="name" class="form-control mb-2" style="width: 200px;" placeholder="이름 검색" th:value="${name}" />
+          <input type="text" id="name" name="name" class="form-control mb-2" style="width: 150px;" placeholder="이름 검색" th:value="${name}" />
         </div>
 
         <!-- 이메일 입력 필드 -->
         <div class="col-auto">
           <label for="email" class="mr-2">이메일:</label>
-          <input type="text" id="email" name="email" class="form-control mb-2" style="width: 200px;" placeholder="이메일 검색" th:value="${email}" />
+          <input type="text" id="email" name="email" class="form-control mb-2" style="width: 150px;" placeholder="이메일 검색" th:value="${email}" />
         </div>
 
         <!-- 활성화 여부 선택 -->
@@ -94,6 +94,15 @@
             <option value="">선택</option>
             <option value="true" th:selected="${enabled == true}">활성화</option>
             <option value="false" th:selected="${enabled == false}">비활성화</option>
+          </select>
+        </div>
+
+        <div class="col-auto">
+          <label for="isVerified" class="mr-2">호스트 인증 여부:</label>
+          <select id="isVerified" name="isVerified" class="form-control mb-2" style="width: 150px;">
+            <option value="">선택</option>
+            <option value="true" th:selected="${isVerified == true}">인증</option>
+            <option value="false" th:selected="${isVerified == false}">비인증</option>
           </select>
         </div>
 
@@ -155,12 +164,12 @@
     <!-- 페이지네이션 -->
     <nav aria-label="Page navigation" class="page-nav" id="pagination">
       <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${hostPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/hosts?page={page}(page=${hostPageDto.currentPage - 1}, name=${name}, email=${email}, enabled=${enabled}, startDate=${startDate}, endDate=${endDate}, roomCount=${roomCount})}">«</a></li>
+        <li class="page-item" th:classappend="${hostPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/hosts?page={page}(page=${hostPageDto.currentPage - 1}, name=${name}, email=${email}, enabled=${enabled}, startDate=${startDate}, endDate=${endDate}, roomCount=${roomCount}, isVerified=${isVerified})}">«</a></li>
         <li class="page-item" th:each="i : ${#numbers.sequence(hostPageDto.startPage, hostPageDto.endPage)}">
           <a class="page-link" th:classappend="${hostPageDto.currentPage == i} ? 'active text-white' : ''"
-             th:href="@{/admin/hosts?page={i}(i=${i}, name=${name}, email=${email}, enabled=${enabled}, startDate=${startDate}, endDate=${endDate}, minPropertyCount=${minPropertyCount})}" th:text="${i}">1</a>
+             th:href="@{/admin/hosts?page={i}(i=${i}, name=${name}, email=${email}, enabled=${enabled}, startDate=${startDate}, endDate=${endDate}, isVerified=${isVerified})}" th:text="${i}">1</a>
         </li>
-        <li class="page-item" th:classappend="${hostPageDto.hasNext} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/hosts?page={page}(page=${hostPageDto.currentPage + 1}, name=${name}, email=${email}, enabled=${enabled}, startDate=${startDate}, endDate=${endDate}, roomCount=${roomCount})}">»</a></li>
+        <li class="page-item" th:classappend="${hostPageDto.hasNext} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/hosts?page={page}(page=${hostPageDto.currentPage + 1}, name=${name}, email=${email}, enabled=${enabled}, startDate=${startDate}, endDate=${endDate}, roomCount=${roomCount}, isVerified=${isVerified})}">»</a></li>
       </ul>
     </nav>
 

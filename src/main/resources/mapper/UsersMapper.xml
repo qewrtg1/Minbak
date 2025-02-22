@@ -310,6 +310,9 @@
         <if test="endDate != null">
             AND #{endDate} >= u.created_at
         </if>
+        <if test="isVerified != null">
+            AND #{isVerified} = h.is_verified
+        </if>
         <!-- 숙소 개수를 기준으로 필터링 -->
         <if test="roomCount != null">
             AND u.user_id IN (

@@ -107,11 +107,11 @@ public class UsersService {
     }
 
     public PageDto<HostResponseDto> searchHostsWithRoomCount(int page, int size, String name, String email, Boolean enabled,
-                                                LocalDate startDate, LocalDate endDate, Integer bookCount){
+                                                LocalDate startDate, LocalDate endDate, Integer bookCount, Boolean isVerified){
         int offset = (page-1)*size;
         int totalItems = usersMapper.countHostsWithRoomCount(name,email,enabled,startDate,endDate,bookCount);
 
-        List<HostResponseDto> hosts = usersMapper.searchHostsWithRoomCount(size,offset,name,email,enabled,startDate,endDate,bookCount);
+        List<HostResponseDto> hosts = usersMapper.searchHostsWithRoomCount(size,offset,name,email,enabled,startDate,endDate,bookCount,isVerified);
 
         return new PageDto<>(page,size,totalItems,hosts);
     }

@@ -196,10 +196,11 @@ public class UsersController {
                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                     @RequestParam(required = false) Integer bookCount,
+                                    @RequestParam(required = false) Boolean isVerified,
                                     Model model){
 
         //페이지에 보여줄 유저 정보 가져오기
-        PageDto<HostResponseDto> hostPageDto = usersService.searchHostsWithRoomCount(page, size, name, email, enabled, startDate, endDate, bookCount);
+        PageDto<HostResponseDto> hostPageDto = usersService.searchHostsWithRoomCount(page, size, name, email, enabled, startDate, endDate, bookCount, isVerified);
 
         // 모델에 데이터 전달
         model.addAttribute("hostPageDto",hostPageDto);
@@ -276,4 +277,6 @@ public class UsersController {
         model.addAttribute("message", "호스트 정보가 성공적으로 수정되었습니다.");
         return "redirect:/admin/users/detail/" + hostDto.getUserId();
     }
+
+
 }

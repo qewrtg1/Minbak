@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
+<head>
+    <meta charset="UTF-8">
+    <title>대시보드</title>
+    <th:block layout:fragment="css">
+        <style>
+            /* 대시보드 전체 레이아웃 */
+            .dashboard-container {
+                height: auto;
+                overflow:visible;
+                display: flex;
+                gap: 20px;
+                max-width: 1680px;
+                margin: 50px auto;
+                padding: 20px;
+            }
+
+            /* 왼쪽 메인 콘텐츠 */
+            .dashboard-left {
+                flex-grow: 1;
+                width: calc(100% - 320px);
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            /* 오른쪽 고정 패널 */
+            .dashboard-right {
+                width: 320px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                position: sticky;
+                top: 70px;
+                align-self: flex-start;
+            }
+
+            /* 카드 스타일 */
+            .card {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 오늘의 할 일 */
+            .todo-card {
+                width: 100%;
+                display: flex;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            /* 대형 카드 */
+            .large-card {
+                width: calc(50% - 10px);
+                height: 280px;
+            }
+
+            /* 중형 카드 */
+            .medium-card {
+                width: calc(30%); /* 너비를 줄여서 너무 길어 보이는 문제 해결 */
+                height: 250px; /* 높이를 늘려서 너무 낮아 보이는 문제 해결 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* 소형 카드 */
+            .small-card {
+                width: 100%;
+                height: 120px;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <main class="main-content">
+        <div class="dashboard-container">
+
+            <!-- 왼쪽 메인 콘텐츠 -->
+            <section class="dashboard-left">
+
+                <!-- 오늘의 할 일 -->
+                <div class="card todo-card">
+                    <strong>오늘의 할 일</strong>
+                    <span>
+                        <a th:href="@{/admin/users/report(status='대기')}" class="report-link">
+                            유저 신고 <span th:text="${userReportCount}">0</span>건
+                        </a> |
+                        <a href="http://localhost:8080/admin/rooms/report" class="report-link">
+                            숙소 신고 <span th:text="${roomReportCount}">0</span>건
+                        </a> |
+                        <a th:href="@{/admin/users/host(isVerified=false)}" class="report-link">
+                            호스팅 인증 신청 <span th:text="${hostVerificationCount}">0</span>건
+                        </a>
+                    </span>
+                </div>
+
+                <!-- 월별 예약 수 & 매출 그래프 -->
+                <div class="card large-card">월별 예약 수
+                    <canvas id="reservationChart"></canvas></div>
+
+                <div class="card large-card">월별 매출
+                    <canvas id="revenueChart"></canvas></div>
+
+                <!-- 통계 정보 -->
+                <div class="card small-card">
+                    <strong>통계</strong><br>
+                    총 사용자, 총 숙소, 오늘 가입자, 총 매출, 미처리 신고(건), 리뷰 평균
+                </div>
+                <div class="card medium-card">
+                    게스트와 호스트 비율
+                    <canvas id="userRatioChart"></canvas>
+                </div>
+                <div class="card medium-card">최근 신고 숙소 해결 여부</div>
+                <div class="card medium-card" style="width: calc(35%);">그래프 내용 텍스트로 정리</div>
+
+                <div class="card small-card">최근 신고 내역<br>신고한 사람, 신고당한 사람, 사유, 해결 여부</div>
+
+            </section>
+
+            <!-- 오른쪽 고정 패널 -->
+            <aside class="dashboard-right">
+                <div class="card">내 정보 간단히</div>
+                <div class="card">관리자 리스트</div>
+                <div class="card">관리자 누르면 정보 표시</div>
+            </aside>
+
+        </div>
+    </main>
+</th:block>
+
+<th:block layout:fragment="js">
+    <!-- Chart.js 스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // MonthlyReservationDto 리스트를 JSON 배열로 변환
+            let monthlyReservations = [[${monthlyReservations}]];
+
+            console.log("Raw Data:", monthlyReservations);  // 원본 데이터 확인
+
+            // 데이터를 개별 배열로 변환
+            let reservationLabels = [];
+            let reservationData = [];
+
+            monthlyReservations.forEach(reservation => {
+                reservationLabels.push(reservation.month);  // YYYY-MM 형식
+                reservationData.push(reservation.bookCount);  // 예약 건수
+            });
+
+            console.log("변환 후 예약 Labels:", reservationLabels);
+            console.log("변환 후 예약 Data:", reservationData);
+            /* 2. Chart.js 설정 */
+            const ctx1 = document.getElementById("reservationChart").getContext("2d");
+
+            new Chart(ctx1, {
+                type: "line",
+                data: {
+                    labels: reservationLabels,  // X축: 연도-월(YYYY-MM)
+                    datasets: [{
+                        label: "예약 수",
+                        data: reservationData,  // Y축: 예약 건수
+                        borderColor: "blue",
+                        backgroundColor: "rgba(0, 0, 255, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: "top" }
+                    },
+                    scales: {
+                        x: {
+                            type: "category",  // X축을 범주형으로 강제 설정
+                            ticks: {
+                                callback: function(value, index) {
+                                    return reservationLabels[index];  //X축 값이 YYYY-MM으로 나오도록 설정
+                                }
+                            }
+                        },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+
+
+
+            /* 3. 매출 데이터 가져오기 */
+
+            // 월별 매출 데이터 JSON 배열 변환
+            let monthlyRevenue = [[${monthlyRevenue}]];
+
+            console.log("Raw Revenue Data from Thymeleaf:", monthlyRevenue);  // 원본 데이터 확인
+
+            // 데이터를 개별 배열로 변환
+            let revenueLabels = [];
+            let revenueData = [];
+
+            monthlyRevenue.forEach(revenue => {
+                revenueLabels.push(revenue.month);  // YYYY-MM 형식
+                revenueData.push(revenue.revenue);  // 매출 금액
+            });
+
+            console.log("변환 후 Labels:", revenueLabels);
+            console.log("변환 후 Data:", revenueData);
+
+
+            const ctx2 = document.getElementById("revenueChart").getContext("2d");
+
+            new Chart(ctx2, {
+                type: "bar",
+                data: {
+                    labels: revenueLabels,
+                    datasets: [{
+                        label: "월별 매출",
+                        data: revenueData,
+                        backgroundColor: "orange",
+                        borderColor: "rgba(255, 165, 0, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: "top" }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+
+
+        });
+
+    </script>
+
+    <!--게스트 호스트 비율-->
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const userRatioData = {
+                labels: ["호스트", "게스트"],
+                datasets: [{
+                    data: [ [[${userRatio.hostCount}]],[[${userRatio.guestCount}]] ], // 동적으로 값 전달
+                    backgroundColor: ["#ffb319", "#3c4147"],
+                    hoverOffset: 5
+                }]
+            };
+
+            const ctx3 = document.getElementById("userRatioChart").getContext("2d");
+            new Chart(ctx3, {
+                type: "doughnut",
+                data: userRatioData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+</th:block>
+
+</body>
+</html>
