@@ -1,5 +1,6 @@
 package com.minbak.web.messages;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class RequestMessageFilterDto {
 
 
@@ -18,5 +20,7 @@ public class RequestMessageFilterDto {
         private String keyword;
         private LocalDate startDate;
         private LocalDate endDate;
+        private Integer limit;
+        private Integer offset;
 
 }

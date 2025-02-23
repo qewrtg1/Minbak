@@ -31,7 +31,7 @@ public interface MessageMapper {
 
 //    필터링 검색한 메시지 조회
     List<ResponseMessageDto> findMessagesWithUser (RequestMessageFilterDto requestMessageFilterDto,int limit,int offset);
-//    List<ResponseMessageDto> findMessagesWithUser (RequestMessageFilterDto requestMessageFilterDto);
+    List<ResponseMessageDto> findMessagesWithUser (RequestMessageFilterDto requestMessageFilterDto);
 
 
 

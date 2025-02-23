@@ -5,9 +5,11 @@ import com.minbak.web.users.UserDto;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,9 +19,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
-//리퀘스트 맵핑 부분 admin 인지 보드인지...
 @RequestMapping("/admin/message")
 public class MessageController {
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
+    }
 
     @Autowired
     MessageService messageService;
@@ -51,31 +56,8 @@ public class MessageController {
         model.addAttribute("countMessagesToday", messageService.countMessagesToday());
         return "/message/messageMain";
     }
-
-//    최신순으로 메세지 조회
+// 메세지 리스트 페이지
     @GetMapping("/list")
-    public String messagesList(@RequestParam(name ="page", defaultValue = "1")int page,
-                               @RequestParam(name ="size", defaultValue = "10")int size,Model model){
-
-        MessagePageDto<MessageDto> messagePageDto= messageService.findMessagesByLimitAndOffset(page,size);
-        model.addAttribute("messagePageDto",messagePageDto);
-        return"/message/messageList";
-    }
-// 오늘자 메세지만 조회
-    @GetMapping("/list/today")
-    public String messageListToday(@RequestParam(name ="page", defaultValue = "1")int page,
-                                   @RequestParam(name ="size", defaultValue = "10")int size
-            ,Model model){
-    //        오늘 메세지 조회
-
-
-        MessagePageDto<MessageDto> messagePageDto=messageService.findMessagesToday(page,size);
-        model.addAttribute("messagePageDto",messagePageDto);
-
-    return "/message/messageList";
-    }
-
-    @GetMapping("/list2")
     public String messagesList2(@ModelAttribute RequestMessageFilterDto requestMessageFilterDto ,
                                 @RequestParam(name ="page", defaultValue = "1")int page,
                                 @RequestParam(name ="size", defaultValue = "10")int size,
@@ -86,11 +68,11 @@ public class MessageController {
 
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
-        return"/message/messageList2";
+        return"/message/messageList";
     }
-
-    @PostMapping("/filterList")
-    public String filterMessageList(@RequestParam RequestMessageFilterDto requestMessageFilterDto,
+//메세지 검색,필터링 요청
+    @PostMapping("/list")
+    public String filterMessageList(@ModelAttribute RequestMessageFilterDto requestMessageFilterDto,
                                     @RequestParam(name ="page", defaultValue = "1")int page,
                                     @RequestParam(name ="size", defaultValue = "10")int size,
                                     Model model){
@@ -100,7 +82,7 @@ public class MessageController {
 
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
-        return "/message/messageList2";
+        return "/message/messageList";
     }
 
 //   ------------------------------------메세지 생성 관련-----------------------------------------
@@ -108,29 +90,32 @@ public class MessageController {
 //    메세지 생성페이지
     @GetMapping("/create")
     public String createMessage(){
-        return "/message/messageCreate";
+        return "/message/messageList";
     }
 //    메세지 생성 요청(이메일로 보냄)
-@PostMapping("/create")
-    public String postCreateMessage(@RequestParam String receiverEmail, @ModelAttribute MessageDto messageDto,RedirectAttributes redirectAttributes,BindingResult bindingResult, Model model){
+    @PostMapping("/create")
+    public String postCreateMessage(@RequestParam(required = false) String receiverEmail,@RequestParam(required = false, defaultValue = "") Integer receiverId, @ModelAttribute MessageDto messageDto,RedirectAttributes redirectAttributes,BindingResult bindingResult, Model model){
 
         if(bindingResult.hasErrors()){
-
             model.addAttribute("errorMessage", "백앤드 유효성검사 통과 실패!" );
-
-            return "redirect:/admin/message/create";
-
+            return "redirect:/admin/message/list";
         }
         try {
         // 서비스에서 메시지 생성
-        messageService.createMessage(receiverEmail, messageDto);
+            if (receiverId == null){
+        messageService.createMessageByEmail(receiverEmail, messageDto);
             redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
+                return "redirect:/admin/message/list";
+        }
+            messageService.createMessageById(receiverId, messageDto);
+            redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
+
         } catch (Exception e) {
         model.addAttribute("errorMessage", "메시지 생성 중 오류 발생!");
-        return "redirect:/admin/message/create";
+        return "redirect:/admin/message/list";
         }
 
-    return "redirect:/admin/message/create";
+    return "redirect:/admin/message/list";
 }
     //---------------------------------------메세지 삭제 관련---------------------------------------------
     //    메세지 삭제

@@ -56,11 +56,26 @@ public class MessageService {
 //    페이지 필터 검색 조회
 
     //    필터링 메세지 조회
-    MessagePageDto<ResponseMessageDto> findMessagesWithUser(RequestMessageFilterDto requestMessageFilterDto,int page,int size){
-
+    public MessagePageDto<ResponseMessageDto> findMessagesWithUser(RequestMessageFilterDto requestMessageFilterDto,int page,int size){
+//        입력값 공백시 null로 처리
+        if (requestMessageFilterDto.getUserName() != null && requestMessageFilterDto.getUserName().isEmpty()) {
+            requestMessageFilterDto.setUserName(null);
+        }
+        if (requestMessageFilterDto.getUserEmail() != null && requestMessageFilterDto.getUserEmail().isEmpty()) {
+            requestMessageFilterDto.setUserEmail(null);
+        }
+        if (requestMessageFilterDto.getUserPhoneNumber() != null && requestMessageFilterDto.getUserPhoneNumber().isEmpty()) {
+            requestMessageFilterDto.setUserPhoneNumber(null);
+        }
+        if (requestMessageFilterDto.getKeyword() != null && requestMessageFilterDto.getKeyword().isEmpty()) {
+            requestMessageFilterDto.setKeyword(null);
+        }
+//        페이지처리, 검색,필터
         int offset = (page-1)*size;
+        requestMessageFilterDto.setLimit(size);
+        requestMessageFilterDto.setOffset(offset);
         int totalItems = messageMapper.countFilteredMessages(requestMessageFilterDto);
-        List<ResponseMessageDto> responseMessageDtos=messageMapper.findMessagesWithUser(requestMessageFilterDto,size,offset);
+        List<ResponseMessageDto> responseMessageDtos= messageMapper.findMessagesWithUser(requestMessageFilterDto);
         MessagePageDto<ResponseMessageDto> filteredMessagePageDto= new MessagePageDto<>(page,size,totalItems,responseMessageDtos);
 
         return filteredMessagePageDto;
@@ -72,7 +87,7 @@ public class MessageService {
         messageMapper.deleteMessage(message_id);
     }
 //    아이디 입력하여 메세지 생성
-    public void  createMessage(String receiverEmail,MessageDto messageDto){
+    public void  createMessageByEmail(String receiverEmail,MessageDto messageDto){
 //        이메일로 id조회해서 바꿈
         int receiverId=messageMapper.findUserIdByEmail(receiverEmail);
         messageDto.setReceiverId(receiverId);
@@ -81,4 +96,11 @@ public class MessageService {
 //        메세지 생성
         messageMapper.createMessage(messageDto);
     }
+    public void createMessageById(Integer receiverId,MessageDto messageDto){
+        messageDto.setReceiverId(receiverId);
+//        샌더 아이디 임시 입력 *수정필요*
+        messageDto.setSenderId(8);
+        messageMapper.createMessage(messageDto);
+    }
+
 }
