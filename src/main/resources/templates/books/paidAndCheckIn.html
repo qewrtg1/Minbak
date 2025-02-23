@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>예약대기자</title>
+    <title>투숙예정</title>
     <!-- 부트스트랩 CSS 링크 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -39,6 +39,7 @@
 <body>
 <main class="main-container">
     <div class="books">
+        <!--헤더-->
         <div class="booksHead">
             <h3 class="text-center">예약 관리</h3>
             <div class="menu">
@@ -48,32 +49,37 @@
                 <a href="/admin/books/paidAndCheckIn" class="btn btn-secondary">투숙예정</a>
             </div>
         </div>
+    </div>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>체크인 날짜</th>
-                <th>숙소명</th>
-                <th>예약자명</th>
-                <th>연락처</th>
-                <th>요청사항</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="book : ${waitingBooks}">
-                <td th:text="${book.startDate}"></td>
-                <td th:text="${book.roomName}"></td>
-                <td th:text="${book.userName}"></td>
-                <td th:text="${book.phone}"></td>
-                <td th:text="${book.request}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>투숙일</th>
+            <th>숙소명</th>
+            <th>예약자명</th>
+            <th>연락처</th>
+            <th>입금확인일</th>
+            <th>결제금액</th>
+            <th>입금상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${paidAndCheckIn}">
+            <td th:text="${book.startDate}"></td>
+            <td th:text="${book.room.name}"></td>
+            <td th:text="${book.user.name}"></td>
+            <td th:text="${book.user.phoneNumber}"></td>
+            <td th:text="${book.payment.paidAt}"></td>
+            <td th:text="${book.payment.amount}"></td>
+            <td th:text="${book.payment.status}"></td>
+        </tr>
+        </tbody>
+    </table>
 
-        <div class="booksFoot">
-            <hr>
-            <h4>Copyright &copy; All rights reserved.</h4>
-        </div>
+    <!--푸터-->
+    <div class="booksFoot">
+        <hr>
+        <h4>Copyright &copy; All rights reserved.</h4>
     </div>
 </main>
 </body>

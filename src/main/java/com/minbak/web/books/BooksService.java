@@ -74,4 +74,8 @@ public class BooksService {
             return book;
         }).collect(Collectors.toList());
     }
+
+    public List<BooksDto> paidAndCheckIn() {
+        return booksMapper.paidAndCheckIn();
+    }
 }

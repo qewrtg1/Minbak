@@ -110,4 +110,11 @@ public class BooksController {
         model.addAttribute("waitingBooks", waitingBooks);
         return "books/wait";
     }
+
+    @GetMapping("/paidAndCheckIn")
+    public String paidAndCheckIn(Model model) {
+        List<BooksDto> paidAndCheckIn = booksService.paidAndCheckIn();
+        model.addAttribute("paidAndCheckIn", paidAndCheckIn);
+        return "books/paidAndCheckIn";
+    }
 }

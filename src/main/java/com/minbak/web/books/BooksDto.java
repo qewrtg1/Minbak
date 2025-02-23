@@ -1,5 +1,6 @@
 package com.minbak.web.books;
 
+import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
 import com.minbak.web.users.UserDto;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class BooksDto {
     private Integer roomId;
     private UserDto user;
     private RoomsDto room;
+    private PaymentDto payment;
 
     private String searchType; // 예약번호, 예약자명, 연락처 등
     private String keyword; // 검색어

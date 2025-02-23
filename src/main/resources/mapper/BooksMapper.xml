@@ -14,6 +14,11 @@
         <association property="room" javaType="com.minbak.web.rooms.RoomsDto">
             <result property="name" column="room_name"/>
         </association>
+        <association property="payment" javaType="com.minbak.web.payments.PaymentDto">
+            <result property="amount" column="amount"/>
+            <result property="paidAt" column="paid_at"/>
+            <result property="status" column="status"/>
+        </association>
     </resultMap>
 
     <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
@@ -121,5 +126,15 @@
         join users u on b.user_id = u.user_id
         where b.status = '대기'
         order by b.start_date;
+    </select>
+
+    <select id="paidAndCheckIn" resultMap="bookWithUser">
+        select b.start_date, r.name as room_name, u.name as user_name, u.phone_number as user_phone, p.paid_at as paid_at, p.amount as amount, p.status as status
+        from books b
+        join users u on b.user_id = u.user_id
+        join rooms r on b.room_id = r.room_id
+        join payments p on p.book_id = b.book_id
+        where paid_at is not null
+        order by b.start_date
     </select>
 </mapper>
