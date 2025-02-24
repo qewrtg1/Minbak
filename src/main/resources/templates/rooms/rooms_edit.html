@@ -1,0 +1,82 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/9d620b3524.js" crossorigin="anonymous"></script>
+    <title>Document</title>
+    <style>
+        .container-fluid {
+        max-width: 1680px;
+        margin: 0 auto;
+        }
+    </style>
+
+</head>
+<body>
+
+    <!-- 본문 내용 -->
+    <main class="col-md-10 ms-sm-auto px-md-4 py-4 container-fluid">
+        <h1 class="h3 mb-4">숙소 수정</h1>
+
+        <div class="card shadow-sm p-4">
+            <form th:action="@{/admin/rooms/update/{roomId}(roomId=${room.roomId})}" method="post">
+                <!-- roomId는 수정할 방의 ID -->
+                <input type="hidden" th:name="roomId" th:value="${room.roomId}" />
+
+                <!-- Room Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Room Name:</label>
+                    <input type="text" id="name" name="name" th:value="${room.name}" class="form-control" required />
+                </div>
+
+                <!-- Room Content -->
+                <div class="mb-3">
+                    <label for="content" class="form-label">Room Content:</label>
+                    <textarea id="content" name="content" th:text="${room.content}" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <!-- Address -->
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address:</label>
+                    <input type="text" id="address" name="address" th:value="${room.address}" class="form-control" required />
+                </div>
+
+                <!-- Price -->
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price:</label>
+                    <input type="number" id="price" name="price" th:value="${room.price}" class="form-control" required />
+                </div>
+
+                <!-- Use Guide -->
+                <div class="mb-3">
+                    <label for="useGuide" class="form-label">Use Guide:</label>
+                    <input type="text" id="useGuide" name="useGuide" th:value="${room.useGuide}" class="form-control" required />
+                </div>
+
+                <!-- Latitude -->
+                <div class="mb-3">
+                    <label for="latitude" class="form-label">Latitude:</label>
+                    <input type="text" id="latitude" name="latitude" th:value="${room.latitude}" class="form-control" required />
+                </div>
+
+                <!-- Longitude -->
+                <div class="mb-3">
+                    <label for="longitude" class="form-label">Longitude:</label>
+                    <input type="text" id="longitude" name="longitude" th:value="${room.longitude}" class="form-control" required />
+                </div>
+
+                <!-- Update 버튼 -->
+                <button type="submit" class="btn btn-primary">수정하기</button>
+            </form>
+        </div>
+    </main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

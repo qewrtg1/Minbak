@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.rooms.RoomsMapper">
+
+
+
+    <!-- 리스트 -->
+    <!-- rooms 테이블에서 room_id와 name만 가져오는 쿼리 -->
+    <select id="selectRoomNames" resultType="com.minbak.web.rooms.dto.RoomsListDto">
+        SELECT r.room_id AS roomId, r.name
+        FROM rooms r
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <!-- 전체 rooms의 개수를 가져오는 쿼리 (페이지네이션) -->
+    <select id="selectTotalRoomsCount" resultType="int">
+        SELECT COUNT(*) FROM rooms r
+    </select>
+
+
+
+    <!-- 상세보기 -->
+    <select id="getRoomsList" resultType="com.minbak.web.rooms.dto.RoomsDto">
+        SELECT room_id AS roomId,
+        name AS roomName,
+        content,
+        address,
+        price,
+        use_guide AS useGuide,
+        latitude,
+        longitude
+        FROM rooms
+        WHERE room_id = #{roomId}
+    </select>
+
+    <!-- 방 상세 정보 조회 -->
+    <select id="getRoomById" parameterType="int" resultType="com.minbak.web.rooms.dto.RoomsDto">
+        SELECT room_id AS roomId,
+        name,
+        content,
+        address,
+        price,
+        use_guide AS useGuide,
+        latitude,
+        longitude
+        FROM rooms
+        WHERE room_id = #{roomId}
+    </select>
+
+    <!-- 방 상세 정보 업데이트 -->
+    <update id="updateRoom" parameterType="com.minbak.web.rooms.dto.RoomsDto">
+        UPDATE rooms
+        SET name = #{name},
+        content = #{content},
+        address = #{address},
+        price = #{price},
+        use_guide = #{useGuide},
+        latitude = #{latitude},
+        longitude = #{longitude}
+        WHERE room_id = #{roomId}
+    </update>
+    <!-- 방 정보 삭제 -->
+    <delete id="deleteRoom" parameterType="int">
+        DELETE FROM rooms
+        WHERE room_id = #{roomId}
+    </delete>
+
+
+
+
+</mapper>
+
+
+<!--더미데이터-->
+
+
+
+
+

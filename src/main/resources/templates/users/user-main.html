@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{base/layout-sample}">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
+    <th:block layout:fragment="css">
+    <style>
+        .main-content {
+            width: 1680px;
+            height: 100vh;
+            overflow-y:auto;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            width: 200px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .charts-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .chart-container {
+            width: 48%;
+            height: auto
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .user-table th, .user-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .user-table th {
+            background-color: #f2f2f2;
+        }
+        .page-nav {
+            margin-top: 20px;
+        }
+        #statusChart {
+            margin: 0 auto;
+        }
+        #userTable{
+            background-color: #fff;
+        }
+    </style>
+    </th:block>
+</head>
+<body>
+<th:block layout:fragment="content">
+<main class="main-content">
+    <!-- 유저 통계 -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>총 유저</h3>
+            <p id="totalUsers" style="font-size: 48px; font-weight: bold; color: #007bff;" th:text="${userPageDto.totalItems}">3</p> <!-- 총 유저 수 -->
+        </div>
+        <div class="stat-card">
+            <h3>호스트 수</h3>
+            <p id="activeUsers" style="font-size: 48px; font-weight: bold; color: #28a745;" th:text="${allHostNum}">1</p> <!-- 호스트 수 -->
+        </div>
+        <div class="stat-card">
+            <h3>오늘 가입자</h3>
+            <p id="suspendedUsers" style="font-size: 48px; font-weight: bold; color: #dc3545;" th:text="${UsersJoinedTodayNum}">1</p> <!-- 정지된 유저 수 -->
+        </div>
+    </div>
+
+
+    <!-- 차트들을 나란히 배치하기 위한 컨테이너 -->
+    <div class="charts-container">
+        <!-- 유저 활동 상태 비율 차트 -->
+        <div class="chart-container">
+            <canvas id="statusChart"></canvas>
+        </div>
+
+        <!-- 유저 권한 분포 차트 -->
+        <div class="chart-container">
+            <canvas id="roleChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 유저 검색창 -->
+    <form th:action="@{/admin/users/search}" method="get">
+        <div>
+            <label for="name">이름:</label>
+            <input type="text" id="name" name="name" placeholder="이름 검색" />
+        </div>
+        <div>
+            <label for="email">이메일:</label>
+            <input type="email" id="email" name="email" placeholder="이메일 검색" />
+        </div>
+        <div>
+            <label for="enabled">활성화 여부:</label>
+            <select id="enabled" name="enabled">
+                <option value="">선택</option>
+                <option value="true">활성화</option>
+                <option value="false">비활성화</option>
+            </select>
+        </div>
+        <div>
+            <label for="startDate">가입일 (시작):</label>
+            <input type="date" id="startDate" name="startDate" />
+        </div>
+        <div>
+            <label for="endDate">가입일 (끝):</label>
+            <input type="date" id="endDate" name="endDate" />
+        </div>
+        <div>
+            <label for="reservationCount">최소 예약 수:</label>
+            <input type="number" id="reservationCount" name="reservationCount" />
+        </div>
+        <button type="submit">검색</button>
+    </form>
+
+
+    <!-- 유저 정보 테이블 -->
+    <table class="user-table" id="userTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>전화번호</th>
+            <th>활성화</th>
+            <th>생성일</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${userPageDto.objects}">
+            <td th:text="${user.userId}">1</td>
+            <td th:text="${user.name}">John Doe</td>
+            <td><a th:href="@{/admin/users/detail/{id}(id=${user.userId})}" th:text="${user.email}">johndoe@example.com</a></td>
+            <td th:text="${user.phoneNumber}">Admin</td>
+            <td th:text="${user.enabled ? 'Active' : 'Inactive'}">Active</td>
+            <td th:text="${user.createdAt}">2022-03-15</td>
+            <td>
+                <a th:href="@{/admin/users/delete/{id}(id=${user.userId})}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <nav aria-label="Page navigation" class="page-nav" id="pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${userPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage - 1})}">«</a></li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(userPageDto.startPage, userPageDto.endPage)}">
+                <a class="page-link" th:classappend="${userPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/admin/users?page={i}(i=${i})}" th:text="${i}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${userPageDto.hasNext} ? '' : 'disabled'"><a class="page-link" th:href="@{/admin/users?page={page}(page=${userPageDto.currentPage + 1})}">»</a></li>
+        </ul>
+    </nav>
+</main>
+</th:block>
+<th:block layout:fragment="js">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Axios CDN을 통해 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script th:inline="javascript">
+    // 총 유저 수, 호스트 수, admin 수를 서버에서 받아오기
+    const totalUsers = [[${userPageDto.totalItems}]];  // 총 유저 수
+    const allHostNum = [[${allHostNum}]];  // 호스트 수
+    const adminNum = 5;  // 관리자의 수
+    const userNum = totalUsers - allHostNum; // 유저 수 계산
+    let currentPage = 1;
+    const pageSize = 10;  // 페이지당 표시할 데이터 수
+
+    // 유저 상태 차트 (user, host, admin 비율)
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: ['User', 'Host', 'Admin'],
+            datasets: [{
+                label: 'User Status',
+                data: [userNum, allHostNum, adminNum], // 각각의 유저 상태 데이터로 변경
+                backgroundColor: ['#007bff', '#28a745', '#ff9800'], // 각 상태에 맞는 색상
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        }
+    });
+
+// Map<Integer, Integer> 형태로 넘어온 데이터를 JavaScript 배열로 변환
+    const weekdayUserCounts = [[${usersByWeekday}]];
+    console.log(weekdayUserCounts);  // JSON 형태로 출력되어야 합니다.
+
+    // 일주일동안 가입한 유저 수 데이터를 저장할 배열
+    const dailyUserJoinCounts = [0, 0, 0, 0, 0, 0, 0];  // 일요일부터 토요일까지 7일에 대한 기본 값
+
+    // weekdayUserCounts 데이터를 기반으로 dailyUserJoinCounts 배열에 값을 추가
+    weekdayUserCounts.forEach(item => {
+        const weekday = item.weekday; // 요일 (1 ~ 7)
+        const count = item.count;     // 해당 요일의 가입자 수
+
+        // weekday가 1일 경우 Sunday, 7일 경우 Saturday이므로, 해당 요일 인덱스에 맞게 배열에 값 할당
+        // 예: weekday 3 (화요일) -> 배열 인덱스 2에 해당하는 값
+        dailyUserJoinCounts[weekday - 1] = count;  // 0-based index이므로 weekday-1을 사용
+    });
+
+    // 일별 유저 가입 수 선형 차트 (Line Chart)
+    const roleCtx = document.getElementById('roleChart').getContext('2d');
+    const roleChart = new Chart(roleCtx, {
+        type: 'line',  // 선형 차트로 설정
+        data: {
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],  // X축: 요일
+            datasets: [{
+                label: '일주일간 가입자 수',  // 데이터셋 레이블
+                data: [
+                    dailyUserJoinCounts[0],
+                    dailyUserJoinCounts[1],
+                    dailyUserJoinCounts[2],
+                    dailyUserJoinCounts[3],
+                    dailyUserJoinCounts[4],
+                    dailyUserJoinCounts[5],
+                    dailyUserJoinCounts[6],
+                ],
+                borderColor: '#007bff',  // 선 색상
+                backgroundColor: 'rgba(33, 150, 243, 0.2)',  // 선 아래 색상 (투명 배경)
+                fill: true,  // 선 아래를 채워서 그래프를 채우도록 설정
+                borderWidth: 2,  // 선의 두께
+                tension: 0.4  // 선의 곡률을 부드럽게 설정 (0이면 직선, 1이면 가장 부드러운 곡선)
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true  // Y축이 0부터 시작하도록 설정
+                }
+            }
+        }
+    });
+
+    // 필터링 함수: 검색어에 맞는 데이터를 서버에서 가져옵니다.
+    function filterUsers() {
+        const searchValue = document.getElementById("userSearch").value;
+
+        // axios를 사용해서 서버로 요청을 보냅니다.
+        axios.get('/admin/api/users', {
+            params: {
+                search: searchValue,   // 검색어
+                page: currentPage,     // 현재 페이지
+                size: pageSize         // 페이지 크기
+            }
+        })
+        .then(response => {
+            const data = response.data;
+
+            renderTable(data.objects);  // 사용자 테이블을 갱신합니다.
+            renderPagination(data);      // 페이지네이션을 갱신합니다.
+        })
+        .catch(error => {
+            console.error("Error fetching data", error);
+        });
+    }
+
+    // 테이블에 데이터를 렌더링하는 함수
+    function renderTable(users) {
+        const tbody = document.querySelector("#userTable tbody");
+        tbody.innerHTML = "";  // 기존 데이터를 초기화
+
+        users.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.userId}</td>
+                <td>${user.name}</td>
+                <td><a href="/admin/users/detail/${user.userId}">${user.email}</a></td>
+                <td>${user.phoneNumber}</td>
+                <td>${user.enabled ? 'Active' : 'Inactive'}</td>
+                <td>${user.createdAt}</td>
+                <td>
+                    <a href="/admin/users/edit/${user.userId}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/admin/users/delete/${user.userId}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // 페이지네이션을 렌더링하는 함수
+    function renderPagination(data) {
+    let paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = "";  // 기존 페이지네이션 초기화
+
+    const currentPage = data.currentPage;  // 현재 페이지
+    const totalItems = data.totalItems;    // 전체 유저 수
+    const totalPages = data.totalPages;    // 전체 페이지 수
+    const startPage = data.startPage;      // 페이지 네비게이션 시작 페이지
+    const endPage = data.endPage;          // 페이지 네비게이션 끝 페이지
+    const hasPrev = data.hasPrev;          // 이전 페이지 여부
+    const hasNext = data.hasNext;          // 다음 페이지 여부
+
+    // 페이지 네비게이션을 위한 HTML 시작
+    let paginationHTML = `
+        <ul class="pagination justify-content-center">
+            <!-- 이전 버튼 -->
+            <li class="page-item ${hasPrev ? '' : 'disabled'}">
+                <a class="page-link" href="#" aria-label="Previous" onclick="changePage(${currentPage - 1})">«</a>
+            </li>
+    `;
+
+    // 페이지 번호 버튼들
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+            <li class="page-item ${currentPage === i ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+            </li>
+        `;
+    }
+
+    // 다음 버튼
+    paginationHTML += `
+            <li class="page-item ${hasNext ? '' : 'disabled'}">
+                <a class="page-link" href="#" aria-label="Next" onclick="changePage(${currentPage + 1})">»</a>
+            </li>
+        </ul>
+    `;
+
+    // 페이지 네비게이션을 DOM에 삽입
+        paginationDiv.innerHTML = paginationHTML;
+    }
+
+    function changePage(page) {
+        const searchValue = document.getElementById("userSearch").value;
+        const currentScrollPosition = window.scrollY; // 현재 스크롤 위치를 저장
+        // 페이지 변경 로직 (검색어와 페이지 크기, 페이지 번호 등)
+        axios.get('/admin/api/users', {
+            params: {
+                search: searchValue,   // 검색어
+                page: page,            // 새 페이지 번호
+                size: pageSize         // 페이지 크기
+            }
+        })
+        .then(response => {
+            const data = response.data;
+            renderTable(data.objects);  // 유저 목록 렌더링
+            renderPagination(data);     // 페이지 네비게이션 렌더링
+            window.scrollTo(0, currentScrollPosition); // 이전 스크롤 위치로 복원
+        })
+        .catch(error => {
+            console.error("페이지를 로드하는 데 실패했습니다:", error);
+        });
+    }
+
+
+</script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 정보</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5" style="max-width: 1680px;">
+  <h1 class="text-center mb-4" th:text="${paymentDto.paymentId == null ? '결제 추가' : '결제 수정'}"></h1>
+
+  <form th:action="@{/payments/create}" th:object="${paymentDto}" method="post" class="shadow-sm p-4 border rounded">
+    <div class="mb-3">
+      <label for="userId" class="form-label">회원 ID:</label>
+      <input type="text" id="userId" name="userId" class="form-control" th:value="${paymentDto.userId}" />
+    </div>
+    <div class="mb-3">
+      <label for="bookId" class="form-label">예약 ID:</label>
+      <input type="text" id="bookId" name="bookId" class="form-control" th:value="${paymentDto.bookId}" />
+    </div>
+    <div class="mb-3">
+      <label for="amount" class="form-label">금액:</label>
+      <input type="text" id="amount" name="amount" class="form-control" th:value="${paymentDto.amount}" />
+    </div>
+
+    <!-- 상태를 드롭다운으로 수정 -->
+    <div class="mb-3">
+      <label for="status" class="form-label">상태:</label>
+      <select id="status" name="status" class="form-control" th:value="${paymentDto.status}">
+        <option value="결제 대기" th:selected="${paymentDto.status == '결제 대기'}">결제 대기</option>
+        <option value="결제 완료" th:selected="${paymentDto.status == '결제 완료'}">결제 완료</option>
+        <option value="결제 실패" th:selected="${paymentDto.status == '결제 실패'}">결제 실패</option>
+        <option value="환불됨" th:selected="${paymentDto.status == '환불됨'}">환불됨</option>
+      </select>
+    </div>
+
+    <!-- 결제 방법을 드롭다운으로 수정 -->
+    <div class="mb-3">
+      <label for="method" class="form-label">결제 방법:</label>
+      <select id="method" name="method" class="form-control" th:value="${paymentDto.method}">
+        <option value="신용카드" th:selected="${paymentDto.method == '신용카드'}">신용카드</option>
+        <option value="페이팔" th:selected="${paymentDto.method == '페이팔'}">페이팔</option>
+        <option value="계좌 이체" th:selected="${paymentDto.method == '계좌 이체'}">계좌 이체</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="transactionId" class="form-label">트랜잭션 ID:</label>
+      <input type="text" id="transactionId" name="transactionId" class="form-control" th:value="${paymentDto.transactionId}" />
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary">저장</button>
+    </div>
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="/admin/payments" class="btn btn-secondary">목록으로 돌아가기</a>
+  </div>
+</div>
+
+<!-- 부트스트랩 JS와 Popper.js 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybFy8kKea7aR1J4s4A9/6dZlzZpt6P4YYp5A7jzmbg+As3Tpg" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0Vb1E5sE/69rPpQFZ7J0gzNl+KNwOZxkmBoqGHYoCwXcB9zQ" crossorigin="anonymous"></script>
+</body>
+</html>

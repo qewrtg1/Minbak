@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>예약 수정하기</title>
+  <!-- 부트스트랩 CSS 링크 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* main-container 너비 설정 */
+    .main-container {
+      width: 1680px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 메뉴 스타일 */
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: #007bff;
+      font-size: 18px;
+    }
+
+    .menu a:hover {
+      text-decoration: underline;
+    }
+
+    /* 폼 항목 스타일 */
+    .form-container {
+      margin-bottom: 20px;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    /* 제출 버튼 스타일 */
+    .btn-custom {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-custom:hover {
+      background-color: #0056b3;
+    }
+
+    /* 푸터 스타일 */
+    .booksFoot h4 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .booksSec h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<main class="main-container">
+  <div class="books">
+    <div class="booksHead">
+      <h3 class="text-center">예약 관리</h3>
+      <div class="menu">
+        <a href="/admin/books/create" class="btn btn-primary">예약등록</a>
+        <a href="/admin/books" class="btn btn-secondary">예약목록</a>
+      </div>
+    </div>
+    <div class="booksSec">
+      <h3 class="text-center">예약 수정하기</h3>
+    </div>
+
+    <!-- 예약 수정 폼 -->
+    <form th:action="@{|/admin/books/edit/${books.bookId}|}" method="post">
+      <div class="form-container">
+        <label for="startDate">체크인 날짜:</label>
+        <input type="date" id="startDate" name="startDate" th:value="${books.startDate}" required>
+      </div>
+
+      <div class="form-container">
+        <label for="endDate">체크아웃 날짜:</label>
+        <input type="date" id="endDate" name="endDate" th:value="${books.endDate}" required>
+      </div>
+
+      <div class="form-container">
+        <label for="guestsNum">예약인원 수:</label>
+        <input type="number" id="guestsNum" name="guestsNum" th:value="${books.guestsNum}" required>
+      </div>
+
+      <div class="form-container">
+        <label for="request">특별 요청사항:</label>
+        <input type="text" id="request" name="request" th:value="${books.request}">
+      </div>
+
+      <div class="form-container">
+        <label for="status">예약 상태:</label>
+        <input type="text" id="status" name="status" th:value="${books.status}" required>
+      </div>
+
+      <div class="form-container">
+        <label for="userId">유저 ID:</label>
+        <input type="number" id="userId" name="userId" th:value="${books.userId}" required>
+      </div>
+
+      <div class="form-container">
+        <label for="roomId">숙소 ID:</label>
+        <input type="number" id="roomId" name="roomId" th:value="${books.roomId}" required>
+      </div>
+
+      <div class="form-container">
+        <button type="submit" class="btn-custom">수정하기</button>
+      </div>
+    </form>
+
+    <div class="booksFoot">
+      <hr>
+      <h4>Copyright &copy; All rights reserved.</h4>
+    </div>
+  </div>
+</main>
+
+<!-- 부트스트랩 JS 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
