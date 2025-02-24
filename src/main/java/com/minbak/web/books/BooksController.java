@@ -1,7 +1,5 @@
 package com.minbak.web.books;
 
-import com.minbak.web.board.BoardPageDto;
-import com.minbak.web.board.posts.BoardPostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/admin/books")
@@ -51,7 +52,6 @@ public class BooksController {
     public String selectBookById(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto booksDto = booksService.selectBookById(bookId);
         model.addAttribute("books", booksDto);
-        System.out.println("booksDto = " + booksDto);
         return "books/detail";
     }
 
@@ -74,5 +74,47 @@ public class BooksController {
     public String deleteBook(@PathVariable("bookId") Integer bookId) {
         booksService.deleteBook(bookId);
         return "redirect:/admin/books";
+    }
+
+    @GetMapping("/monthly")
+    public String findMonthlyBooks(@RequestParam(defaultValue = "#{T(java.time.LocalDate).now().getYear()}") int year,
+                                   @RequestParam(defaultValue = "#{T(java.time.LocalDate).now().getMonthValue()}") int month,
+                                   Model model) {
+//        이전달/다음달 페이징
+        LocalDate currentMonth = LocalDate.of(year, month, 1);
+        LocalDate prevMonth = currentMonth.minusMonths(1);
+        LocalDate nextMonth = currentMonth.plusMonths(1);
+
+        Map<String, Map<LocalDate, String>> statusOfRoom = booksService.findMonthlyBooks(year, month);
+
+//        이번 달 모든 날짜 리스트 생성
+        int daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
+        List<LocalDate> datesInMonth = IntStream.rangeClosed(1, daysInMonth)
+                .mapToObj(day -> LocalDate.of(year, month, day))
+                .collect(Collectors.toList());
+
+        model.addAttribute("datesInMonth", datesInMonth);
+        model.addAttribute("statusOfRoom", statusOfRoom);
+        model.addAttribute("selectedYear", year);
+        model.addAttribute("selectedMonth", month);
+        model.addAttribute("prevYear", prevMonth.getYear());
+        model.addAttribute("prevMonth", prevMonth.getMonthValue());
+        model.addAttribute("nextYear", nextMonth.getYear());
+        model.addAttribute("nextMonth", nextMonth.getMonthValue());
+        return "books/monthly";
+    }
+
+    @GetMapping("/wait")
+    public String getWaitingBooks(Model model) {
+        List<Map<String, Object>> waitingBooks = booksService.getWaitingBooks();
+        model.addAttribute("waitingBooks", waitingBooks);
+        return "books/wait";
+    }
+
+    @GetMapping("/paidAndCheckIn")
+    public String paidAndCheckIn(Model model) {
+        List<BooksDto> paidAndCheckIn = booksService.paidAndCheckIn();
+        model.addAttribute("paidAndCheckIn", paidAndCheckIn);
+        return "books/paidAndCheckIn";
     }
 }
