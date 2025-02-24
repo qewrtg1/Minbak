@@ -138,6 +138,7 @@
                                 <option value="email">유저 이메일</option>
                             </select>
                         </div>
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
 
                         <!-- 받는이(유저 ID) -->
                         <div id="receiverIdInput" style="display:block;">
