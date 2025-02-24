@@ -33,7 +33,7 @@
     <!-- 페이징 -->
     <nav aria-label="Page navigation">
       <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${boardPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/board?page={page}(page=${boardPageDto.currentPage - 1})}">«</a></li>
+          <li class="page-item" th:classappend="${boardPageDto.hasPrev} ? '' : 'disabled'"><a class="page-link" th:href="@{/board?page={page}(page=${boardPageDto.currentPage - 1})}">«</a></li>
         <li class="page-item" th:each="i : ${#numbers.sequence(boardPageDto.startPage, boardPageDto.endPage)}">
           <a class="page-link" th:classappend="${boardPageDto.currentPage == i} ? 'active text-white' : ''"th:href="@{/board?page={i}&category={categoryId}(i=${i},categoryId=${categoryId})}" th:text="${i}"></a>
         </li>

@@ -1,5 +1,7 @@
 package com.minbak.web.board.posts;
 
+import com.minbak.web.common.dto.PageDto;
+import com.minbak.web.payments.PaymentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +52,6 @@ public class BoardPostsService {
     public void createPost(BoardPostDto boardPostDto){
         boardPostsMapper.createPost(boardPostDto);
     }
+
 }
 

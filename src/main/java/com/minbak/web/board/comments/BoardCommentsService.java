@@ -19,11 +19,13 @@ public class BoardCommentsService {
 
     //댓글 생성
     public void createComment(BoardCommentDto boardCommentDto){
+
         boardCommentsMapper.createComment(boardCommentDto);
     }
 
     //댓글 삭제
     public void deleteComment(int id){
+
         boardCommentsMapper.deleteComment(id);
     }
 

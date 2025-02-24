@@ -1,0 +1,94 @@
+<!-- 메인 페이지 (index.html) -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 메인 페이지</title>
+    <style>
+        /* 스타일 생략 (위와 동일) */
+    </style>
+    <script>
+        let currentPage = 1;
+        const reviewsPerPage = 5;
+
+        function loadReviews() {
+            const reviews = [
+              { reviewId: 1, userId: 'user1', content: 'Great place!', score: 5 },
+              { reviewId: 2, userId: 'user2', content: 'Nice experience.', score: 4 },
+              // 추가 리뷰 데이터
+            ];
+
+            const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+            const startIndex = (currentPage - 1) * reviewsPerPage;
+            const endIndex = startIndex + reviewsPerPage;
+
+            const reviewsToDisplay = reviews.slice(startIndex, endIndex);
+
+            let reviewsHtml = '';
+            reviewsToDisplay.forEach(review => {
+                reviewsHtml += `
+                  <tr onclick="viewReviewDetail(${review.reviewId})">
+                    <td>${review.reviewId}</td>
+                    <td>${review.userId}</td>
+                    <td>${review.content}</td>
+                    <td>${review.score}</td>
+                  </tr>
+                `;
+            });
+
+            document.getElementById('reviewsTableBody').innerHTML = reviewsHtml;
+
+            let paginationHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<button onclick="changePage(${i})">${i}</button>`;
+            }
+
+            document.getElementById('pagination').innerHTML = paginationHtml;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            loadReviews();
+        }
+
+        function viewReviewDetail(reviewId) {
+            window.location.href = `review/detail.html?id=${reviewId}`;
+        }
+
+        window.onload = loadReviews;
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>휴가 렌탈 플랫폼 - 리뷰</h1>
+        <p>사용자들이 남긴 리뷰를 확인하세요.</p>
+    </div>
+
+    <table class="review-list">
+        <thead>
+        <tr>
+            <th>리뷰 ID</th>
+            <th>작성자</th>
+            <th>내용</th>
+            <th>점수</th>
+        </tr>
+        </thead>
+        <tbody id="reviewsTableBody">
+        <!-- 리뷰 목록 동적으로 추가 -->
+        </tbody>
+    </table>
+
+    <div id="pagination">
+        <!-- 페이지네이션 버튼 -->
+    </div>
+
+    <div class="button-group">
+        <a href="admin.html">관리자 페이지</a>
+    </div>
+</div>
+
+</body>
+</html>

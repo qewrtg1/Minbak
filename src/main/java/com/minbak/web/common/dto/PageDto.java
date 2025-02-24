@@ -1,4 +1,4 @@
-package com.minbak.web.board;
+package com.minbak.web.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BoardPageDto<T> {
+public class PageDto<T> {
 
     private int currentPage;    // 현재 페이지 번호
     private int pageSize;       // 한 페이지당 게시글 수
@@ -20,7 +20,7 @@ public class BoardPageDto<T> {
     private List<T> objects;    // 페이지에 받아올 객체 리스트 데이터
 
     //현재페이지, 페이지사이즈, 모든아이템수, 데이터리스트를 받아서 위 필드를 계산 후 주입
-    public BoardPageDto(int currentPage, int pageSize, int totalItems, List<T> objects) {
+    public PageDto(int currentPage, int pageSize, int totalItems, List<T> objects) {
         this.currentPage = currentPage;
         this.pageSize = pageSize;
         this.totalItems = totalItems;

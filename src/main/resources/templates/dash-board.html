@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
+<head>
+    <meta charset="UTF-8">
+    <title>대시보드</title>
+    <th:block layout:fragment="css">
+        <style>
+            /* 대시보드 전체 레이아웃 */
+            .dashboard-container {
+                height: auto;
+                overflow:visible;
+                display: flex;
+                gap: 20px;
+                max-width: 1680px;
+                margin: 50px auto;
+                padding: 20px;
+            }
+
+            /* 왼쪽 메인 콘텐츠 */
+            .dashboard-left {
+                flex-grow: 1;
+                width: calc(100% - 320px);
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            /* 오른쪽 고정 패널 */
+            .dashboard-right {
+                width: 320px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                position: sticky;
+                top: 70px;
+                align-self: flex-start;
+            }
+
+            /* 카드 스타일 */
+            .card {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 오늘의 할 일 */
+            .todo-card {
+                width: 100%;
+                display: flex;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            /* 대형 카드 */
+            .large-card {
+                width: calc(50% - 10px);
+                height: 280px;
+            }
+
+            /* 중형 카드 */
+            .medium-card {
+                width: calc(30%); /* 너비를 줄여서 너무 길어 보이는 문제 해결 */
+                height: 250px; /* 높이를 늘려서 너무 낮아 보이는 문제 해결 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* 소형 카드 */
+            .small-card {
+                width: 100%;
+                height: 120px;
+            }
+
+            .stats-container {
+                display: flex; /* 가로 정렬 */
+                flex-wrap: wrap; /* 넘칠 경우 다음 줄로 */
+                gap: 10px; /* 항목 간 간격 */
+            }
+            .stats-container span {
+                white-space: nowrap; /* 줄바꿈 방지 */
+            }
+
+            /* 신고된 숙소 테이블 스타일 */
+            .reported-rooms-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 14px;
+                text-align: center;
+            }
+
+            .reported-rooms-table th, .reported-rooms-table td {
+                padding: 10px;
+                border-bottom: 1px solid #ddd; /* 아랫줄만 표시 */
+                white-space: nowrap; /* 줄바꿈 방지 */
+            }
+
+            .reported-rooms-table th {
+                font-weight: bold;
+                border-bottom: 2px solid #000; /* 헤더 강조 */
+            }
+
+            .reported-rooms-table tbody tr:hover {
+                background-color: transparent; /* 배경색 제거 */
+            }
+
+            /* 테이블 컨테이너 */
+            .reported-rooms-container {
+                overflow-x: auto;
+                max-width: 100%;
+            }
+
+
+        </style>
+    </th:block>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <main class="main-content">
+        <div class="dashboard-container">
+
+            <!-- 왼쪽 메인 콘텐츠 -->
+            <section class="dashboard-left">
+
+                <!-- 오늘의 할 일 -->
+                <div class="card todo-card">
+                    <strong>오늘의 할 일</strong>
+                    <span>
+                        <a th:href="@{/admin/users/report(status='대기')}" class="report-link">
+                            유저 신고 <span th:text="${userReportCount}">0</span>건
+                        </a> |
+                        <a href="http://localhost:8080/admin/rooms/report" class="report-link">
+                            숙소 신고 <span th:text="${roomReportCount}">0</span>건
+                        </a> |
+                        <a th:href="@{/admin/users/host(isVerified=false)}" class="report-link">
+                            호스팅 인증 신청 <span th:text="${hostVerificationCount}">0</span>건
+                        </a>
+                    </span>
+                </div>
+
+                <!-- 월별 예약 수 & 매출 그래프 -->
+                <div class="card large-card">월별 예약 수
+                    <canvas id="reservationChart"></canvas></div>
+
+                <div class="card large-card">월별 매출
+                    <canvas id="revenueChart"></canvas></div>
+
+                <!-- 통계 정보 -->
+                <div class="card small-card">
+                    <strong>통계</strong>
+                    <br>
+                    <div class="stats-container">
+                        <span>총 사용자: <span th:text="${statistics.totalUsers}">0</span> 명</span> |
+                        <span>총 숙소: <span th:text="${statistics.totalRooms}">0</span> 개</span> |
+                        <span>오늘 가입자: <span th:text="${statistics.todayUsers}">0</span> 명</span> |
+                        <span>총 매출: <span th:text="${#numbers.formatDecimal(statistics.totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</span> 원</span> |
+                        <span>미처리 신고(건): <span th:text="${statistics.pendingReports}">0</span> 개</span> |
+                        <span>리뷰 평균: <span th:text="${#numbers.formatDecimal(statistics.avgReviewScore, 1, 'COMMA', 1, 'POINT')}">0.0</span></span>
+                    </div>
+                </div>
+
+
+                <div class="card medium-card" style="width: calc(20%)";>
+                    게스트와 호스트 비율
+                    <canvas id="userRatioChart"></canvas>
+                </div>
+
+                <div class="card medium-card" style="width: calc(55%);">
+                    <strong>최근 신고된 숙소</strong>
+                    <br>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>유저 ID</th>
+                                <th>유저 이메일</th>
+                                <th>숙소 이름</th>
+                                <th>위치</th>
+                                <th>가격</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="room : ${recentReportedRooms}">
+                                <td th:text="${room.userId}"></td>
+                                <td>
+                                    <a th:href="@{/admin/users/detail/{id}(id=${room.userId})}" th:text="${room.userEmail}" style="text-decoration: none; color: #007bff;"></a>
+                                </td>
+                                <td>
+                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}" th:text="${room.roomName}" style="text-decoration: none; color: #007bff;"></a>
+                                </td>
+                                <td th:text="${room.address}"></td>
+                                <td th:text="${#numbers.formatInteger(room.price, 3, 'COMMA') + ' 원'}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card medium-card" style="width: calc(20%)">
+                    <strong>예약 취소 비율</strong>
+                    <canvas id="reservationRatioChart"></canvas>
+                </div>
+
+                <div class="card medium-card" style="width: calc(35%);">
+                    <strong>카테고리별 숙소 개수(TOP 8)</strong>
+                    <canvas id="categoryRoomChart"></canvas>
+                </div>
+
+                <div class="card medium-card" style="width: calc(40%);">
+                    <strong>옵션별 숙소 개수</strong>
+                    <canvas id="optionRoomChart"></canvas>
+                </div>
+
+
+                <div class="card small-card">최근 신고 내역<br>신고한 사람, 신고당한 사람, 사유, 해결 여부</div>
+
+            </section>
+
+            <!-- 오른쪽 고정 패널 -->
+            <aside class="dashboard-right">
+
+                <div class="card">내 정보 간단히</div>
+
+
+                <div class="card" style="width: 100%;">
+                    <strong>관리자 리스트</strong>
+                    <br>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>이메일</th>
+                                <th>전화번호</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="admin : ${adminList}" th:attr="onclick=|selectAdmin('${admin.id}', '${admin.email}', '${admin.phoneNumber}')|" style="cursor: pointer;">
+                                <input type="hidden" th:value="${admin.id}" class="admin-id">
+                                <td th:text="${admin.email}"></td>
+                                <td th:text="${admin.phoneNumber}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 관리자 정보 및 메시지 전송 카드 -->
+                <div class="card p-3 shadow-sm">
+                    <div>
+                        <h5 class="mb-0">관리자 정보 및 메시지 전송</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="adminInfo">
+                            <!-- 관리자 ID는 히든 필드로 처리 -->
+                            <input type="hidden" id="adminId">
+
+                            <p><strong>이메일:</strong> <span id="adminEmail" class="text-primary">-</span></p>
+                            <p><strong>전화번호:</strong> <span id="adminPhone">-</span></p>
+                        </div>
+
+                        <!-- 메시지 입력 폼 -->
+                        <div class="form-group mt-3">
+                            <label for="messageInput"><strong>메시지 입력</strong></label>
+                            <textarea id="messageInput" class="form-control mt-1" rows="4" placeholder="관리자에게 보낼 메시지를 입력하세요..."></textarea>
+                        </div>
+
+                        <!-- 메시지 전송 버튼 -->
+                        <button onclick="sendMessage()" class="btn btn-success mt-3 w-100">메시지 전송</button>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+</th:block>
+
+<th:block layout:fragment="js">
+    <!-- Chart.js 스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // MonthlyReservationDto 리스트를 JSON 배열로 변환
+            let monthlyReservations = [[${monthlyReservations}]];
+
+            console.log("Raw Data:", monthlyReservations);  // 원본 데이터 확인
+
+            // 데이터를 개별 배열로 변환
+            let reservationLabels = [];
+            let reservationData = [];
+
+            monthlyReservations.forEach(reservation => {
+                reservationLabels.push(reservation.month);  // YYYY-MM 형식
+                reservationData.push(reservation.bookCount);  // 예약 건수
+            });
+
+            console.log("변환 후 예약 Labels:", reservationLabels);
+            console.log("변환 후 예약 Data:", reservationData);
+            /* 2. Chart.js 설정 */
+            const ctx1 = document.getElementById("reservationChart").getContext("2d");
+
+            new Chart(ctx1, {
+                type: "line",
+                data: {
+                    labels: reservationLabels,  // X축: 연도-월(YYYY-MM)
+                    datasets: [{
+                        label: "예약 수",
+                        data: reservationData,  // Y축: 예약 건수
+                        borderColor: "blue",
+                        backgroundColor: "rgba(0, 0, 255, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: "top" }
+                    },
+                    scales: {
+                        x: {
+                            type: "category",  // X축을 범주형으로 강제 설정
+                            ticks: {
+                                callback: function(value, index) {
+                                    return reservationLabels[index];  //X축 값이 YYYY-MM으로 나오도록 설정
+                                }
+                            }
+                        },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+
+
+
+            /* 3. 매출 데이터 가져오기 */
+
+            // 월별 매출 데이터 JSON 배열 변환
+            let monthlyRevenue = [[${monthlyRevenue}]];
+
+            console.log("Raw Revenue Data from Thymeleaf:", monthlyRevenue);  // 원본 데이터 확인
+
+            // 데이터를 개별 배열로 변환
+            let revenueLabels = [];
+            let revenueData = [];
+
+            monthlyRevenue.forEach(revenue => {
+                revenueLabels.push(revenue.month);  // YYYY-MM 형식
+                revenueData.push(revenue.revenue);  // 매출 금액
+            });
+
+            console.log("변환 후 Labels:", revenueLabels);
+            console.log("변환 후 Data:", revenueData);
+
+
+            const ctx2 = document.getElementById("revenueChart").getContext("2d");
+
+            new Chart(ctx2, {
+                type: "bar",
+                data: {
+                    labels: revenueLabels,
+                    datasets: [{
+                        label: "월별 매출",
+                        data: revenueData,
+                        backgroundColor: "orange",
+                        borderColor: "rgba(255, 165, 0, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: "top" }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+
+
+            let reservationRatio = [[${reservationRatio}]];
+
+            console.log("예약 취소 비율 데이터:", reservationRatio);
+
+            let ctx = document.getElementById("reservationRatioChart").getContext("2d");
+            new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: ["취소된 예약", "정상 완료"],
+                    datasets: [{
+                        data: [reservationRatio['cancelled'], reservationRatio['completed']],
+                        backgroundColor: ["#ff4d4d", "#28a745"],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: "bottom" },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+
+        });
+
+
+        //메시지 전송
+        function selectAdmin(id, email, phone) {
+        document.getElementById("adminId").innerText = id;
+        document.getElementById("adminEmail").innerText = email;
+        document.getElementById("adminPhone").innerText = phone;
+        }
+
+        function sendMessage() {
+            let adminId = document.getElementById("adminId").value;
+            let message = document.getElementById("messageInput").value.trim();
+
+            if (!message) {
+                alert("메시지를 입력하세요.");
+                return;
+            }
+
+            // 서버에 메시지 전송 (AJAX 요청 예제)
+            fetch(`/admin/send-message`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    adminId: adminId,
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("메시지가 전송되었습니다.");
+                document.getElementById("messageInput").value = ""; // 입력 필드 초기화
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+
+        //카테고리별 숙소 개수 js
+        let categoryData = [[${categoryRoomCounts}]];
+        console.log("카테고리별 숙소 개수 데이터:", categoryData);
+
+        let categoryLabels = [];
+        let categoryCounts = [];
+
+        categoryData.forEach(category => {
+            categoryLabels.push(category.categoryName);
+            categoryCounts.push(category.roomCount);
+        });
+
+        const ctx = document.getElementById("categoryRoomChart").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: "숙소 개수",
+                    data: categoryCounts,
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0 // 소수점 제거 (정수만 표시)
+                        }
+                    }
+                }
+            }
+        });
+
+
+    </script>
+    <script th:inline="javascript">
+        // 옵션별 숙소 개수 데이터 가져오기
+        let optionData = [[${optionRoomCounts}]];
+        console.log("옵션별 숙소 개수 데이터:", optionData);
+
+        let optionLabels = [];
+        let optionCounts = [];
+
+        optionData.forEach(option => {
+            optionLabels.push(option.optionName);
+            optionCounts.push(option.roomCount);
+        });
+
+        // 옵션별 숙소 개수 차트 생성 (변수명 변경)
+        const ctxOption = document.getElementById("optionRoomChart").getContext("2d");
+
+        new Chart(ctxOption, {
+            type: "bar",
+            data: {
+                labels: optionLabels,
+                datasets: [{
+                    label: "숙소 개수",
+                    data: optionCounts,
+                    backgroundColor: "rgba(255, 99, 132, 0.6)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0 // 소수점 제거
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <!--게스트 호스트 비율-->
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const userRatioData = {
+                labels: ["호스트", "게스트"],
+                datasets: [{
+                    data: [ [[${userRatio.hostCount}]],[[${userRatio.guestCount}]] ], // 동적으로 값 전달
+                    backgroundColor: ["#ffb319", "#3c4147"],
+                    hoverOffset: 5
+                }]
+            };
+
+            const ctx3 = document.getElementById("userRatioChart").getContext("2d");
+            new Chart(ctx3, {
+                type: "doughnut",
+                data: userRatioData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+</th:block>
+
+</body>
+</html>

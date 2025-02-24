@@ -26,12 +26,13 @@ class MinbakApplicationTests {
 	BoardCategoriesMapper boardCategoriesMapper;
 
 	@Test
-	void inputBoardData(){
+	void inputBoardData() throws InterruptedException {
 
 		//카테고리 추가
 //		for(int i = 1; i <= 10;i++){
 //			String CategoryName = i+"번 카테고리";
 //			boardCategoriesMapper.createCategory(CategoryName);
+//			Thread.sleep(100);
 //		}
 
 		//게시글 추가
@@ -46,13 +47,13 @@ class MinbakApplicationTests {
 //		}
 
 		//댓글 추가
-		for(int i = 2; i <= 10;i++){
-			BoardCommentDto boardCommentDto = new BoardCommentDto();
-			boardCommentDto.setPostId(i);
-			boardCommentDto.setAuthor("작성자"+i);
-			boardCommentDto.setContent("게시글에 공감합니다"+i+"번 내용입니다.");
-			boardCommentsMapper.createComment(boardCommentDto);
-		}
+//		for(int i = 2; i <= 10;i++){
+//			BoardCommentDto boardCommentDto = new BoardCommentDto();
+//			boardCommentDto.setPostId(i);
+//			boardCommentDto.setAuthor("작성자"+i);
+//			boardCommentDto.setContent("게시글에 공감합니다"+i+"번 내용입니다.");
+//			boardCommentsMapper.createComment(boardCommentDto);
+//		}
 
 	}
 }
