@@ -39,15 +39,41 @@
       margin-bottom: 30px;
     }
 
+    .w100 {
+      width: 100px;
+    }
+
     .tbl_frm01 table {
       width: 100%;
       border-collapse: collapse;
+    }
+
+    .srchTxt {
+      width: 500px;
     }
 
     .tbl_frm01 th, .tbl_frm01 td {
       padding: 10px;
       border: 1px solid #ddd;
       text-align: left;
+    }
+
+    .flex-control {
+      display: flex;
+      align-items: center; /* 세로 정렬 */
+      gap: 10px; /* 요소들 사이에 간격 추가 (필요할 경우) */
+    }
+
+    .form-select {
+      width: 200px;
+    }
+
+    .tbl_frm01 tr:nth-child(3) label {
+      margin-right: 10px;
+    }
+
+    .tbl_frm01 label>input {
+      margin-right: 5px;
     }
 
     .btn-confirm input {
@@ -103,51 +129,57 @@
               <tr>
                 <th scope="row">검색어</th>
                 <td>
-                  <select name="searchType" class="form-select">
-                    <option value="예약번호">예약번호</option>
-                    <option value="예약자명">예약자명</option>
-                    <option value="연락처">연락처</option>
-                  </select>
-                  <input type="text" name="keyword" class="form-control">
+                  <div class="flex-control">
+                    <select name="searchType" class="form-select">
+                      <option value="예약번호">예약번호</option>
+                      <option value="예약자명">예약자명</option>
+                      <option value="연락처">연락처</option>
+                    </select>
+                    <input type="text" name="keyword" class="form-control srchTxt">
+                  </div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">기간검색</th>
                 <td>
-                  <select name="dateType" class="form-select">
-                    <option value="체크인">체크인</option>
-                    <option value="체크아웃">체크아웃</option>
-                  </select>
-                  <label for="fr_date">
-                    <input type="date" name="startDate" id="fr_date" class="form-control w80">
-                  </label>
-                  ~
-                  <label for="to_date">
-                    <input type="date" name="endDate" id="to_date" class="form-control w80">
-                  </label>
+                  <div class="flex-control">
+                    <select name="dateType" class="form-select">
+                      <option value="체크인">체크인</option>
+                      <option value="체크아웃">체크아웃</option>
+                    </select>
+                    <label for="fr_date">
+                      <input type="date" name="startDate" id="fr_date" class="form-control">
+                    </label>
+                    ~
+                    <label for="to_date">
+                      <input type="date" name="endDate" id="to_date" class="form-control">
+                    </label>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">예약상태</th>
                 <td>
-                  <label>
-                    <input type="radio" name="statusFilter" value="" checked>전체
-                  </label>
-                  <label>
-                    <input type="radio" name="statusFilter" value="대기">대기
-                  </label>
-                  <label>
-                    <input type="radio" name="statusFilter" value="완료">완료
-                  </label>
-                  <label>
-                    <input type="radio" name="statusFilter" value="만료">만료
-                  </label>
-                  <label>
-                    <input type="radio" name="statusFilter" value="이용자 취소">이용자 취소
-                  </label>
-                  <label>
-                    <input type="radio" name="statusFilter" value="숙박업자 취소">숙박업자 취소
-                  </label>
+                  <div class="flex-control">
+                    <label>
+                      <input type="radio" name="statusFilter" value="" checked>전체
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="대기">대기
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="완료">완료
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="만료">만료
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="이용자 취소">이용자 취소
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="숙박업자 취소">숙박업자 취소
+                    </label>
+                  </div>
                 </td>
               </tr>
             </tbody>

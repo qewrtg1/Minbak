@@ -5,11 +5,13 @@
         <id property="bookId" column="book_id"/>
         <result property="startDate" column="start_date"/>
         <result property="endDate" column="end_date"/>
+        <result property="guestsNum" column="guests_num"/>
         <result property="request" column="request"/>
         <result property="status" column="status"/>
         <association property="user" javaType="com.minbak.web.users.UserDto">
             <result property="name" column="user_name"/>
             <result property="phoneNumber" column="user_phone"/>
+            <result property="email" column="email"/>
         </association>
         <association property="room" javaType="com.minbak.web.rooms.RoomsDto">
             <result property="name" column="room_name"/>
@@ -27,11 +29,13 @@
     </insert>
 
     <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">
-        select b.book_id, u.name as user_name, u.phone_number as user_phone, r.name as room_name, b.start_date, b.end_date, b.guests_num, b.request, b.status
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, u.email as email, r.name as room_name,
+        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status
         from books b
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
-        where book_id = #{bookId}
+        join payments p on p.book_id = b.book_id
+        where b.book_id = #{bookId}
     </select>
 
     <select id="selectBooksByPage" resultMap="bookWithUser">
@@ -134,7 +138,6 @@
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
-        where paid_at is not null
         order by b.start_date
     </select>
 </mapper>
