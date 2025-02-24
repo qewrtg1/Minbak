@@ -2,6 +2,7 @@ package com.minbak.web.messages;
 
 
 import com.minbak.web.board.posts.BoardPostDto;
+import com.minbak.web.spring_security.CustomUserDetails;
 import com.minbak.web.users.UserDto;
 import com.minbak.web.users.UsersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +91,7 @@ public class MessageService {
         messageMapper.deleteMessage(message_id);
     }
 //    아이디 입력하여 메세지 생성
-    public void  createMessageByEmail(String receiverEmail,MessageDto messageDto){
+    public void  createMessageByEmail(String receiverEmail, MessageDto messageDto, CustomUserDetails userDetails){
 
 
 
@@ -103,18 +104,18 @@ public class MessageService {
 
         messageDto.setReceiverId(receiverIdByEmail);
 //        샌더 아이디 임시 입력 *수정필요*
-        messageDto.setSenderId(8);
+        messageDto.setSenderId(userDetails.getUserId());
 //        메세지 생성
         messageMapper.createMessage(messageDto);
     }
-    public void createMessageById(Integer receiverId,MessageDto messageDto){
+    public void createMessageById(Integer receiverId,MessageDto messageDto,CustomUserDetails userDetails){
 
         if (usersMapper.findUserByUserId(receiverId)==null){
             throw new IllegalArgumentException("받는이 유저 ID가 없습니다.");
         }
         messageDto.setReceiverId(receiverId);
 //        샌더 아이디 임시 입력 *수정필요*
-        messageDto.setSenderId(8);
+        messageDto.setSenderId(userDetails.getUserId());
         messageMapper.createMessage(messageDto);
     }
 

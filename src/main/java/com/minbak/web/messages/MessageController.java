@@ -1,11 +1,13 @@
 package com.minbak.web.messages;
 
 
+import com.minbak.web.spring_security.CustomUserDetails;
 import com.minbak.web.users.UserDto;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +33,7 @@ public class MessageController {
 //---------------------------------------메세지 조회 관련---------------------------------------------
 //    유저조회
     @GetMapping("/user")
-    public String userMessages(Model model){
+    public String userMessages(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
         //유저 정보를 받아서 UserDto객체에 넣고 MessageDto 전달.
 
@@ -43,7 +45,7 @@ public class MessageController {
 
 //    유저아이디로  메세지 확인
     @GetMapping("/user/{user_id}")
-    public String userMessagesById(@PathVariable("user_id") int user_id,Model model){
+    public String userMessagesById(@PathVariable("user_id") int user_id, Model model){
         model.addAttribute("user_id",user_id);
         model.addAttribute("messages", messageService.findMessagesById(user_id)  );
 
@@ -87,16 +89,13 @@ public class MessageController {
 
 //   ------------------------------------메세지 생성 관련-----------------------------------------
 
-//    메세지 생성페이지
-    @GetMapping("/create")
-    public String createMessage(){
-        return "/message/messageList";
-    }
+
 //    메세지 생성 요청(이메일로 보냄)
     @PostMapping("/create")
     public String postCreateMessage(@RequestParam(required = false) String receiverEmail,
                                     @RequestParam(required = false) Integer receiverId,
                                     @ModelAttribute MessageDto messageDto,
+                                    @AuthenticationPrincipal CustomUserDetails userDetails,
                                     RedirectAttributes redirectAttributes,
                                     BindingResult bindingResult,
                                     Model model){
@@ -111,7 +110,7 @@ public class MessageController {
             // receiverId가 없으면 이메일로 메시지 보내기
             if (receiverId == null) {
                 try {
-                    messageService.createMessageByEmail(receiverEmail, messageDto);
+                    messageService.createMessageByEmail(receiverEmail, messageDto,userDetails);
                     redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
                     return "redirect:/admin/message/list"; // 성공 시 리다이렉트
                 } catch (IllegalArgumentException e) {
@@ -121,7 +120,7 @@ public class MessageController {
             }
 
             // receiverId가 있을 경우 메시지 생성
-            messageService.createMessageById(receiverId, messageDto);
+            messageService.createMessageById(receiverId, messageDto,userDetails);
             redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
 
         } catch (IllegalArgumentException e) {
@@ -146,5 +145,7 @@ public class MessageController {
 
         return "redirect:/admin/message/list";
     }
+
+
 
 }
