@@ -16,6 +16,10 @@
   </head>
 
   <body>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <div class="d-flex justify-content-center">
       <!-- Sidebar -->
       <nav class="text-white vh-100 side-nav">
@@ -62,9 +66,15 @@
 
           <!-- 예약 관리 -->
           <li>
-            <a href="/admin/bookings" class="nav-link">
-              <i class="fa-solid fa-calendar me-2"></i>예약관리
+            <a href="#" class="nav-link accordion-btn" data-target="bookMenu">
+              <i class="fa-solid fa-calendar me-2"></i>예약관리<i class="fa-solid fa-chevron-down toggle-icon"></i>
             </a>
+            <ul id="bookMenu" class="sub-menu">
+              <li><a href="/admin/books" class="nav-link">예약 목록</a></li>
+              <li><a href="/admin/books/monthly" class="nav-link">월별 예약 현황</a></li>
+              <li><a href="/admin/books/wait" class="nav-link">예약 대기</a></li>
+              <li><a href="/admin/books/paidAndCheckIn" class="nav-link">투숙 예정</a></li>
+            </ul>
           </li>
 
           <!-- 리뷰 관리 -->
@@ -74,6 +84,19 @@
             </a>
           </li>
 
+          <!-- 메시지 -->
+          <li>
+            <a href="#" class="nav-link accordion-btn" data-target="messageMenu">
+              <i class="fa-solid fa-envelope me-2"></i>메시지<i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </a>
+            <ul id="messageMenu" class="sub-menu">
+              <li><a href="/admin/books" class="nav-link">예약 목록</a></li>
+              <li><a href="/admin/books/monthly" class="nav-link">월별 예약 현황</a></li>
+              <li><a href="/admin/books/wait" class="nav-link">예약 대기</a></li>
+              <li><a href="/admin/books/paidAndCheckIn" class="nav-link">투숙 예정</a></li>
+            </ul>
+          </li>
+
           <!-- 공지사항 -->
           <li>
             <a href="/admin/notices" class="nav-link">
@@ -81,12 +104,7 @@
             </a>
           </li>
 
-          <!-- 메시지 -->
-          <li>
-            <a href="/admin/messages" class="nav-link">
-              <i class="fa-solid fa-envelope me-2"></i>메시지
-            </a>
-          </li>
+
         </ul>
 
         <ul class="nav-menu flex-column nav-bottom">

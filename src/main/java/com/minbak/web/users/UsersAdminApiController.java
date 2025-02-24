@@ -1,12 +1,16 @@
 package com.minbak.web.users;
 
+import com.minbak.web.dash_board.DashBoardService;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
+import com.minbak.web.spring_security.CustomUserDetails;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +25,9 @@ import java.util.Map;
 public class UsersAdminApiController {
 
     private final UsersService usersService;
+
+    @Autowired
+    DashBoardService dashBoardService;
 
 //    @GetMapping("/users")
 //    public UserPageDto<UserResponseDto> searchUsers(
@@ -119,6 +126,33 @@ public class UsersAdminApiController {
         // Getters and Setters
         private List<ReportStatusUpdate> updates; // 상태 업데이트할 리포트 목록
 
+    }
+
+    @PostMapping("/send-user")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> sendMessage(
+            @RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Integer userId = Integer.parseInt(payload.get("userId"));
+        String message = payload.get("message");
+
+        if (message == null || message.trim().isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "유효한 메시지를 입력하세요.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        System.out.println(userDetails);
+        System.out.println(userDetails.getUserId());
+
+        dashBoardService.sendMessage(userDetails.getUserId(),userId,message);
+
+        // 간단한 JSON 응답
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "메시지가 전송되었습니다.");
+
+        return ResponseEntity.ok(response);
     }
 
 }

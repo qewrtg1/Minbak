@@ -26,4 +26,6 @@ public interface DashBoardMapper {
     List<AdminDto> findAllAdmins();
     List<CategoryRoomCountDto> countRoomsByCategory();
     List<OptionRoomCountDto> countRoomsByOption();
+    void insertMessage(Integer senderId, Integer receiverId, String content);
+
 }

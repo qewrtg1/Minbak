@@ -43,4 +43,6 @@ public interface MessageMapper {
     void deleteMessage(int message_id);
 //메세지 생성
     void createMessage(MessageDto messageDto);
+
+
 }
