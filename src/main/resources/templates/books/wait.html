@@ -57,6 +57,7 @@
                 <th>예약자명</th>
                 <th>연락처</th>
                 <th>요청사항</th>
+                <th>SMS</th>
             </tr>
             </thead>
             <tbody>
@@ -66,6 +67,9 @@
                 <td th:text="${book.userName}"></td>
                 <td th:text="${book.phone}"></td>
                 <td th:text="${book.request}"></td>
+                <td>
+                    <a href="#" class="btn btn-info">SMS 발송</a>
+                </td>
             </tr>
             </tbody>
         </table>

@@ -92,42 +92,57 @@
     <section>
       <div class="booking-details">
         <h5>예약 번호</h5>
-        <div th:text="${books.bookId}">예약 번호</div>
+        <div th:text="${books.bookId}"></div>
+      </div>
+
+      <div class="booking-details">
+        <h5>예약자명</h5>
+        <div th:text="${books.user.name}"></div>
+      </div>
+
+      <div class="booking-details">
+        <h5>연락처</h5>
+        <div th:text="${books.user.phoneNumber}"></div>
+      </div>
+
+      <div class="booking-details">
+        <h5>이메일</h5>
+        <div th:text="${books.user.email}"></div>
+      </div>
+
+      <div class="booking-details">
+        <h5>숙소명</h5>
+        <div th:text="${books.room.name}"></div>
       </div>
 
       <div class="booking-details">
         <h5>체크인 날짜</h5>
-        <div th:text="${books.startDate}">체크인 날짜</div>
+        <div th:text="${books.startDate}"></div>
       </div>
 
       <div class="booking-details">
         <h5>체크아웃 날짜</h5>
-        <div th:text="${books.endDate}">체크아웃 날짜</div>
+        <div th:text="${books.endDate}"></div>
       </div>
 
       <div class="booking-details">
         <h5>예약인원 수</h5>
-        <div th:text="${books.guestsNum}">예약인원 수</div>
+        <div th:text="${books.guestsNum}"></div>
+      </div>
+
+      <div class="booking-details">
+        <h5>결제금액</h5>
+        <div th:text="${books.payment.amount}"></div>
       </div>
 
       <div class="booking-details">
         <h5>특별 요청사항</h5>
-        <div th:text="${books.request}">특별 요청사항</div>
+        <div th:text="${books.request}"></div>
       </div>
 
       <div class="booking-details">
         <h5>예약 상태</h5>
-        <div th:text="${books.status}">예약 상태</div>
-      </div>
-
-      <div class="booking-details">
-        <h5>유저 ID</h5>
-        <div th:text="${books.user.name}">예약자명</div>
-      </div>
-
-      <div class="booking-details">
-        <h5>숙소 ID</h5>
-        <div th:text="${books.room.name}">숙소명</div>
+        <div th:text="${books.status}"></div>
       </div>
 
       <div class="mt-4">
