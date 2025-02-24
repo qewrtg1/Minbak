@@ -94,29 +94,48 @@ public class MessageController {
     }
 //    메세지 생성 요청(이메일로 보냄)
     @PostMapping("/create")
-    public String postCreateMessage(@RequestParam(required = false) String receiverEmail,@RequestParam(required = false, defaultValue = "") Integer receiverId, @ModelAttribute MessageDto messageDto,RedirectAttributes redirectAttributes,BindingResult bindingResult, Model model){
+    public String postCreateMessage(@RequestParam(required = false) String receiverEmail,
+                                    @RequestParam(required = false) Integer receiverId,
+                                    @ModelAttribute MessageDto messageDto,
+                                    RedirectAttributes redirectAttributes,
+                                    BindingResult bindingResult,
+                                    Model model){
 
-        if(bindingResult.hasErrors()){
-            model.addAttribute("errorMessage", "백앤드 유효성검사 통과 실패!" );
+        // 유효성 검사 오류가 있으면 리다이렉트 처리
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "백앤드 유효성검사 통과 실패!");
             return "redirect:/admin/message/list";
         }
+
         try {
-        // 서비스에서 메시지 생성
-            if (receiverId == null){
-        messageService.createMessageByEmail(receiverEmail, messageDto);
-            redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
-                return "redirect:/admin/message/list";
-        }
+            // receiverId가 없으면 이메일로 메시지 보내기
+            if (receiverId == null) {
+                try {
+                    messageService.createMessageByEmail(receiverEmail, messageDto);
+                    redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
+                    return "redirect:/admin/message/list"; // 성공 시 리다이렉트
+                } catch (IllegalArgumentException e) {
+                    redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+                    return "redirect:/admin/message/list"; // 오류 시 리다이렉트
+                }
+            }
+
+            // receiverId가 있을 경우 메시지 생성
             messageService.createMessageById(receiverId, messageDto);
             redirectAttributes.addFlashAttribute("createMessageOk", "메세지 보내기 완료");
 
-        } catch (Exception e) {
-        model.addAttribute("errorMessage", "메시지 생성 중 오류 발생!");
-        return "redirect:/admin/message/list";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admin/message/list"; // 오류 발생 시 리다이렉트
+        }
+        catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "메시지 생성 중 오류 발생!");
+            return "redirect:/admin/message/list"; // 예상치 못한 오류 발생 시 리다이렉트
         }
 
-    return "redirect:/admin/message/list";
-}
+        // 최종 리다이렉트
+        return "redirect:/admin/message/list";
+    }
     //---------------------------------------메세지 삭제 관련---------------------------------------------
     //    메세지 삭제
     @GetMapping("/list/delete/{message_id}")

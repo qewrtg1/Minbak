@@ -105,7 +105,7 @@
 </head>
 <body>
 <th:block layout:fragment="content">
-<!--메세지 리스트-->
+
     <div class="main-content">
         <!-- 메시지 생성 및 에러메시지 출력 -->
         <div class="container mt-5">
@@ -117,6 +117,10 @@
             <!-- 메시지 생성 성공 메시지 출력 -->
             <div th:if="${createMessageOk != null}" class="alert alert-success">
                 <p th:text="${createMessageOk}"></p>
+            </div>
+<!--            삭제성공 메세지-->
+            <div th:if="${deleteOk != null}" class="alert alert-success">
+                <p th:text="${deleteOk}"></p>
             </div>
 
             <!-- 메시지 생성 폼 -->
@@ -249,7 +253,23 @@
                     <td th:text="${message.receiverName}"></td>
                     <td th:text="${message.receiverEmail}"></td>
                     <td th:text="${message.receiverPhoneNumber}"></td>
-                    <td th:text="${message.content}"></td>
+                    <td>
+                        <div class="content-preview">
+                            <!-- content를 10자까지 축약해서 보여줌 -->
+                            <span th:text="${#strings.abbreviate(message.content, 10)}"></span>
+                        </div>
+                        <!-- 각 메시지에 고유 ID를 부여하여, 클릭한 메시지만 펼쳐지도록 설정 -->
+                        <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse"
+                                th:data-bs-target="'#content-full-' + ${message.messageId}"
+                                aria-expanded="false" th:aria-controls="'content-full-' + ${message.messageId}">
+                            더보기
+                        </button>
+                        <div class="collapse" th:id="'content-full-' + ${message.messageId}">
+                            <div class="card card-body mt-2">
+                                <span th:text="${message.content}"></span>
+                            </div>
+                        </div>
+                    </td>
                     <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td>
                         <form th:action="@{/admin/message/list/delete/{message_id}(message_id=${message.messageId})}" method="get">
@@ -268,7 +288,9 @@
                     <a class="page-link" th:href="@{/admin/message/list?page={page}(page=${messagePageDto.currentPage} - 1)}">«</a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(messagePageDto.startPage, messagePageDto.endPage)}">
-                    <a class="page-link" th:classappend="${messagePageDto.currentPage == i} ? 'active' : ''" th:href="@{/admin/message/list?page={i}(i=${i})}" th:text="${i}"></a>
+                    <div th:if="${i != 0}">
+                    <a class="page-link"  th:classappend="${messagePageDto.currentPage == i} ? 'active' : ''" th:href="@{/admin/message/list?page={i}(i=${i})}" th:text="${i}"></a>
+                    </div>
                 </li>
                 <li class="page-item" th:classappend="${messagePageDto.hasNext} ? '' : 'disabled'">
                     <a class="page-link" th:href="@{/admin/message/list?page={page}(page=${messagePageDto.currentPage} + 1)}">»</a>
