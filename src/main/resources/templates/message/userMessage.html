@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--타임리프와 타임리프 레이아웃 의존성 추가와 참고할 HTML(board/base/base)설정-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+</head>
+<body>
+<!-- admin/userMessage.html -->
+<h2>유저 목록</h2>
+<table>
+  <thead>
+  <tr>
+    <th>유저 ID</th>
+    <th>유저 이름</th>
+    <th>메시지 보기</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${users}">
+    <td th:text="${user.userId}"></td>
+    <td th:text="${user.name}"></td>
+    <td>
+      <!-- 유저 클릭 시 해당 유저의 메시지 조회 페이지로 이동 -->
+      <a th:href="@{/admin/message/user/{userId}(userId=${user.userId})}">해당 유저 메시지 보기</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+
+</body>
+</html>

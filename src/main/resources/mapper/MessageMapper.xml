@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.messages.MessageMapper">
+
+<!--    유저조회해서 클릭하면 해당 유저의 메세지목록 전부 다 출력-->
+<!--    필요쿼리문 : 유저 조회, 해당 유저 메세지 조회, -->
+
+    <!-- 유저 조회 -->
+    <select id="findAllUsers" resultType="com.minbak.web.users.UserDto">
+        SELECT user_id, name
+        FROM users
+    </select>
+
+    <!--샌더,리시버에 00번 아이디가 들어간 튜플 전체조회    -->
+    <select id="findMessagesById" resultType="com.minbak.web.messages.MessageDto">
+        SELECT message_id, sender_id, receiver_id, content, sent_at
+        FROM message
+        WHERE sender_id = #{user_id} OR receiver_id = #{user_id}
+
+    </select>
+    
+    <!--오늘 메세지 목록 뽑아서 카운트로 세기    -->
+    <select id="countMessagesToday" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+        WHERE DATE(sent_at) = CURRENT_DATE
+    </select>
+    <!--오늘 메세지 조회    -->
+    <select id="findMessagesToday" resultType="com.minbak.web.messages.MessageDto">
+        select * from message
+        where DATE(sent_at) = #{currentDate}
+        order by sent_at DESC
+        limit #{limit} offset #{offset};
+    </select>
+
+    <!--전체 메세지 목록 뽑아서 카운트로 세기    -->
+    <select id="countAllMessages" resultType="int">
+        SELECT COUNT(*)
+        FROM message
+    </select>
+<!--    이메일로 id 조회하기-->
+    <select id="findUserIdByEmail" resultType="int">
+        SELECT user_id
+        FROM users where email=#{email}
+    </select>
+<!--메세지 조회, 페이징-->
+    <select id="findMessagesByLimitAndOffset" resultType="com.minbak.web.messages.MessageDto">
+        select * from message
+        order by sent_at DESC
+        limit #{limit} offset #{offset};
+    </select>
+
+    <!--    필터링,검색한 메시지 개수 조회-->
+
+    <select id="countFilteredMessages" resultType="int" parameterType="com.minbak.web.messages.RequestMessageFilterDto">
+        SELECT count(*)
+        FROM message m
+        LEFT JOIN users s ON m.sender_id = s.user_id
+        LEFT JOIN users r ON m.receiver_id = r.user_id
+        WHERE
+        (#{messageId} IS NULL OR m.message_id = #{messageId}) AND
+        (#{userId} IS NULL OR m.sender_id = #{userId} OR m.receiver_id = #{userId}) AND
+        (#{keyword} IS NULL OR m.content LIKE CONCAT('%', #{keyword}, '%')) AND
+        (#{startDate} IS NULL OR m.sent_at &gt;= #{startDate}) AND
+        (#{endDate} IS NULL OR m.sent_at &lt;= #{endDate}) AND
+        (#{userName} IS NULL OR s.name LIKE CONCAT('%',  #{userName}, '%') OR r.name LIKE CONCAT('%',  #{userName}, '%')) AND
+        (#{userEmail} IS NULL OR s.email = #{userEmail} OR r.email = #{userEmail}) AND
+        (#{userPhoneNumber} IS NULL OR s.phone_number LIKE CONCAT('%',  #{userPhoneNumber}, '%') OR r.phone_number  LIKE CONCAT('%',  #{userPhoneNumber}, '%'))
+    </select>
+
+    <!--    필터링,검색한 메시지 조회-->
+    <select id="findMessagesWithUser" resultType="com.minbak.web.messages.ResponseMessageDto" parameterType="com.minbak.web.messages.RequestMessageFilterDto">
+        SELECT m.message_id, m.sender_id, m.receiver_id,
+        m.content, m.sent_at,
+        s.name AS sender_name, s.email AS sender_email,
+        r.name AS receiver_name, r.email AS receiver_email,
+        s.phone_number AS sender_phone_number, r.phone_number AS receiver_phone_number
+        FROM message m
+        LEFT JOIN users s ON m.sender_id = s.user_id
+        LEFT JOIN users r ON m.receiver_id = r.user_id
+        WHERE
+        (#{messageId} IS NULL OR m.message_id = #{messageId}) AND
+        (#{userId} IS NULL OR m.sender_id = #{userId} OR m.receiver_id = #{userId}) AND
+        (#{keyword} IS NULL OR m.content LIKE CONCAT('%', #{keyword}, '%')) AND
+        (#{startDate} IS NULL OR m.sent_at &gt;= #{startDate}) AND
+        (#{endDate} IS NULL OR m.sent_at &lt;= #{endDate}) AND
+        (#{userName} IS NULL OR s.name LIKE CONCAT('%',  #{userName}, '%') OR r.name LIKE CONCAT('%',  #{userName}, '%')) AND
+        (#{userEmail} IS NULL OR s.email = #{userEmail} OR r.email = #{userEmail}) AND
+        (#{userPhoneNumber} IS NULL OR s.phone_number LIKE CONCAT('%',  #{userPhoneNumber}, '%') OR r.phone_number  LIKE CONCAT('%',  #{userPhoneNumber}, '%'))
+        order by sent_at DESC
+        LIMIT #{limit} OFFSET #{offset};
+
+    </select>
+
+<!--    <resultMap id="messageWithUserResultMap" type="com.minbak.web.messages.ResponseMessageDto">-->
+<!--        <id property="messageId" column="message_id"/>-->
+<!--        <result property="content" column="content"/>-->
+<!--        <result property="sentAt" column="sent_at"/>-->
+<!--        <result property="senderName" column="sender_name"/>-->
+<!--        <result property="senderEmail" column="sender_email"/>-->
+<!--        <result property="receiverName" column="receiver_name"/>-->
+<!--        <result property="receiverEmail" column="receiver_email"/>-->
+<!--        <result property="senderContact" column="sender_contact"/>-->
+<!--        <result property="receiverContact" column="receiver_contact"/>-->
+<!--    </resultMap>-->
+
+    <!--      -->
+
+<!--메세지 삭제-->
+    <delete id="deleteMessage">
+        delete from message
+        where message_id = #{message_id}
+    </delete>
+<!--메세지 생성-->
+    <insert id="createMessage" useGeneratedKeys="true" keyProperty="messageId">
+        INSERT INTO message (sender_id ,receiver_id, content)
+        VALUES (#{senderId}, #{receiverId}, #{content})
+    </insert>
+
+</mapper>

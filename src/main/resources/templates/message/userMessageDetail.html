@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 메시지</title>
+</head>
+<body>
+<h2>유저 메시지 보기</h2>
+
+
+<div th:if="${messages == null || messages.isEmpty()}">
+    <p>메시지가 없습니다.</p>
+</div>
+
+<!-- 메시지 목록 출력 -->
+<h2>유저아이디 :<span th:text="${user_id}"></span>에 대한 메세지 내용목록</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>메시지 ID</th>
+        <th>보낸 사람 ID</th>
+        <th>받은 사람 ID</th>
+        <th>메시지 내용</th>
+        <th>보낸 시간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="message : ${messages}">
+        <td th:text="${message.messageId}"></td>
+        <td th:text="${message.senderId}"></td>
+        <td th:text="${message.receiverId}"></td>
+        <td th:text="${message.content}"></td>
+        <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
