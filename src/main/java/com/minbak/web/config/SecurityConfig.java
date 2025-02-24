@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .loginPage("/admin/login") //로그인 페이지를 설정한다는 매서드(GetMapping)
                         //loginProcessingUrl은 UserDetailsService를 상속받은 클래스를 실행시키는 중요한 설정.
                         .loginProcessingUrl("/admin/login") //로그인 버튼을(PostMapping) /login으로 연결한다는 의미
-                        .defaultSuccessUrl("/admin", true)
+                        .defaultSuccessUrl("/admin/dashboard", true)
                         .permitAll() // 위 경로를 누구나 접근하게 허용
                 )
 
