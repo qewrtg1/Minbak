@@ -223,7 +223,15 @@
             <!-- 오른쪽 고정 패널 -->
             <aside class="dashboard-right">
 
-                <div class="card">내 정보 간단히</div>
+                <div class="card">
+                    <strong>내 정보</strong>
+                    <br>
+                    <p><strong>이름:</strong> <span th:text="${user.name}">-</span></p>
+                    <br>
+                    <p><strong>이메일:</strong> <span th:text="${user.email}">-</span></p>
+                    <br>
+                    <p><strong>전화번호:</strong> <span th:text="${user.phoneNumber}">-</span></p>
+                </div>
 
 
                 <div class="card" style="width: 100%;">

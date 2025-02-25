@@ -1,6 +1,10 @@
 package com.minbak.web.dash_board;
 
+import com.minbak.web.spring_security.CustomUserDetails;
+import com.minbak.web.users.UserDto;
+import com.minbak.web.users.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +20,12 @@ public class DashBoardController {
     @Autowired
     DashBoardService dashBoardService;
 
+    @Autowired
+    UsersService usersService;
+
     @GetMapping
-    public String dashBoard(Model model){
+    public String dashBoard(Model model,
+                            @AuthenticationPrincipal CustomUserDetails userDetails){
         // 서비스에서 신고 건수 가져오기
         int userReportCount = dashBoardService.getUserReportCount();
         int roomReportCount = dashBoardService.getRoomReportCount();
@@ -76,6 +84,9 @@ public class DashBoardController {
 
         List<OptionRoomCountDto> optionRoomCounts = dashBoardService.getRoomsByOption();
         model.addAttribute("optionRoomCounts", optionRoomCounts);
+
+        //유저 정보 가져와서 전달
+        model.addAttribute("user",usersService.findUserByUserId(userDetails.getUserId()));
 
         // Thymeleaf 템플릿 경로 반환
         return "dash-board";
