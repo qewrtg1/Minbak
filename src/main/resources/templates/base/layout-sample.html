@@ -79,9 +79,12 @@
 
           <!-- 리뷰 관리 -->
           <li>
-            <a href="/admin/reviews" class="nav-link">
-              <i class="fa-solid fa-star-half-stroke me-2"></i>리뷰관리
+            <a href="/admin/reviews" class="nav-link accordion-btn" data-target="reviewMenu">
+              <i class="fa-solid fa-star-half-stroke me-2"></i>리뷰관리<i class="fa-solid fa-chevron-down toggle-icon"></i>
             </a>
+            <ul id="reviewMenu" class="sub-menu">
+              <li><a href="/admin/review" class="nav-link">리뷰 목록</a></li>
+            </ul>
           </li>
 
           <!-- 메시지 -->
