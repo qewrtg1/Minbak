@@ -21,4 +21,5 @@ public class FileUploadConfig {
             throw new RuntimeException("업로드 디렉토리를 만들 수 없습니다.");
         }
     }
+
 }

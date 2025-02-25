@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,7 +19,7 @@ public class FileService {
     private String uploadDirectory;
 
     @Autowired
-    FileMapper fileUploadMapper;
+    FileMapper fileMapper;
 
 
     public ImageFileDto saveFile(MultipartFile file, int roomId) throws IOException {
@@ -42,8 +43,13 @@ public class FileService {
         //해당 room의Id
         imageFile.setEntityId(roomId);
         // TODO 유저 아이디 추가
-        fileUploadMapper.insertImageFile(imageFile);
+        fileMapper.insertImageFile(imageFile);
 
         return imageFile;
     }
+
+    public List<ImageFileDto> getImagesByRoomId(int roomId) {
+        return fileMapper.findImagesByRoomId(roomId);
+    }
+
 }

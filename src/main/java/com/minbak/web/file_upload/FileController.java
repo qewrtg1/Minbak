@@ -31,6 +31,11 @@ public class FileController {
         return "/file-form/file-test";
     }
 
+    @GetMapping("/getfile")
+    public String getFileForm() {
+        return "/file-form/get-img-test";
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
 

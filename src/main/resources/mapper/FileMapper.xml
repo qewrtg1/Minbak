@@ -8,4 +8,8 @@
         VALUES (#{fileUrl}, #{fileName}, #{fileSize}, #{entityType}, #{entityId}, NOW());
     </insert>
 
+    <select id="findImagesByRoomId" resultType="com.minbak.web.file_upload.ImageFileDto">
+        SELECT * FROM image_files WHERE entity_type = 'rooms' AND entity_id = #{roomId}
+    </select>
+
 </mapper>

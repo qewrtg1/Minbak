@@ -50,6 +50,14 @@ public class ApiFileController {
         return ResponseEntity.ok(uploadedFiles);
     }
 
+
+    @GetMapping("/file/list/{roomId}")
+    public ResponseEntity<List<ImageFileDto>> getRoomImages(@PathVariable int roomId) {
+        List<ImageFileDto> images = fileService.getImagesByRoomId(roomId);
+        return ResponseEntity.ok(images);
+    }
+
+
     @DeleteMapping("/delete/{filename}")
     public ResponseEntity<String> deleteFile(@PathVariable String filename) {
         try {
