@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>포트원(PortOne) 결제 테스트</title>
-    <!-- 포트원 JavaScript SDK -->
     <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 </head>
 <body>
@@ -15,13 +14,14 @@
 <label for="amount">결제 금액 (KRW):</label>
 <input type="number" id="amount" placeholder="금액 입력" required><br>
 
-<button onclick="requestPay()">결제하기</button>
+<button onclick="requestPay('kakaopay')">카카오페이 결제하기</button>
+<button onclick="requestPay('tosspay')">토스페이 결제하기</button>
+<button onclick="requestPay('inicis')">KG이니시스 결제하기</button>
 
 <script>
-    // 포트원 가맹점 식별코드 (imp_key)
-    IMP.init("imp88076876");
+    IMP.init("imp88076876"); // 포트원 가맹점 식별코드
 
-    function requestPay() {
+    function requestPay(paymentType) {
         const productName = document.getElementById("productName").value;
         const amount = document.getElementById("amount").value;
 
@@ -30,8 +30,17 @@
             return;
         }
 
+        let pgProvider = "";
+        if (paymentType === "kakaopay") {
+            pgProvider = "kakaopay";
+        } else if (paymentType === "tosspay") {
+            pgProvider = "tosspay.tosstest";  // 테스트 환경 (실제 결제는 tosspayments)
+        } else if (paymentType === "inicis") {
+            pgProvider = "html5_inicis.INIpayTest";  // KG이니시스 테스트 결제
+        }
+
         IMP.request_pay({
-            pg: "kakaopay",
+            pg: pgProvider,
             pay_method: "card",
             amount: amount,
             name: productName,
@@ -51,7 +60,6 @@
         });
     }
 
-    // 결제 정보 검증 함수
     function verifyPayment(imp_uid) {
         fetch("http://localhost:8080/api/portone/payment-info?impUid=" + imp_uid, {
             method: "POST"
