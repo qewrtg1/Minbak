@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/review")
@@ -18,9 +20,10 @@ public class ReviewController {
     // 리뷰 목록 페이지 (기본 1페이지, 5개씩 출력)
     @GetMapping
     public String getReviews(
-            @RequestParam(name="page", defaultValue = "1") int page,  // 현재 페이지 (기본값: 1)
-            @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
-            Model model) { //Thymeleaf에서 사용할 데이터를 모델에 담아 전달
+        @RequestParam(name="page", defaultValue = "1") int page,  // 현재 페이지 (기본값: 1)
+        @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
+        Model model) { //Thymeleaf에서 사용할 데이터를 모델에 담아 전달
+
 
         List<ReviewDto> review = reviewService.getReviews(page*5-size, size); // 리뷰 목록 가져오기
         Integer totalReview = reviewService.getTotalReviewCount("");  // 검색된 리뷰의 총 개수를 받아옴

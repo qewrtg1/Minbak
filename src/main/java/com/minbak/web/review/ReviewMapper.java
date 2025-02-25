@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Mapper
 public interface ReviewMapper {
@@ -14,6 +16,8 @@ public interface ReviewMapper {
 
     // 리뷰 순서대로 목록 조회
     List<ReviewDto> findOrderedReview();
+
+    List<Map<String, Object>> getReviewScore();
 
     // 검색어에 맞는 리뷰 리스트를 가져오는 메서드
     List<ReviewDto> searchReview(@Param("offset") int offset, @Param("limit") int limit, @Param("search") String search);

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReviewService {
@@ -24,12 +26,13 @@ public class ReviewService {
     }
 
     // 검색어에 맞는 총 후기 수를 반환하는 메서드
-    public Integer getTotalReviewCount(String search) {  // 리턴 타입을 int로 명시
+    public Integer getTotalReviewCount(String search) {  // 리턴 타입을 Integer로 명시
         return reviewMapper.getTotalReviewCount(search);  // Mapper에서 총 후기 수를 반환
     }
 
+
     // 검색어에 맞는 리뷰 리스트를 반환하는 메서드
-    public List<ReviewDto> searchReview(int offset, int size, String search) {  // 리턴 타입과 메서드 이름을 명확히 작성
+    public List<ReviewDto> searchReview(int offset, int size, String search) {
         return reviewMapper.searchReview(offset, size, search) ;  // Mapper에서 검색된 리뷰 리스트를 반환
     }
 

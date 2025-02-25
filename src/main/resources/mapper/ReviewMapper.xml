@@ -11,10 +11,15 @@
 
         <!-- 페이지네이션을 적용하여 리뷰 목록 가져오기 -->
         <select id="getReviews" resultType="com.minbak.web.review.ReviewDto">
-            SELECT review.* FROM review
+            SELECT review.*, users.email FROM review
+            JOIN users ON users.user_id = review.review_id
             ORDER BY review_id DESC  <!-- 최신 리뷰가 먼저 보이도록 정렬 -->
             LIMIT #{limit} OFFSET #{offset};  <!-- 페이지네이션 적용 -->
         </select>
+
+    <select id="getReviewScore" resultType="map">
+        SELECT score, COUNT(1) AS count FROM review GROUP BY score ORDER BY score DESC;
+    </select>
 
     <!-- 검색어에 맞는 총 후기 수를 가져오는 쿼리 -->
     <select id="getTotalReviewCount" resultType="Integer">
