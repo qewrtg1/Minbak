@@ -22,6 +22,6 @@ public class BooksApiController {
                            @RequestParam(name="size", defaultValue = "10") int size,
                            Model model) {
         model.addAttribute("booksPage", booksService.getBooks(page, size));
-        return "books/hosting/reservations";
+        return "books/host/reservations";
     }
 }

@@ -1,29 +1,24 @@
 package com.minbak.web.email;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/admin/email")
 @RequiredArgsConstructor
 public class EmailController {
 
-    @Autowired
     private final EmailService emailService;
 
-    @GetMapping("/email")
-    public String sendMail() {
+    @GetMapping("/send")
+    public String sendEmail() {
         return "email/email";
     }
 
-    @PostMapping("/email")
-    public void execMail(EmailDto emailDto) {
-//        EmailDto emailDto1 = new EmailDto();
-//        emailDto1.setAddress("tyuy1018@gmail.com");
-//        emailDto1.setTitle("메일 전송 테스트입니다");
-//        emailDto1.setMessage("메일 잘 가셨나요?");
-        emailService.execMail(emailDto);
+    @PostMapping("/send")
+    public String sendEmail(@ModelAttribute EmailDto emailDto) {
+        emailService.sendMessage(emailDto);
+        return "Email sent successfully!";
     }
 }

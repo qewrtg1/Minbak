@@ -37,17 +37,6 @@ public class BooksController {
         return "books/list";
     }
 
-    @GetMapping("/create")
-    public String create() {
-        return "books/create";
-    }
-
-    @PostMapping("/create")
-    public String create(@ModelAttribute BooksDto booksDto) {
-        booksService.createBook(booksDto);
-        return "redirect:/admin/books";
-    }
-
     @GetMapping("/{bookId}")
     public String selectBookById(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto booksDto = booksService.selectBookById(bookId);
