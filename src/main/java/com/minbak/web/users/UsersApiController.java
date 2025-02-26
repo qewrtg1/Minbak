@@ -30,6 +30,9 @@ public class UsersApiController {
     @Value("${jwt.refresh-token-expiration-time}")
     private long REFRESH_TOKEN_EXPIRATION_TIME;
 
+    @Value("${jwt.access-token-expiration-time}")
+    private long ACCESS_TOKEN_EXPIRATION_TIME;
+
     private final UsersService usersService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
@@ -68,13 +71,16 @@ public class UsersApiController {
             // HttpOnly(JS로 수정 불가능) 쿠키 설정 (Refresh Token) 바로 클라이언트서버의 쿠키에 저장함
 
             //토큰을 createRefreshCookie메서드(아래정의됨)로 쿠키에 추가
-            response.addCookie(createRefreshCookie("refreshToken", refreshToken));
+            response.addCookie(jwtUtil.createRefreshCookie("refreshToken", refreshToken));
 
-            //발급한 토큰 데이터베이스에 저장
+            //엑세스토큰도 생성해서 쿠키로 전달
+            response.addCookie(jwtUtil.createAccessCookie("jwtToken",accessToken));
+
+            //발급한 리프레시토큰 데이터베이스에 저장
             usersService.createRefreshTokenData(username,refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
 
             //리턴받은 accessToken을 로컬에 저장하고 api요청시마다 헤더에 요청
-            return ResponseEntity.ok(Map.of("accessToken", accessToken));
+            return ResponseEntity.ok(Map.of("message", "로그인 성공"));
 
         } catch (AuthenticationException e) {
             throw new RuntimeException("Invalid credentials");
@@ -103,7 +109,7 @@ public class UsersApiController {
 
         //Refresh Rotate(리프레시토큰 재발급)
         String newRefreshToken = jwtUtil.generateRefreshToken(username);
-        response.addCookie(createRefreshCookie("refreshToken", newRefreshToken));
+        response.addCookie(jwtUtil.createRefreshCookie("refreshToken", newRefreshToken));
 
         //발급한 토큰 데이터베이스에 저장
         usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
@@ -135,15 +141,29 @@ public class UsersApiController {
     public ResponseEntity<Map<String, String>> userLogout(HttpServletRequest request,HttpServletResponse response){
 
         String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
+        String accessToken = jwtUtil.getJwtTokenFromCookies(request);
 
-        if(refreshToken == null){
+        if(refreshToken == null && accessToken == null){
             return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST)
                     .body(Map.of("message", "로그인된 상태가 아닙니다."));
         }
 
         if(usersService.checkRefreshTokenIsExpired(refreshToken)){
-            return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST)
-                    .body(Map.of("message", "이미 로그아웃 되었습니다."));
+
+            if(accessToken == null){
+                return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST)
+                        .body(Map.of("message", "이미 로그아웃 되었습니다."));
+            }else {
+                Cookie jwtCookie = new Cookie("jwtToken", null);
+                jwtCookie.setMaxAge(0);
+                jwtCookie.setPath("/");
+
+                response.addCookie(jwtCookie);
+
+                return ResponseEntity.status(HttpServletResponse.SC_OK)
+                        .body(Map.of("message", "로그아웃 되었습니다."));
+            }
+
         }
 
         usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
@@ -152,21 +172,15 @@ public class UsersApiController {
         cookie.setMaxAge(0);
         cookie.setPath("/");
 
+        Cookie jwtCookie = new Cookie("jwtToken", null);
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setPath("/");
+
         response.addCookie(cookie);
+        response.addCookie(jwtCookie);
+
         return ResponseEntity.status(HttpServletResponse.SC_OK)
                 .body(Map.of("message", "로그아웃 되었습니다."));
     }
-
-    private Cookie createRefreshCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) REFRESH_TOKEN_EXPIRATION_TIME / 1000);
-
-        return cookie;
-    }
-
 
 }

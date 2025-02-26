@@ -66,4 +66,11 @@
         FROM payments
     </select>
 
+    <!-- 예약 상태 업데이트 -->
+    <update id="updateBookStatus">
+        UPDATE books
+        SET status = #{status}
+        WHERE book_id = #{bookId}
+    </update>
+
 </mapper>

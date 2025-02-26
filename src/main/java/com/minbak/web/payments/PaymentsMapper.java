@@ -31,4 +31,8 @@ public interface PaymentsMapper {
     List<PaymentDto> findPaymentsWithLimitAndOffset(int limit, int offset);
 
     int countPayments();
+
+    //예약 상태 업데이트
+    void updateBookStatus(String status, int bookId);
+
 }

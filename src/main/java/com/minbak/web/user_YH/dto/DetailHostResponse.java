@@ -1,4 +1,4 @@
-package com.minbak.web.user_room_detail.dto;
+package com.minbak.web.user_YH.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DetailHostResponse {
-    private Long hostId;
+    private Integer hostId;
     private String name;
     private String imageUrl; // 호스트 프로필 사진
     private int reviewCount;

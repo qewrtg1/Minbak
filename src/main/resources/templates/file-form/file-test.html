@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,6 +75,9 @@
 </head>
 <body class="bg-light">
 
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 <div class="container mt-5 p-4 bg-white shadow rounded">
   <h2 class="text-center mb-4">방 이미지 업로드</h2>
 
@@ -130,6 +133,39 @@
 
   <p id="status" class="text-center mt-3"></p>
 </div>
+<!-- 사용자 프로필 이미지 업로드 -->
+<div class="mt-5 p-4 bg-white shadow rounded">
+  <h2 class="text-center mb-4">프로필 이미지 업로드</h2>
+
+  <!-- User ID 입력 -->
+  <div class="mb-3">
+    <label for="userId" class="form-label">User ID:</label>
+    <input type="number" id="userId" class="form-control" required>
+  </div>
+
+  <!-- 프로필 이미지 업로드 박스 -->
+  <div class="d-flex justify-content-center">
+    <div class="image-box" onclick="selectProfileImage()">
+      <span class="plus">+</span>
+      <img id="profilePreview">
+      <button class="remove-btn btn btn-danger btn-sm" onclick="removeProfileImage(event)">X</button>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- 숨겨진 파일 입력 요소 -->
+  <input type="file" id="profileFileInput" accept="image/*" style="display: none" onchange="handleProfileFileChange(event)">
+
+  <br>
+
+  <!-- 업로드 버튼 -->
+  <div class="d-grid gap-2 mt-3">
+    <button class="btn btn-primary" onclick="uploadProfileImage()">프로필 이미지 업로드</button>
+  </div>
+
+  <p id="profileStatus" class="text-center mt-3"></p>
+</div>
 
 <!-- Bootstrap JS 추가 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -179,6 +215,9 @@
 
   function uploadImages() {
       const roomId = document.getElementById("roomId").value;
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
 
       if (!roomId) {
           alert("Room ID를 입력하세요!");
@@ -201,9 +240,12 @@
           return;
       }
 
-      fetch("/api/upload-multiple", {
+      fetch("/admin/api/upload-multiple", {
           method: "POST",
-          body: formData
+          body: formData,
+          headers: {
+              [csrfHeader]: csrfToken  // 동적으로 CSRF 헤더 추가
+          }
       })
       .then(response => response.text())
       .then(data => {
@@ -221,5 +263,87 @@
   }
 </script>
 
+<script>
+  let selectedProfileFile = null; // 프로필 이미지 저장
+
+  function selectProfileImage() {
+      document.getElementById("profileFileInput").click();
+  }
+
+  function handleProfileFileChange(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+          const imgElement = document.getElementById("profilePreview");
+          const plusIcon = document.querySelector(".image-box .plus");
+          const removeBtn = document.querySelector(".image-box .remove-btn");
+
+          imgElement.src = e.target.result;
+          imgElement.style.display = "block";
+          plusIcon.style.display = "none"; // + 버튼 숨김
+          removeBtn.style.display = "block"; // 삭제 버튼 표시
+      };
+      reader.readAsDataURL(file);
+
+      selectedProfileFile = file;
+  }
+
+  function removeProfileImage(event) {
+      event.stopPropagation();
+      selectedProfileFile = null;
+
+      const imgElement = document.getElementById("profilePreview");
+      const plusIcon = document.querySelector(".image-box .plus");
+      const removeBtn = document.querySelector(".image-box .remove-btn");
+
+      imgElement.style.display = "none";
+      plusIcon.style.display = "block";
+      removeBtn.style.display = "none";
+  }
+
+  function uploadProfileImage() {
+      const userId = document.getElementById("userId").value;
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+
+      if (!userId) {
+          alert("User ID를 입력하세요!");
+          return;
+      }
+
+      if (!selectedProfileFile) {
+          alert("업로드할 프로필 이미지가 없습니다!");
+          return;
+      }
+
+      const formData = new FormData();
+      formData.append("userId", userId);
+      formData.append("file", selectedProfileFile);
+
+      fetch("/admin/api/upload-profile", {
+          method: "POST",
+          body: formData,
+          headers: {
+            [csrfHeader]: csrfToken  // 동적으로 CSRF 헤더 추가
+          }
+      })
+      .then(response => response.text())
+      .then(data => {
+          document.getElementById("profileStatus").textContent = "프로필 업로드 성공: " + data;
+
+          // 이미지 초기화
+          selectedProfileFile = null;
+          document.getElementById("profilePreview").style.display = "none";
+          document.querySelector(".image-box .plus").style.display = "block";
+          document.querySelector(".image-box .remove-btn").style.display = "none";
+      })
+      .catch(error => {
+          document.getElementById("profileStatus").textContent = "업로드 실패: " + error;
+      });
+  }
+</script>
 </body>
 </html>

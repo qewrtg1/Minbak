@@ -71,6 +71,7 @@ public class PayPalService {
         return null;
     }
 
+    //해당 결제 트랜섹션 받아오는 코드
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
         Payment payment = new Payment();
         payment.setId(paymentId);

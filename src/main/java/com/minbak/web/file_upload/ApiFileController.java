@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/admin/api")
 public class ApiFileController {
 
     @Value("${file.upload.directory}")
@@ -39,7 +39,7 @@ public class ApiFileController {
 
         for (MultipartFile file : files) {
             try {
-                ImageFileDto imageFile = fileService.saveFile(file, roomId);
+                ImageFileDto imageFile = fileService.saveFile(file, roomId,"rooms");
                 uploadedFiles.add(imageFile);
             } catch (IOException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -48,6 +48,26 @@ public class ApiFileController {
         }
 
         return ResponseEntity.ok(uploadedFiles);
+    }
+
+    @PostMapping("/upload-profile")
+    public ResponseEntity<?> uploadProfile(
+            @RequestParam("userId") int userId,
+            @RequestParam("file") MultipartFile file) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("업로드할 파일이 없습니다.");
+        }
+
+        try {
+            ImageFileDto imageFile = fileService.saveFile(file, userId, "users");
+            return ResponseEntity.ok(imageFile);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("파일 저장 중 오류 발생: " + e.getMessage());
+        }
+
     }
 
 

@@ -22,7 +22,7 @@ public class FileService {
     FileMapper fileMapper;
 
 
-    public ImageFileDto saveFile(MultipartFile file, int roomId) throws IOException {
+    public ImageFileDto saveFile(MultipartFile file, int roomId, String type) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
 
@@ -39,7 +39,7 @@ public class FileService {
         //파일 사이즈 인트로변환
         imageFile.setFileSize((int) file.getSize());
         //rooms의 사진이라는 뜻
-        imageFile.setEntityType("rooms"); // rooms 타입으로 저장
+        imageFile.setEntityType(type); // type 타입으로 저장
         //해당 room의Id
         imageFile.setEntityId(roomId);
         // TODO 유저 아이디 추가

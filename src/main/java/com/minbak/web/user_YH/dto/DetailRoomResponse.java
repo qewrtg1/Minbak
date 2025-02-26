@@ -1,14 +1,16 @@
-package com.minbak.web.user_room_detail.dto;
+package com.minbak.web.user_YH.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class DetailRoomResponse {
-    private Long roomId;
+    private Integer roomId;
+    private String name;
     private String title;
     private String content;
     private String address;
@@ -24,5 +26,5 @@ public class DetailRoomResponse {
     private String buildingType;
     private String useGuide;
     private List<String> imageUrls; // 숙소 이미지 리스트
-    private List<String> options; // 숙소 편의시설 리스트
+    private Map<String, List<String>> options; // 숙소 편의시설 리스트
 }

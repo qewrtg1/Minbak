@@ -34,7 +34,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/admin/**")  // API 요청에만 적용
                 .authorizeHttpRequests(auth -> auth  // HTTP 요청에 대한 접근 권한을 설정합니다.
-                        .requestMatchers("/admin/login", "/admin/file/**","/admin/signup").permitAll()
+                        .requestMatchers("/admin/login", "/admin/file/**","/admin/api/**","/admin/signup").permitAll()
                         .requestMatchers("/admin/user/{id}").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // 그 외는 인증을 요구
@@ -94,12 +94,14 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll() // 공개 API
-                        .requestMatchers("/api/login", "/api/refresh", "/api/signup").permitAll()
+                        .requestMatchers("/api/login", "/api/refresh", "/api/signup","/","/room/**").permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //UsernamePasswordAuthenticationFilter 전에 jwtAuthenticationFilter 실행
                 .logout(AbstractHttpConfigurer::disable //로그아웃 비활성화
                 );
+
 
         return http.build();
     }

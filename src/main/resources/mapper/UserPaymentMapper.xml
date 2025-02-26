@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.user_YH.payment_page.UserPaymentMapper">
+
+    <!-- 예약 정보 가져오기 -->
+    <select id="getPaymentBookDetails" parameterType="int" resultType="com.minbak.web.user_YH.payment_page.PaymentBookDto">
+        SELECT book_id, user_id, room_id, status, start_date, end_date, guests_num
+        FROM books
+        WHERE book_id = #{bookId}
+    </select>
+
+    <!-- 숙소 정보 + 해당 숙소의 평균 평점 가져오기 -->
+    <select id="getPaymentRoomDetails" parameterType="int" resultType="com.minbak.web.user_YH.payment_page.PaymentRoomDto">
+        SELECT
+        r.room_id,
+        r.title,
+        r.building_type,
+        r.price,
+        r.max_guests,
+        ROUND(IFNULL(AVG(rv.score), 0), 1) AS rating,  <!-- 소수점 1자리 반올림 (평점) -->
+        COUNT(rv.review_id) AS reviewCount  <!-- 해당 숙소의 리뷰 개수 -->
+        FROM rooms r
+        LEFT JOIN books b ON r.room_id = b.room_id  <!-- books 테이블을 경유 -->
+        LEFT JOIN review rv ON b.book_id = rv.book_id  <!-- review 테이블과 JOIN -->
+        WHERE r.room_id = #{roomId}
+        GROUP BY r.room_id, r.title, r.building_type, r.price, r.max_guests
+    </select>
+
+
+
+    <!-- 사용자 정보 가져오기 -->
+    <select id="getPaymentUserDetails" parameterType="int" resultType="com.minbak.web.user_YH.payment_page.PaymentUserDto">
+        SELECT user_id, name, email
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="getRoomImageUrl" parameterType="int" resultType="String">
+        SELECT file_url
+        FROM image_files
+        WHERE entity_type = 'rooms' AND entity_id = #{roomId}
+        ORDER BY uploaded_at ASC  <!-- 가장 오래된 이미지 우선 -->
+        LIMIT 1
+    </select>
+
+
+</mapper>

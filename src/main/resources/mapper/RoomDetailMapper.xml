@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.minbak.web.user_room_detail.RoomDetailMapper">
+<mapper namespace="com.minbak.web.user_YH.RoomDetailMapper">
 
     <!-- 숙소 상세 조회 -->
-    <select id="getRoomDetail" resultType="com.minbak.web.user_room_detail.dto.DetailRoomResponse">
+    <select id="getRoomDetail" resultType="com.minbak.web.user_YH.dto.DetailRoomResponse">
         SELECT
         r.room_id, r.title, r.content, r.address, r.latitude, r.longitude,
-        r.price AS price_per_night, r.max_guests, r.bedrooms, r.beds, r.bathrooms,
+        r.price AS price_per_night, r.max_guests, r.bedrooms, r.beds, r.bathrooms,r.name,
         r.building_type, r.use_guide,
         COALESCE(AVG(rv.score), 0) AS rating,
         COUNT(rv.review_id) AS review_count
@@ -27,11 +27,10 @@
     </select>
 
     <!-- Host 정보 조회 -->
-    <select id="getHostDetail" resultType="com.minbak.web.user_room_detail.dto.DetailHostResponse">
+    <select id="getHostDetail" resultType="com.minbak.web.user_YH.dto.DetailHostResponse">
         SELECT
         h.host_id,
         u.name AS name,
-        u.profile_image_url AS imageUrl,
         TIMESTAMPDIFF(YEAR, h.created_at, NOW()) AS yearsOfExperience, -- 호스트 경험 연수 계산
         h.hobby,
         h.introduction,
@@ -50,7 +49,7 @@
 
 
     <!-- Booking 정보 조회 -->
-    <select id="getBookingDetail" resultType="com.minbak.web.user_room_detail.dto.DetailBookResponse">
+    <select id="getBookingDetail" resultType="com.minbak.web.user_YH.dto.DetailBookResponse">
         SELECT
         b.book_id, b.start_date AS check_in, b.end_date AS check_out,
         DATEDIFF(b.end_date, b.start_date) AS nights, b.guests_num AS guests,
@@ -62,7 +61,7 @@
     </select>
 
     <!-- Review 리스트 조회 -->
-    <select id="getRoomReviews" resultType="com.minbak.web.user_room_detail.dto.DetailReviewResponse">
+    <select id="getRoomReviews" resultType="com.minbak.web.user_YH.dto.DetailReviewResponse">
         SELECT
         rv.review_id,
         rv.score AS rating,
@@ -72,7 +71,14 @@
         u.name AS "user.name",
         u.email AS "user.email",
         u.phone_number AS "user.phoneNumber",
-        u.profile_image_url AS "user.profileImageUrl"
+        (
+        SELECT file_url
+        FROM image_files
+        WHERE user_id = u.user_id
+        AND entity_type = 'users'
+        ORDER BY uploaded_at DESC
+        LIMIT 1
+        ) AS "user.profileImageUrl"
         FROM review rv
         LEFT JOIN users u ON rv.user_id = u.user_id
         JOIN books b ON rv.book_id = b.book_id
@@ -81,5 +87,40 @@
     </select>
 
 
+    <!--예약된 숙소 날자-->
+    <select id="getReservedDates" resultType="java.util.Map">
+        SELECT start_date, end_date
+        FROM books
+        WHERE room_id = #{roomId} AND status = '완료'
+    </select>
+
+<!--카테고리별 룸 옵션 가져오기-->
+    <select id="getRoomOptions" resultType="map">
+        SELECT
+        ro.options_category AS category,
+        ro.name AS option_name
+        FROM rooms_room_options rro
+        JOIN room_options ro ON rro.option_id = ro.option_id
+        WHERE rro.room_id = #{roomId}
+        ORDER BY ro.options_category, ro.name
+    </select>
+
+
+    <!--host프로필 가져오기-->
+    <select id="getHostProfileImage" resultType="string">
+        SELECT file_url
+        FROM image_files
+        WHERE user_id = (SELECT user_id FROM host WHERE host_id = #{hostId})
+        AND entity_type = 'users'
+        ORDER BY uploaded_at DESC
+        LIMIT 1
+    </select>
+
+    <!--userId로 프로필 가져오기-->
+    <select id="findImageUrlsByUserId" parameterType="int" resultType="string">
+        SELECT file_url
+        FROM image_files
+        WHERE user_id = #{userId}
+    </select>
 
 </mapper>

@@ -1,4 +1,4 @@
-package com.minbak.web.user_room_detail.dto;
+package com.minbak.web.user_YH.dto;
 
 import lombok.Getter;
 import lombok.Setter;

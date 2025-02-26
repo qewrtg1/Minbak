@@ -63,7 +63,6 @@ public class UsersAdminApiController {
 
         Map<String, Object> response = new HashMap<>();
 
-
         try {
 
             String userId = (String) request.get("userId");
