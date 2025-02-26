@@ -20,6 +20,7 @@ public class PaymentDto {
     private LocalDateTime paidAt;
     private LocalDateTime createdAt;
     private String roomName;
+    private String merchantUid;
 
 
 }

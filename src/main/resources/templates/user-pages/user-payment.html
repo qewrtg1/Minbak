@@ -70,11 +70,16 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- PortOne JS 라이브러리 추가 -->
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const payButton = document.getElementById("payButton");
 
-        payButton.addEventListener("click", function() {
+        // 포트원(PortOne) 결제 API 초기화
+        IMP.init("imp88076876"); // 포트원 가맹점 식별코드 (테스트용)
+
+        payButton.addEventListener("click", async function () {
             const bookId = document.getElementById("bookId").value;
             const userId = document.getElementById("userId").value;
             const amount = document.getElementById("totalAmount").textContent.replace("₩", "").replace(",", "");
@@ -82,30 +87,96 @@
 
             console.log("결제 요청 데이터:", { bookId, userId, amount, method });
 
-            // 페이팔 결제 방식 선택 시 API 변경
-            let paymentApiUrl = "/api/payments/pay";
-            if (method === "PAYPAL") {
-                paymentApiUrl = "/api/paypal/pay";
-            }
-
-            fetch(paymentApiUrl, {
+            // 1️⃣ 서버에서 주문번호(merchant_uid) 받아오기
+            let orderResponse = await fetch("/api/portone/order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bookId, userId, amount, method })
+            });
+
+            let orderData = await orderResponse.json();
+
+            if (!orderData.orderId) {
+                alert("주문 생성 실패!");
+                return;
+            }
+
+            const merchantUid = orderData.orderId; // 서버에서 받은 주문번호 사용
+
+            // 2️⃣ 결제 방식에 따른 PG 설정
+            let pgProvider = "";
+            if (method === "KAKAO") {
+                pgProvider = "kakaopay";
+            } else if (method === "TOSS") {
+                pgProvider = "tosspay.tosstest";  // 테스트 환경 (실제 결제는 tosspayments)
+            } else if (method === "INICIS") {
+                pgProvider = "html5_inicis.INIpayTest";  // KG이니시스 테스트 결제
+            }
+
+            // 3️⃣ PortOne 결제 요청 (페이팔 제외)
+            if (method !== "PAYPAL") {
+                IMP.request_pay({
+                    pg: pgProvider,
+                    pay_method: "card",
+                    amount: amount,
+                    name: "숙박 결제",
+                    merchant_uid: merchantUid  // 서버에서 받은 주문번호 사용
+                }, function (response) {
+                    const { status, error_msg, imp_uid } = response;
+
+                    if (error_msg) {
+                        alert("결제 실패: " + error_msg);
+                        return;
+                    }
+
+                    if (status === "paid") {
+                        alert("결제 성공! 결제 검증을 진행합니다.");
+                        verifyPayment(imp_uid);
+                    }
+                });
+            } else {
+                // 4️⃣ 페이팔 결제 요청 (서버에서 처리)
+                fetch("/api/paypal/pay", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ bookId, userId, amount, method })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl; // 페이팔 결제 페이지로 이동
+                    } else {
+                        alert("페이팔 결제 요청 실패!");
+                    }
+                })
+                .catch(error => {
+                    console.error("페이팔 결제 요청 오류:", error);
+                    alert("페이팔 결제 요청 중 오류가 발생했습니다.");
+                });
+            }
+        });
+
+        // 5️⃣ 결제 검증 요청 (PortOne 결제 성공 후 실행)
+        function verifyPayment(imp_uid) {
+            fetch("/api/portone/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ impUid: imp_uid })
             })
             .then(response => response.json())
             .then(data => {
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl; // 결제 페이지로 이동
+                if (data.success) {
+                    alert("결제 검증 성공!\n결제 금액: " + data.amount + "원");
+                    window.location.href = "/payment/success"; // 결제 성공 페이지로 이동
                 } else {
-                    alert("결제 요청 실패!");
+                    alert("결제 검증 실패: " + data.error);
                 }
             })
             .catch(error => {
-                console.error("결제 요청 오류:", error);
-                alert("결제 요청 중 오류가 발생했습니다.");
+                console.error("결제 검증 오류:", error);
+                alert("결제 검증 실패. 관리자에게 문의하세요.");
             });
-        });
+        }
     });
 </script>
 
