@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal 결제 테스트</title>
+</head>
+<body>
+<h2>PayPal 결제 테스트</h2>
+
+<label for="amount">결제 금액 (KRW):</label>
+<input type="number" id="amount" placeholder="금액 입력" />
+<button onclick="createPayment()">결제하기</button>
+
+<script>
+    function createPayment() {
+        const amount = document.getElementById("amount").value;
+
+        if (!amount || isNaN(amount) || Number(amount) <= 0) {
+            alert("올바른 결제 금액을 입력하세요.");
+            return;
+        }
+
+        // 서버로 직접 이동하여 리디렉트 수행
+        window.location.href = `http://localhost:8080/api/paypal/pay?amount=${amount}`;
+    }
+</script>
+</body>
+</html>

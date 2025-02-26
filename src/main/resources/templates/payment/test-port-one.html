@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>포트원(PortOne) 결제 테스트</title>
+    <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<body>
+<h2>포트원 결제 테스트</h2>
+
+<label for="productName">상품명:</label>
+<input type="text" id="productName" placeholder="상품명 입력" required><br>
+
+<label for="amount">결제 금액 (KRW):</label>
+<input type="number" id="amount" placeholder="금액 입력" required><br>
+
+<button onclick="requestPay('kakaopay')">카카오페이 결제하기</button>
+<button onclick="requestPay('tosspay')">토스페이 결제하기</button>
+<button onclick="requestPay('inicis')">KG이니시스 결제하기</button>
+
+<script>
+    IMP.init("imp88076876"); // 포트원 가맹점 식별코드
+
+    function requestPay(paymentType) {
+        const productName = document.getElementById("productName").value;
+        const amount = document.getElementById("amount").value;
+
+        if (!productName || !amount || isNaN(amount) || Number(amount) <= 0) {
+            alert("상품명과 올바른 결제 금액을 입력하세요.");
+            return;
+        }
+
+        let pgProvider = "";
+        if (paymentType === "kakaopay") {
+            pgProvider = "kakaopay";
+        } else if (paymentType === "tosspay") {
+            pgProvider = "tosspay.tosstest";  // 테스트 환경 (실제 결제는 tosspayments)
+        } else if (paymentType === "inicis") {
+            pgProvider = "html5_inicis.INIpayTest";  // KG이니시스 테스트 결제
+        }
+
+        IMP.request_pay({
+            pg: pgProvider,
+            pay_method: "card",
+            amount: amount,
+            name: productName,
+            merchant_uid: "order_" + Date.now()
+        }, function(response) {
+            const { status, error_msg, imp_uid } = response;
+
+            if (error_msg) {
+                alert("결제 실패: " + error_msg);
+                return;
+            }
+
+            if (status === "paid") {
+                alert("결제 성공! 결제 검증을 진행합니다.");
+                verifyPayment(imp_uid);
+            }
+        });
+    }
+
+    function verifyPayment(imp_uid) {
+        fetch("http://localhost:8080/api/portone/payment-info?impUid=" + imp_uid, {
+            method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.impUid) {
+                alert("결제 검증 성공!\n상품명: " + data.name + "\n결제 금액: " + data.amount + "원");
+            } else {
+                alert("결제 검증 실패: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("결제 검증 중 오류 발생:", error);
+            alert("결제 검증 실패. 관리자에게 문의하세요.");
+        });
+    }
+</script>
+</body>
+</html>
