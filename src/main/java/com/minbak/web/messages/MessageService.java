@@ -118,5 +118,16 @@ public class MessageService {
         messageDto.setSenderId(userDetails.getUserId());
         messageMapper.createMessage(messageDto);
     }
+//--------------------유저 메세지 기능---------------------------------------
+    public List<UserMessageListDto> showUserMessageList(int user_id){
+
+        List<UserMessageListDto> userMessageLists=messageMapper.showUserMessageList(user_id);
+        for (UserMessageListDto userMessageListDto : userMessageLists) {
+            userMessageListDto.setIsRead(messageMapper.findMessageByMessageId(userMessageListDto.getLastMessageId()).getIsRead());  // 예를 들어, 메시지를 읽은 것으로 표시
+        }
+
+        return userMessageLists;
+    }
+
 
 }

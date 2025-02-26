@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class MessageDto {
-
-    private Integer messageId;
-    private Integer senderId;
-    private Integer receiverId;
+public class UserMessageListDto {
+    private Integer userId;
+    private Integer chatRoomId;
+    private Integer lastMessageId;
+    private LocalDateTime lastMessageTime;
     private String content;
-    private LocalDateTime sentAt;
     private int isRead;
+
 }

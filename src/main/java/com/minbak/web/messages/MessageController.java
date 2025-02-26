@@ -67,7 +67,7 @@ public class MessageController {
 
         MessagePageDto<ResponseMessageDto> filteredResponseMessageDto=
                 messageService.findMessagesWithUser(requestMessageFilterDto,page,size);
-
+        model.addAttribute("messageFilterDto",requestMessageFilterDto);
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
         return"/message/messageList";
@@ -81,7 +81,7 @@ public class MessageController {
 
         MessagePageDto<ResponseMessageDto> filteredResponseMessageDto=
                 messageService.findMessagesWithUser(requestMessageFilterDto,page,size);
-
+        model.addAttribute("messageFilterDto",requestMessageFilterDto);
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
         return "/message/messageList";
@@ -145,7 +145,16 @@ public class MessageController {
 
         return "redirect:/admin/message/list";
     }
+// ------------------------------------------유저페이지 기능------------------------------------
+    @GetMapping("/userMessageList")
+    public String showUserMessageList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
+        List<UserMessageListDto> userMessageLists=messageService.showUserMessageList(userDetails.getUserId());
+        model.addAttribute("userMessageLists",userMessageLists);
+
+
+        return "/message/test";
+    }
 
 
 }

@@ -63,13 +63,13 @@
         <div class="container-fluid">
             <div class="row">
                 <!-- 채팅방 리스트 -->
-                <div class="chat-room list-group-item list-group-item-action" data-room="1">
+                <div class="chat-room list-group-item list-group-item-action" data-room="1" th:each="userMessageList:${userMessageLists}">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">유저이름</h5>
-                        <small class="text-muted">2025-02-24 14:30</small>
+                        <h5 class="mb-1" th:text="${userMessageList.chatRoomId}"></h5>
+                        <small class="text-muted" th:text="${userMessageList.lastMessageId}"></small>
                     </div>
-                    <p class="mb-1">대화 내용 예시... 너무 길면 줄임말로 보이기</p>
-                    <small class="text-success">읽음</small>
+                    <p class="mb-1" th:text="${userMessageList.content}">대화 내용 예시... 너무 길면 줄임말로 보이기</p>
+                    <small class="text-success" th:text="${userMessageList.isRead == 0 ? '안읽음' : '읽음'}">읽음</small>
                 </div>
 
                 <!-- 채팅창 -->
