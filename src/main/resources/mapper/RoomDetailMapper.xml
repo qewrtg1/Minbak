@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.minbak.web.user_room_detail.RoomDetailMapper">
+
+    <!-- 숙소 상세 조회 -->
+    <select id="getRoomDetail" resultType="com.minbak.web.user_room_detail.dto.DetailRoomResponse">
+        SELECT
+        r.room_id, r.title, r.content, r.address, r.latitude, r.longitude,
+        r.price AS price_per_night, r.max_guests, r.bedrooms, r.beds, r.bathrooms,
+        r.building_type, r.use_guide,
+        COALESCE(AVG(rv.score), 0) AS rating,
+        COUNT(rv.review_id) AS review_count
+        FROM rooms r
+        LEFT JOIN books b ON r.room_id = b.room_id
+        LEFT JOIN review rv ON b.book_id = rv.book_id
+        WHERE r.room_id = #{roomId}
+    </select>
+
+    <!--해당 룸의 이미지목록 가져오기-->
+    <select id="getRoomImages" resultType="String">
+        SELECT file_url
+        FROM image_files
+        WHERE entity_type = 'rooms'
+        AND entity_id = #{roomId}
+    </select>
+
+    <!-- Host 정보 조회 -->
+    <select id="getHostDetail" resultType="com.minbak.web.user_room_detail.dto.DetailHostResponse">
+        SELECT
+        h.host_id,
+        u.name AS name,
+        u.profile_image_url AS imageUrl,
+        TIMESTAMPDIFF(YEAR, h.created_at, NOW()) AS yearsOfExperience, -- 호스트 경험 연수 계산
+        h.hobby,
+        h.introduction,
+        (SELECT COUNT(*) FROM review r
+        JOIN books b ON r.book_id = b.book_id
+        JOIN rooms rm ON b.room_id = rm.room_id
+        WHERE rm.user_id = h.user_id) AS reviewCount, -- 호스트가 받은 리뷰 개수
+        (SELECT AVG(r.score) FROM review r
+        JOIN books b ON r.book_id = b.book_id
+        JOIN rooms rm ON b.room_id = rm.room_id
+        WHERE rm.user_id = h.user_id) AS rating -- 호스트의 평균 평점
+        FROM host h
+        LEFT JOIN users u ON h.user_id = u.user_id
+        WHERE h.user_id = (SELECT user_id FROM rooms WHERE room_id = #{roomId})
+    </select>
+
+
+    <!-- Booking 정보 조회 -->
+    <select id="getBookingDetail" resultType="com.minbak.web.user_room_detail.dto.DetailBookResponse">
+        SELECT
+        b.book_id, b.start_date AS check_in, b.end_date AS check_out,
+        DATEDIFF(b.end_date, b.start_date) AS nights, b.guests_num AS guests,
+        (b.guests_num * r.price) AS total_price, b.status
+        FROM books b
+        JOIN rooms r ON b.room_id = r.room_id
+        WHERE r.room_id = #{roomId}
+        LIMIT 1;
+    </select>
+
+    <!-- Review 리스트 조회 -->
+    <select id="getRoomReviews" resultType="com.minbak.web.user_room_detail.dto.DetailReviewResponse">
+        SELECT
+        rv.review_id,
+        rv.score AS rating,
+        rv.content,
+        rv.created_at AS date,
+        u.user_id AS "user.userId",
+        u.name AS "user.name",
+        u.email AS "user.email",
+        u.phone_number AS "user.phoneNumber",
+        u.profile_image_url AS "user.profileImageUrl"
+        FROM review rv
+        LEFT JOIN users u ON rv.user_id = u.user_id
+        JOIN books b ON rv.book_id = b.book_id
+        WHERE b.room_id = #{roomId}
+        ORDER BY rv.created_at DESC
+    </select>
+
+
+
+</mapper>
