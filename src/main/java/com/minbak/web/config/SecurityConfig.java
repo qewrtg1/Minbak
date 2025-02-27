@@ -87,6 +87,7 @@ public class SecurityConfig {
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .securityMatcher("/user/**","/host/**")  // API 요청에만 적용
 
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Data
 @Getter
 @Setter
@@ -21,7 +23,8 @@ public class CheckBookDto {
         private UserDto user;
         private CheckBookRoomDto room;
         private PaymentDto payment;
-
+        private String roomUrl;
+        private List<String> roomUrls;
         private String searchType; // 예약번호, 예약자명, 연락처 등
         private String keyword; // 검색어
         private String dateType; // 체크인, 체크아웃 날짜

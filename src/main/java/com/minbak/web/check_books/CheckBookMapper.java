@@ -1,10 +1,9 @@
 package com.minbak.web.check_books;
 
 
-import com.minbak.web.books.BooksDto;
 import com.minbak.web.check_books.dto.CheckBookDto;
 import com.minbak.web.check_books.dto.CheckBookRoomDto;
-import com.minbak.web.check_books.dto.RoomImgUrlDto;
+import com.minbak.web.users.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,7 +14,9 @@ public interface CheckBookMapper {
 
     List<CheckBookDto> selectBooks(int offset, int  size, int userId);
     CheckBookRoomDto findRoomsByRoomId(int room_id);
-    List<RoomImgUrlDto> findRoomsImgById(List<Integer> roomIds);
     int countBooks(int userId);
-
+    String findRoomImageUrlByRoomId(int roomId);
+    List<String> findRoomImageUrlsByRoomId(int roomId);
+    UserDto findUserByUserId(int userId);
+    CheckBookDto findBookByBookId(int bookId);
 }
