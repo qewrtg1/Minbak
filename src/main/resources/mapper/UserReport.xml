@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.users.UsersMapper">
+
+    <!-- 신고 목록 조회 쿼리 (다중 검색 조건 처리) -->
+    <select id="searchUserReports" resultType="com.minbak.web.users.UserReportDto">
+    SELECT
+        r.report_id,                             -- 신고 고유 ID
+        u.email AS reporter_email,                -- 신고한 유저의 이메일
+        u2.email AS reported_user_email,         -- 신고 당한 유저의 이메일
+        r.report_reason,                         -- 신고 사유
+        r.report_date,                           -- 신고 접수 시간
+        r.status,                                -- 신고 처리 상태
+        r.processed_at,                          -- 신고 처리 완료 시간
+        r.reporter_id,                           -- 신고한 유저의 ID
+        r.reported_user_id                       -- 신고 당한 유저의 ID
+        FROM user_reports r
+        LEFT JOIN users u ON r.reporter_id = u.user_id    -- 신고한 유저 정보
+        LEFT JOIN users u2 ON r.reported_user_id = u2.user_id  -- 신고 당한 유저 정보
+        WHERE 1=1
+        <if test="reporterEmail != null and reporterEmail != ''">
+            AND u.email LIKE CONCAT('%', #{reporterEmail}, '%')  -- 신고한 유저 이메일 검색
+        </if>
+        <if test="reportedUserEmail != null and reportedUserEmail != ''">
+            AND u2.email LIKE CONCAT('%', #{reportedUserEmail}, '%')  -- 신고 당한 유저 이메일 검색
+        </if>
+        <if test="reportReason != null and reportReason != ''">
+            AND r.report_reason LIKE CONCAT('%', #{reportReason}, '%')  -- 신고 사유 검색
+        </if>
+        <if test="status != null and status != ''">
+            AND r.status = #{status}  -- 신고 처리 상태 검색
+        </if>
+        <!-- 신고 접수 시간 범위 검색 -->
+        <if test="startReportDate != null">
+            AND r.report_date >= #{startReportDate}  -- 신고 접수 시작일 필터
+        </if>
+        <if test="endReportDate != null">
+            AND #{endReportDate} >= r.report_date  -- 신고 접수 종료일 필터
+        </if>
+        <!-- 처리 완료 시간 범위 검색 -->
+        <if test="startProcessedAt != null">
+            AND r.processed_at >= #{startProcessedAt}  -- 처리 완료 시작일 필터
+        </if>
+        <if test="endProcessedAt != null">
+            AND #{endProcessedAt} >= r.processed_at  -- 처리 완료 종료일 필터
+        </if>
+
+        ORDER BY r.report_date DESC  -- 최신 신고부터 정렬
+
+        <!-- 페이징 처리: LIMIT과 OFFSET 추가 -->
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <!-- 신고 목록의 총 개수를 조회 -->
+    <select id="countUserReports" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_reports r
+        LEFT JOIN users u ON r.reporter_id = u.user_id
+        LEFT JOIN users u2 ON r.reported_user_id = u2.user_id
+        WHERE 1=1
+        <if test="reporterEmail != null and reporterEmail != ''">
+            AND u.email LIKE CONCAT('%', #{reporterEmail}, '%')
+        </if>
+        <if test="reportedUserEmail != null and reportedUserEmail != ''">
+            AND u2.email LIKE CONCAT('%', #{reportedUserEmail}, '%')
+        </if>
+        <if test="reportReason != null and reportReason != ''">
+            AND r.report_reason LIKE CONCAT('%', #{reportReason}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND r.status = #{status}
+        </if>
+        <if test="startReportDate != null">
+            AND r.report_date  #{startReportDate}
+        </if>
+        <if test="endReportDate != null">
+            AND #{endReportDate} >= r.report_date
+        </if>
+        <if test="startProcessedAt != null">
+            AND r.processed_at >= #{startProcessedAt}
+        </if>
+        <if test="endProcessedAt != null">
+            AND #{endProcessedAt} >= r.processed_at
+        </if>
+
+    </select>
+
+    <select id="getReportById" resultType="com.minbak.web.users.UserReportDto">
+        SELECT
+        report_id,
+        reporter_id,
+        reported_user_id,
+        report_reason,
+        report_date,
+        processed_at,
+        status
+        FROM user_reports
+        WHERE report_id = #{reportId}
+    </select>
+
+    <!-- 신고 처리 상태 수정 -->
+    <update id="updateReportStatus">
+        UPDATE user_reports
+        SET
+        status = #{status},
+        processed_at =
+        CASE
+        WHEN #{status} = '완료' THEN NOW()  <!-- status가 '완료'일 때 processed_at을 now()로 설정 -->
+        ELSE processed_at                    <!-- 아니면 기존 processed_at 값을 그대로 사용 -->
+        END
+        WHERE report_id = #{reportId}
+    </update>
+
+
+</mapper>

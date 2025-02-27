@@ -1,4 +1,10 @@
 /* sidebar */
+
+/* 불필요한 가로 스크롤 방지 */
+body {
+    overflow: auto;
+}
+
 .layout-logoBox li a {
     display: flex;
     overflow: hidden;
@@ -35,14 +41,18 @@
   }
   
 .side-nav {
+    position: sticky;
+    top: 0;
     min-width: 240px;
-    display: flex; flex-direction: column; height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #3c4147;
 }
 .nav-menu{
-    margin-top: 16px;   
+    margin-top: 16px;
 }
 .nav-menu.flex-column:last-of-type {
-    margin-top: auto;
     margin-bottom: 16px;
   }
 .nav-menu li {
@@ -57,10 +67,122 @@
     text-align: center;
     padding-right: 20px;
 }
-.nav-menu .bg-secondary{
-    background-color: #ffb319 !important;
+
+/* 메뉴 클릭 시 활성화된 메뉴 스타일 */
+.nav-menu li.active > a {
+    background-color: #f5a623; /* 노란색 배경 */
+    color: black; /* 검은색 글씨 */
+}
+
+/* 서브메뉴 hover 시 배경색 변경 */
+.sub-menu li:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* 약간 더 진한 회색 */
 }
 
 .layout-main{
     flex-grow: 1;
+}
+
+/* 서브메뉴 스타일 조정 */
+.sub-menu {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* 서브메뉴 개별 항목 크기 줄이기 */
+.sub-menu li {
+    padding: 5px 0; /* 위아래 간격 줄이기 */
+    line-height: 1.2; /* 텍스트 줄 간격 줄이기 */
+}
+
+/* 서브메뉴 링크 크기 조정 */
+.sub-menu li a {
+    font-size: 14px; /* 글자 크기 줄이기 */
+    padding: 6px 12px 6px 26px; /* 클릭 영역 최소화 */
+    display: block;
+    white-space: nowrap; /* 텍스트 한 줄 유지 */
+}
+
+
+.sub-menu {
+    display: none;
+    transition: max-height 0.3s ease-out;
+}
+
+/*  네비게이션 메뉴 (하단 고정) */
+.nav-bottom {
+    margin-top: auto; /* 상단 메뉴들과 분리 후 아래로 이동 */
+    padding-bottom: 20px;
+}
+
+/*  네비게이션 버튼 스타일 */
+.nav-bottom li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    color: white;
+}
+
+/*  로그아웃 버튼 색상 강조 */
+.nav-bottom li a.text-danger {
+    color: #ff4d4d !important; /* 빨간색 강조 */
+}
+/*  전체 레이아웃 설정 */
+.d-flex {
+    display: flex;
+    flex-direction: row;
+}
+
+/* 화살표 아이콘 조정 */
+.accordion-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 텍스트와 아이콘을 양 끝으로 정렬 */
+    width: 100%;
+    padding: 12px 20px;
+}
+
+/* 화살표 아이콘 크기 조절 */
+.accordion-btn .toggle-icon {
+    font-size: 12px; /* 화살표 크기 줄이기 */
+    margin-left: auto; /* 우측 정렬 */
+}
+
+/* 상단 바 스타일 */
+.top-bar {
+    width: calc(100% - 240px); /* 사이드바를 제외한 전체 너비 */
+    height: 50px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 240px; /* 사이드바 오른쪽에 위치 */
+    z-index: 1000;
+}
+
+/* 헤더 제목 스타일 (볼드 + 크기 증가) */
+#current-page-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 유저 페이지 버튼 스타일 */
+.user-btn {
+    text-decoration: none;
+    background-color: #3c4147; /* 사이드바 배경색 (검정) */
+    color: #f5a623; /* 활성화된 메뉴 색 (노란색) */
+    font-size: 14px;
+    padding: 8px 14px;
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+    display: inline-block;
+    border-radius: 0; /* 라운드 제거 */
+}
+
+
+.user-btn:hover {
+    background-color: #0056b3;
 }

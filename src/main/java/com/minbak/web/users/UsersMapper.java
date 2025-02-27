@@ -1,14 +1,23 @@
 package com.minbak.web.users;
 
+import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
+import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Mapper
 public interface UsersMapper {
+
+    // 유저 아이디로 유저조회
+    public UserDto findUserByUserId(Integer userId);
 
     // 회원가입
     public void createUser(UserDto userDto);
@@ -25,9 +34,14 @@ public interface UsersMapper {
     // 이메일로 사용자 전체 조회
     public UserDto findUserByEmail(String email);
 
+    //username으로 사용자 조회
+    UserDto findUserByUsername(String username);
+
     // 사용자 ID로 역할 조회
     public List<RoleDto> findRolesByUserId(Integer userId);
 
+    //리프레시 토큰 저장
+    public void createRefreshTokenData(RefreshTokenDto RefreshTokenDto);
     // 페이지에 보여줄 유저 조회
     public List<UserDto> findUsersByLimitAndOffset(int limit, int offset);
 
@@ -62,4 +76,67 @@ public interface UsersMapper {
     public List<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
 
     public void deleteUserByUserId(int userId);
+
+    public List<UserDto> searchUsers(int limit, int offset, String name, String email, Boolean enabled,
+                                     LocalDate startDate, LocalDate endDate, Integer bookCount);
+
+    public Integer countSearchUsers(String name, String email, Boolean enabled, LocalDate startDate, LocalDate endDate, Integer bookCount);
+
+    public List<UserResponseDto> searchUsersWithBookCount(int limit, int offset, String name, String email, Boolean enabled,
+                                                          LocalDate startDate, LocalDate endDate, Integer bookCount);
+
+    public void deleteRefreshTokenDataByRefreshToken(String refreshToken);
+    List<HostResponseDto> searchHostsWithRoomCount(
+            int limit,
+            int offset,
+            String name,
+            String email,
+            Boolean enabled,
+            LocalDate startDate,
+            LocalDate endDate,
+            Integer roomCount,
+            Boolean isVerified
+    );
+
+    public Integer countHostsWithRoomCount(String name,
+                                       String email,
+                                       Boolean enabled,
+                                       LocalDate startDate,
+                                       LocalDate endDate,
+                                       Integer roomCount);
+
+    public HostResponseDto findHostByUserId(int userId);
+
+    public void makeAdmin(String userId);
+
+    public List<UserReportDto> searchUserReports(int limit, int offset,String reporterEmail,
+                                                 String reportedUserEmail,
+                                                 String reportReason,
+                                                 String status,
+                                                 LocalDate startReportDate,
+                                                 LocalDate endReportDate,
+                                                 LocalDate startProcessedAt,
+                                                 LocalDate endProcessedAt);
+
+    public Integer countUserReports(String reporterEmail,
+                                    String reportedUserEmail,
+                                    String reportReason,
+                                    String status,
+                                    LocalDate startReportDate,
+                                    LocalDate endReportDate,
+                                    LocalDate startProcessedAt,
+                                    LocalDate endProcessedAt);
+
+
+    public UserReportDto getReportById(int reportId);
+
+    public void updateReportStatus(UserReportDto userReportDto);
+
+    void updateUser(UserDto userDto);
+
+    void updateHost(HostDto hostDto);
+
+    public Boolean checkRefreshTokenIsExpired(String refreshToken);
+
+    public void deleteExpiredRefreshTokens(Timestamp timestamp);
 }

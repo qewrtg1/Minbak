@@ -10,8 +10,9 @@ import java.time.LocalDateTime;
 public class MessageDto {
 
     private Integer messageId;
-    private int senderId;
-    private int receiverId;
+    private Integer senderId;
+    private Integer receiverId;
     private String content;
     private LocalDateTime sentAt;
+    private int isRead;
 }

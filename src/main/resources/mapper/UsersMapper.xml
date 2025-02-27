@@ -40,6 +40,26 @@
         FROM users WHERE email = #{email}
     </select>
 
+    <select id="findUserByUsername" resultType="com.minbak.web.users.UserDto">
+        SELECT *
+        FROM users WHERE email = #{username}
+    </select>
+
+    <insert id="createRefreshTokenData" parameterType="com.minbak.web.spring_security.jwt.RefreshTokenDto">
+        INSERT INTO refresh_tokens (username, refresh_token, expiration)
+        VALUES (#{username}, #{refreshToken}, #{expiration})
+    </insert>
+
+    <delete id="deleteRefreshTokenDataByRefreshToken">
+        DELETE FROM refresh_tokens WHERE refresh_token = #{refreshToken}
+    </delete>
+
+    <select id="checkRefreshTokenIsExpired" resultType="Boolean">
+        SELECT 1 > COUNT(*)
+        FROM refresh_tokens
+        WHERE refresh_token = #{refreshToken}
+    </select>
+
     <!-- 아이디로 사용자 전체 조회 -->
     <select id="findUserByUserId" resultType="com.minbak.web.users.UserDto">
         SELECT *
@@ -155,10 +175,251 @@
         WHERE user_id = #{userId}
     </select>
 
+    <delete id="deleteExpiredRefreshTokens" parameterType="java.sql.Timestamp">
+        DELETE FROM refresh_tokens
+        WHERE #{currentTime} > expiration
+    </delete>
     <!-- 사용자 삭제 -->
     <delete id="deleteUserByUserId" parameterType="int">
         DELETE FROM users
         WHERE user_id = #{userId}
     </delete>
 
+    <!--유저 검색-->
+    <select id="searchUsers" resultType="com.minbak.web.users.UserDto">
+        SELECT * FROM users
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="enabled != null">
+            AND enabled = #{enabled}
+        </if>
+        <!-- startDate와 endDate 조건 처리 -->
+        <if test="startDate != null">
+            AND created_at >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND #{endDate} >= created_at
+        </if>
+        <!--예약 수를 books 테이블에서 userId를 이용해서 가져와서 검색-->
+        <if test="bookCount != null">
+            AND user_id IN (
+            SELECT user_id FROM books
+            GROUP BY user_id
+            HAVING COUNT(book_id) >= #{bookCount}
+            )
+        </if>
+        <!-- 페이징 처리: LIMIT과 OFFSET 추가 -->
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <!--유저 카운트-->
+    <select id="countSearchUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+        <!--모든게 널일때 모든 데이터를 가져오기 위함-->
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="enabled != null">
+            AND enabled = #{enabled}
+        </if>
+        <!-- startDate와 endDate 조건 처리 -->
+        <if test="startDate != null">
+            AND created_at >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND #{endDate} >= created_at
+        </if>
+        <!-- 예약 수를 books 테이블에서 userId를 이용해서 가져와서 검색 -->
+        <if test="bookCount != null">
+            AND user_id IN (
+            SELECT user_id FROM books
+            GROUP BY user_id
+            HAVING COUNT(book_id) >= #{bookCount}
+            )
+        </if>
+    </select>
+
+    <!-- 특정 user_id에 해당하는 books 수 가져오기 -->
+    <select id="findBookCountByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM books
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 유저 검색과 그들의 예약 수를 함께 가져오는 쿼리 -->
+    <select id="searchUsersWithBookCount" resultType="com.minbak.web.users.UserResponseDto">
+        SELECT u.user_id, u.name, u.email, u.phone_number, u.enabled, u.created_at, u.updated_at,
+        (SELECT COUNT(*) FROM books b WHERE b.user_id = u.user_id) AS bookCount
+        FROM users u
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND u.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND u.email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="enabled != null">
+            AND u.enabled = #{enabled}
+        </if>
+        <!-- startDate와 endDate 조건 처리 -->
+        <if test="startDate != null">
+            AND u.created_at >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND #{endDate} >= u.created_at
+        </if>
+        <!-- 예약 수를 기준으로 필터링 -->
+        <if test="bookCount != null">
+            AND u.user_id IN (
+            SELECT user_id FROM books
+            GROUP BY user_id
+            HAVING COUNT(book_id) >= #{bookCount}
+            )
+        </if>
+        <!-- 페이징 처리: LIMIT과 OFFSET 추가 -->
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <!-- 호스트 검색과 그들이 관리하는 숙소 개수를 함께 가져오는 쿼리 -->
+    <select id="searchHostsWithRoomCount" resultType="com.minbak.web.users.HostResponseDto">
+        SELECT
+        u.user_id,
+        u.name,
+        u.email,
+        u.phone_number,
+        u.enabled AS user_enabled,  -- 유저의 활성화 상태
+        h.host_id,
+        h.hobby,
+        h.introduction,
+        h.is_verified,
+        h.account_number,
+        h.created_at,  -- 호스트의 가입일
+        h.updated_at,  -- 호스트의 수정일
+        (SELECT COUNT(*) FROM rooms r WHERE r.user_id = u.user_id) AS roomCount  -- 유저가 관리하는 숙소 수
+        FROM users u
+        INNER JOIN host h ON u.user_id = h.user_id  -- users와 host를 조인 (INNER JOIN으로 변경)
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND u.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND u.email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="enabled != null">
+            AND u.enabled = #{enabled}
+        </if>
+        <!-- startDate와 endDate 조건 처리 -->
+        <if test="startDate != null">
+            AND u.created_at >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND #{endDate} >= u.created_at
+        </if>
+        <if test="isVerified != null">
+            AND #{isVerified} = h.is_verified
+        </if>
+        <!-- 숙소 개수를 기준으로 필터링 -->
+        <if test="roomCount != null">
+            AND u.user_id IN (
+            SELECT user_id FROM rooms
+            GROUP BY user_id
+            HAVING COUNT(room_id) >= #{roomCount}
+            )
+        </if>
+        <!-- 페이징 처리: LIMIT과 OFFSET 추가 -->
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+
+    <!-- 검색한 호스트 유저 수 -->
+    <select id="countHostsWithRoomCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM host h
+        LEFT JOIN users u ON h.user_id = u.user_id
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND u.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND u.email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="enabled != null">
+            AND u.enabled = #{enabled}
+        </if>
+        <!-- startDate와 endDate 조건 처리 -->
+        <if test="startDate != null">
+            AND u.created_at >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND #{endDate} >= u.created_at
+        </if>
+        <!-- 숙소 개수를 기준으로 필터링 -->
+        <if test="roomCount != null">
+            AND h.user_id IN (
+            SELECT user_id
+            FROM rooms
+            GROUP BY user_id
+            HAVING COUNT(room_id) >= #{roomCount}
+            )
+        </if>
+    </select>
+
+    <!-- 아이디로 호스트 정보 조회 -->
+    <select id="findHostByUserId" resultType="com.minbak.web.users.HostResponseDto">
+        SELECT *
+        FROM host WHERE user_id = #{UserId}
+    </select>
+
+<!--어드민 추가-->
+    <insert id="makeAdmin">
+        INSERT INTO users_roles (user_id, role_id)
+        VALUES (#{user_id}, 3)  <!-- user_id 값은 동적으로 받아오며, role_id는 3으로 고정 -->
+    </insert>
+
+    <update id="updateUser">
+        UPDATE users
+        SET
+        name = #{name},
+        email = #{email},
+        phone_number = #{phoneNumber},
+        <if test="password != null">password = #{password},</if>
+        enabled = #{enabled},
+        updated_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateHost">
+        UPDATE host
+        SET
+            <if test="hobby != null">hobby = #{hobby},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="isVerified != null">is_verified = #{isVerified},</if>
+            <if test="accountNumber != null">account_number = #{accountNumber},</if>
+            updated_at = NOW()
+        WHERE host_id = #{hostId}
+    </update>
 </mapper>

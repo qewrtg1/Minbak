@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>메일 발송</title>
+</head>
+<body>
+<h1>메일 발송</h1>
+<form action="/admin/email/send" method="post">
+  <input name="to" placeholder="이메일 주소"><br>
+  <input name="title" placeholder="제목"><br>
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+    <textarea name="message" placeholder="메일 내용을 입력해 주세요" cols="60" rows="20"></textarea>
+  <button type="submit">발송</button>
+</form>
+</body>
+</html>

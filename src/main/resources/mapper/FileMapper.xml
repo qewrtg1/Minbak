@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.minbak.web.file_upload.FileMapper">
+
+    <insert id="insertImageFile">
+        INSERT INTO image_files (file_url, file_name, file_size, entity_type, entity_id, uploaded_at)
+        VALUES (#{fileUrl}, #{fileName}, #{fileSize}, #{entityType}, #{entityId}, NOW());
+    </insert>
+
+    <select id="findImagesByRoomId" resultType="com.minbak.web.file_upload.ImageFileDto">
+        SELECT * FROM image_files WHERE entity_type = 'rooms' AND entity_id = #{roomId}
+    </select>
+
+</mapper>

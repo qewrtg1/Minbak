@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.main_page.MainPageMapper">
+
+<!--숙소정보 20개-->
+    <select id="findRecentRooms" resultType="com.minbak.web.main_page.dto.MainRoomDto">
+        SELECT
+        r.room_id AS roomId,
+        r.name,
+        r.address,
+        r.price,
+        r.title,
+        COUNT(rv.review_id) AS reviewCount,
+        COALESCE(AVG(rv.score), 0) AS reviewScore
+        FROM rooms r
+        LEFT JOIN review rv ON r.room_id = rv.book_id
+        GROUP BY r.room_id
+        ORDER BY r.room_id DESC
+        LIMIT 20;
+    </select>
+
+<!--숙소 이미지 가져오기-->
+    <select id="findRoomImages" resultType="com.minbak.web.main_page.dto.MainImageFileDto">
+        SELECT file_url, file_name FROM image_files WHERE entity_type = 'rooms' AND entity_id = #{roomId};
+    </select>
+
+<!--카테고리 오더순으로 가져오기-->
+    <select id="findCategories" resultType="com.minbak.web.categores.CategoresDto">
+        SELECT category_id, name, category_order FROM categories ORDER BY category_order ASC;
+    </select>
+
+<!--옵션 정보 가져오기(카테고리 추가 예정)-->
+    <select id="findOptions" resultType="com.minbak.web.main_page.dto.MainOptionDto">
+<!--        SELECT option_id, name, category FROM room_options;-->
+        SELECT option_id, name FROM room_options;
+    </select>
+
+<!--해당 룸아이디의 가장 최근 리뷰 가져오기-->
+    <select id="findRecentReviewByRoom" resultType="com.minbak.web.main_page.dto.MainReviewDto">
+        SELECT u.name AS userName, r.content, r.score
+        FROM review r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE r.book_id = #{roomId}
+        ORDER BY r.created_at DESC
+        LIMIT 1;
+    </select>
+
+<!--로그인한 사용자 정보 가져오기-->
+    <select id="findUserById" resultType="com.minbak.web.users.UserDto">
+        SELECT user_id, name, email FROM users WHERE user_id = #{userId};
+    </select>
+
+</mapper>

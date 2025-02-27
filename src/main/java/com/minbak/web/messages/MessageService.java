@@ -2,7 +2,9 @@ package com.minbak.web.messages;
 
 
 import com.minbak.web.board.posts.BoardPostDto;
+import com.minbak.web.spring_security.CustomUserDetails;
 import com.minbak.web.users.UserDto;
+import com.minbak.web.users.UsersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.List;
 public class MessageService {
     @Autowired
     MessageMapper messageMapper;
+    @Autowired
+    UsersMapper usersMapper;
     // 유저조회
     public List<UserDto> findAllUsers(){
         return messageMapper.findAllUsers();
@@ -53,18 +57,84 @@ public class MessageService {
         MessagePageDto<MessageDto> messagePageDto = new MessagePageDto<>(page,size,totalItems,messageDtos);
         return messagePageDto;
     }
+//    페이지 필터 검색 조회
+
+    //    필터링 메세지 조회
+    public MessagePageDto<ResponseMessageDto> findMessagesWithUser(RequestMessageFilterDto requestMessageFilterDto,int page,int size){
+//        입력값 공백시 null로 처리
+        if (requestMessageFilterDto.getUserName() != null && requestMessageFilterDto.getUserName().isEmpty()) {
+            requestMessageFilterDto.setUserName(null);
+        }
+        if (requestMessageFilterDto.getUserEmail() != null && requestMessageFilterDto.getUserEmail().isEmpty()) {
+            requestMessageFilterDto.setUserEmail(null);
+        }
+        if (requestMessageFilterDto.getUserPhoneNumber() != null && requestMessageFilterDto.getUserPhoneNumber().isEmpty()) {
+            requestMessageFilterDto.setUserPhoneNumber(null);
+        }
+        if (requestMessageFilterDto.getKeyword() != null && requestMessageFilterDto.getKeyword().isEmpty()) {
+            requestMessageFilterDto.setKeyword(null);
+        }
+//        페이지처리, 검색,필터
+        int offset = (page-1)*size;
+        requestMessageFilterDto.setLimit(size);
+        requestMessageFilterDto.setOffset(offset);
+        int totalItems = messageMapper.countFilteredMessages(requestMessageFilterDto);
+        List<ResponseMessageDto> responseMessageDtos= messageMapper.findMessagesWithUser(requestMessageFilterDto);
+        MessagePageDto<ResponseMessageDto> filteredMessagePageDto= new MessagePageDto<>(page,size,totalItems,responseMessageDtos);
+
+        return filteredMessagePageDto;
+    }
+
+
     // 메세지 삭제
     public void deleteMessage(int message_id){
         messageMapper.deleteMessage(message_id);
     }
 //    아이디 입력하여 메세지 생성
-    public void  createMessage(String receiverEmail,MessageDto messageDto){
-//        이메일로 id조회해서 바꿈
-        int receiverId=messageMapper.findUserIdByEmail(receiverEmail);
-        messageDto.setReceiverId(receiverId);
+    public void  createMessageByEmail(String receiverEmail, MessageDto messageDto, CustomUserDetails userDetails){
+
+
+
+//        유효성 검사
+        if (usersMapper.findUserByEmail(receiverEmail) ==null){
+            throw new IllegalArgumentException("받는이 유저 이메일을 확인하세요.");
+        }
+        //        이메일로 id조회해서 바꿈
+        Integer receiverIdByEmail=usersMapper.findUserByEmail(receiverEmail).getUserId();
+
+        messageDto.setReceiverId(receiverIdByEmail);
 //        샌더 아이디 임시 입력 *수정필요*
-        messageDto.setSenderId(8);
+        messageDto.setSenderId(userDetails.getUserId());
 //        메세지 생성
         messageMapper.createMessage(messageDto);
     }
+    public void createMessageById(Integer receiverId,MessageDto messageDto,CustomUserDetails userDetails){
+
+        if (usersMapper.findUserByUserId(receiverId)==null){
+            throw new IllegalArgumentException("받는이 유저 ID가 없습니다.");
+        }
+        messageDto.setReceiverId(receiverId);
+//        샌더 아이디 임시 입력 *수정필요*
+        messageDto.setSenderId(userDetails.getUserId());
+        messageMapper.createMessage(messageDto);
+    }
+//--------------------유저 메세지 기능---------------------------------------
+//    유저메세지 채팅방 목록
+    public List<UserMessageListDto> showUserMessageList(int user_id){
+
+        List<UserMessageListDto> userMessageLists=messageMapper.showUserMessageList(user_id);
+        for (UserMessageListDto userMessageListDto : userMessageLists) {
+            userMessageListDto.setIsRead(messageMapper.findMessageByMessageId(userMessageListDto.getLastMessageId()).getIsRead());  // 예를 들어, 메시지를 읽은 것으로 표시
+        }
+
+        return userMessageLists;
+    }
+//    유저 메세지 읽음 표시 포스트 요청
+    public void checkIsRead(int userId,int chatRoomId){
+        messageMapper.updateMessageCheck(userId,chatRoomId);
+    }
+
+
+
+
 }

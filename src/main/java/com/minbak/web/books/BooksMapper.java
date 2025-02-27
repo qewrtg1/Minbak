@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface BooksMapper {
@@ -29,4 +30,10 @@ public interface BooksMapper {
     int countTotalBooks();
     void editBook(BooksDto booksDto);
     void deleteBook(Integer bookId);
+
+    List<Map<String, Object>> findMonthlyBooks(@Param("year") int year, @Param("month") int month);
+
+    List<Map<String, Object>> selectWaitings();
+
+    List<BooksDto> paidAndCheckIn();
 }

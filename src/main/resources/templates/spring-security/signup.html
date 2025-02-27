@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <!--    csrf활성화시 html head태그에 추가해야함 없어도 잘 되긴함-->
+  <!--    <meta name="_csrf" content="{{_csrf.token}}"/>-->
+  <!--    <meta name="_csrf_header" content="{{_csrf.headerName}}"/>-->
+</head>
+<body>
+회원가입 페이지
+<hr>
+<form action="/admin/signup" method="post" name="signup">
+  <input id="username" type="email" name="email" placeholder="id" required/>
+  <input id="password" type="password" name="password" placeholder="password" required/>
+
+  <!-- 이름과 핸드폰 번호 입력란 추가 -->
+  <input id="name" type="text" name="name" placeholder="이름" required/>
+  <input id="phoneNumber" type="text" name="phoneNumber" placeholder="핸드폰 번호" required pattern="^\d{3}-\d{3,4}-\d{4}$" title="전화번호 형식: 010-1234-5678"/>
+
+  <!-- csrf 토큰 -->
+  <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+
+  <input type="submit" value="signup"/>
+</form>
+</body>
+</html>

@@ -1,37 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.books.BooksMapper">
+    <resultMap id="bookWithUser" type="com.minbak.web.books.BooksDto">
+        <id property="bookId" column="book_id"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="guestsNum" column="guests_num"/>
+        <result property="request" column="request"/>
+        <result property="status" column="status"/>
+        <association property="user" javaType="com.minbak.web.users.UserDto">
+            <result property="name" column="user_name"/>
+            <result property="phoneNumber" column="user_phone"/>
+            <result property="email" column="email"/>
+        </association>
+        <association property="room" javaType="com.minbak.web.rooms.RoomsDto">
+            <result property="name" column="room_name"/>
+        </association>
+        <association property="payment" javaType="com.minbak.web.payments.PaymentDto">
+            <result property="amount" column="amount"/>
+            <result property="paidAt" column="paid_at"/>
+            <result property="status" column="status"/>
+        </association>
+    </resultMap>
+
     <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
         insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
         values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{status}, #{userId}, #{roomId})
     </insert>
 
-    <select id="selectBookById" parameterType="Integer" resultType="com.minbak.web.books.BooksDto">
-        select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
-        from books
-        where book_id = #{bookId}
+    <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, u.email as email, r.name as room_name,
+        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status
+        from books b
+        join users u on b.user_id = u.user_id
+        join rooms r on b.room_id = r.room_id
+        join payments p on p.book_id = b.book_id
+        where b.book_id = #{bookId}
     </select>
 
-    <select id="selectBooksByPage" resultType="com.minbak.web.books.BooksDto">
-        select book_id, start_date, end_date, guests_num, request, status, user_id, room_id
-        from books
+    <select id="selectBooksByPage" resultMap="bookWithUser">
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, b.start_date, b.end_date, b.request, b.status
+        from books b
+        join users u on b.user_id = u.user_id
         order by book_id
         limit #{size} offset #{offset}
     </select>
 
-    <select id="searchBooks" resultType="com.minbak.web.books.BooksDto">
-        SELECT * FROM books
+    <select id="searchBooks" resultMap="bookWithUser">
+        select b.book_id, u.name as user_name, u.phone_number as user_phone, b.start_date, b.end_date, b.request, b.status
+        from books b
+        join users u on b.user_id = u.user_id
         WHERE 1=1
         <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
             <choose>
                 <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
-                <when test="searchType == '유저 ID'"> AND user_id = #{keyword} </when>
+                <when test="searchType == '예약자명'"> AND u.name like concat('%', #{keyword}, '%') </when>
+                <when test="searchType == '연락처'"> AND u.phone_number like concat('%', #{keyword}, '%') </when>
             </choose>
         </if>
         <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
             <choose>
-                <when test="dateType == '체크인'"> AND (start_date >= #{startDate}) AND (#{startDate} >= start_date) </when>
-                <when test="dateType == '체크아웃'"> AND (end_date >= #{endDate}) AND (#{endDate} >= end_date) </when>
+                <when test="dateType == '체크인'"> AND (start_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= start_date) </when>
+                <when test="dateType == '체크아웃'"> AND (end_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= end_date) </when>
             </choose>
         </if>
         <if test="statusFilter != null and statusFilter != ''">
@@ -42,18 +74,22 @@
     </select>
 
     <select id="countSearchedBooks" resultType="int">
-        SELECT COUNT(*) FROM books
+        SELECT COUNT(*) FROM books b
+        JOIN users u ON b.user_id = u.user_id
         WHERE 1=1
         <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
             <choose>
                 <when test="searchType == '예약번호'"> AND book_id = #{keyword} </when>
-                <when test="searchType == '회원아이디'"> AND user_id = #{keyword} </when>
+                <when test="searchType == '예약자명'"> AND u.name like concat('%', #{keyword}, '%') </when>
+                <when test="searchType == '연락처'"> AND u.phone_number like concat('%', #{keyword}, '%') </when>
             </choose>
         </if>
         <if test="dateType != null and dateType != '' and startDate != null and endDate != null">
             <choose>
-                <when test="dateType == '체크인'"> AND (start_date >= #{startDate}) AND (#{startDate} >= start_date) </when>
-                <when test="dateType == '체크아웃'"> AND (end_date >= #{endDate}) AND (#{endDate} >= end_date) </when>
+                <when test="dateType == '체크인'"> AND (start_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= start_date) </when>
+                <when test="dateType == '체크아웃'"> AND (end_date >= STR_TO_DATE(#{startDate}, '%Y-%m-%d'))
+                    AND (STR_TO_DATE(#{endDate}, '%Y-%m-%d') >= end_date) </when>
             </choose>
         </if>
         <if test="statusFilter != null and statusFilter != ''">
@@ -76,4 +112,32 @@
         delete from books
         where book_id=#{bookId}
     </delete>
+
+    <!-- 월별 예약현황 -->
+    <!-- 예약현황표에 대기, 완료 여부만 확인 -->
+    <select id="findMonthlyBooks" resultType="map">
+        select r.name as roomName, b.start_date, b.end_date, b.status
+        from books b
+        join rooms r on b.room_id = r.room_id
+        where b.status in ('대기', '완료')
+        and year(b.start_date) = #{year} and month(b.start_date) = #{month}
+    </select>
+
+    <select id="selectWaitings" resultType="map">
+        select b.start_date, r.name as roomName, u.name as userName, u.phone_number as phone, b.request
+        from books b
+        join rooms r on b.room_id = r.room_id
+        join users u on b.user_id = u.user_id
+        where b.status = '대기'
+        order by b.start_date;
+    </select>
+
+    <select id="paidAndCheckIn" resultMap="bookWithUser">
+        select b.start_date, r.name as room_name, u.name as user_name, u.phone_number as user_phone, p.paid_at as paid_at, p.amount as amount, p.status as status
+        from books b
+        join users u on b.user_id = u.user_id
+        join rooms r on b.room_id = r.room_id
+        join payments p on p.book_id = b.book_id
+        order by b.start_date
+    </select>
 </mapper>

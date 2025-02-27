@@ -1,11 +1,20 @@
 package com.minbak.web.users;
 
+import com.minbak.web.spring_security.jwt.RefreshTokenDto;
+import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,15 +25,19 @@ public class UsersService {
     @Autowired
     UsersMapper usersMapper;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public UserDto findUserByUserId(Integer userId){
+        return usersMapper.findUserByUserId(userId);
+    }
 
     public void createUser(UserDto userDto){
 
         //중복된 이메일이 있는지 확인
         if(usersMapper.findUserEmailByEmail(userDto.getEmail()) == null){
             //페스워드 암호화
-//            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             //회원데이터 저장
             usersMapper.createUser(userDto);
 
@@ -42,42 +55,35 @@ public class UsersService {
 
     }
 
-    public UserPageDto<UserResponseDto> findUsersByLimitAndOffset(int page, int size){
-        int offset = (page-1)*size;
-        List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffset(size, offset);
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+    public void createRefreshTokenData(String username,String refreshToken, Long expirationMs){
 
-        //유저 수 가져오기
-        int totalItems = usersMapper.countAllUsers();
+        //현 시간에 expirationMs 값 추가
+        LocalDateTime expirationDate = LocalDateTime.now().plus(Duration.ofMillis(expirationMs));
 
-        //가져온 유저 정보의 날짜를 String 형식으로 변환
-        for (UserDto userDto : userDtos) {
-            UserResponseDto userResponseDto = new UserResponseDto(userDto);
-            userResponseDtos.add(userResponseDto);
-        }
-        //pageDto 생성 후 반환
-        return new UserPageDto<>(page,size,totalItems,userResponseDtos);
+        Timestamp timestamp = Timestamp.valueOf(expirationDate);
+
+        RefreshTokenDto refreshTokenDto = new RefreshTokenDto();
+        refreshTokenDto.setUsername(username);
+        refreshTokenDto.setRefreshToken(refreshToken);
+        refreshTokenDto.setExpiration(timestamp);
+
+        usersMapper.createRefreshTokenData(refreshTokenDto);
     }
 
-    public UserPageDto<UserResponseDto> findUsersByLimitAndOffsetAndString(int page, int size, String search){
-
-        int offset = (page-1)*size;
-        
-        //검색창에 적은 String을 email이나 name에 포함한 유저수 가져오기
-        int totalItems = usersMapper.countUsersBySearch(search);
-        
-        //검색창에 적은 String을 이용해 보여줄 페이지 가져오기
-        List<UserDto> userDtos = usersMapper.findUsersByLimitAndOffsetAndString(size, offset, search);
-
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
-
-        for (UserDto userDto : userDtos) {
-            UserResponseDto userResponseDto = new UserResponseDto(userDto);
-            userResponseDtos.add(userResponseDto);
-        }
-        //위 정보로 UserPageDto만들고 리턴
-        return new UserPageDto<>(page,size,totalItems,userResponseDtos);
+    public void deleteRefreshTokenDataByRefreshToken(String refreshToken){
+        usersMapper.deleteRefreshTokenDataByRefreshToken(refreshToken);
     }
+
+    public Boolean checkRefreshTokenIsExpired(String refreshToken){
+        return usersMapper.checkRefreshTokenIsExpired(refreshToken);
+    }
+
+    public void deleteExpiredRefreshTokens(){
+        LocalDateTime now = LocalDateTime.now();
+        Timestamp currentTime = Timestamp.valueOf(now);
+        usersMapper.deleteExpiredRefreshTokens(currentTime);
+    }
+
 
     public int countAllUsers(){
         return usersMapper.countAllUsers();
@@ -127,5 +133,66 @@ public class UsersService {
 
     public void deleteUserByUserId(int userId){
         usersMapper.deleteUserByUserId(userId);
+    }
+
+    public PageDto<UserResponseDto> searchUsersWithBookCount(int page, int size, String name, String email, Boolean enabled,
+                                                             LocalDate startDate, LocalDate endDate, Integer bookCount){
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countSearchUsers(name,email,enabled,startDate,endDate,bookCount);
+
+        List<UserResponseDto> userDtos = usersMapper.searchUsersWithBookCount(size,offset,name,email,enabled,startDate,endDate,bookCount);
+
+        return new PageDto<>(page,size,totalItems,userDtos);
+    }
+
+    public PageDto<HostResponseDto> searchHostsWithRoomCount(int page, int size, String name, String email, Boolean enabled,
+                                                             LocalDate startDate, LocalDate endDate, Integer bookCount, Boolean isVerified){
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countHostsWithRoomCount(name,email,enabled,startDate,endDate,bookCount);
+
+        List<HostResponseDto> hosts = usersMapper.searchHostsWithRoomCount(size,offset,name,email,enabled,startDate,endDate,bookCount,isVerified);
+
+        return new PageDto<>(page,size,totalItems,hosts);
+    }
+
+    public HostResponseDto findHostByUserId(int userId){
+        return usersMapper.findHostByUserId(userId);
+    }
+
+    public void makeAdmin(String userId){
+        usersMapper.makeAdmin(userId);
+    }
+
+    public PageDto<UserReportDto> searchUserReports(int page, int size,String reporterEmail,
+                                                    String reportedUserEmail,
+                                                    String reportReason,
+                                                    String status,
+                                                    LocalDate startReportDate,
+                                                    LocalDate endReportDate,
+                                                    LocalDate startProcessedAt,
+                                                    LocalDate endProcessedAt){
+
+        int offset = (page-1)*size;
+        int totalItems = usersMapper.countUserReports(reporterEmail,reportedUserEmail,reportReason,status,startReportDate,endReportDate,startProcessedAt,endProcessedAt);
+
+        List<UserReportDto> reportDtos = usersMapper.searchUserReports(size, offset,reporterEmail,reportedUserEmail,reportReason,status,startReportDate,endReportDate,startProcessedAt,endProcessedAt);
+
+        return new PageDto<>(page,size,totalItems,reportDtos);
+    };
+
+    public UserReportDto getReportById(int reportId){
+        return usersMapper.getReportById(reportId);
+    }
+
+    public void updateReportStatus(UserReportDto userReportDto){
+        usersMapper.updateReportStatus(userReportDto);
+    }
+
+    public void updateUser(UserDto userDto) {
+        usersMapper.updateUser(userDto); // MyBatis XML 매퍼 호출
+    }
+
+    public void updateHost(HostDto hostDto) {
+        usersMapper.updateHost(hostDto);
     }
 }

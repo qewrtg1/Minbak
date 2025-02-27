@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>예약 관리</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <main>
+    <div class="books">
+
+      <!-- 예약 등록 폼 -->
+      <form action="/books/create" method="post">
+        <div class="form-group">
+          <label for="startDate">유저 ID:</label>
+          <input type="number" id="userId" name="userId" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="startDate">숙소 ID:</label>
+          <input type="number" id="roomId" name="userId" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="startDate">체크인 날짜:</label>
+          <input type="date" id="startDate" name="startDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="endDate">체크아웃 날짜:</label>
+          <input type="date" id="endDate" name="endDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="guestsNum">예약인원 수:</label>
+          <input type="number" id="guestsNum" name="guestsNum" class="form-control" min="1" max="6" required>
+        </div>
+        <input type="hidden" name="roomId" th:value="${roomId}">
+        <button type="submit" class="btn-submit">예약하기</button>
+      </form>
+
+      <!-- 푸터 -->
+      <div class="booksFoot">
+        <hr>
+        <h4 class="text-center">Copyright &copy; All rights reserved.</h4>
+      </div>
+    </div>
+  </main>
+</th:block>
+<th:block layout:fragment="js">
+</th:block>
+</body>
+</html>
