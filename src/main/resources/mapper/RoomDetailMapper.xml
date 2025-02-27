@@ -112,7 +112,7 @@
         FROM image_files
         WHERE user_id = (SELECT user_id FROM host WHERE host_id = #{hostId})
         AND entity_type = 'users'
-        ORDER BY uploaded_at DESC
+        ORDER BY image_id DESC
         LIMIT 1
     </select>
 
@@ -120,7 +120,8 @@
     <select id="findImageUrlsByUserId" parameterType="int" resultType="string">
         SELECT file_url
         FROM image_files
-        WHERE user_id = #{userId}
+        WHERE entity_id = #{userId}
+        LIMIT 1
     </select>
 
 </mapper>
