@@ -64,9 +64,9 @@
 
 
     <!-- 호스트가 아직 답변하지 않은 리뷰 목록을 조회하는 쿼리 -->
-    <select id="findUnansweredReviewsByHost" resultType="ReviewDto"> <!-- 해당 호스트의 리뷰 중에서 호스트 답변이 없는 리뷰만 조회 -->
+    <select id="findUnansweredReviewsByHost" resultType="com.minbak.web.review.ReviewDto"> <!-- 해당 호스트의 리뷰 중에서 호스트 답변이 없는 리뷰만 조회 -->
         SELECT * FROM review
-        WHERE host_id = #{hostUserId}  <!-- 호스트 ID로 필터링 -->
+        WHERE host_id = #{hostId}  <!-- 호스트 ID로 필터링 -->
         AND host_reply IS NULL  <!-- 호스트 답변이 NULL인 리뷰만 조회 -->
     </select>
 

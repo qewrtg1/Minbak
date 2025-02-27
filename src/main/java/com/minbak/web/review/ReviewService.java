@@ -76,9 +76,9 @@ public class ReviewService {
 
 
     // 특정 호스트가 답변해야 할 리뷰 목록을 가져오는 서비스 메서드
-    public List<ReviewDto> getUnansweredReviews(int hostUserId) {
+    public List<ReviewDto> getUnansweredReviews(int hostId) {
         // 리뷰 목록을 가져오는 Mapper 메서드 호출
-        return reviewMapper.findUnansweredReviewsByHost(hostUserId);  // 해당 호스트의 답변하지 않은 리뷰 리스트 반환
+        return reviewMapper.findUnansweredReviewsByHost(hostId);  // 해당 호스트의 답변하지 않은 리뷰 리스트 반환
     }
 
     // 특정 리뷰에 대한 호스트의 답변을 저장하는 서비스 메서드

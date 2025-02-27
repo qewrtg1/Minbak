@@ -1,6 +1,6 @@
 package com.minbak.web.review;
 
-import com.minbak.web.board.categories.BoardCategoryDto;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -47,7 +47,7 @@ public interface ReviewMapper {
 
 
     // 호스트가 답변해야 할 리뷰 목록을 가져오는 메서드
-    List<ReviewDto> findUnansweredReviewsByHost(int hostUserId);
+    List<ReviewDto> findUnansweredReviewsByHost(int hostId);
 
     // 호스트가 특정 리뷰에 답변을 추가하는 메서드
     void updateHostReply(@Param("reviewId") int reviewId, @Param("hostReply") String hostReply);

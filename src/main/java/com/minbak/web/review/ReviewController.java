@@ -87,8 +87,8 @@ public class ReviewController {
 
     // 호스트가 아직 답변하지 않은 리뷰 목록을 조회하는 API
     @GetMapping("/unanswered-reviews")  // '/host/unanswered-reviews' 요청을 처리
-    public List<ReviewDto> getUnansweredReviews(@RequestParam int hostUserId) {
-        return reviewService.getUnansweredReviews(hostUserId);  // 서비스 호출
+    public List<ReviewDto> getUnansweredReviews(@RequestParam int hostId) {
+        return reviewService.getUnansweredReviews(hostId);  // 서비스 호출
     }
 
     // 특정 리뷰에 답변을 추가하는 API
