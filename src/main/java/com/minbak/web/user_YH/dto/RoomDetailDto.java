@@ -11,4 +11,5 @@ public class RoomDetailDto {
     private DetailHostResponse host;
     private DetailBookResponse booking;
     private List<DetailReviewResponse> reviews;
+    private Integer maxGuests;
 }

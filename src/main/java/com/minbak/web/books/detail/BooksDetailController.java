@@ -14,9 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Controller
-@RequestMapping("/room")
+@RequestMapping("/user/room")
 @RequiredArgsConstructor
 public class BooksDetailController {
 
@@ -26,9 +27,9 @@ public class BooksDetailController {
 
     @GetMapping("/{roomId}/confirm")
     public String confirmReservation(@PathVariable int roomId,
-                                     @RequestParam(required = false) LocalDate checkInDate,
-                                     @RequestParam(required = false) LocalDate checkOutDate,
-                                     @RequestParam(required = false, defaultValue = "1") int guestsNum,
+                                     @RequestParam LocalDate checkInDate,
+                                     @RequestParam LocalDate checkOutDate,
+                                     @RequestParam int guestsNum,
                                      Model model,
                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -38,12 +39,26 @@ public class BooksDetailController {
             checkOutDate = LocalDate.now().plusDays(2);
         }
 
+        int nights = (int) ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+
         model.addAttribute("user", usersService.findUserByUserId(userDetails.getUserId()));
         RoomDetailDto roomDetail = roomDetailService.getRoomDetail(roomId);
+
+        System.out.println(roomDetail.getRoom().getPricePerNight());
+        model.addAttribute("nights",nights );
         model.addAttribute("room", roomDetail.getRoom());
         model.addAttribute("checkInDate", checkInDate);
         model.addAttribute("checkOutDate", checkOutDate);
         model.addAttribute("guestCount", guestsNum);
         return "/books/reservation_confirm";
+    }
+
+    @GetMapping("/user/booking")
+    public String getBookingPage(@ModelAttribute BooksDto booksDto, Model model) {
+
+        booksService.createBook(booksDto);
+
+        model.addAttribute("message", "예약되었습니다.");
+        return "redirect:/user/book/list"; // 예약 확인 페이지로 이동 (bookingConfirmation.html)
     }
 }

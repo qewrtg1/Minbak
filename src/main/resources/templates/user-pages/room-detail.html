@@ -227,21 +227,21 @@
         </div>
 
         <!-- 예약 폼 -->
-        <form class="mt-3" action="/reservation/confirm" method="GET">
+        <form class="mt-3" th:action="@{/user/room/{roomId}/confirm(roomId=${room.roomId})}" method="GET">
           <!-- 체크인 & 체크아웃 입력 필드 -->
           <div class="input-group">
             <label class="form-label">체크인</label>
-            <input type="text" class="form-control flatpickr-input" id="checkInDate" name="checkIn" placeholder="날짜 선택" required>
+            <input type="text" class="form-control flatpickr-input" id="checkInDate" name="checkInDate" placeholder="날짜 선택" required>
           </div>
 
           <div class="input-group mt-2">
             <label class="form-label">체크아웃</label>
-            <input type="text" class="form-control flatpickr-input" id="checkOutDate" name="checkOut" placeholder="날짜 선택" required>
+            <input type="text" class="form-control flatpickr-input" id="checkOutDate" name="checkOutDate" placeholder="날짜 선택" required>
           </div>
 
           <!-- 인원 선택 -->
           <label class="form-label mt-2">인원</label>
-          <select class="form-select" name="guests" required>
+          <select class="form-select" name="guestsNum" required>
             <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
                     th:value="${num}" th:text="|게스트 ${num}명|"></option>
           </select>

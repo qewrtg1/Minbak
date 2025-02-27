@@ -35,6 +35,7 @@ public class RoomDetailController {
         RoomDetailDto roomDetail = roomDetailService.getRoomDetail(roomId);
         roomDetail.getRoom().setOptions(roomDetailService.getRoomOptions(roomId));
 
+        model.addAttribute("maxGuests", roomDetail.getMaxGuests());
         model.addAttribute("room", roomDetail.getRoom());
         model.addAttribute("host", roomDetail.getHost());
         model.addAttribute("reviews", roomDetail.getReviews());

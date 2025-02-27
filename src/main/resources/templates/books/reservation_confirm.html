@@ -58,11 +58,14 @@
       <!-- 인원 선택 -->
       <div class="mb-3">
         <label class="form-label">게스트 수</label>
-        <select class="form-select" id="guestCount" th:value="${guestCount}">
-          <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
-                  th:value="${num}" th:text="|게스트 ${num}명|"></option>
+        <select class="form-select" id="guestCount" name="guestCount">
+          <option th:each="num : ${#numbers.sequence(1, guestCount)}"
+                  th:value="${num}"
+                  th:text="|게스트 ${num}명|"
+                  th:selected="${num == guestCount}"></option>
         </select>
       </div>
+
 
       <p class="text-muted">숙소 이용 규칙을 준수해주세요.</p>
     </div>
@@ -79,17 +82,31 @@
 
         <hr>
 
-        <h5>요금 세부정보</h5>
-        <p><span th:text="'₩' + ${room.pricePerNight} + ' x '"></span><span id="nightCount">1</span>박
-          <span class="float-end" id="totalPrice"></span></p>
-        <p>청소비 <span class="float-end">₩60,000</span></p>
-        <p>서비스 수수료 <span class="float-end">₩50,000</span></p>
-        <hr>
-        <h5>총액 <span class="float-end" id="finalTotal"></span></h5>
+        <form id="reservationForm" action="/user/booking" method="GET">
+          <!-- 숨겨진 입력 필드 -->
+          <input type="hidden" name="roomId" th:value="${room.roomId}">
+          <input type="hidden" name="userId" th:value="${user.userId}">
+          <input type="hidden" name="startDate" id="hiddenCheckInDate" th:value="${checkInDate}">
+          <input type="hidden" name="endDate" id="hiddenCheckOutDate" th:value="${checkOutDate}">
+          <input type="hidden" name="guestsNum" id="hiddenGuestCount" th:value="${guestCount}">
+          <input type="hidden" name="totalPrice" id="hiddenTotalPrice">
 
-        <div class="d-grid mt-3">
-          <button class="btn btn-reserve" id="reserveBtn">예약하기</button>
-        </div>
+          <h5>요금 세부정보</h5>
+          <p>
+            <span th:text="'₩' + ${room.pricePerNight} + ' x '"></span>
+            <span id="nightCount">1</span>박
+            <span class="float-end" id="totalPrice"></span>
+          </p>
+<!--          <p>청소비 <span class="float-end">₩60,000</span></p>-->
+<!--          <p>서비스 수수료 <span class="float-end">₩50,000</span></p>-->
+          <hr>
+          <h5>총액 <span class="float-end" id="finalTotal" th:text="(${nights}*${room.pricePerNight})"></span></h5>
+
+          <div class="d-grid mt-3">
+            <button type="submit" class="btn btn-reserve">예약하기</button>
+          </div>
+        </form>
+
       </div>
     </div>
   </div>
@@ -107,27 +124,25 @@
       const totalPriceText = document.getElementById("totalPrice");
       const finalTotalText = document.getElementById("finalTotal");
       const pricePerNight = [[${room.pricePerNight}]];
-      const cleaningFee = 60000;
-      const serviceFee = 50000;
 
-      // ✅ Flatpickr로 날짜 선택 활성화
-      flatpickr("#checkInDate", {
-          dateFormat: "Y-m-d",
-          minDate: "today",
-          onChange: function (selectedDates) {
-              if (!selectedDates[0]) return;
-              const minCheckOut = selectedDates[0].fp_incr(1);
-              checkOutInput._flatpickr.set("minDate", minCheckOut);
-              checkOutInput.value = "";
-              updatePrice();
-          }
-      });
 
-      flatpickr("#checkOutDate", {
-          dateFormat: "Y-m-d",
-          minDate: "today",
-          onChange: updatePrice
-      });
+flatpickr("#checkInDate", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function (selectedDates) {
+        if (!selectedDates[0]) return;
+        const minCheckOut = selectedDates[0].fp_incr(1);
+        checkOutInput._flatpickr.set("minDate", minCheckOut);
+        checkOutInput.value = "";
+        updatePrice();  // ✅ 날짜 변경 시 업데이트 실행
+    }
+});
+
+flatpickr("#checkOutDate", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: updatePrice  // ✅ 체크아웃 날짜 변경 시 자동 실행
+});
 
       function updatePrice() {
           const checkInDate = new Date(checkInInput.value);
@@ -135,14 +150,14 @@
           if (isNaN(checkInDate) || isNaN(checkOutDate) || checkOutDate <= checkInDate) {
               nightCountText.innerText = "1";
               totalPriceText.innerText = `₩${pricePerNight}`;
-              finalTotalText.innerText = `₩${pricePerNight + cleaningFee + serviceFee}`;
+              finalTotalText.innerText = `₩${pricePerNight}`;
               return;
           }
           const nights = Math.round((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
           const total = pricePerNight * nights;
           nightCountText.innerText = nights;
           totalPriceText.innerText = `₩${total}`;
-          finalTotalText.innerText = `₩${total + cleaningFee + serviceFee}`;
+          finalTotalText.innerText = `₩${total}`;
       }
 
       document.getElementById("reserveBtn").addEventListener("click", function () {
@@ -165,6 +180,64 @@
               });
       });
   });
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkInInput = document.getElementById("checkInDate");
+    const checkOutInput = document.getElementById("checkOutDate");
+    const guestCountInput = document.getElementById("guestCount");
+    const nightCountText = document.getElementById("nightCount");
+    const totalPriceText = document.getElementById("totalPrice");
+    const finalTotalText = document.getElementById("finalTotal");
+    const pricePerNight = [[${room.pricePerNight}]];
+
+
+    const hiddenCheckIn = document.getElementById("hiddenCheckInDate");
+    const hiddenCheckOut = document.getElementById("hiddenCheckOutDate");
+    const hiddenGuestCount = document.getElementById("hiddenGuestCount");
+    const hiddenTotalPrice = document.getElementById("hiddenTotalPrice");
+function updatePrice() {
+    const checkInDate = new Date(checkInInput.value);
+    const checkOutDate = new Date(checkOutInput.value);
+
+    if (isNaN(checkInDate) || isNaN(checkOutDate) || checkOutDate <= checkInDate) {
+        nightCountText.innerText = "1";
+        totalPriceText.innerText = `₩${pricePerNight}`;
+        finalTotalText.innerText = `₩${pricePerNight}`;
+        hiddenTotalPrice.value = pricePerNight;
+        return;
+    }
+
+    // ✅ 체크인 ~ 체크아웃 날짜 차이를 이용해 숙박 일수 계산
+    const nights = Math.round((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+    const total = pricePerNight * nights;
+
+    // ✅ 박 수와 총 가격을 업데이트
+    nightCountText.innerText = nights;  // 🏨 몇 박인지 표시
+    totalPriceText.innerText = `₩${total}`;
+    finalTotalText.innerText = `₩${total}`;
+    hiddenTotalPrice.value = total;
+}
+
+
+    checkInInput.addEventListener("change", function () {
+        hiddenCheckIn.value = checkInInput.value;
+        updatePrice();
+    });
+
+    checkOutInput.addEventListener("change", function () {
+        hiddenCheckOut.value = checkOutInput.value;
+        updatePrice();
+    });
+
+    guestCountInput.addEventListener("change", function () {
+        hiddenGuestCount.value = guestCountInput.value;
+    });
+
+    updatePrice();
+});
+
 </script>
 
 </body>
