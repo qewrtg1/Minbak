@@ -63,7 +63,7 @@
             <label class="form-label">숙소 선택</label>
             <select class="form-select" id="roomFilter">
                 <option value="">전체 숙소</option>
-                <option th:each="room : ${hostRooms}" th:value="${room.roomId}" th:text="${room.title}"></option>
+                <option th:each="room : ${rooms}" th:value="${room['roomId']}" th:text="${room['title']}"></option>
             </select>
         </div>
     </div>
@@ -82,7 +82,7 @@
     </ul>
 
     <p class="text-center text-muted" id="noReservations" style="display: none;">예정된 예약이 없습니다</p>
-    <div class="card mb-3" th:each="book : ${books}" th:id="'reservation-' + ${reservation.bookId}">
+    <div class="card mb-3" th:each="book : ${books}" th:id="'reservation-' + ${book.bookId}">
         <div class="card-body">
             <div class="row align-items-center">
                 <!-- ✅ 좌측: 숙소 이미지 -->
@@ -93,16 +93,16 @@
                 <!-- ✅ 우측: 예약 정보 및 버튼 -->
                 <div class="col-md-6">
                     <h5 th:text="${book.roomTitle}">숙소 제목</h5>
-                    <p>게스트: <span th:text="${book.userName}"></span></p>
+                    <p>게스트: <span th:text="${book.guestName}"></span></p>
                     <p>기간: <span th:text="${book.startDate} + ' ~ ' + ${book.endDate}"></span></p>
                     <p>예약 인원: <span th:text="${book.guestsNum}"></span>명</p>
                     <p>상태: <span th:class="'status-' + ${book.status}" th:text="${book.status}"></span></p>
 
                     <!-- 예약 관리 버튼 -->
                     <div class="mt-2">
-                        <button class="btn btn-success btn-action" th:if="${book.status == 'PENDING'}"
+                        <button class="btn btn-success btn-action" th:if="${book.status == '대기'}"
                                 th:onclick="'approveReservation(' + ${book.bookId} + ')'">수락</button>
-                        <button class="btn btn-danger btn-action" th:if="${book.status == 'PENDING'}"
+                        <button class="btn btn-danger btn-action" th:if="${book.status == '대기'}"
                                 th:onclick="'declineReservation(' + ${book.bookId} + ')'">거절</button>
                     </div>
                 </div>
@@ -114,6 +114,7 @@
 
 <!-- ✅ Bootstrap & JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -126,14 +127,18 @@
     }
 
     function approveReservation(bookId) {
-        axios.put(`/api/host/reservations/${bookId}/approve`)
+        axios.put(`/host/approve/${bookId}`)
             .then(response => {
-                alert("예약이 승인되었습니다.");
+                alert(response.data);  // "예약이 승인되었습니다."
                 document.getElementById(`reservation-${bookId}`).remove();
                 updateNoReservationMessage();
             })
-            .catch(error => alert("예약 승인 중 오류 발생!"));
+            .catch(error => {
+                alert("예약 승인 중 오류 발생!");
+                console.error(error);
+            });
     }
+
 
     function declineReservation(bookId) {
         axios.put(`/api/host/reservations/${bookId}/decline`)

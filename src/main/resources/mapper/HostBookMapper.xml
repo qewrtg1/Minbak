@@ -22,6 +22,36 @@
         ORDER BY b.book_id DESC;
     </select>
 
+    <select id="findUserDetailByUserId" resultType="com.minbak.web.user_YH.dto.DetailUserResponse">
+        SELECT
+        u.user_id,
+        u.name,
+        u.email,
+        u.phone_number,
+        COALESCE(img.file_url, '/static/images/default-profile.jpg') AS profile_image_url
+        FROM users u
+        LEFT JOIN image_files img
+        ON img.entity_id = u.user_id
+        AND img.entity_type = 'users'
+        WHERE u.user_id = #{userId}
+        LIMIT 1;
+    </select>
+
+    <select id="fineHostingRoomByUserId" resultType="Map">
+        SELECT
+        room_id,
+        name,
+        title
+        FROM rooms
+        WHERE user_id = #{userId}
+        ORDER BY room_id DESC;
+    </select>
+
+    <update id="approveReservation" parameterType="Integer">
+        UPDATE books
+        SET status = '완료'
+        WHERE book_id = #{bookId}
+    </update>
 
 
 
