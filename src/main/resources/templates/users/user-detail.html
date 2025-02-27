@@ -483,6 +483,47 @@
             });
         }
 
+        //메시지 보내는 js
+        document.getElementById("message-form").addEventListener("submit", function(event) {
+            event.preventDefault();  // 폼 제출 시 페이지 새로고침 방지
+
+            const message = document.getElementById("message").value.trim();
+            const userId = document.getElementById("userId").value; // 대상 사용자 ID 가져오기
+
+            if (!message) {
+                alert("메시지를 입력하세요.");
+                return;
+            }
+
+            // CSRF 토큰 가져오기 (보안 설정이 적용된 경우)
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content");
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute("content");
+
+            // 메시지 전송 API 요청
+            axios.post('/admin/api/send-user', {
+                userId: userId,
+                message: message
+            }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    [csrfHeader]: csrfToken  // CSRF 토큰 추가 (CSRF 보호 활성화된 경우)
+                }
+            })
+            .then(response => {
+                // 성공 시 메시지 표시
+                document.getElementById("message-status").textContent = response.data.message;
+                document.getElementById("message-status").style.color = "green";
+                document.getElementById("message").value = "";  // 입력 필드 비우기
+            })
+            .catch(error => {
+                console.error("메시지 전송 오류:", error);
+
+                // 실패 시 오류 메시지 표시
+                document.getElementById("message-status").textContent = "메시지 전송에 실패했습니다. 다시 시도해 주세요.";
+                document.getElementById("message-status").style.color = "red";
+            });
+        });
+
     </script>
 </th:block>
 

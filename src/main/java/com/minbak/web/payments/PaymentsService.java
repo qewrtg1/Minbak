@@ -58,4 +58,9 @@ public class PaymentsService {
         return new PageDto<PaymentDto>(page,size,totalPage,paymentDtos);
     }
 
+    //예약상태 업데이트
+    public void updateBookStatus(String status, int bookId) {
+        paymentsMapper.updateBookStatus(status,bookId);
+    }
+
 }

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>방 이미지 업로드</title>
+
+  <!-- Bootstrap CSS 추가 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .container {
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .image-box {
+        width: 100%;
+        height: 150px;
+        border: 2px dashed #aaa;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        background-color: #f8f8f8;
+    }
+
+    .image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+
+    .image-box .plus {
+        font-size: 30px;
+        color: #555;
+        font-weight: bold;
+        position: absolute;
+        cursor: pointer;
+    }
+
+        .remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 50%;
+            display: none;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255, 0, 0, 0.8);
+        }
+
+        .remove-btn i {
+            font-size: 18px;
+        }
+
+  </style>
+</head>
+<body class="bg-light">
+
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+<div class="container mt-5 p-4 bg-white shadow rounded">
+  <h2 class="text-center mb-4">방 이미지 업로드</h2>
+
+  <!-- Room ID 입력 -->
+  <div class="mb-3">
+    <label for="roomId" class="form-label">Room ID:</label>
+    <input type="number" id="roomId" class="form-control" required>
+  </div>
+
+  <!-- 이미지 업로드 박스 4개 -->
+  <div class="row g-3">
+    <div class="col-md-3">
+      <div class="image-box" onclick="selectImage(0)">
+        <span class="plus">+</span>
+        <img id="preview-0">
+        <button class="remove-btn btn btn-danger btn-sm" onclick="removeImage(event, 0)">X</button>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="image-box" onclick="selectImage(1)">
+        <span class="plus">+</span>
+        <img id="preview-1">
+        <button class="remove-btn btn btn-danger btn-sm" onclick="removeImage(event, 1)">X</button>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="image-box" onclick="selectImage(2)">
+        <span class="plus">+</span>
+        <img id="preview-2">
+        <button class="remove-btn btn btn-danger btn-sm" onclick="removeImage(event, 2)">X</button>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="image-box" onclick="selectImage(3)">
+        <span class="plus">+</span>
+        <img id="preview-3">
+        <button class="remove-btn btn btn-danger btn-sm" onclick="removeImage(event, 3)">X</button>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- 숨겨진 파일 입력 요소 -->
+  <input type="file" id="fileInput" accept="image/*" style="display: none" onchange="handleFileChange(event)">
+
+  <br>
+
+  <!-- 업로드 버튼 -->
+  <div class="d-grid gap-2 mt-3">
+    <button class="btn btn-primary" onclick="uploadImages()">모든 이미지 업로드</button>
+  </div>
+
+  <p id="status" class="text-center mt-3"></p>
+</div>
+<!-- 사용자 프로필 이미지 업로드 -->
+<div class="mt-5 p-4 bg-white shadow rounded">
+  <h2 class="text-center mb-4">프로필 이미지 업로드</h2>
+
+  <!-- User ID 입력 -->
+  <div class="mb-3">
+    <label for="userId" class="form-label">User ID:</label>
+    <input type="number" id="userId" class="form-control" required>
+  </div>
+
+  <!-- 프로필 이미지 업로드 박스 -->
+  <div class="d-flex justify-content-center">
+    <div class="image-box" onclick="selectProfileImage()">
+      <span class="plus">+</span>
+      <img id="profilePreview">
+      <button class="remove-btn btn btn-danger btn-sm" onclick="removeProfileImage(event)">X</button>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- 숨겨진 파일 입력 요소 -->
+  <input type="file" id="profileFileInput" accept="image/*" style="display: none" onchange="handleProfileFileChange(event)">
+
+  <br>
+
+  <!-- 업로드 버튼 -->
+  <div class="d-grid gap-2 mt-3">
+    <button class="btn btn-primary" onclick="uploadProfileImage()">프로필 이미지 업로드</button>
+  </div>
+
+  <p id="profileStatus" class="text-center mt-3"></p>
+</div>
+
+<!-- Bootstrap JS 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  let selectedFiles = [null, null, null, null]; // 업로드할 파일 리스트 (4개)
+
+  function selectImage(index) {
+      document.getElementById("fileInput").dataset.index = index;
+      document.getElementById("fileInput").click();
+  }
+
+  function handleFileChange(event) {
+      const file = event.target.files[0];
+      const index = event.target.dataset.index;
+
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+          const imgElement = document.getElementById(`preview-${index}`);
+          const plusIcon = document.querySelectorAll(".plus")[index];
+          const removeBtn = document.querySelectorAll(".remove-btn")[index];
+
+          imgElement.src = e.target.result;
+          imgElement.style.display = "block";
+          plusIcon.style.display = "none"; // + 버튼 숨김
+          removeBtn.style.display = "block"; // 삭제 버튼 표시
+      };
+      reader.readAsDataURL(file);
+
+      selectedFiles[index] = file; // 선택된 파일 저장
+  }
+
+  function removeImage(event, index) {
+      event.stopPropagation(); // div 클릭 이벤트 방지
+      selectedFiles[index] = null;
+
+      const imgElement = document.getElementById(`preview-${index}`);
+      const plusIcon = document.querySelectorAll(".plus")[index];
+      const removeBtn = document.querySelectorAll(".remove-btn")[index];
+
+      imgElement.style.display = "none";
+      plusIcon.style.display = "block"; // + 버튼 다시 표시
+      removeBtn.style.display = "none"; // 삭제 버튼 숨김
+  }
+
+  function uploadImages() {
+      const roomId = document.getElementById("roomId").value;
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+
+      if (!roomId) {
+          alert("Room ID를 입력하세요!");
+          return;
+      }
+
+      const formData = new FormData();
+      formData.append("roomId", roomId); // roomId 추가
+
+      let fileCount = 0;
+      selectedFiles.forEach((file, index) => {
+          if (file) {
+              formData.append("files", file);
+              fileCount++;
+          }
+      });
+
+      if (fileCount === 0) {
+          alert("업로드할 이미지가 없습니다!");
+          return;
+      }
+
+      fetch("/admin/api/upload-multiple", {
+          method: "POST",
+          body: formData,
+          headers: {
+              [csrfHeader]: csrfToken  // 동적으로 CSRF 헤더 추가
+          }
+      })
+      .then(response => response.text())
+      .then(data => {
+          document.getElementById("status").textContent = "업로드 성공: " + data;
+
+          // 이미지 초기화
+          selectedFiles = [null, null, null, null];
+          document.querySelectorAll(".image-box img").forEach(img => img.style.display = "none");
+          document.querySelectorAll(".plus").forEach(plus => plus.style.display = "block");
+          document.querySelectorAll(".remove-btn").forEach(btn => btn.style.display = "none");
+      })
+      .catch(error => {
+          document.getElementById("status").textContent = "업로드 실패: " + error;
+      });
+  }
+</script>
+
+<script>
+  let selectedProfileFile = null; // 프로필 이미지 저장
+
+  function selectProfileImage() {
+      document.getElementById("profileFileInput").click();
+  }
+
+  function handleProfileFileChange(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+          const imgElement = document.getElementById("profilePreview");
+          const plusIcon = document.querySelector(".image-box .plus");
+          const removeBtn = document.querySelector(".image-box .remove-btn");
+
+          imgElement.src = e.target.result;
+          imgElement.style.display = "block";
+          plusIcon.style.display = "none"; // + 버튼 숨김
+          removeBtn.style.display = "block"; // 삭제 버튼 표시
+      };
+      reader.readAsDataURL(file);
+
+      selectedProfileFile = file;
+  }
+
+  function removeProfileImage(event) {
+      event.stopPropagation();
+      selectedProfileFile = null;
+
+      const imgElement = document.getElementById("profilePreview");
+      const plusIcon = document.querySelector(".image-box .plus");
+      const removeBtn = document.querySelector(".image-box .remove-btn");
+
+      imgElement.style.display = "none";
+      plusIcon.style.display = "block";
+      removeBtn.style.display = "none";
+  }
+
+  function uploadProfileImage() {
+      const userId = document.getElementById("userId").value;
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+
+      if (!userId) {
+          alert("User ID를 입력하세요!");
+          return;
+      }
+
+      if (!selectedProfileFile) {
+          alert("업로드할 프로필 이미지가 없습니다!");
+          return;
+      }
+
+      const formData = new FormData();
+      formData.append("userId", userId);
+      formData.append("file", selectedProfileFile);
+
+      fetch("/admin/api/upload-profile", {
+          method: "POST",
+          body: formData,
+          headers: {
+            [csrfHeader]: csrfToken  // 동적으로 CSRF 헤더 추가
+          }
+      })
+      .then(response => response.text())
+      .then(data => {
+          document.getElementById("profileStatus").textContent = "프로필 업로드 성공: " + data;
+
+          // 이미지 초기화
+          selectedProfileFile = null;
+          document.getElementById("profilePreview").style.display = "none";
+          document.querySelector(".image-box .plus").style.display = "block";
+          document.querySelector(".image-box .remove-btn").style.display = "none";
+      })
+      .catch(error => {
+          document.getElementById("profileStatus").textContent = "업로드 실패: " + error;
+      });
+  }
+</script>
+</body>
+</html>

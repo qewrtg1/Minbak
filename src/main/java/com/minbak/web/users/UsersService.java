@@ -28,6 +28,10 @@ public class UsersService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    public UserDto findUserByUserId(Integer userId){
+        return usersMapper.findUserByUserId(userId);
+    }
+
     public void createUser(UserDto userDto){
 
         //중복된 이메일이 있는지 확인

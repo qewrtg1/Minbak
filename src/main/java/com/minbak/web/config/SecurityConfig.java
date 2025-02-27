@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration  //해당 클래스가 Config(설정) 클래스라는 걸 정의하는 어노테이션.
 @EnableWebSecurity  // Spring Security설정을 한다는 어노테이션.
@@ -32,7 +34,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/admin/**")  // API 요청에만 적용
                 .authorizeHttpRequests(auth -> auth  // HTTP 요청에 대한 접근 권한을 설정합니다.
-                        .requestMatchers("/admin/login", "/admin/file/**").permitAll()
+                        .requestMatchers("/admin/login", "/admin/file/**","/admin/api/**","/admin/signup").permitAll()
                         .requestMatchers("/admin/user/{id}").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // 그 외는 인증을 요구
@@ -64,7 +66,10 @@ public class SecurityConfig {
         //활성화하면 세션을 해킹해서 다른 도메인에 세션정보를 넣고 API서버로 요청했을 때 spring security의존성이 막아준다.
         //근데 개발환경에서는 disable해놓고 사용해야함 아래 코드를 삭제하면 enable상태로 됨.
         //get을 제외한 요청시 위조검사함. get을 제외한 요청에 _csrf.token 데이터를 줘야함.
-//        http.csrf(AbstractHttpConfigurer::disable);
+        http
+                .csrf(csrf -> csrf
+                .csrfTokenRepository(csrfTokenRepository())  // CSRF 토큰 저장소 적용
+        );
 //        http.csrf(csrf -> csrf.disable());
 
 //        http
@@ -89,12 +94,14 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll() // 공개 API
-                        .requestMatchers("/api/login", "/api/refresh", "/api/signup").permitAll()
+                        .requestMatchers("/api/login", "/api/refresh", "/api/signup","/","/room/**").permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //UsernamePasswordAuthenticationFilter 전에 jwtAuthenticationFilter 실행
                 .logout(AbstractHttpConfigurer::disable //로그아웃 비활성화
                 );
+
 
         return http.build();
     }
@@ -110,6 +117,13 @@ public class SecurityConfig {
     //인증을 처리하는 핵심 컴포넌트 UsernamePasswordAuthenticationToken와 같은 인증요청객체 사용시 필요
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-CSRF-TOKEN");  // 클라이언트가 사용할 CSRF 헤더 이름
+        return repository;
     }
 
 }

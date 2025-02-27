@@ -124,4 +124,8 @@ public class DashBoardService {
     public List<OptionRoomCountDto> getRoomsByOption() {
         return dashBoardMapper.countRoomsByOption();
     }
+
+    public void sendMessage(Integer senderId, Integer receiverId, String content) {
+        dashBoardMapper.insertMessage(senderId, receiverId, content);
+    }
 }

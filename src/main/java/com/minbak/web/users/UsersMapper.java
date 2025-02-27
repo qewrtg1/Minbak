@@ -14,6 +14,9 @@ import java.util.Map;
 @Mapper
 public interface UsersMapper {
 
+    // 유저 아이디로 유저조회
+    public UserDto findUserByUserId(Integer userId);
+
     // 회원가입
     public void createUser(UserDto userDto);
 

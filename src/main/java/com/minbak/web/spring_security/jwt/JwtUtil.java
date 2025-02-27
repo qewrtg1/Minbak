@@ -122,4 +122,41 @@ public class JwtUtil {
         return null;  // 해당 쿠키가 없다면 null 반환
     }
 
+    public String getJwtTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();  // 요청에서 모든 쿠키를 가져옴
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwtToken".equals(cookie.getName())) {  // 쿠키 이름이 'jwtToken'인 경우
+                    return cookie.getValue();  // 해당 쿠키의 값을 반환
+                }
+            }
+        }
+        return null;  // 해당 쿠키가 없다면 null 반환
+    }
+
+    public Cookie createRefreshCookie(String key, String value) {
+
+        Cookie cookie = new Cookie(key, value);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge((int) REFRESH_TOKEN_EXPIRATION_TIME / 1000);
+        cookie.setAttribute("SameSite", "Strict"); // CSRF 방지
+
+        return cookie;
+    }
+
+    public Cookie createAccessCookie(String key, String value) {
+
+        Cookie cookie = new Cookie(key, value);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge((int) ACCESS_TOKEN_EXPIRATION_TIME / 1000);
+        cookie.setAttribute("SameSite", "Strict"); // CSRF 방지
+
+        return cookie;
+    }
 }

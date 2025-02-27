@@ -66,4 +66,32 @@
         FROM payments
     </select>
 
+    <!-- 예약 상태 업데이트 -->
+    <update id="updateBookStatus">
+        UPDATE books
+        SET status = #{status}
+        WHERE book_id = #{bookId}
+    </update>
+
+
+    <!-- 주문번호(`merchantUid`)를 DB에 저장 -->
+    <insert id="insertPaymentOrder" parameterType="com.minbak.web.payments.PaymentDto">
+        INSERT INTO payments (merchant_uid, book_id, user_id, amount, method, status, created_at)
+        VALUES (#{merchantUid}, #{bookId}, #{userId}, #{amount}, #{method}, #{status}, NOW());
+    </insert>
+
+    <!-- 주문번호(`merchantUid`)로 주문 정보 조회 -->
+    <select id="getPaymentByMerchantUid" parameterType="String" resultType="com.minbak.web.payments.PaymentDto">
+        SELECT payment_id, merchant_uid, book_id, user_id, amount, method, status, transaction_id, created_at, paid_at
+        FROM payments
+        WHERE merchant_uid = #{merchantUid}
+    </select>
+
+    <!-- 결제 상태 업데이트 (결제 완료 시) -->
+    <update id="updatePaymentStatus" parameterType="com.minbak.web.payments.PaymentDto">
+        UPDATE payments
+        SET status = '결제 완료', transaction_id = #{transactionId}, paid_at = NOW()
+        WHERE merchant_uid = #{merchantUid}
+    </update>
+
 </mapper>
