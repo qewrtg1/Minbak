@@ -227,26 +227,29 @@
         </div>
 
         <!-- 예약 폼 -->
-        <form class="mt-3">
+        <form class="mt-3" action="/reservation/confirm" method="GET">
           <!-- 체크인 & 체크아웃 입력 필드 -->
           <div class="input-group">
             <label class="form-label">체크인</label>
-            <input type="text" class="form-control flatpickr-input" id="checkInDate" placeholder="날짜 선택">
+            <input type="text" class="form-control flatpickr-input" id="checkInDate" name="checkIn" placeholder="날짜 선택" required>
           </div>
 
           <div class="input-group mt-2">
             <label class="form-label">체크아웃</label>
-            <input type="text" class="form-control flatpickr-input" id="checkOutDate" placeholder="날짜 선택">
+            <input type="text" class="form-control flatpickr-input" id="checkOutDate" name="checkOut" placeholder="날짜 선택" required>
           </div>
 
+          <!-- 인원 선택 -->
           <label class="form-label mt-2">인원</label>
-          <select class="form-select">
+          <select class="form-select" name="guests" required>
             <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
                     th:value="${num}" th:text="|게스트 ${num}명|"></option>
           </select>
 
+          <!-- ✅ 예약하기 버튼 -->
           <button type="submit" class="btn btn-danger w-100 mt-3">예약하기</button>
         </form>
+
 
         <p class="text-muted mt-2">예약 확정 전에는 요금이 청구되지 않습니다. (수수료 시스템 추가 예정)</p>
 
@@ -386,8 +389,8 @@
   }
 </script>
 <!-- Google Maps API 스크립트 -->
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxxP5D76bjMkOWdY-LRMWuvRw6xhr1mr4&callback=initMap">
+<script
+        async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxxP5D76bjMkOWdY-LRMWuvRw6xhr1mr4&callback=initMap&loading=async&v=beta">
 </script>
 <script th:inline="javascript">
   document.addEventListener("DOMContentLoaded", function () {
@@ -506,28 +509,44 @@
   });
 </script>
 
-<script>
+<script th:inline="javascript">
+  async function initMap() {
+      const mapElement = document.getElementById('map');
+      if (!mapElement) {
+          console.error("지도 컨테이너가 존재하지 않습니다.");
+          return;
+      }
 
+      // 타임리프 변수를 숫자로 변환
+      var roomLatitude = parseFloat([[${room.latitude}]]);
+      var roomLongitude = parseFloat([[${room.longitude}]]);
 
-  function initMap() {
-      var roomLocation = {
-          lat: parseFloat([[${room.latitude}]]),
-          lng: parseFloat([[${room.longitude}]])
-      };
+      if (isNaN(roomLatitude) || isNaN(roomLongitude)) {
+          console.error("잘못된 좌표 값입니다:", roomLatitude, roomLongitude);
+          return;
+      }
 
-      var map = new google.maps.Map(document.getElementById('map'), {
+      var roomLocation = { lat: roomLatitude, lng: roomLongitude };
+
+      // ✅ Google Maps API 인스턴스 생성
+      var map = new google.maps.Map(mapElement, {
           zoom: 14,
-          center: roomLocation
+          center: roomLocation,
+          mapId: "DEMO_MAP_ID" // 기본 지도 ID 설정
       });
 
-      var marker = new google.maps.Marker({
+      // ✅ 새로운 방식으로 마커 라이브러리 로드
+      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+      // ✅ 고급 마커 추가
+      const marker = new AdvancedMarkerElement({
           position: roomLocation,
-          map: map,
-          title: '숙소 위치'
+          map: map
       });
+
+      console.log("Google Maps 초기화 완료");
   }
 </script>
-
 <!--로그인모달-->
 <script>
   document.addEventListener("DOMContentLoaded", function() {

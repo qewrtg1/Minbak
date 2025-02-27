@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예약 확인</title>
+
+  <!-- Bootstrap & Flatpickr -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <style>
+    .reservation-container {
+        max-width: 1100px;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 8px;
+        background: white;
+    }
+    .summary-box {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    .btn-reserve {
+        background-color: #ff385c;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container reservation-container">
+  <div class="row">
+    <!-- 왼쪽: 예약 정보 -->
+    <div class="col-md-6">
+      <h3>예약 정보</h3>
+      <p>숙소: <span th:text="${room.title}"></span></p>
+      <p>주소: <span th:text="${room.address}"></span></p>
+
+      <!-- 날짜 선택 -->
+      <div class="mb-3">
+        <label class="form-label">체크인 날짜</label>
+        <input type="text" class="form-control" id="checkInDate" placeholder="날짜 선택">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">체크아웃 날짜</label>
+        <input type="text" class="form-control" id="checkOutDate" placeholder="날짜 선택">
+      </div>
+
+      <!-- 인원 선택 -->
+      <div class="mb-3">
+        <label class="form-label">게스트 수</label>
+        <select class="form-select" id="guestCount">
+          <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
+                  th:value="${num}" th:text="|게스트 ${num}명|"></option>
+        </select>
+      </div>
+
+      <p class="text-muted">숙소 이용 규칙을 준수해주세요.</p>
+    </div>
+
+    <!-- 오른쪽: 요금 계산 및 예약 버튼 -->
+    <div class="col-md-6">
+      <div class="summary-box">
+        <div class="d-flex">
+          <img th:src="${room.imageUrls[0]}" alt="숙소 이미지" class="rounded" width="100">
+          <div class="ms-3">
+            <p>⭐ <span th:text="${room.rating}">4.55</span> (후기 <span th:text="${room.reviewCount}">58</span>개)</p>
+          </div>
+        </div>
+
+        <hr>
+
+        <h5>요금 세부정보</h5>
+        <p><span th:text="'₩' + ${room.pricePerNight} + ' x '"></span><span id="nightCount">1</span>박
+          <span class="float-end" id="totalPrice"></span></p>
+        <p>청소비 <span class="float-end">₩60,000</span></p>
+        <p>서비스 수수료 <span class="float-end">₩50,000</span></p>
+        <hr>
+        <h5>총액 <span class="float-end" id="finalTotal"></span></h5>
+
+        <div class="d-grid mt-3">
+          <button class="btn btn-reserve" id="reserveBtn">예약하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const checkInInput = document.getElementById("checkInDate");
+      const checkOutInput = document.getElementById("checkOutDate");
+      const guestCountInput = document.getElementById("guestCount");
+      const nightCountText = document.getElementById("nightCount");
+      const totalPriceText = document.getElementById("totalPrice");
+      const finalTotalText = document.getElementById("finalTotal");
+      const pricePerNight = [[${room.pricePerNight}]];
+      const cleaningFee = 60000;
+      const serviceFee = 50000;
+
+      // ✅ Flatpickr로 날짜 선택 활성화
+      flatpickr("#checkInDate", {
+          dateFormat: "Y-m-d",
+          minDate: "today",
+          onChange: function (selectedDates) {
+              if (!selectedDates[0]) return;
+              const minCheckOut = selectedDates[0].fp_incr(1);
+              checkOutInput._flatpickr.set("minDate", minCheckOut);
+              checkOutInput.value = "";
+              updatePrice();
+          }
+      });
+
+      flatpickr("#checkOutDate", {
+          dateFormat: "Y-m-d",
+          minDate: "today",
+          onChange: updatePrice
+      });
+
+      function updatePrice() {
+          const checkInDate = new Date(checkInInput.value);
+          const checkOutDate = new Date(checkOutInput.value);
+          if (isNaN(checkInDate) || isNaN(checkOutDate) || checkOutDate <= checkInDate) {
+              nightCountText.innerText = "1";
+              totalPriceText.innerText = `₩${pricePerNight}`;
+              finalTotalText.innerText = `₩${pricePerNight + cleaningFee + serviceFee}`;
+              return;
+          }
+          const nights = Math.round((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+          const total = pricePerNight * nights;
+          nightCountText.innerText = nights;
+          totalPriceText.innerText = `₩${total}`;
+          finalTotalText.innerText = `₩${total + cleaningFee + serviceFee}`;
+      }
+
+      document.getElementById("reserveBtn").addEventListener("click", function () {
+          const requestData = {
+              roomId: [[${room.roomId}]],
+              userId: [[${user.userId}]],
+              startDate: checkInInput.value,
+              endDate: checkOutInput.value,
+              guestsNum: guestCountInput.value
+          };
+
+          axios.post("/api/reservations", requestData)
+              .then(response => {
+                  alert("예약이 완료되었습니다!");
+                  window.location.href = "/reservation-success";
+              })
+              .catch(error => {
+                  alert("예약 중 오류가 발생했습니다. 다시 시도해주세요.");
+                  console.error(error);
+              });
+      });
+  });
+</script>
+
+</body>
+</html>

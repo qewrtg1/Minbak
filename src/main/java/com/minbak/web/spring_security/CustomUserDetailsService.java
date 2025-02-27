@@ -3,6 +3,7 @@ package com.minbak.web.spring_security;
 import com.minbak.web.users.RoleDto;
 import com.minbak.web.users.UserDto;
 import com.minbak.web.users.UsersMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +14,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UsersMapper usersMapper;
+    private final UsersMapper usersMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserDto userDto = usersMapper.findUserByEmail(username);
+        System.out.println(username);
+
+        UserDto userDto = usersMapper.findUserByUsername(username);
 
         if(userDto != null){
             List<RoleDto> roleDto = usersMapper.findRolesByUserId(userDto.getUserId());
@@ -39,7 +42,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             return new CustomUserDetails(userDto,roles);
         }
-
         return null; //가입한 회원정보가 없음.
     }
 
