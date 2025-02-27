@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Controller
-@RequestMapping("/user/room")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class BooksDetailController {
 
@@ -25,7 +25,7 @@ public class BooksDetailController {
     private final BooksService booksService;
     private final RoomDetailService roomDetailService;
 
-    @GetMapping("/{roomId}/confirm")
+    @GetMapping("/room/{roomId}/confirm")
     public String confirmReservation(@PathVariable int roomId,
                                      @RequestParam LocalDate checkInDate,
                                      @RequestParam LocalDate checkOutDate,
@@ -53,7 +53,7 @@ public class BooksDetailController {
         return "/books/reservation_confirm";
     }
 
-    @GetMapping("/user/booking")
+    @GetMapping("/booking")
     public String getBookingPage(@ModelAttribute BooksDto booksDto, Model model) {
 
         booksService.createBook(booksDto);

@@ -15,8 +15,7 @@ public class UserPaymentController {
 
     @Autowired
     private UserPaymentService userPaymentService;
-
-    @GetMapping("/book/pay/{bookId}")
+    @GetMapping("/user/book/pay/{bookId}")
     public String showBookingCheckout(@PathVariable("bookId") int bookId, Model model,
                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
         // 예약 정보 조회

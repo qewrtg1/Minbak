@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         System.out.println(username);
 
-        UserDto userDto = usersMapper.findUserByUsername(username);
+        UserDto userDto = usersMapper.findUserByEmail(username);
 
         if(userDto != null){
             List<RoleDto> roleDto = usersMapper.findRolesByUserId(userDto.getUserId());

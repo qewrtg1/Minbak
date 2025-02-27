@@ -122,7 +122,7 @@
           <div class="status">
             <p th:text="${book.status}">상태</p>
             <div th:if="${book.status !='대기'}">
-              <a th:href="@{/book/pay/(bookId=${book.bookId})}">결제하기</a>
+              <a th:href="@{/user/book/pay/{bookId}(bookId=${book.bookId})}">결제하기</a>
             </div>
           </div>
           <p class="text-muted small">
