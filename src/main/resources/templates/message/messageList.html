@@ -172,22 +172,22 @@
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="messageId" class="form-label">Message ID</label>
-                        <input type="number" id="messageId" name="messageId" class="form-control border" placeholder="Message ID">
+                        <input type="number" id="messageId" name="messageId" class="form-control border" placeholder="Message ID" th:value="${messageFilterDto.messageId} != null ? ${messageFilterDto.messageId} : '' ">
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <label for="userId" class="form-label">User ID</label>
-                        <input type="number" id="userId" name="userId" class="form-control border" placeholder="User ID">
+                        <input type="number" id="userId" name="userId" class="form-control border" placeholder="User ID" th:value="${messageFilterDto.userId} != null ? ${messageFilterDto.userId} : '' ">
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <label for="userEmail" class="form-label">User Email</label>
-                        <input type="email" id="userEmail" name="userEmail" class="form-control border" placeholder="User Email">
+                        <input type="email" id="userEmail" name="userEmail" class="form-control border" placeholder="User Email" th:value="${messageFilterDto.userEmail} != null ? ${messageFilterDto.userEmail} : '' ">
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <label for="keyword" class="form-label">Keyword</label>
-                        <input type="text" id="keyword" name="keyword" class="form-control border" placeholder="Search by keyword">
+                        <input type="text" id="keyword" name="keyword" class="form-control border" placeholder="Search by keyword" th:value="${messageFilterDto.keyword} != null ? ${messageFilterDto.keyword} : '' ">
                     </div>
                 </div>
 
@@ -201,22 +201,22 @@
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="startDate" class="form-label">Start Date</label>
-                        <input type="date" id="startDate" name="startDate" class="form-control border">
+                        <input type="date" id="startDate" name="startDate" class="form-control border" th:value="${messageFilterDto.endDate} != null ? ${messageFilterDto.endDate} : '' ">
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <label for="endDate" class="form-label">End Date</label>
-                        <input type="date" id="endDate" name="endDate" class="form-control border">
+                        <input type="date" id="endDate" name="endDate" class="form-control border" th:value="${messageFilterDto.endDate} != null ? ${messageFilterDto.endDate} : '' ">
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <label for="userName" class="form-label">User Name</label>
-                        <input type="text" id="userName" name="userName" class="form-control border" placeholder="User Name">
+                        <input type="text" id="userName" name="userName" class="form-control border" placeholder="User Name" th:value="${messageFilterDto.userName} != null ? ${messageFilterDto.userName} : '' ">
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <label for="userPhoneNumber" class="form-label">User Phone Number</label>
-                        <input type="text" id="userPhoneNumber" name="userPhoneNumber" class="form-control border" placeholder="User Phone Number">
+                        <input type="text" id="userPhoneNumber" name="userPhoneNumber" class="form-control border" placeholder="User Phone Number" th:value="${messageFilterDto.userPhoneNumber} != null ? ${messageFilterDto.userPhoneNumber} : '' ">
                     </div>
                 </div>
 

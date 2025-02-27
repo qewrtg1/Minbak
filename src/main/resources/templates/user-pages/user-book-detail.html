@@ -60,46 +60,50 @@
   <div class="details-container">
     <a href="#" class="text-decoration-none">&larr; 뒤로가기</a>
 
-    <h2 class="mt-3" th:text="${booking.room.title}">숙소 이름</h2>
+    <h2 class="mt-3" th:text="${book.room.name}">숙소 이름</h2>
 
     <div class="host-info mt-2">
-      <img th:src="${booking.host.profileImageUrl}" alt="호스트 이미지" class="host-img">
+      <!--      <img th:src="${bookUrl}" alt="호스트 이미지" class="host-img">-->
       <div>
-        <p class="mb-0 fw-bold" th:text="${booking.host.name}">호스트 이름</p>
-        <p class="text-muted small">호스트 경험 <span th:text="${booking.host.experienceYears}">3</span>년</p>
+        <p class="mb-0 fw-bold" th:text="${book.user.name}">호스트 이름</p>
+        <!--        <p class="text-muted small">호스트 경험 <span th:text="${book.user.experienceYears}">3</span>년</p>-->
       </div>
     </div>
 
     <!-- 숙소 이미지 -->
-    <img th:src="${booking.room.mainImageUrl}" alt="숙소 이미지" class="room-image mt-3">
+    <div th:each="roomUrl : ${book.roomUrls}">
+      <img th:src="${roomUrl}" alt="숙소 이미지" class="room-image mt-3">
+    </div>
 
     <!-- 체크인/체크아웃 정보 -->
     <div class="mt-4 p-3 border rounded">
       <h5>체크인 / 체크아웃</h5>
-      <p>체크인: <strong th:text="${#dates.format(booking.checkIn, 'M월 d일 (E)')}">9월 30일 (금)</strong> 오후 3:00</p>
-      <p>체크아웃: <strong th:text="${#dates.format(booking.checkOut, 'M월 d일 (E)')}">10월 1일 (토)</strong> 오전 11:00</p>
+      <p>체크인: <strong th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}">9월 30일 (금)</strong> 오후 3:00</p>
+      <p>체크아웃: <strong th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}">10월 1일 (토)</strong> 오전 11:00</p>
     </div>
 
     <!-- 예약 상태 -->
     <div class="mt-3 p-3 border rounded">
       <h5>예약 상태</h5>
-      <p th:text="${booking.status}">확정됨</p>
+      <p th:text="${book.status}">확정됨</p>
     </div>
 
     <!-- 요금 정보 -->
     <div class="mt-3 p-3 border rounded">
       <h5>요금 상세</h5>
-      <p>숙박 요금: ₩<span th:text="${booking.room.price}">200,000</span> x <span th:text="${booking.nights}">1</span>박</p>
-      <p>청소비: ₩<span th:text="${booking.cleaningFee}">30,000</span></p>
-      <p>서비스 수수료: ₩<span th:text="${booking.serviceFee}">10,000</span></p>
+      <p>숙박 요금: ₩
+<!--        <span th:text="${book.room.price}">200,000-->
+<!--      </span> x <span th:text="${#temporals.between(book.startDate, book.endDate, 'days')}">1</span>박--></p>
+<!--      <p>청소비: ₩<span th:text="${book.cleaningFee}">30,000</span></p>-->
+<!--      <p>서비스 수수료: ₩<span th:text="${book.serviceFee}">10,000</span></p>-->
       <hr>
-      <h5>총액: ₩<span th:text="${booking.totalPrice}">240,000</span></h5>
+<!--      <h5>총액: ₩<span th:text="${book.totalPrice}">240,000</span></h5>-->
     </div>
 
-    <!-- 결제 상태 -->
+    <!-- 결제 상태  결제 데이터 불러와야함-->
     <div class="mt-3 p-3 border rounded">
       <h5>결제 상태</h5>
-      <p th:text="${booking.paymentStatus}">결제 완료</p>
+      <!--      <p th:text="${book.paymentStatus}">결제 완료</p>-->
     </div>
 
     <div class="container mt-4">
@@ -107,7 +111,7 @@
         <i class="bi bi-chat-dots me-2"></i>
         <div>
           <p class="mb-0 fw-bold">호스트에게 메시지 보내기</p>
-          <p class="text-muted small" th:text="${booking.host.name}">키다리여우</p>
+          <p class="text-muted small" th:text="${book.user.name}">키다리여우</p>
         </div>
       </div>
     </div>
@@ -117,21 +121,21 @@
         <i class="bi bi-house-door me-2"></i>
         <div>
           <p class="mb-0 fw-bold">숙소</p>
-          <p class="text-muted small" th:text="${booking.room.title}">S1독실</p>
+          <p class="text-muted small" th:text="${book.room.name}">S1독실</p>
         </div>
       </div>
     </div>
     <div class="container mt-3 p-3 border rounded">
       <h5 class="fw-bold">예약 세부정보</h5>
 
-      <p class="mb-1">🧑‍🤝‍🧑 <strong>게스트:</strong> <span th:text="${booking.guests}">2</span>명</p>
+      <p class="mb-1">🧑‍🤝‍🧑 <strong>게스트:</strong> <span th:text="${book.guestsNum}">2</span>명</p>
 
-      <p class="mb-1">🔢 <strong>예약 번호:</strong> <span th:text="${booking.bookingNumber}">HMK92MCJK</span></p>
+      <p class="mb-1">🔢 <strong>예약 번호:</strong> <span th:text="${book.bookId}">HMK92MCJK</span></p>
     </div>
     <div class="container mt-3 p-3 border rounded">
       <h5 class="fw-bold">환불 정책</h5>
       <p>
-        체크인 시간인 <strong th:text="${#dates.format(booking.checkIn, 'M월 d일 오후 h:mm')}">9월 30일 오후 12:00</strong> 전까지 취소하면
+        체크인 시간인 <strong th:text="${#temporals.format(book.startDate, 'M월 d일')}">9월 30일 오후 12:00</strong> 전까지 취소하면
         부분 환불을 받을 수 있습니다. 그 이후에 취소하면 예약 대금이 환불되지 않습니다.
       </p>
       <a href="#" class="text-decoration-none">자세히 알아보기</a>
@@ -144,12 +148,13 @@
     <div class="container mt-4 p-3 border rounded">
       <h5 class="fw-bold">숙소 이용규칙 및 안내</h5>
 
-      <!-- 숙소 매뉴얼 -->
+      <!-- 숙소 형태 -->
       <div class="mt-3">
-        <h6 class="fw-bold">숙소 매뉴얼</h6>
-        <p th:text="${booking.room.manual}">
-          무선 인터넷은 비밀번호가 없습니다. 실내에서는 음식 조리가 불가능합니다. 늦은 시간에는 고성 방가는 삼가 부탁드립니다...
-        </p>
+        <h6 class="fw-bold">숙소 형태</h6>
+        <p >숙소 타입: <span th:text="${book.room.buildingType}"></span></p>
+        <p >침실: <span th:text="${book.room.bedrooms}"></span></p>
+        <p >침대: <span th:text="${book.room.beds}"></span></p>
+        <p >화장실: <span th:text="${book.room.bathrooms}"></span></p>
         <a href="#" class="text-decoration-none">더 보기</a>
       </div>
 
@@ -158,7 +163,7 @@
       <!-- 숙소 이용규칙 -->
       <div class="mt-3">
         <h6 class="fw-bold">숙소 이용규칙</h6>
-        <p th:text="${booking.room.rules}">
+        <p th:text="${book.room.useGuide}">
           셀프 체크인: 키패드<br>
           게스트 정원: 3명<br>
           반려동물 동반 불가
@@ -172,23 +177,23 @@
       <button class="btn btn-outline-secondary w-100">🏠 숙소 보기</button>
     </div>
     <div class="container mt-4 p-3 border rounded">
-      <h5 class="fw-bold">호스트: <span th:text="${booking.host.name}">키다리여우님</span></h5>
+      <h5 class="fw-bold">호스트: <span th:text="${book.user.name}">키다리여우님</span></h5>
 
-      <!-- 호스트 소개 -->
+      <!-- 호스트 소개  호스트 id랑 연결해야함-->
       <div class="mt-3">
         <h6 class="fw-bold">호스트 소개</h6>
-        <p th:text="${booking.host.introduction}">
-          경주스러운 분위기로 게스트님의 여행을 도와드리겠습니다.
+        <!--        <p th:text="${book.user.introduction}">-->
+        경주스러운 분위기로 게스트님의 여행을 도와드리겠습니다.
         </p>
         <a href="#" class="text-decoration-none">더 보기</a>
       </div>
 
       <hr>
 
-      <!-- 공동 호스트 정보 -->
+      <!-- 공동 호스트 정보 구현 x하지않을까 -->
       <div class="mt-3">
         <h6 class="fw-bold">공동 호스트</h6>
-        <p th:text="${booking.host.cohosts}">기본좋은 사람</p>
+        <!--        <p th:text="${booking.host.cohosts}">기본좋은 사람</p>-->
       </div>
 
       <hr>
@@ -198,8 +203,8 @@
     </div>
     <div class="container mt-4 p-3 border rounded">
       <h5 class="fw-bold">결제 정보</h5>
-
-      <p class="mt-2">💰 <strong>결제한 금액:</strong> ₩<span th:text="${booking.totalPaid}">127,082.00</span></p>
+      <!--결제 금액 결제랑 연결해야함-->
+      <!--      <p class="mt-2">💰 <strong>결제한 금액:</strong> ₩<span th:text="${book.totalPaid}">127,082.00</span></p>-->
 
       <hr>
 

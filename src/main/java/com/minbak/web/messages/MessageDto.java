@@ -14,4 +14,5 @@ public class MessageDto {
     private Integer receiverId;
     private String content;
     private LocalDateTime sentAt;
+    private int isRead;
 }

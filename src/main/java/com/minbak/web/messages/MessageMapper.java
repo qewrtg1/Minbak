@@ -14,6 +14,7 @@ public interface MessageMapper {
 
 //    유저 아이디에 따른 메세지 조회
     List<MessageDto> findMessagesById(int user_id);
+    MessageDto findMessageByMessageId(int messageId);
 
 //    유저 이메일에 따른 유저 id 조회
     int findUserIdByEmail(String email);
@@ -44,5 +45,8 @@ public interface MessageMapper {
 //메세지 생성
     void createMessage(MessageDto messageDto);
 
+//    ------------------------유저 메세지 기능----------------------------
 
+    List<UserMessageListDto> showUserMessageList(int user_id);
+    void updateMessageCheck(int userId,int chatRoomId);
 }
