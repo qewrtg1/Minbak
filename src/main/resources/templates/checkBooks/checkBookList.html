@@ -51,20 +51,23 @@
   <div th:if="${not #lists.isEmpty(booksList)}">
     <h4 class="mt-5">이전 여행지</h4>
 
-    <div th:each="book : ${booksList}" class="room-card">
+    <div th:each="book: ${booksList}">
+      <div th:each="roomImgUrl : ${roomImgUrls}" class="room-card">
 <!--      이미지는 안함-->
-<!--      <img th:src="${book.room.mainImageUrl}" class="room-image" alt="숙소 이미지">-->
+      <img th:src="${roomImgUrl.roomId==book.roomId ? roomImgUrl.fileUrl :''}" class="room-image" alt="숙소 이미지">
       <div>
-        <a th:href="@{/checkBookList/detail/{id}(id=${book.bookId})}" class="text-decoration-none">
+        <a th:href="@{/checkBookList/detail/{id}(id=${book.get(0).bookId})}" class="text-decoration-none">
           <h6 th:text="${book.room.name}">숙소 이름</h6>
+          <h6 th:text="${book.status}">상태</h6>
         </a>
         <p class="text-muted small">
-          호스트: <span th:text="${book.user.name}">키다리여우님</span><br>
-          <span th:text="${#dates.format(book.startDate, 'yyyy년 M월 d일')}"></span> -
-          <span th:text="${#dates.format(book.endDate, 'yyyy년 M월 d일')}"></span>
+<!--          호스트: <span th:text="${book.user.name}">키다리여우님</span><br>-->
+          <span th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}"></span> -
+          <span th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}"></span>
         </p>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- 도움말 -->

@@ -35,6 +35,18 @@
         WHERE user_id = #{userId}
     </select>
 
+    <select id="findRoomsImgById" resultType="com.minbak.web.check_books.dto.RoomImgUrlDto">
+        select min(image_id) ,file_url,entity_id as room_id
+        from image_files
+        where entity_type='rooms' and entity_id in
+        <foreach item="roomId" collection="roomIds" open="(" close=")" separator=",">
+        #{roomId}
+    </foreach>
+        group by entity_id, file_url
+
+
+    </select>
+
     <!-- 예약 ID로 예약 정보를 가져오는 쿼리 -->
 <!--    <select id="selectBookById" resultType="com.minbak.web.books.BooksDto">-->
 <!--        SELECT-->
