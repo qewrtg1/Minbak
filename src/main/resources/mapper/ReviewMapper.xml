@@ -17,6 +17,7 @@
             LIMIT #{limit} OFFSET #{offset};  <!-- 페이지네이션 적용 -->
         </select>
 
+
     <select id="getReviewScore" resultType="map">
         SELECT score, COUNT(1) AS count FROM review GROUP BY score ORDER BY score DESC;
     </select>
@@ -43,8 +44,6 @@
             WHERE review_id = #{reviewId}
         </select>
 
-
-
         <!-- 리뷰 수정 -->
         <update id="editReview">
             UPDATE review
@@ -60,5 +59,23 @@
             DELETE FROM review
             WHERE review_id = #{reviewId}
         </delete>
+
+
+
+
+    <!-- 호스트가 아직 답변하지 않은 리뷰 목록을 조회하는 쿼리 -->
+    <select id="findUnansweredReviewsByHost" resultType="ReviewDto"> <!-- 해당 호스트의 리뷰 중에서 호스트 답변이 없는 리뷰만 조회 -->
+        SELECT * FROM review
+        WHERE host_id = #{hostUserId}  <!-- 호스트 ID로 필터링 -->
+        AND host_reply IS NULL  <!-- 호스트 답변이 NULL인 리뷰만 조회 -->
+    </select>
+
+    <!-- 호스트가 특정 리뷰에 대한 답변을 남기는 SQL -->
+    <update id="updateHostReply"> <!-- 주어진 리뷰 ID에 대해 호스트의 답변을 업데이트 -->
+        UPDATE review
+        SET host_reply = #{hostReply}  <!-- 호스트의 답변을 저장 -->
+        WHERE review_id = #{reviewId}  <!-- 특정 리뷰 ID에 해당하는 리뷰를 업데이트 -->
+    </update>
+
 
     </mapper>
