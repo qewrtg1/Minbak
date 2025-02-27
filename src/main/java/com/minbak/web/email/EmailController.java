@@ -19,6 +19,6 @@ public class EmailController {
     @PostMapping("/send")
     public String sendEmail(@ModelAttribute EmailDto emailDto) {
         emailService.sendMessage(emailDto);
-        return "Email sent successfully!";
+        return "redirect:/admin/email/send";
     }
 }
