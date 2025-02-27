@@ -25,7 +25,7 @@
     <!-- 예약 목록을 가져오는 쿼리 -->
     <select id="selectBooks" resultMap="BooksResultMap">
         select *from books
-        where user_id=#{userId}
+        where user_id = #{userId}
     </select>
 
     <!-- 전체 예약 수를 세는 쿼리 -->
@@ -47,6 +47,17 @@
         AND entity_id = #{roomId}
         LIMIT 1
     </select>
+
+    <select id="findRoomImageUrlsByRoomId" resultType="String">
+        SELECT
+        file_url
+        FROM
+        image_files
+        WHERE
+        entity_type = 'rooms'
+        AND entity_id = #{roomId}
+    </select>
+
 
     <select id="findUserByUserId" resultType="com.minbak.web.users.UserDto">
         SELECT *

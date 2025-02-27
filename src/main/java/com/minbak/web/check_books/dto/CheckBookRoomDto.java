@@ -20,5 +20,10 @@ public class CheckBookRoomDto {
     private String userEmail;
     private Integer reviewCount;
     private Integer maxGuests;
+    private Integer bedrooms;
+    private Integer beds;
+    private Integer bathrooms;
+    private String buildingType;
+
 
     }

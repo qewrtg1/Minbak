@@ -60,7 +60,7 @@
   <div class="details-container">
     <a href="#" class="text-decoration-none">&larr; 뒤로가기</a>
 
-    <h2 class="mt-3" th:text="${book.room.title}">숙소 이름</h2>
+    <h2 class="mt-3" th:text="${book.room.name}">숙소 이름</h2>
 
     <div class="host-info mt-2">
       <!--      <img th:src="${bookUrl}" alt="호스트 이미지" class="host-img">-->
@@ -71,15 +71,15 @@
     </div>
 
     <!-- 숙소 이미지 -->
-    <div th:each="bookUrl : ${book.roomUrls}">
-      <img th:src="${bookUrl}" alt="숙소 이미지" class="room-image mt-3">
+    <div th:each="roomUrl : ${book.roomUrls}">
+      <img th:src="${roomUrl}" alt="숙소 이미지" class="room-image mt-3">
     </div>
 
     <!-- 체크인/체크아웃 정보 -->
     <div class="mt-4 p-3 border rounded">
       <h5>체크인 / 체크아웃</h5>
-      <p>체크인: <strong th:text="${#dates.format(book.startDate, 'yyyy년 M월 d일')}">9월 30일 (금)</strong> 오후 3:00</p>
-      <p>체크아웃: <strong th:text="${#dates.format(book.endDate, 'yyyy년 M월 d일')}">10월 1일 (토)</strong> 오전 11:00</p>
+      <p>체크인: <strong th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}">9월 30일 (금)</strong> 오후 3:00</p>
+      <p>체크아웃: <strong th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}">10월 1일 (토)</strong> 오전 11:00</p>
     </div>
 
     <!-- 예약 상태 -->
@@ -91,11 +91,13 @@
     <!-- 요금 정보 -->
     <div class="mt-3 p-3 border rounded">
       <h5>요금 상세</h5>
-      <p>숙박 요금: ₩<span th:text="${book.room.price}">200,000</span> x <span th:text="${book.endDate-book.startDate}">1</span>박</p>
-      <p>청소비: ₩<span th:text="${book.cleaningFee}">30,000</span></p>
-      <p>서비스 수수료: ₩<span th:text="${book.serviceFee}">10,000</span></p>
+      <p>숙박 요금: ₩
+<!--        <span th:text="${book.room.price}">200,000-->
+<!--      </span> x <span th:text="${#temporals.between(book.startDate, book.endDate, 'days')}">1</span>박--></p>
+<!--      <p>청소비: ₩<span th:text="${book.cleaningFee}">30,000</span></p>-->
+<!--      <p>서비스 수수료: ₩<span th:text="${book.serviceFee}">10,000</span></p>-->
       <hr>
-      <h5>총액: ₩<span th:text="${book.totalPrice}">240,000</span></h5>
+<!--      <h5>총액: ₩<span th:text="${book.totalPrice}">240,000</span></h5>-->
     </div>
 
     <!-- 결제 상태  결제 데이터 불러와야함-->
@@ -119,7 +121,7 @@
         <i class="bi bi-house-door me-2"></i>
         <div>
           <p class="mb-0 fw-bold">숙소</p>
-          <p class="text-muted small" th:text="${book.room.title}">S1독실</p>
+          <p class="text-muted small" th:text="${book.room.name}">S1독실</p>
         </div>
       </div>
     </div>
@@ -133,7 +135,7 @@
     <div class="container mt-3 p-3 border rounded">
       <h5 class="fw-bold">환불 정책</h5>
       <p>
-        체크인 시간인 <strong th:text="${#dates.format(book.startDate, 'M월 d일')}">9월 30일 오후 12:00</strong> 전까지 취소하면
+        체크인 시간인 <strong th:text="${#temporals.format(book.startDate, 'M월 d일')}">9월 30일 오후 12:00</strong> 전까지 취소하면
         부분 환불을 받을 수 있습니다. 그 이후에 취소하면 예약 대금이 환불되지 않습니다.
       </p>
       <a href="#" class="text-decoration-none">자세히 알아보기</a>
