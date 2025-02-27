@@ -62,7 +62,6 @@ public class ReviewService {
         reviewMapper.editReview(review);
     }
 
-
     // 리뷰 삭제
     public void deleteReview(int id) {
         reviewMapper.deleteReview(id);
@@ -73,4 +72,21 @@ public class ReviewService {
         reviewMapper.createReview(reviewDto);
     }
 
+
+
+
+    // 특정 호스트가 답변해야 할 리뷰 목록을 가져오는 서비스 메서드
+    public List<ReviewDto> getUnansweredReviews(int hostUserId) {
+        // 리뷰 목록을 가져오는 Mapper 메서드 호출
+        return reviewMapper.findUnansweredReviewsByHost(hostUserId);  // 해당 호스트의 답변하지 않은 리뷰 리스트 반환
+    }
+
+    // 특정 리뷰에 대한 호스트의 답변을 저장하는 서비스 메서드
+    public void addHostReply(int reviewId, String hostReply) {
+        // 리뷰 ID와 답변 내용을 전달하여 Mapper 메서드 호출
+        reviewMapper.updateHostReply(reviewId, hostReply);  // 해당 리뷰에 답변을 추가
+    }
+
 }
+
+

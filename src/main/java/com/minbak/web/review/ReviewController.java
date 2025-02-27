@@ -56,14 +56,15 @@ public class ReviewController {
         return  "review/review-detail"; // review.html 파일을 반환
     }
 
+    // 리뷰 수정시 페이지를 보여주는 메서드
     @GetMapping("/edit/{id}")
     public String reviewUpdate(@PathVariable("id") int id, Model model){
         ReviewDto review = reviewService.findReviewById(id);
 //        if (review == null) {
 //            throw new ReviewException("데이터를 찾을 수 없습니다.");
 //        }
-        model.addAttribute("review", review);
-        return "review/review-edit";
+        model.addAttribute("review", review);     // 모델에 가져온 리뷰 정보를 추가하여 뷰에 전달
+        return "review/review-edit"; // 'review/review-edit' 뷰로 이동, 리뷰 수정 페이지를 렌더링
     }
 
     // 업데이트 클릭시 상세보기로 리다이렉팅
@@ -73,11 +74,26 @@ public class ReviewController {
         return "redirect:/admin/review/detail/" + review.getReviewId();
     }
 
+    // 해당 리뷰 삭제하기 삭제 후 리뷰 리스트 페이지로
     @PostMapping("/delete/{id}")
     public String deleteReview(@PathVariable("id") int id, Model model){
         reviewService.deleteReview(id);
         List<ReviewDto> review = reviewService.findAllReview();
         model.addAttribute("reviews", review);  // "review"라는 이름으로 템플릿에 전달
         return "review/review";  // review.html 파일을 렌더링
+    }
+
+
+
+    // 호스트가 아직 답변하지 않은 리뷰 목록을 조회하는 API
+    @GetMapping("/unanswered-reviews")  // '/host/unanswered-reviews' 요청을 처리
+    public List<ReviewDto> getUnansweredReviews(@RequestParam int hostUserId) {
+        return reviewService.getUnansweredReviews(hostUserId);  // 서비스 호출
+    }
+
+    // 특정 리뷰에 답변을 추가하는 API
+    @PostMapping("/add-reply")  // '/host/add-reply' 요청을 처리
+    public void addHostReply(@RequestParam int reviewId, @RequestParam String hostReply) {
+        reviewService.addHostReply(reviewId, hostReply);  // 서비스 호출
     }
 }
