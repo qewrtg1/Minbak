@@ -21,7 +21,8 @@ public class RoomsService {
     public RoomsPageDto getRooms(String keyword,int page, int size){
 
         // 페이지 오프셋 계산
-        int offset = (page - 1) * size;
+        page = Math.max(1, page);
+        int offset = Math.max(0, (page - 1) * size);
 
         // 검색어가 있을 경우
         List<RoomsListDto> rooms;

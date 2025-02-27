@@ -14,6 +14,8 @@ public interface RoomsMapper {
     // rooms 의 디테일
     RoomsDto getRoomsList(int roomId);
 
+
+
     // rooms 의 전체 리스트
     List<RoomsListDto> selectRoomNames(@Param("keyword") String keyword,@Param("offset") int offset, @Param("size") int size);
     int selectTotalRoomsCount(String keyword);

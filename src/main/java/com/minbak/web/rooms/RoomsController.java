@@ -16,38 +16,38 @@ public class RoomsController {
     @Autowired
     private RoomsService roomsService;
 
-// 리스트
+    // 리스트
     @GetMapping("/rooms")
     public String roomsList(@RequestParam(name="page", defaultValue = "1") int page,
-                             @RequestParam(name="size", defaultValue = "10") int size,
-                             @RequestParam(name="keyword", required = false) String keyword,
-                             Model model){
+                            @RequestParam(name="size", defaultValue = "10") int size,
+                            @RequestParam(name="keyword", required = false) String keyword,
+                            Model model){
         RoomsPageDto roomsPage = roomsService.getRooms(keyword,page, size);
         model.addAttribute("roomsPage" , roomsPage);
         model.addAttribute("keyword",keyword);
 
         return "rooms/rooms_list";
     }
-//  숙소 이름을 클릭 했을 때 상세보기
+    //  숙소 이름을 클릭 했을 때 상세보기
     @GetMapping("/rooms/detail/{roomId}")
     public String roomsDetail(@PathVariable int roomId, Model model){
         // 해당 데이터가 없을 때 예외처리
-        RoomsDto room = roomsService.getRoomList(roomId);
-        if(room == null){
+        RoomsDto rooms = roomsService.getRoomList(roomId);
+        if(rooms == null){
             throw new RoomException("데이터를 찾을 수 없습니다.");
         }
-        model.addAttribute("room", room);
+        model.addAttribute("rooms", rooms);
 
         return "rooms/rooms_detail";
     }
 
     @GetMapping("/rooms/rooms_detail/{roomId}")
     public String getRoomDetail(@PathVariable int roomId, Model model) {
-        RoomsDto room = roomsService.getRoomById(roomId);  // 서비스에서 해당 roomId로 방 정보를 가져옴
-        model.addAttribute("room", room);  // 모델에 방 정보를 담아서 뷰로 전달
+        RoomsDto rooms = roomsService.getRoomById(roomId);  // 서비스에서 해당 roomId로 방 정보를 가져옴
+        model.addAttribute("rooms", rooms);  // 모델에 방 정보를 담아서 뷰로 전달
         return "rooms/rooms_detail";  // rooms/detail.html 페이지로 이동
     }
-//  목록으로 돌아가기
+    //  목록으로 돌아가기
 //    @GetMapping("/rooms/rooms_list")
 //    public String returnList(@RequestParam(name = "page", defaultValue = "1") int page,
 //                            @RequestParam(name = "size", defaultValue = "10") int size,
@@ -82,7 +82,7 @@ public class RoomsController {
             throw new RoomException("데이터가 이미 삭제 되었거나 찾을 수 없습니다.");
         }
         roomsService.deleteRoom(roomId); // 해당 방 삭제
-        return "redirect:/admin/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트
+        return "redirect:/admin/rooms/rooms_list"; // 삭제 후 목록 페이지로 리다이렉트록 페이지로 리다이렉트
     }
 
 }

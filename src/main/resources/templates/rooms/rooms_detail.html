@@ -53,55 +53,61 @@
             <div class="room-image">
                 <img src="https://via.placeholder.com/600x300?text=Image+4" alt="숙소 이미지 4">
             </div>
-            <!-- 추가 이미지들이 여기에 나열될 수 있음 -->
         </div>
 
-        <table class="table table-striped table-bordered">
-            <tbody>
-            <tr>
-                <th>이름</th>
-                <td th:text="${room.name}"></td>
-            </tr>
-            <tr>
-                <th>내용</th>
-                <td th:text="${room.content}"></td>
-            </tr>
-            <tr>
-                <th>주소</th>
-                <td th:text="${room.address}"></td>
-            </tr>
-            <tr>
-                <th>가격</th>
-                <td th:text="${room.price}"></td>
-            </tr>
-            <tr>
-                <th>사용 가이드</th>
-                <td th:text="${room.useGuide}"></td>
-            </tr>
-            <tr>
-                <th>위도</th>
-                <td th:text="${room.latitude}"></td>
-            </tr>
-            <tr>
-                <th>경도</th>
-                <td th:text="${room.longitude}"></td>
-            </tr>
-            <tr>
-                <th>리뷰 수</th>
-                <td th:text="${room.reviewCount}"></td>
-            </tr>
-            <tr>
-                <th>사용자 이름</th>
-                <td th:text="${room.userName}"></td> <!-- userName으로 변경 -->
-            </tr>
-            </tbody>
-        </table>
+        <!-- RoomsDto 출력 -->
+        <div>
+            <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                    <th>이름</th>
+                    <td th:text="${rooms.name}"></td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td th:text="${rooms.content}"></td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                    <td th:text="${rooms.address}"></td>
+                </tr>
+                <tr>
+                    <th>가격</th>
+                    <td th:text="${rooms.price}"></td>
+                </tr>
+                <tr>
+                    <th>사용 가이드</th>
+                    <td th:text="${rooms.useGuide}"></td>
+                </tr>
+                <tr>
+                    <th>위도</th>
+                    <td th:text="${rooms.latitude}"></td>
+                </tr>
+                <tr>
+                    <th>경도</th>
+                    <td th:text="${rooms.longitude}"></td>
+                </tr>
+                <tr>
+                    <th>리뷰 수</th>
+                    <td th:text="${rooms.reviewCount}"></td>
+                </tr>
+                <tr>
+                    <th>사용자 이름</th>
+                    <td th:text="${rooms.userName}"></td>
+                </tr>
+                <tr>
+                    <th>카테고리</th>
+                    <td th:text="${rooms.categoryNames}"></td>  <!-- categoryNames 출력 -->
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- 버튼들 -->
         <div class="d-flex gap-2">
             <a th:href="@{/admin/rooms}" class="btn btn-secondary">목록으로</a>
-            <a th:href="@{/admin/rooms/edit/{roomId}(roomId=${room.roomId})}" class="btn btn-primary">수정하기</a>
-            <form th:action="@{/admin/rooms/delete/{roomId}(roomId=${room.roomId})}" method="post" class="d-inline">
+            <a th:href="@{/admin/rooms/edit/{roomId}(roomId=${rooms.roomId})}" class="btn btn-primary">수정하기</a>
+            <form th:action="@{/admin/rooms/delete/{roomId}(roomId=${rooms.roomId})}" method="post" class="d-inline">
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-danger">삭제하기</button>
             </form>

@@ -20,4 +20,5 @@ public class RoomsDto {
     private int maxGuests;     // 최대 숙박 인원
     private Integer userId;    // 등록한 사용자 ID
     private String userName;   // 사용자의 이름
+    private String categoryNames;
 }

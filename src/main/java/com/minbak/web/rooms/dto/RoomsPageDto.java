@@ -17,25 +17,21 @@ public class RoomsPageDto {
     private boolean next;
     private List<RoomsListDto> rooms;
 
-
     public RoomsPageDto(int page, int size, int totalElements, List<RoomsListDto> rooms) {
         this.page = page;
         this.size = size;
         this.totalElements = totalElements;
 
-//        전체 페이지
+        // 전체 페이지 계산
         this.totalPages = (int) Math.ceil((double) totalElements / size);
 
-//        시작 페이지
-        this.start = ((page -1) / pageGroupSize) * pageGroupSize + 1;
+        // 페이지 그룹 범위 계산 (예: 10개씩 그룹)
+        this.start = ((page - 1) / pageGroupSize) * pageGroupSize + 1;
+        this.end = Math.min(start + pageGroupSize - 1, totalPages);
 
-//        끝 페이지
-        this.end = Math.min(start + pageGroupSize - 1 , totalPages);
-
-//        이전 / 다음 버튼
-
-        this.prev = start > 1;
-        this.next = end < totalPages;
+        // 이전 / 다음 버튼 조건 수정: 현재 페이지 기준으로 판단
+        this.prev = page > 1;
+        this.next = page < totalPages;
 
         this.rooms = rooms;
     }
