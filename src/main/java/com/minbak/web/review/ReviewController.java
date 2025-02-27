@@ -96,4 +96,39 @@ public class ReviewController {
     public void addHostReply(@RequestParam int reviewId, @RequestParam String hostReply) {
         reviewService.addHostReply(reviewId, hostReply);  // 서비스 호출
     }
+
+
+
+
+    // 리뷰 작성
+    @PostMapping("/create")
+    public String createReview(@RequestBody ReviewDto reviewDto, @RequestParam int bookId, @RequestParam int userId) {
+        // User가 체크아웃 후 2주일 이내에만 리뷰 작성 가능
+        if (!reviewService.canUserWriteReview(bookId, userId)) {
+            return "리뷰는 체크아웃 후 2주 이내에만 작성할 수 있습니다.";
+        }
+
+        reviewService.createReview(reviewDto, bookId, userId);  // 리뷰 생성
+        return "리뷰가 작성되었습니다.";
+    }
+
+    // 호스트가 리뷰에 답변
+    @PostMapping("/reply")
+    public String addHostReply(@RequestParam int reviewId, @RequestParam String hostReply) {
+        // 호스트가 답변할 수 있는지 확인
+        if (!reviewService.canHostReply(reviewId)) {
+            return "호스트는 리뷰 작성 후 2주 이내에만 답변할 수 있습니다.";
+        }
+
+        reviewService.addHostReply(reviewId, hostReply);  // 호스트 답변 추가
+        return "답변이 추가되었습니다.";
+    }
+
+    // 리뷰가 공개 가능한지 확인
+    @GetMapping("/public/{reviewId}")
+    public boolean isReviewPublic(@PathVariable int reviewId) {
+        return reviewService.isReviewPublic(reviewId);  // User와 Host가 모두 작성했을 때 공개 여부 반환
+    }
+
+
 }

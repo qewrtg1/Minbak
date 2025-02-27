@@ -23,8 +23,8 @@ public class ReviewDto {
     private String email;      // 회원 이메일
 
 
-    private int hostId;        // 호스트 ID
-    private String hostReply;  // 호스트 답글 (null 가능)
+    private int hostId;        // 숙소를 운영하는 호스트의 ID
+    private String hostReply;  // 호스트 답변 (null 가능)
 
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
