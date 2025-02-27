@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.minbak.web.user_YH.host_book_page.HostBookMapper">
+
+    <!-- userId를 기반으로 해당 사용자가 호스트인 숙소들의 예약 정보 조회 -->
+    <select id="findBooksByUserId" parameterType="int" resultType="com.minbak.web.user_YH.host_book_page.HostBooksResponse">
+        SELECT
+        b.book_id, b.status, b.start_date, b.end_date, b.request, b.guests_num,
+        b.user_id AS guest_id,
+        u.name AS guest_name, u.email AS guest_email, u.phone_number AS guest_phone,
+        r.room_id, r.title AS room_title, r.address AS room_address, r.price AS room_price,
+        r.building_type, r.max_guests,
+        (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        FROM books b
+        JOIN rooms r ON b.room_id = r.room_id
+        JOIN users u ON b.user_id = u.user_id
+        WHERE r.user_id = #{userId}
+        ORDER BY b.book_id DESC;
+    </select>
+
+    <select id="findUserDetailByUserId" resultType="com.minbak.web.user_YH.dto.DetailUserResponse">
+        SELECT
+        u.user_id,
+        u.name,
+        u.email,
+        u.phone_number,
+        COALESCE(img.file_url, '/static/images/default-profile.jpg') AS profile_image_url
+        FROM users u
+        LEFT JOIN image_files img
+        ON img.entity_id = u.user_id
+        AND img.entity_type = 'users'
+        WHERE u.user_id = #{userId}
+        LIMIT 1;
+    </select>
+
+    <select id="fineHostingRoomByUserId" resultType="Map">
+        SELECT
+        room_id,
+        name,
+        title
+        FROM rooms
+        WHERE user_id = #{userId}
+        ORDER BY room_id DESC;
+    </select>
+
+    <update id="approveReservation" parameterType="Integer">
+        UPDATE books
+        SET status = '완료'
+        WHERE book_id = #{bookId}
+    </update>
+
+
+
+</mapper>

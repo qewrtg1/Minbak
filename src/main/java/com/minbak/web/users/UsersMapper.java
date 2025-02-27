@@ -3,7 +3,9 @@ package com.minbak.web.users;
 import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
+import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -31,6 +33,9 @@ public interface UsersMapper {
 
     // 이메일로 사용자 전체 조회
     public UserDto findUserByEmail(String email);
+
+    //username으로 사용자 조회
+    UserDto findUserByUsername(String username);
 
     // 사용자 ID로 역할 조회
     public List<RoleDto> findRolesByUserId(Integer userId);

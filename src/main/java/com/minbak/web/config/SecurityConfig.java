@@ -32,7 +32,7 @@ public class SecurityConfig {
 
         // http(HttpSecurity) 객체는 보안 관련 설정을 담당하는 객체
         http
-                .securityMatcher("/admin/**")  // API 요청에만 적용
+                .securityMatcher("/admin/**")
                 .authorizeHttpRequests(auth -> auth  // HTTP 요청에 대한 접근 권한을 설정합니다.
                         .requestMatchers("/admin/login", "/admin/file/**","/admin/api/**","/admin/signup").permitAll()
                         .requestMatchers("/admin/user/{id}").hasRole("ADMIN")
@@ -87,17 +87,22 @@ public class SecurityConfig {
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .securityMatcher("/api/**")  // API 요청에만 적용
+                .securityMatcher("/user/**","/host/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 또는 Stateless 환경
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll() // 공개 API
-                        .requestMatchers("/api/login", "/api/refresh", "/api/signup","/","/room/**").permitAll()
+                        .requestMatchers("/login","/api/login", "/api/refresh", "/api/signup","/","/room/**","/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
+                .exceptionHandling(auth -> auth
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // JWT 토큰이 없거나 유효하지 않은 경우 로그인 페이지로 리디렉션
+                            response.sendRedirect("/login");
+                        })
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //UsernamePasswordAuthenticationFilter 전에 jwtAuthenticationFilter 실행
                 .logout(AbstractHttpConfigurer::disable //로그아웃 비활성화
                 );

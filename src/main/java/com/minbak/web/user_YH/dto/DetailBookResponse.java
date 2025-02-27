@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class DetailBookResponse {
-    private Long bookId;
+    private Integer bookId;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private int guests;

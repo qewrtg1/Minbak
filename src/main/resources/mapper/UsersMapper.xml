@@ -40,6 +40,11 @@
         FROM users WHERE email = #{email}
     </select>
 
+    <select id="findUserByUsername" resultType="com.minbak.web.users.UserDto">
+        SELECT *
+        FROM users WHERE email = #{username}
+    </select>
+
     <insert id="createRefreshTokenData" parameterType="com.minbak.web.spring_security.jwt.RefreshTokenDto">
         INSERT INTO refresh_tokens (username, refresh_token, expiration)
         VALUES (#{username}, #{refreshToken}, #{expiration})
