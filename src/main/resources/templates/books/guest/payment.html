@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>예약 요청</title>
+</head>
+<body>
+<div class="mt-4">
+  <h5>예약 정보</h5>
+  <p class="mb-1">
+    <strong>날짜</strong>
+    <span th:text="${books.startDate} + ' ~ ' + ${books.endDate}"></span>
+    <button onclick="openEditModal()">수정</button>
+  </p>
+  <p class="mb-1">
+    <strong>게스트</strong>
+    <span th:text="${books.guestsNum}">게스트 1명</span>
+    <button onclick="openEditModal(startDate, endDate, guestsNum)">수정</button>
+  </p>
+</div>
+<!-- 모달 팝업 -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2>예약 정보 수정</h2>
+    <form id="editForm">
+      <label>체크인 날짜:</label>
+      <input type="date" id="editCheckin" required>
+
+      <label>체크아웃 날짜:</label>
+      <input type="date" id="editCheckout" required>
+
+      <label>인원 수:</label>
+      <input type="number" id="editGuests" min="1" required>
+
+      <button type="button" onclick="saveChanges()">저장</button>
+    </form>
+  </div>
+</div>
+<script>
+  function openEditModal(startDate, endDate, guestsNum) {
+      document.getElementById("editCheckin").value = startDate;
+      document.getElementById("editCheckout").value = endDate;
+      document.getElementById("editGuests").value = guestsNum;
+
+      document.getElementById("editModal").style.display = "flex";
+  }
+
+  function closeEditModal() {
+      document.getElementById("editModal").style.display = "none";
+  }
+
+  function saveChanges() {
+      const newCheckin = document.getElementById("editCheckin").value;
+      const newCheckout = document.getElementById("editCheckout").value;
+      const newGuests = document.getElementById("editGuests").value;
+
+      console.log("수정된 예약 정보:", newCheckin, newCheckout, newGuests);
+
+      // 여기에 Ajax 요청 또는 폼 제출을 추가할 수 있음
+      closeEditModal();
+  }
+</script>
+</body>
+</html>
