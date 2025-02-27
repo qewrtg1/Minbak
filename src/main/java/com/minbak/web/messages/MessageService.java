@@ -119,6 +119,7 @@ public class MessageService {
         messageMapper.createMessage(messageDto);
     }
 //--------------------유저 메세지 기능---------------------------------------
+//    유저메세지 채팅방 목록
     public List<UserMessageListDto> showUserMessageList(int user_id){
 
         List<UserMessageListDto> userMessageLists=messageMapper.showUserMessageList(user_id);
@@ -127,6 +128,10 @@ public class MessageService {
         }
 
         return userMessageLists;
+    }
+//    유저 메세지 읽음 표시 포스트 요청
+    public void checkIsRead(int userId,int chatRoomId){
+        messageMapper.updateMessageCheck(userId,chatRoomId);
     }
 
 

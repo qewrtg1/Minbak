@@ -48,4 +48,5 @@ public interface MessageMapper {
 //    ------------------------유저 메세지 기능----------------------------
 
     List<UserMessageListDto> showUserMessageList(int user_id);
+    void updateMessageCheck(int userId,int chatRoomId);
 }

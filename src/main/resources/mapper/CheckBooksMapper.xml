@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.check_books.CheckBookMapper">
+
+    <!-- BooksDto와 RoomsDto를 연결하는 resultMap 설정 -->
+    <resultMap id="BooksResultMap" type="com.minbak.web.check_books.dto.CheckBookDto">
+        <id property="bookId" column="book_id" />
+        <result property="status" column="status" />
+        <result property="startDate" column="start_date" />
+        <result property="endDate" column="end_date" />
+        <result property="guestsNum" column="guests_num" />
+        <result property="request" column="request" />
+        <result property="userId" column="user_id" />
+        <result property="roomId" column="room_id" />
+        <association property="room" column="room_id" select="findRoomsByRoomId" />
+    </resultMap>
+
+    <select id="findRoomsByRoomId" resultType="com.minbak.web.check_books.dto.CheckBookRoomDto">
+        select * from rooms
+        where room_id=#{room_id}
+    </select>
+
+    <!-- 예약 목록을 가져오는 쿼리 -->
+    <select id="selectBooks" resultMap="BooksResultMap">
+        select *from books
+        where user_id=#{userId}
+    </select>
+
+    <!-- 전체 예약 수를 세는 쿼리 -->
+    <select id="countBooks" resultType="int">
+        SELECT COUNT(*)
+        FROM books
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 예약 ID로 예약 정보를 가져오는 쿼리 -->
+<!--    <select id="selectBookById" resultType="com.minbak.web.books.BooksDto">-->
+<!--        SELECT-->
+<!--        b.book_id AS bookId,-->
+<!--        b.status,-->
+<!--        b.start_date AS startDate,-->
+<!--        b.end_date AS endDate,-->
+<!--        b.guests_num AS guestsNum,-->
+<!--        b.request,-->
+<!--        b.user_id AS userId,-->
+<!--        b.room_id AS roomId-->
+<!--        FROM books b-->
+<!--        WHERE b.book_id = #{bookId}-->
+<!--    </select>-->
+</mapper>
