@@ -19,21 +19,160 @@
 
       <!-- ✅ 부트스트랩 드롭다운 메뉴 추가 -->
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-warning dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           메뉴
         </button>
         <ul class="dropdown-menu" aria-labelledby="userMenuDropdown">
           <li><a class="dropdown-item" href="/profile">내 프로필</a></li>
           <li><a class="dropdown-item" href="/settings">설정</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item text-danger" href="/logout">로그아웃</a></li>
+          <li>
+            <button class="dropdown-item text-danger" id="logout-button">로그아웃</button>
+          </li>
+
+
+
         </ul>
       </div>
     </div>
 
     <!-- ✅ 유저 정보가 없을 때 로그인 버튼 표시 -->
     <div th:if="${user == null}">
-      <a href="/login" class="btn btn-primary">로그인</a>
+      <!-- 로그인 버튼 -->
+      <div class="text-center">
+        <button id="openLoginModal" class="btn btn-warning">로그인</button>
+      </div>
+
+      <!-- 로그인 모달 -->
+      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="loginModalLabel">로그인</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="email" class="form-label">이메일</label>
+                  <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요">
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">비밀번호</label>
+                  <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력하세요">
+                </div>
+                <p id="loginError" class="text-danger text-center"></p>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+              <button type="button" class="btn btn-primary" id="loginBtn">로그인</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+
   </div>
 </div>
+
+
+<!--로그인모달-->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const loginModalElement = document.getElementById("loginModal");
+    const loginModal = new bootstrap.Modal(loginModalElement);
+    const openModalBtn = document.getElementById("openLoginModal");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginError = document.getElementById("loginError");
+
+    if (!loginModalElement) {
+        console.error("❌ loginModal 요소를 찾을 수 없습니다.");
+        return;
+    }
+
+    if (!openModalBtn) {
+        console.error("❌ 로그인 버튼(#openLoginModal)을 찾을 수 없습니다.");
+        return;
+    }
+
+
+    // ✅ 서버에서 렌더링한 유저 정보 가져오기
+    const user = /*[[${user}]]*/ null; // Thymeleaf에서 유저 정보 가져오기
+
+
+    console.log("Thymeleaf에서 받은 사용자 정보:", user);
+
+    // ✅ 로그인 버튼 클릭 시 모달 열기
+    openModalBtn.addEventListener("click", function() {
+        console.log("로그인 모달 열기 버튼 클릭됨!");
+        loginModal.show(); // 모달 열기
+    });
+
+    // 🔹 로그인 상태 확인 & UI 업데이트
+    function checkAuth() {
+      if (user) {
+        openModalBtn.classList.add("d-none");
+        logoutBtn.classList.remove("d-none");
+      } else {
+        openModalBtn.classList.remove("d-none");
+        logoutBtn.classList.add("d-none");
+      }
+    }
+
+    // 🔹 로그인 요청
+    loginBtn.addEventListener("click", async function() {
+      const username = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      console.log("로그인 요청 시작", username, password);
+
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      console.log("서버 응답:", response.status);
+
+      if (response.ok) {
+        loginModal.hide();
+        location.reload(); // ✅ 로그인 성공 후 페이지 새로고침하여 Thymeleaf 변수 반영
+      } else {
+        console.log("로그인 실패!");
+        loginError.textContent = "로그인 실패! 이메일 또는 비밀번호를 확인하세요.";
+      }
+    });
+
+    // 🔹 로그아웃 기능 (서버에서 세션 제거)
+    logoutBtn.addEventListener("click", async function() {
+      console.log("로그아웃 실행");
+
+      await fetch("/api/logout", { method: "POST" });
+      location.reload(); // ✅ 로그아웃 후 페이지 새로고침하여 UI 업데이트
+    });
+
+    checkAuth(); // 페이지 로드 시 로그인 상태 확인
+  });
+</script>
+<script>
+  document.getElementById("logout-button").addEventListener("click", function(event) {
+      event.preventDefault(); // 기본 동작(페이지 이동) 방지
+
+      fetch("/api/logout", {
+          method: "POST", // RESTful 원칙에 맞게 POST 사용
+          credentials: "include" // 쿠키 포함하여 요청 (JWT, 세션 사용 시 필요)
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert(data.message); // 로그아웃 성공 메시지 표시
+          window.location.href = "/"; // 로그아웃 후 메인 페이지로 이동
+      })
+      .catch(error => {
+          console.error("로그아웃 오류:", error);
+          alert("로그아웃 중 오류가 발생했습니다.");
+      });
+  });
+</script>

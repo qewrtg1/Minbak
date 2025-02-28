@@ -24,13 +24,7 @@ public class RoomDetailController {
     private final UsersService usersService;
 
     @GetMapping("/room/{roomId}")
-    public String getRoomDetail(@PathVariable int roomId, Model model,
-                                @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        if(userDetails !=null){
-            model.addAttribute("userUrl",roomDetailService.findImageUrlsByUserId(userDetails.getUserId()));
-            model.addAttribute("user", usersService.findUserByUserId(userDetails.getUserId()));
-        }
+    public String getRoomDetail(@PathVariable int roomId, Model model) {
 
         RoomDetailDto roomDetail = roomDetailService.getRoomDetail(roomId);
         roomDetail.getRoom().setOptions(roomDetailService.getRoomOptions(roomId));
