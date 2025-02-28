@@ -75,9 +75,9 @@
 <!-- ✅ 예약 목록 -->
 <div class="container reservation-container">
     <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><button class="nav-link active" onclick="filterReservations('PENDING')">대기 중</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('APPROVED')">승인됨</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('DECLINED')">거절됨</button></li>
+        <li class="nav-item"><button class="nav-link active" onclick="filterReservations('대기')">대기 중</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('완료')">승인됨</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('취소')">거절됨</button></li>
         <li class="nav-item"><button class="nav-link" onclick="filterReservations('ALL')">전체</button></li>
     </ul>
 
@@ -153,6 +153,42 @@
     function applyFilter() {
         const selectedRoom = document.getElementById("roomFilter").value;
         alert(`필터 적용됨: 숙소 - ${selectedRoom || '전체'}`);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        filterReservations('대기'); // 페이지 로드 시 "대기 중" 예약 목록이 기본으로 보이게 설정
+    });
+
+    function filterReservations(status) {
+        let reservations = document.querySelectorAll(".card.mb-3");
+        let noReservationsMsg = document.getElementById("noReservations");
+        let hasVisibleReservations = false;
+
+        reservations.forEach(reservation => {
+            let reservationStatus = reservation.querySelector(".status-대기, .status-완료, .status-취소");
+
+            if (!reservationStatus) return;
+
+            if (status === "ALL" || reservationStatus.textContent.trim() === status) {
+                reservation.style.display = "block";
+                hasVisibleReservations = true;
+            } else {
+                reservation.style.display = "none";
+            }
+        });
+
+        // 예약이 없으면 메시지 표시, 있으면 숨김
+        noReservationsMsg.style.display = hasVisibleReservations ? "none" : "block";
+
+        // 탭 버튼 활성화 처리
+        document.querySelectorAll(".nav-link").forEach(button => {
+            button.classList.remove("active");
+        });
+
+        let activeButton = document.querySelector(`.nav-link[onclick="filterReservations('${status}')"]`);
+        if (activeButton) {
+            activeButton.classList.add("active");
+        }
     }
 </script>
 
