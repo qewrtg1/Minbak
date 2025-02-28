@@ -66,8 +66,12 @@
             <img th:src="${book.userUrl}" alt="호스트 이미지" class="host-img">
       <div>
         <p class="mb-0 fw-bold" th:text="${book.user.name}">호스트 이름</p>
-        <p class="text-muted small">호스트 소개 : <span th:text="${host.introduction}">3</span>년</p>
-        <p class="text-muted small"> <span id="hostExperience"></span></p>
+<!--        <p class="text-muted small">호스트 소개 : <span th:text="${host.introduction}">3</span></p>-->
+        <p class="text-muted small">
+          호스팅 경력
+          <span th:if="${yearsOfExperience > 0}" th:text="${yearsOfExperience} + '년'">3년</span>
+          <span th:if="${yearsOfExperience == 0}">1년 미만</span>
+        </p>
       </div>
     </div>
 
@@ -79,32 +83,32 @@
     <!-- 체크인/체크아웃 정보 -->
     <div class="mt-4 p-3 border rounded">
       <h5>체크인 / 체크아웃</h5>
-      <p>체크인: <strong th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}">9월 30일 (금)</strong> 오후 3:00</p>
-      <p>체크아웃: <strong th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}">10월 1일 (토)</strong> 오전 11:00</p>
+      <p>체크인: <strong th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}">9월 30일 (금)</strong> (체크인시간없음)오후 3:00</p>
+      <p>체크아웃: <strong th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}">10월 1일 (토)</strong> (체크아웃시간없음)오전 11:00</p>
     </div>
 
     <!-- 예약 상태 -->
     <div class="mt-3 p-3 border rounded">
       <h5>예약 상태</h5>
       <p th:text="${book.status}">확정됨</p>
-      <p>결제 : <span th:text="${book.payment.status}">확정됨</span></p>
+
     </div>
 
     <!-- 요금 정보 -->
     <div class="mt-3 p-3 border rounded">
       <h5>요금 상세</h5>
       <p>숙박 요금: ₩
-        <span th:text="${book.room.price}">200,000</span> x <span id="daysDiff">1</span>박</p>
+        <span th:text="${book.room.price}">200,000</span> X <span id="daysDiff">1</span>박</p>
 <!--      <p>청소비: ₩<span th:text="${book.cleaningFee}">30,000</span></p>-->
 <!--      <p>서비스 수수료: ₩<span th:text="${book.serviceFee}">10,000</span></p>-->
       <hr>
-      <h5>총액: ₩<span th:text=daysDiff*"${book.room.price}">240,000</span></h5>
+      <h5>총액: ₩<span id="totalPrice">240,000</span></h5>
     </div>
 
     <!-- 결제 상태  결제 데이터 불러와야함-->
     <div class="mt-3 p-3 border rounded">
       <h5>결제 상태</h5>
-      <!--      <p th:text="${book.paymentStatus}">결제 완료</p>-->
+      <p>결제 : <span th:text="${book.payment.status}">확정됨</span></p>
     </div>
 
     <div class="container mt-4">
@@ -112,6 +116,9 @@
         <i class="bi bi-chat-dots me-2"></i>
         <div>
           <p class="mb-0 fw-bold">호스트에게 메시지 보내기</p>
+          <div>
+            컴포넌트
+          </div>
           <p class="text-muted small" th:text="${book.user.name}">키다리여우</p>
         </div>
       </div>
@@ -183,7 +190,7 @@
       <!-- 호스트 소개  호스트 id랑 연결해야함-->
       <div class="mt-3">
         <h6 class="fw-bold">호스트 소개</h6>
-        <!--        <p th:text="${book.user.introduction}">-->
+                <p th:text="${host.introduction}">
         경주스러운 분위기로 게스트님의 여행을 도와드리겠습니다.
         </p>
         <a href="#" class="text-decoration-none">더 보기</a>
@@ -205,7 +212,7 @@
     <div class="container mt-4 p-3 border rounded">
       <h5 class="fw-bold">결제 정보</h5>
       <!--결제 금액 결제랑 연결해야함-->
-      <!--      <p class="mt-2">💰 <strong>결제한 금액:</strong> ₩<span th:text="${book.totalPaid}">127,082.00</span></p>-->
+<!--            <p class="mt-2">💰 <strong>결제한 금액:</strong> ₩<span id="totalPrice"></span></p>-->
 
       <hr>
 

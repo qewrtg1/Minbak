@@ -4,6 +4,8 @@ import com.minbak.web.books.BooksPageDto;
 import com.minbak.web.check_books.dto.CheckBookDto;
 import com.minbak.web.check_books.dto.CheckBookHostDto;
 import com.minbak.web.spring_security.CustomUserDetails;
+import com.minbak.web.user_YH.RoomDetailMapper;
+import com.minbak.web.user_YH.dto.DetailHostResponse;
 import com.minbak.web.users.HostDto;
 import com.minbak.web.users.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import java.util.List;
 public class CheckBookListController {
     @Autowired
    CheckBookService checkBookService;
+    @Autowired
+    RoomDetailMapper roomDetailMapper;
 
     @GetMapping("/book/list")
     public String checkBookList(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -61,9 +65,12 @@ public class CheckBookListController {
         checkBookDto.setUserUrl(checkBookService.findUserUrlByUserId(checkBookDto.getRoom().getUserId()));
         CheckBookHostDto hostDto= checkBookService.findHostByUserId(checkBookDto.getRoom().getUserId());
 
+        int yearsOfExperience = roomDetailMapper.getHostDetail(checkBookDto.getRoomId()).getYearsOfExperience();
+
 
         model.addAttribute("book",checkBookDto);
         model.addAttribute("host",hostDto);
+        model.addAttribute("yearsOfExperience",yearsOfExperience);
 
 
         return "/user-pages/user-book-detail";
