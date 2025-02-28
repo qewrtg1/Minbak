@@ -22,58 +22,6 @@
             <result property="status" column="status"/>
         </association>
     </resultMap>
-<!--호스팅 페이지-->
-    <select id="getCheckOut" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name, u.user_id, b.start_date, b.end_date, b.guests_num, b.status
-        from books b
-        join users u ON b.user_id = u.user_id
-        join rooms r ON b.room_id = r.room_id
-        where r.user_id = #{hostId}
-        and b.status = '완료'
-        and b.end_date = curdate()
-    </select>
-    
-    <select id="getOngoing" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name, u.user_id, b.start_date, b.end_date, b.guests_num, b.status
-        from books b
-        join users u ON b.user_id = u.user_id
-        join rooms r ON b.room_id = r.room_id
-        where r.user_id = #{hostId}
-        and curdate() between b.start_date and b.end_date
-    </select>
-
-    <select id="getCheckIn" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name, u.user_id, b.start_date, b.end_date, b.guests_num, b.status
-        from books b
-        left join users u ON b.user_id = u.user_id
-        left join rooms r ON b.room_id = r.room_id
-        where r.user_id = #{hostId}
-        and b.status = '완료'
-        and b.start_date = curdate()
-    </select>
-    
-    <select id="getUpcoming" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name, u.user_id, b.start_date, b.end_date, b.guests_num, b.status
-        from books b
-        join users u ON b.user_id = u.user_id
-        join rooms r ON b.room_id = r.room_id
-        where r.user_id = #{hostId}
-        and b.start_date > curdate()
-        and b.status in ('대기', '완료')
-        order by b.start_date
-    </select>
-    
-    <select id="getPendingReviews" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name, u.user_id, b.start_date, b.end_date, b.guests_num, b.status
-        from books b
-        join users u ON b.user_id = u.user_id
-        join rooms r ON b.room_id = r.room_id
-        join review rv on b.book_id = rv.book_id
-        where r.user_id = #{hostId}
-        and curdate() > b.end_date
-        and b.status = '완료'
-        and rv.review_id is null
-    </select>
 
     <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
         insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)

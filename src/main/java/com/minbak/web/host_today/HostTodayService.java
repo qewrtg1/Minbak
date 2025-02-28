@@ -11,23 +11,23 @@ public class HostTodayService {
 
     private final HostTodayMapper hostTodayMapper;
 
-    public List<HostTodayDto> getCheckOut(int hostId) {
-        return hostTodayMapper.getCheckOut(hostId);
+    public List<HostTodayDto> getCheckOut(int userId) {
+        return hostTodayMapper.getCheckOut(userId);
     }
 
-    public List<HostTodayDto> getOngoing(int hostId) {
-        return hostTodayMapper.getOngoing(hostId);
+    public List<HostTodayDto> getOngoing(int userId) {
+        return hostTodayMapper.getOngoing(userId);
     }
 
-    public List<HostTodayDto> getCheckIn(int hostId) {
-        return hostTodayMapper.getCheckIn(hostId);
+    public List<HostTodayDto> getCheckIn(int userId) {
+        return hostTodayMapper.getCheckIn(userId);
     }
 
-    public List<HostTodayDto> getUpcoming(int hostId) {
-        return hostTodayMapper.getUpcoming(hostId);
+    public List<HostTodayDto> getUpcoming(int userId) {
+        return hostTodayMapper.getUpcoming(userId);
     }
 
-    public List<HostTodayDto> getPendingReviews(int hostId) {
-        return hostTodayMapper.getPendingReviews(hostId);
+    public List<HostTodayDto> getPendingReviews(int userId) {
+        return hostTodayMapper.getPendingReviews(userId);
     }
 }

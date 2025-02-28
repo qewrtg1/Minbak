@@ -7,9 +7,9 @@ import java.util.List;
 
 @Mapper
 public interface HostTodayMapper {
-    List<HostTodayDto> getCheckOut(@Param("hostId") int hostId);
-    List<HostTodayDto> getOngoing(@Param("hostId") int hostId);
-    List<HostTodayDto> getCheckIn(@Param("hostId") int hostId);
-    List<HostTodayDto> getUpcoming(@Param("hostId") int hostId);
-    List<HostTodayDto> getPendingReviews(@Param("hostId") int hostId);
+    List<HostTodayDto> getCheckOut(@Param("userId") int userId);
+    List<HostTodayDto> getOngoing(@Param("userId") int userId);
+    List<HostTodayDto> getCheckIn(@Param("userId") int userId);
+    List<HostTodayDto> getUpcoming(@Param("userId") int userId);
+    List<HostTodayDto> getPendingReviews(@Param("userId") int userId);
 }
