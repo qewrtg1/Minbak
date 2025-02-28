@@ -34,14 +34,20 @@
         SELECT email FROM users WHERE email = #{email}
     </select>
 
+    <select id="getUserInfo" resultType="com.minbak.web.user_YH.dto.DetailUserResponse">
+        select user_id, name, email, phone_number
+        from users
+        where user_id = #{userId}
+    </select>
+
     <!-- 이메일로 사용자 전체 조회 -->
     <select id="findUserByEmail" resultType="com.minbak.web.users.UserDto">
         SELECT *
         FROM users WHERE email = #{email}
     </select>
 
-    <select id="findUserByUsername" resultType="com.minbak.web.users.UserDto">
-        SELECT *
+    <select id="findUserIdByEmail" resultType="int">
+        SELECT user_id
         FROM users WHERE email = #{username}
     </select>
 
@@ -422,4 +428,5 @@
             updated_at = NOW()
         WHERE host_id = #{hostId}
     </update>
+
 </mapper>

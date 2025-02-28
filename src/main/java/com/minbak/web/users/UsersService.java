@@ -4,6 +4,8 @@ import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
+import com.minbak.web.user_YH.RoomDetailMapper;
+import com.minbak.web.user_YH.dto.DetailUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +28,20 @@ public class UsersService {
     UsersMapper usersMapper;
 
     @Autowired
+    RoomDetailMapper roomDetailMapper;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
+
+    public DetailUserResponse getUserInfo(int userId){
+        if(userId > 0){
+            DetailUserResponse user = usersMapper.getUserInfo(userId);
+            user.setProfileImageUrl(roomDetailMapper.findImageUrlsByUserId(userId));
+            return user;
+        }else {
+            return null;
+        }
+    }
 
     public UserDto findUserByUserId(Integer userId){
         return usersMapper.findUserByUserId(userId);
@@ -194,5 +209,9 @@ public class UsersService {
 
     public void updateHost(HostDto hostDto) {
         usersMapper.updateHost(hostDto);
+    }
+
+    public int findUserIdByEmail(String email){
+        return usersMapper.findUserIdByEmail(email);
     }
 }

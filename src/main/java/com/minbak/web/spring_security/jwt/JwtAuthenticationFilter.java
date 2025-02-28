@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 클라이언트가 보낸 쿠키에서 refreshToken 추출
             String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
 
-            // Refresh Token이 없거나 유효하지 않으면 401 반환
+            // Refresh Token이 없거나 유효하지 않으면 필터 넘기기
             if (refreshToken == null || !jwtUtil.validateToken(refreshToken)) {
                 // 다음 필터로 요청 전달
                 chain.doFilter(request, response);
@@ -54,15 +54,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // refreshToken에서 username 추출
             String username = jwtUtil.extractUsername(refreshToken);
+
+            //username으로 인증
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            //해당 인증객체의 roles가져와서
             List<String> roles = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
-            // 새로운 Access Token 발급
+            // 새로운 Access Token 생성
             String newAccessToken = jwtUtil.generateAccessToken(username, roles);
 
-            //엑세스토큰 생성해서 쿠키로 전달
+            //엑세스토큰 쿠키로 전달
             response.addCookie(jwtUtil.createAccessCookie("jwtToken",newAccessToken));
 
             // SecurityContextHolder에 새로운 인증 정보 저장
@@ -74,6 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 기존 Access Token이 유효하면 사용자 인증 처리
             String username = jwtUtil.extractUsername(jwtToken);
             List<String> roles = jwtUtil.extractRoles(jwtToken);
+
             UserDetails userDetails = new CustomUserDetails(usersMapper.findUserByEmail(username), roles);
 
             UsernamePasswordAuthenticationToken authToken =
@@ -84,9 +89,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 다음 필터로 요청 전달
         chain.doFilter(request, response);
 
-
     }
-
-
 
 }
