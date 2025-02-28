@@ -95,6 +95,25 @@
         font-size: 14px;
         margin-top: 2px;
     }
+
+     /* 다음 버튼 스타일 (숙소 유형 선택 페이지와 동일) */
+    .next-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ff9800;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      z-index: 10;
+    }
+    .next-btn:hover {
+      background-color: #e68900;
+    }
   </style>
 </head>
 <body>
@@ -121,52 +140,48 @@
   <label>우편번호: <input type="text" id="postal-code"></label>
 </div>
 
+<!-- 다음 버튼 -->
+<a href="#" class="next-btn">다음</a>
 <script>
-  let map, marker, searchBox;
+  let map, marker, autocomplete;
 
-  function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: 37.5665, lng: 126.9788 }, // 서울 중심
-      zoom: 15,
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 37.5665, lng: 126.9788 },
+    zoom: 15,
+  });
+
+  marker = new google.maps.Marker({
+    map: map,
+    position: { lat: 37.5665, lng: 126.9788 },
+    title: "현재 위치",
+  });
+
+  // Autocomplete 사용 (SearchBox 대신)
+  autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"), {
+    fields: ["address_components", "geometry"],
+  });
+
+  autocomplete.addListener("place_changed", function() {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    map.setCenter(place.geometry.location);
+    marker.setPosition(place.geometry.location);
+    displayAddressInfo(place);
+  });
+
+  // 지도 클릭 시 이벤트는 그대로 유지
+  map.addListener('click', function(event) {
+    marker.setPosition(event.latLng);
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: event.latLng }, function(results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        displayAddressInfo(results[0]);
+      }
     });
-
-    marker = new google.maps.Marker({
-      map: map,
-      position: { lat: 37.5665, lng: 126.9788 },
-      title: "현재 위치",
-    });
-
-    // 검색창 초기화
-    searchBox = new google.maps.places.SearchBox(document.getElementById('address'));
-
-    // 지도 경계 변경 시 검색창 범위 설정
-    map.addListener('bounds_changed', function() {
-      searchBox.setBounds(map.getBounds());
-    });
-
-    // 검색 결과가 선택되었을 때 처리
-    searchBox.addListener('places_changed', function() {
-      const places = searchBox.getPlaces();
-      if (places.length == 0) return;
-      const place = places[0];
-      if (!place.geometry) return;
-
-      map.setCenter(place.geometry.location);
-      marker.setPosition(place.geometry.location);
-      displayAddressInfo(place);
-    });
-
-    // 지도 클릭 시 해당 위치로 마커 이동 및 주소 정보 업데이트
-    map.addListener('click', function(event) {
-      marker.setPosition(event.latLng);
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ location: event.latLng }, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-          displayAddressInfo(results[0]);
-        }
-      });
-    });
-  }
+  });
+}
 
   // 현재 위치 불러오기 함수
   function getCurrentLocation() {

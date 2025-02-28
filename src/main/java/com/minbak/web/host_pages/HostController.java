@@ -29,7 +29,52 @@ public class HostController {
     }
 
     @GetMapping("/location")
-    public String location(){
+    public String roomLocation(){
         return "host-pages/location";
+    }
+
+    @GetMapping("/floor-plan")
+    public String floorPlan(){
+        return "host-pages/floor-plan";
+    }
+
+    @GetMapping("/charm")
+    public String charm(){
+        return "host-pages/accommodation-charm";
+    }
+
+    @GetMapping("/option")
+    public String roomsOption(){
+        return "host-pages/option";
+    }
+
+    @GetMapping("/photos")
+    public String photos(){
+        return "host-pages/photos";
+    }
+
+    @GetMapping("/title")
+    public String roomsTitle(){
+        return "host-pages/title";
+    }
+
+    @GetMapping("/description")
+    public String description(){
+        return "host-pages/description";
+    }
+
+    @GetMapping("/finish-setup")
+    public String finish(){
+        return "host-pages/finish-setup";
+    }
+
+    @GetMapping("/price")
+    public String roomsPrice(){
+        return "host-pages/price";
+    }
+
+    @GetMapping("/receipt")
+    public String receipt(){
+        return "host-pages/receipt";
     }
 }

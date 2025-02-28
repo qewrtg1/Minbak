@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        box-sizing: border-box;
+        position: relative;
+    }
+    .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+    }
+    .left, .right {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .left {
+        margin-right: 20px;
+    }
+    .right {
+        margin-left: 20px;
+    }
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .image-box {
+        width: 500px;
+        height: 500px;
+        background-color: #f0f0f0; /* 임시 배경색 */
+        margin: 0 auto;
+    }
+    .next-btn {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ff9800;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .next-btn:hover {
+        background-color: #e68900;
+    }
+  </style>
+</head>
+<body>
+
+<div class="content">
+  <div class="left">
+    <h3>3단계</h3>
+    <h1>등록을 완료하세요</h1>
+    <p>마지막으로, 예약 설정을 선택하고 요금을 설정한 후 숙소 등록을 완료할<br>차례입니다.</p>
+  </div>
+
+  <div class="right">
+    <div class="image-box">
+      <!-- 여기에 이미지 추가 -->
+    </div>
+  </div>
+</div>
+
+<a href="#" class="next-btn">다음</a>
+
+</body>
+</html>
