@@ -33,10 +33,10 @@ public class GlobalControllerAdvice {
         if (authentication != null){
             int userId = usersService.findUserIdByEmail(authentication.getName());
 
-            model.addAttribute("user",usersService.getUserInfo(userId));
+            model.addAttribute("headerUser",usersService.getUserInfo(userId));
 
         }else {
-            model.addAttribute("user",usersService.getUserInfo(0));
+            model.addAttribute("headerUser",usersService.getUserInfo(0));
         }
     }
 }

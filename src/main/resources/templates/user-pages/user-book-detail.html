@@ -76,9 +76,54 @@
     </div>
 
     <!-- 숙소 이미지 -->
-    <div th:each="roomUrl : ${book.roomUrls}">
-      <img th:src="${roomUrl}" alt="숙소 이미지" class="room-image mt-3">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <!-- Thymeleaf를 이용하여 반복문으로 이미지 슬라이드를 추가 -->
+        <div th:each="roomUrl, iterStat : ${book.roomUrls}"
+             class="carousel-item"
+             th:classappend="${iterStat.index == 0} ? 'active' : ''">
+          <img th:src="@{${roomUrl}}" alt="숙소 이미지" class="d-block w-100 room-image">
+        </div>
+      </div>
+
+      <!-- 이전, 다음 버튼 -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
+
+    <style>
+      /* Carousel 이미지 크기 조정 */
+      .carousel-inner {
+        max-height: 500px; /* 최대 높이 설정 (필요에 맞게 조정) */
+        overflow: hidden;  /* 이미지가 잘리도록 설정 */
+      }
+
+      .carousel-item img {
+        object-fit: cover; /* 이미지 비율을 유지하면서 공간을 가득 채움 */
+        width: 100%; /* 이미지가 컨테이너 너비에 맞게 확장 */
+        height: 100%; /* 이미지가 컨테이너 높이에 맞게 확장 */
+      }
+
+      /* 슬라이드 컨트롤 버튼 디자인 */
+      .carousel-control-prev-icon,
+      .carousel-control-next-icon {
+        background-color: black; /* 버튼 색상 */
+      }
+
+      /* 반응형 디자인 */
+      @media (max-width: 768px) {
+        .carousel-inner {
+          max-height: 300px; /* 모바일에서 최대 높이 줄이기 */
+        }
+      }
+    </style>
+
 
     <!-- 체크인/체크아웃 정보 -->
     <div class="mt-4 p-3 border rounded">
@@ -98,11 +143,11 @@
     <div class="mt-3 p-3 border rounded">
       <h5>요금 상세</h5>
       <p>숙박 요금: ₩
-        <span th:text="${book.room.price}">200,000</span> X <span id="daysDiff">1</span>박</p>
+        <span th:text="${book.room.price}">200,000</span> X <span class="daysDiff">00</span>박</p>
 <!--      <p>청소비: ₩<span th:text="${book.cleaningFee}">30,000</span></p>-->
 <!--      <p>서비스 수수료: ₩<span th:text="${book.serviceFee}">10,000</span></p>-->
       <hr>
-      <h5>총액: ₩<span id="totalPrice">240,000</span></h5>
+      <h5>총액: ₩<span class="totalPrice">000,000</span></h5>
     </div>
 
     <!-- 결제 상태  결제 데이터 불러와야함-->
@@ -262,31 +307,22 @@
   }
 </script>
 <!--날짜 계산 스크립트-->
-<script>
+<script defer>
   // Thymeleaf에서 전달된 문자열을 JavaScript Date 객체로 변환
   let startDate = new Date([[${book.startDate}]]);
   let endDate = new Date([[${book.endDate}]]);
-  let createdAt= new Date([[${host.createdAt}]]);
-  let pricePerDay = [[${book.price}]];
+  let pricePerDay = [[${book.room.price}]];
 
-  // 현재 날짜와 전달된 날짜 비교
-  const currentDate = new Date();
 
-  // 호스트 경험 날짜 계산
-  let hostExperienceTime = (currentDate - createdAt) / (1000 * 3600 * 24);
+   // 두 날짜의 차이 계산
+  let daysDiff = startDate - endDate;
+  // let daysDiff = dateDiff / (1000 * 3600 * 24);
 
-  console.log("호스트경험", hostExperienceTime);
-
-  // 두 날짜의 차이 계산 (날짜 차이: 밀리초 단위)
-  let dateDiff = endDate - startDate;
-  let daysDiff = dateDiff / (1000 * 3600 * 24);  // 밀리초를 일수로 변환
   // 총액 계산
-  let totalPrice = daysDiff*pricePerDay
-  console.log("현재 날짜와 주문 날짜의 차이: ", daysDiff, "일");
+  let totalPrice = daysDiff * pricePerDay
 
-   document.getElementById("hostExperience").textContent = "호스트 경험 일수: " + hostExperienceTime + "일";
-   document.getElementById("daysDiff").textContent = daysDiff ;
-   document.getElementById("totalPrice").textContent = totalPrice.toLocaleString() ;
+   document.querySelector(".daysDiff").textContent = daysDiff ;
+   document.querySelector(".totalPrice").textContent = totalPrice.toLocaleString() ;
 
 
 </script>
