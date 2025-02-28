@@ -120,7 +120,7 @@
     <select id="findImageUrlsByUserId" parameterType="int" resultType="string">
         SELECT file_url
         FROM image_files
-        WHERE entity_id = #{userId}
+        WHERE entity_id = #{userId} and entity_type = 'users'
         LIMIT 1
     </select>
 
