@@ -3,6 +3,9 @@ package com.minbak.web.check_books;
 
 import com.minbak.web.books.BooksPageDto;
 import com.minbak.web.check_books.dto.CheckBookDto;
+import com.minbak.web.check_books.dto.CheckBookHostDto;
+import com.minbak.web.payments.PaymentDto;
+import com.minbak.web.users.HostDto;
 import com.minbak.web.users.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,13 +53,13 @@ public class CheckBookService {
         public CheckBookDto findBookByBookId(int bookId){
             return checkBookMapper.findBookByBookId(bookId);
         }
-//    public List<String> CheckBookDto findBookByBookId(int bookId){
-//        return checkBookMapper.findBookByBookId(bookId);
-//    }
-        // 특정 예약을 가져오는 메서드 (필요시)
-//        public BooksDto getBookById(int bookId) {
-//            return checkBookMapper.selectBookById(bookId);
-//        }
+        public PaymentDto findPaymentByBookId(int bookId){return checkBookMapper.findPaymentByBookId(bookId);}
+        public String findUserUrlByUserId(int userId){
+            return checkBookMapper.findUserUrlByUserId(userId);
+        }
+        public CheckBookHostDto findHostByUserId(int userId){
+            return checkBookMapper.findHostByUserId(userId);
+        }
 
 
 
