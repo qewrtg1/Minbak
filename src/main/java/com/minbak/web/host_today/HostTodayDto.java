@@ -13,4 +13,5 @@ public class HostTodayDto {
     private int guestsNum;           // 손님 수
     private String status;           // 예약 상태
     private Integer reviewId;        // 리뷰 ID (Pending Reviews를 위한 필드)
+    private String roomImageUrl;       // 숙소 이미지 파일경로
 }
