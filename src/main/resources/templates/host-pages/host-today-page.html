@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>호스트 알림판</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        .reservation-container { max-width: 1100px; margin: 50px auto; padding: 20px; border-radius: 8px; background: white; }
+        .status-pending { color: #ff9800; font-weight: bold; }
+        .status-approved { color: #4caf50; font-weight: bold; }
+        .status-declined { color: #f44336; font-weight: bold; }
+        .btn-action { margin-right: 5px; }
+
+        /* ✅ 헤더 스타일 */
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #ddd; background: white; }
+        .menu { display: flex; gap: 20px; font-weight: 500; }
+        .menu a { text-decoration: none; color: black; transition: 0.2s; }
+        .menu a:hover { color: #ff385c; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+        /* ✅ 섹션 스타일 */
+        .section { padding-top: 64; color: #222; }
+        .contents { padding: 0 80px; }
+        .guide { margin-top: 8px; color: #6a6a6a; font-size: 1rem; line-height: 1.25rem; }
+        .guide>span { color: #717171; font-size: 1rem; font-weight: 400; line-height: 1.25rem; }
+
+        /* ✅ 필터 스타일 */
+        .filter-container { padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 15px; }
+        .row { display: flex; align-items: center; }
+        .img-fluid { border-radius: 8px; }
+    </style>
+</head>
+<body>
+<!-- ✅ 헤더 -->
+<div class="header">
+    <a href="/">
+        <img src="/static/images/logo.png" alt="로고" height="30"> <!-- 로고 -->
+    </a>
+
+    <!-- ✅ 중앙 메뉴 -->
+    <nav class="menu">
+        <a href="/host/today">투데이</a>
+        <a href="/host/rooms">숙소</a>
+        <a href="/host/messages">메시지</a>
+        <a href="/host/reservations">예약</a>
+        <a href="/host/new-room">새로운 숙소 등록하기</a>
+    </nav>
+
+    <!-- ✅ 우측 유저 정보 -->
+    <div class="user-menu">
+        <button class="btn btn-light">🔔 알림</button>
+        <img th:src="${user.profileImageUrl}" alt="프로필 이미지" class="profile-img">
+        <span th:text="${user.name}">사용자 이름</span>
+    </div>
+</div>
+
+<!-- ✅ 섹션 영역 -->
+<div class="section">
+    <div class="contents">
+        <h1 th:text="${user.name} + '님, 안녕하세요!'"></h1>
+        <h2 class="guide">
+            <span>숙소 등록 후 24시간이 지나면 게스트가 숙소를 예약할 수 있습니다. 예약을 받을 수 있도록 숙소 설정을 마쳐보세요.</span>
+        </h2>
+    </div>
+</div>
+
+<!-- ✅ 예약 영역 -->
+<div class="container reservation-container">
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item"><button class="nav-link active" onclick="filterReservations('대기')">체크아웃 예정 <span id="count-대기">(0)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('완료')">현재 호스팅 중 <span id="count-완료">(0)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('취소')">체크인 예정 <span id="count-취소">(0)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('ALL')">예정 <span id="count-ALL1">(0)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('ALL')">작성할 후기 <span id="count-ALL2">(0)</span></button></li>
+    </ul>
+</div>
+
+<script>
+    // 예약 목록 예제 데이터 (서버에서 받아오는 데이터라고 가정)
+    const reservations = [
+        { id: 1, status: '대기' },
+        { id: 2, status: '완료' },
+        { id: 3, status: '취소' },
+        { id: 4, status: '대기' },
+        { id: 5, status: '완료' }
+    ];
+
+    function updateReservationCounts() {
+        const counts = { '대기': 0, '완료': 0, '취소': 0, 'ALL': 0 };
+
+        reservations.forEach(reservation => {
+            counts[reservation.status]++;
+            counts['ALL']++;
+        });
+
+        document.getElementById('count-대기').textContent = `(${counts['대기']})`;
+        document.getElementById('count-완료').textContent = `(${counts['완료']})`;
+        document.getElementById('count-취소').textContent = `(${counts['취소']})`;
+        document.getElementById('count-ALL1').textContent = `(${counts['ALL']})`;
+        document.getElementById('count-ALL2').textContent = `(${counts['ALL']})`;
+    }
+
+    // 페이지 로드 시 예약 개수 업데이트
+    updateReservationCounts();
+</script>
+</body>
+</html>
