@@ -52,7 +52,4 @@ public interface ReviewMapper {
     // 호스트가 특정 리뷰에 답변을 추가하는 메서드
     void updateHostReply(@Param("reviewId") int reviewId, @Param("hostReply") String hostReply);
 
-
-
-
 }
