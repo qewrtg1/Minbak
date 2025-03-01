@@ -5,37 +5,98 @@
 <mapper namespace="com.minbak.web.rooms.RoomsMapper">
 
 
+    <!-- 모든 rooms를 가져오는 쿼리 -->
+    <!--    <select id="selectAllRooms" resultType="com.minbak.web.rooms.dto.RoomsListDto">-->
+    <!--        SELECT-->
+    <!--        r.room_id AS roomId,-->
+    <!--        r.name,-->
+    <!--        r.title,-->
+    <!--        r.address,-->
+    <!--        r.price,-->
+    <!--        r.review_count AS reviewCount,-->
+    <!--        u.name AS userName-->
+    <!--        FROM rooms r-->
+    <!--        JOIN users u ON r.user_id = u.user_id-->
+    <!--        LIMIT #{offset}, #{size}-->
+    <!--    </select>-->
 
-    <!-- 리스트 -->
-    <!-- rooms 테이블에서 room_id와 name만 가져오는 쿼리 -->
-    <select id="selectRoomNames" resultType="com.minbak.web.rooms.dto.RoomsListDto">
-        SELECT r.room_id AS roomId, r.name
+    <select id="selectAllRooms" resultType="com.minbak.web.rooms.dto.RoomsListDto">
+        SELECT
+        r.room_id AS roomId,
+        r.name,
+        r.title,
+        r.address,
+        r.price,
+        u.name AS userName
         FROM rooms r
+        JOIN users u ON r.user_id = u.user_id
         LIMIT #{offset}, #{size}
     </select>
 
-    <!-- 전체 rooms의 개수를 가져오는 쿼리 (페이지네이션) -->
+    <!-- 전체 rooms의 개수를 가져오는 쿼리 (검색어가 있을 때와 없을 때 구분) -->
     <select id="selectTotalRoomsCount" resultType="int">
-        SELECT COUNT(*) FROM rooms r
+        SELECT COUNT(*)
+        FROM rooms r
+        JOIN users u ON r.user_id = u.user_id
+        <if test="keyword != null and keyword != ''">
+            WHERE (r.name LIKE CONCAT('%', #{keyword}, '%')
+            OR r.title LIKE CONCAT('%', #{keyword}, '%')
+            OR r.address LIKE CONCAT('%', #{keyword}, '%')
+            OR u.name LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
     </select>
+
+
+
+    <!-- 리스트 -->
+    <select id="selectRoomNames" resultType="com.minbak.web.rooms.dto.RoomsListDto">
+        SELECT
+        r.room_id AS roomId,
+        r.name,
+        r.title,
+        r.address,
+        r.price,
+        u.name AS userName
+        FROM rooms r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE (r.name LIKE CONCAT('%', #{keyword}, '%')
+        OR r.title LIKE CONCAT('%', #{keyword}, '%')
+        OR r.address LIKE CONCAT('%', #{keyword}, '%')
+        OR u.name LIKE CONCAT('%', #{keyword}, '%'))
+        LIMIT #{offset}, #{size}
+    </select>
+
+
+
+
 
 
 
     <!-- 상세보기 -->
     <select id="getRoomsList" resultType="com.minbak.web.rooms.dto.RoomsDto">
-        SELECT room_id AS roomId,
-        name AS roomName,
-        content,
-        address,
-        price,
-        use_guide AS useGuide,
-        latitude,
-        longitude
-        FROM rooms
-        WHERE room_id = #{roomId}
+        SELECT
+        r.room_id AS roomId,
+        r.title,
+        r.name,
+        r.content,
+        r.address,
+        r.price,
+        r.use_guide AS useGuide,
+        r.latitude,
+        r.longitude,
+        r.max_guests AS maxGuests,
+        r.user_id AS userId,
+        u.name AS userName,
+        GROUP_CONCAT(c.name) AS categoryNames
+        FROM rooms r
+        JOIN users u ON r.user_id = u.user_id
+        LEFT JOIN rooms_categories rc ON r.room_id = rc.room_id
+        LEFT JOIN categories c ON rc.category_id = c.category_id
+        WHERE r.room_id = #{roomId}
+        GROUP BY r.room_id
     </select>
 
-    <!-- 방 상세 정보 조회 -->
+    <!-- 방 수정 페이지 -->
     <select id="getRoomById" parameterType="int" resultType="com.minbak.web.rooms.dto.RoomsDto">
         SELECT room_id AS roomId,
         name,

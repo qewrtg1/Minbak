@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>숙소 검토하기</title>
+  <style>
+    /* 기본 스타일 설정 */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 24px;
+        color: #000;
+    }
+
+    p {
+        font-size: 16px;
+        color: #555;
+    }
+
+    /* 미리보기 박스 */
+    .preview-container {
+        width: 350px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #fff8e1;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-container img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .price {
+        font-size: 18px;
+        color: #ff9800;
+        margin-top: 5px;
+    }
+
+    /* 다음 버튼 스타일 */
+    .next-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #ffeb3b;
+        color: #333;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .next-btn:hover {
+        background-color: #fdd835;
+    }
+  </style>
+</head>
+<body>
+
+<h1>숙소 검토하기</h1>
+<p>게스트에게 표시되는 정보는 다음과 같습니다. 모든 정보가 정확한지 확인하세요.</p>
+
+<!-- 미리보기 컨테이너 -->
+<div class="preview-container">
+  <img src="숙소_이미지_URL" alt="숙소 이미지">
+  <p class="title">숙소 제목</p>
+  <p class="price">₩ 숙소 가격</p>
+</div>
+
+<!-- 다음 버튼 -->
+<a href="#" class="next-btn">다음</a>
+
+</body>
+</html>
