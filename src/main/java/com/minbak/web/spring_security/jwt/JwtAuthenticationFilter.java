@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+//OncePerRequestFilter는 모든 요청에대해 실행되는 코드라 따로 설정해줘야함
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -32,8 +33,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     UsersMapper usersMapper;
 
     @Override
+    //OncePerRequestFilter 설정 변경
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String requestURI = request.getRequestURI();
+
+        // ✅ "/admin/**" 경로에서는 JWT 필터 실행하지 않음
+        return requestURI.startsWith("/admin/");
+    }
+
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
 
         // 요청 쿠키에서 jwtToken 값 가져오기
         String jwtToken = jwtUtil.getJwtTokenFromCookies(request);
