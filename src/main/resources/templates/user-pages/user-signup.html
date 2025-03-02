@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body class="bg-light">
+<div th:replace="~{user-pages/common/header}"></div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+      <div class="card mt-5 shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+          <h3>회원가입</h3>
+        </div>
+        <div class="card-body">
+          <form id="signupForm" action="/api/signup" method="post" onsubmit="return validatePassword()">
+            <div class="mb-3">
+              <label for="name" class="form-label">이름</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="signup-email" class="form-label">이메일</label>
+              <input type="email" class="form-control" id="signup-email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone_number" class="form-label">전화번호</label>
+              <input type="text" class="form-control" id="phone_number" name="phone_number">
+            </div>
+            <div class="mb-3">
+              <label for="signup-password" class="form-label">비밀번호</label>
+              <input type="password" class="form-control" id="signup-password" name="password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">비밀번호 확인</label>
+              <input type="password" class="form-control" id="confirm_password" required onkeyup="validatePassword()">
+              <small id="passwordMessage"></small>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">회원가입</button>
+          </form>
+          <p id="signupMessage" class="text-center mt-3"></p> <!-- 메시지 출력용 -->
+        </div>
+        <div class="card-footer text-center">
+          <small>이미 계정이 있으신가요? <button id="openLoginModal2" class="btn btn-warning">로그인</button></small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // ✅ 로그인 버튼 클릭 시 모달 열기
+  document.addEventListener("DOMContentLoaded", function() {
+    const openModalBtn2 = document.getElementById("openLoginModal2");
+    const loginModalElement = document.getElementById("loginModal");
+    const loginModal = new bootstrap.Modal(loginModalElement);
+
+    openModalBtn2.addEventListener("click", function() {
+      console.log("로그인 모달 열기 버튼 클릭됨!");
+      loginModal.show(); // 모달 열기
+    });
+
+
+
+
+
+    function validatePassword() {
+      let password = document.getElementById("signup-password").value;
+      let confirmPassword = document.getElementById("confirm_password").value;
+      let message = document.getElementById("passwordMessage");
+
+      if (password !== confirmPassword) {
+          message.textContent = "비밀번호가 일치하지 않습니다.";
+          message.style.color = "red";
+          return false;
+      } else {
+          message.textContent = "";
+          return true;
+      }
+    }
+
+
+    const signupForm = document.getElementById("signupForm");
+    const signupMessage = document.getElementById("signupMessage");
+
+    signupForm.addEventListener("submit", async function (event) {
+        event.preventDefault(); // 기본 폼 제출 막기
+
+        // 비밀번호 유효성 검사
+        if (!validatePassword()) return;
+
+        const userData = {
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("signup-email").value.trim(),
+            phoneNumber: document.getElementById("phone_number").value.trim(),
+            password: document.getElementById("signup-password").value.trim(),
+        };
+
+        console.log("회원가입 요청 데이터:", userData);
+
+        try {
+            const response = await fetch("/api/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userData),
+            });
+
+            const data = await response.json(); // 응답 데이터
+
+            if (response.ok) {
+                signupMessage.textContent = "🎉 회원가입이 완료되었습니다! 로그인하세요.";
+                signupMessage.style.color = "green";
+                setTimeout(() => window.location.href = "/", 1000); // 2초 후 홈 페이지로 이동
+            } else {
+                signupMessage.textContent = "❌ 회원가입 실패: " + (data.message || "다시 시도해주세요.");
+                signupMessage.style.color = "red";
+            }
+        } catch (error) {
+            console.error("회원가입 오류:", error);
+            signupMessage.textContent = "❌ 서버 오류가 발생했습니다.";
+            signupMessage.style.color = "red";
+        }
+    });
+
+    function validatePassword() {
+        let password = document.getElementById("signup-password").value.trim();
+        let confirmPassword = document.getElementById("confirm_password").value.trim();
+        let message = document.getElementById("passwordMessage");
+
+        if (password.length < 6) {
+            message.textContent = "비밀번호는 최소 6자 이상이어야 합니다.";
+            message.style.color = "red";
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            message.textContent = "비밀번호가 일치하지 않습니다.";
+            message.style.color = "red";
+            return false;
+        }
+
+        message.textContent = "비밀번호가 일치합니다.";
+        message.style.color = "green";
+        return true;
+    }
+  });
+
+
+</script>
+
+</body>
+</html>
