@@ -39,4 +39,16 @@ public class CategoresService {
     public int deleteCategory(int id) {
         return categoresMapper.deleteCategory(id);
     }
+
+
+    //카테고리 순서 업데이트
+    public void updateCategoryOrder(List<Integer> newOrder){
+
+        //카테고리 수만큼 돌면서 해당 id카테고리의 order값을 i+1로 수정
+        for (int i = 0; i < newOrder.size(); i++) {
+            Integer categoryId = newOrder.get(i);
+
+            categoresMapper.updateCategoryOrder(categoryId, i+1);
+        }
+    }
 }

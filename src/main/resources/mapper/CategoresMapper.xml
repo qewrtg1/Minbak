@@ -35,6 +35,11 @@
         WHERE category_id = #{categoryId}
     </delete>
 
-
+    <!-- 카테고리 순서 수정 -->
+    <update id="updateCategoryOrder">
+        UPDATE board_categories
+        SET `order` = #{order}
+        WHERE id = #{id}
+    </update>
 
 </mapper>

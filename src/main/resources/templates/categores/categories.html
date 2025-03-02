@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--아이콘 링크-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+  <style>
+    .container {
+      width: 1000px;
+      margin: 100px auto;
+    }
+    .content-wrapper {
+      display: flex;
+    }
+    .sidebar {
+      width: 200px;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .pagination {
+      margin-top: 10px;
+    }
+    .pagination .page-link {
+      color: #6c757d;
+    }
+    .pagination .page-link:hover {
+      color: #495057;
+    }
+    .sidebar h4 {
+      align-items: center;
+    }
+    .category-add-btn {
+      cursor: pointer;
+      font-size: 24px;
+      color: #6c757d;
+    }
+    .category-add-btn:hover {
+      color: #495057;
+    }
+    .btn-primary {
+      margin: 5px;
+    }
+    .btn-danger {
+      margin: 5px;
+    }
+  </style>
+<body>
+<!-- 메인 콘텐츠 영역 -->
+<main class="main-content">
+  <!-- 카테고리 관리 페이지 -->
+  <h4><strong>카테고리 관리</strong></h4>
+
+  <!-- 카테고리 추가 버튼 -->
+  <button class="btn btn-primary category-add-btn" onclick="window.location.href='/board/admin/categories/create'" style="color:white;">카테고리 추가</button>
+  <hr>
+
+  <!-- 카테고리 목록 -->
+  <h5>카테고리 목록</h5>
+  <ul id="categoryList" class="list-group">
+    <!--        &lt;!&ndash; 카테고리 목록은 서버에서 전달된 데이터를 사용해 출력 &ndash;&gt;-->
+    <!--        <li class="list-group-item d-flex justify-content-between align-items-center" data-id="1">-->
+    <!--          1번 카테고리-->
+    <!--          <span>-->
+    <!--            <button class="btn btn-warning btn-sm">수정</button>-->
+    <!--            <button class="btn btn-danger btn-sm">삭제</button>-->
+    <!--          </span>-->
+    <!--        </li>-->
+  </ul>
+</main>
+
+
+<script>
+  // 서버에서 카테고리 정보를 받아오기 (예시: GET 요청)
+  window.onload = function(){
+    fetch('/api/board/category')
+      .then(response => response.json())
+      .then(boardCategories => {
+        const categoryList = document.getElementById('categoryList');
+
+        // 서버에서 받은 카테고리 데이터로 목록을 렌더링
+        boardCategories.forEach(category => {
+          const li = document.createElement('li');
+          li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+          li.setAttribute('data-id', category.id);  // 카테고리 ID를 data-id로 저장
+          li.setAttribute('data-order', category.order);  // 카테고리 순서를 data-order로 저장
+
+          li.innerHTML = `
+            ${category.name}
+            <span>
+              <button class="btn btn-warning btn-sm" onclick="updateCategory(${category.id}, '${category.name}')">수정</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteCategory(${category.id})">삭제</button>
+            </span>
+          `;
+
+          categoryList.appendChild(li);
+        });
+
+        // 드래그 및 순서 변경 기능 활성화
+        initSortable();
+      })
+      .catch(error => console.error('카테고리 목록을 가져오는 중 오류 발생:', error));
+  }
+
+  function initSortable() {
+    new Sortable(document.getElementById('categoryList'), {
+      handle: '.list-group-item',  // 드래그할 요소를 설정 (전체 항목으로 설정)
+      animation: 150,              // 애니메이션 설정 (150ms)
+      onEnd: function (evt) {
+        // 드래그 후 순서 변경을 처리하는 부분
+        const updatedOrder = [];
+        document.querySelectorAll('#categoryList .list-group-item').forEach((item) => {
+          updatedOrder.push(item.getAttribute('data-id'));  // 변경된 순서대로 ID 추출
+        });
+
+        // 백엔드에 순서 업데이트 요청 보내기 (AJAX)
+        fetch('/api/board/category/reorder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ order: updatedOrder })  // 변경된 순서대로 카테고리 ID를 전송
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('카테고리 순서 변경 완료', data);
+        })
+        .catch(error => {
+          console.error('에러 발생:', error);
+        });
+      }
+    });
+  }
+
+  // 수정 버튼 클릭 시 호출되는 함수
+  function updateCategory(id, currentName) {
+    const newName = prompt("카테고리 이름을 수정해주세요:", currentName);
+    if (newName && newName !== currentName) {
+      // 수정된 이름을 백엔드에 전달하는 요청
+      fetch(`/api/board/category/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: newName })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('카테고리 수정 완료', data);
+        location.reload();  // 수정 후 새로고침
+      })
+      .catch(error => {
+        console.error('수정 중 오류 발생:', error);
+      });
+    }
+  }
+
+  // 삭제 버튼 클릭 시 호출되는 함수
+  function deleteCategory(id) {
+    if (confirm('정말로 이 카테고리를 삭제하시겠습니까?')) {
+      fetch(`/api/board/category/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('카테고리 삭제 완료', data);
+        location.reload();  // 삭제 후 새로고침
+      })
+      .catch(error => {
+        console.error('삭제 중 오류 발생:', error);
+      });
+    }
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
