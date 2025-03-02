@@ -91,6 +91,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = jwtUtil.extractUsername(jwtToken);
             List<String> roles = jwtUtil.extractRoles(jwtToken);
 
+            //user,HOST이렇게 오는 role을 ROLE_USER 이런식으로 만들어줌 UserRole 이눔?클래스
+            roles.replaceAll(UserRole::fromRoleName);
+
+//            for(int i=0;i<roles.size();i++){
+//                roles.set(i,UserRole.fromRoleName(roles.get(i)));
+//            }
+
             UserDetails userDetails = new CustomUserDetails(usersMapper.findUserByEmail(username), roles);
 
             UsernamePasswordAuthenticationToken authToken =

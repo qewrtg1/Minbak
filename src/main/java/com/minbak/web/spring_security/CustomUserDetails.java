@@ -33,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
         Collection<GrantedAuthority> collection = new ArrayList<>();
 
         for(String role : roles){
-            collection.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
+            collection.add(new SimpleGrantedAuthority(role));
         }
 
 //        for(String role : roles){
