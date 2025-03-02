@@ -161,7 +161,7 @@ public class UsersService {
     }
 
     public PageDto<HostResponseDto> searchHostsWithRoomCount(int page, int size, String name, String email, Boolean enabled,
-                                                             LocalDate startDate, LocalDate endDate, Integer bookCount, Boolean isVerified){
+                                                             LocalDate startDate, LocalDate endDate, Integer bookCount, String isVerified){
         int offset = (page-1)*size;
         int totalItems = usersMapper.countHostsWithRoomCount(name,email,enabled,startDate,endDate,bookCount);
 

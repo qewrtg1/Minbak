@@ -3,6 +3,8 @@ package com.minbak.web.user_YH.license;
 import com.minbak.web.file_upload.FileService;
 import com.minbak.web.file_upload.ImageFileDto;
 import com.minbak.web.spring_security.CustomUserDetails;
+import com.minbak.web.users.HostDto;
+import com.minbak.web.users.UsersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class LicenseController {
 
     @Autowired
     LicenseService licenseService;
+
+    @Autowired
+    UsersMapper usersMapper;
 
     @GetMapping
     public String hostLicensePage(){
@@ -52,6 +57,11 @@ public class LicenseController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        HostDto hostDto = new HostDto();
+        hostDto.setHostId(hostId);
+        hostDto.setIsVerified("검증 중");
+        usersMapper.updateHost(hostDto);
 
         redirectAttributes.addFlashAttribute("message", "영업신고증이 제출되었습니다.");
         //호스트메인페이지로 다이렉트

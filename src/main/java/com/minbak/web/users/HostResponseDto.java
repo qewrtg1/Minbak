@@ -16,7 +16,7 @@ public class HostResponseDto {
     private Integer hostId;               // 호스트 고유 ID
     private String hobby;                 // 호스트 취미
     private String introduction;          // 호스트 소개
-    private Boolean isVerified;           // 호스트 인증 여부
+    private String isVerified;           // 호스트 인증 여부
     private String accountNumber;         // 계좌번호
     private LocalDateTime createdAt;  // 호스트 가입일
     private LocalDateTime updatedAt;  // 호스트 수정일

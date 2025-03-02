@@ -20,7 +20,7 @@
     <select id="countHostVerifications" resultType="int">
         SELECT COUNT(*)
         FROM host
-        WHERE is_verified = 0
+        WHERE is_verified = '검증 중'
     </select>
 
     <!-- 전체 유저 수 조회 -->

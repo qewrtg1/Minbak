@@ -136,7 +136,7 @@
                         <a href="http://localhost:8080/admin/rooms/report" class="report-link">
                             숙소 신고 <span th:text="${roomReportCount}">0</span>건
                         </a> |
-                        <a th:href="@{/admin/users/host(isVerified=false)}" class="report-link">
+                        <a th:href="@{/admin/users/host(isVerified='검증 중')}" class="report-link">
                             호스팅 인증 신청 <span th:text="${hostVerificationCount}">0</span>건
                         </a>
                     </span>

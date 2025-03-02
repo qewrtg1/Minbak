@@ -10,4 +10,6 @@ public interface FileMapper {
 
     void insertImageFile(ImageFileDto imageFile);
     List<ImageFileDto> findImagesByRoomId(int roomId);
+    String findLicenseImagesUrlByHostId(int hostId);
+
 }

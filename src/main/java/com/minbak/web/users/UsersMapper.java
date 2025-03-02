@@ -99,7 +99,7 @@ public interface UsersMapper {
             LocalDate startDate,
             LocalDate endDate,
             Integer roomCount,
-            Boolean isVerified
+            String isVerified
     );
 
     public Integer countHostsWithRoomCount(String name,

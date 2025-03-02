@@ -98,11 +98,12 @@
         </div>
 
         <div class="col-auto">
-          <label for="isVerified" class="mr-2">호스트 인증 여부:</label>
+          <label for="isVerified" class="mr-2">호스트 검증 여부:</label>
           <select id="isVerified" name="isVerified" class="form-control mb-2" style="width: 150px;">
             <option value="">선택</option>
-            <option value="true" th:selected="${isVerified == true}">인증</option>
-            <option value="false" th:selected="${isVerified == false}">비인증</option>
+            <option value="검증" th:selected="${isVerified == '검증'}">검증</option>
+            <option value="검증 중" th:selected="${isVerified == '검증 중'}">검증 중</option>
+            <option value="미검증" th:selected="${isVerified == '미검증'}">미검증</option>
           </select>
         </div>
 
@@ -148,10 +149,10 @@
       <tr th:each="host : ${hostPageDto.objects}">
         <td th:text="${host.hostId}">1</td>
         <td th:text="${host.name}">John Doe</td>
-        <td><a th:href="@{/admin/users/detail/{id}(id=${host.hostId})}" th:text="${host.email}">johndoe@example.com</a></td>
+        <td><a th:href="@{/admin/users/detail/{id}(id=${host.userId})}" th:text="${host.email}">johndoe@example.com</a></td>
         <td th:text="${host.phoneNumber}">Admin</td>
         <td th:text="${host.userEnabled ? 'Active' : 'Inactive'}">Active</td>
-        <td th:text="${host.isVerified ? 'Active' : 'Inactive'}">Active</td>
+        <td th:text="${host.isVerified}">Active</td>
         <td th:text="${host.roomCount}">5</td>  <!-- 숙소개수 출력 -->
         <td th:text="${host.createdAt}">2022-03-15</td>
         <td>

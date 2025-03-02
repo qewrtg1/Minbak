@@ -1,7 +1,10 @@
 package com.minbak.web.users;
 
 import com.minbak.web.common.dto.PageDto;
+import com.minbak.web.file_upload.FileMapper;
 import com.minbak.web.spring_security.CustomUserDetails;
+import com.minbak.web.user_YH.license.LicenseDto;
+import com.minbak.web.user_YH.license.LicenseService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,6 +32,12 @@ public class UsersController {
 
     @Autowired
     UsersService usersService;
+
+    @Autowired
+    LicenseService licenseService;
+
+    @Autowired
+    FileMapper fileMapper;
 
     @GetMapping("/login")
     public String loginPage() {
@@ -166,7 +175,7 @@ public class UsersController {
                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                     @RequestParam(required = false) Integer bookCount,
-                                    @RequestParam(required = false) Boolean isVerified,
+                                    @RequestParam(required = false) String isVerified,
                                     Model model){
 
         //페이지에 보여줄 유저 정보 가져오기
@@ -182,6 +191,7 @@ public class UsersController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("bookCount", bookCount);
+        model.addAttribute("isVerified", isVerified);
 
         return "/users/host";
     }
@@ -189,6 +199,11 @@ public class UsersController {
     @GetMapping("/users/detail/{id}")
     public String userDetail(@PathVariable("id") int userId,Model model){
 
+        int hostId = licenseService.getHostIdByUserId(userId);
+        LicenseDto licenseDto = licenseService.getBusinessLicenseByHostId(hostId);
+        licenseDto.setLicenseFileUrl(fileMapper.findLicenseImagesUrlByHostId(hostId));
+
+        model.addAttribute("license",licenseDto);
         model.addAttribute("userDto",usersService.findUserByUserId(userId));
         model.addAttribute("hostDto",usersService.findHostByUserId(userId));
 

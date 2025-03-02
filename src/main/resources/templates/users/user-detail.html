@@ -76,7 +76,7 @@
 
             <form action="/admin/users/update" method="POST">
                 <input id="userId" type="hidden" name="userId" th:value="${userDto.userId}">
-
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                 <div class="mb-3">
                     <label for="name" class="form-label">이름</label>
                     <input type="text" id="name" name="name" th:value="${userDto.name}" class="form-control" required>
@@ -102,7 +102,10 @@
 
                 <p class="text-muted">패스워드 변경 요청 시 이메일 발송</p>
 
-                <button type="submit" class="btn btn-primary w-30">수정</button>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">수정</button>
+                    <button id="make-admin-btn" class="btn btn-danger">관리자 등록</button>
+                </div>
             </form>
 
 
@@ -124,13 +127,14 @@
                     <label for="introduction" class="form-label">호스트 소개</label>
                     <textarea id="introduction" name="introduction" class="form-control" rows="4" th:text="${hostDto.introduction}"></textarea>
                 </div>
-
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                 <!-- 검증 여부 -->
                 <div class="mb-3">
                     <label for="isVerified" class="form-label">검증 여부</label>
                     <select id="isVerified" name="isVerified" class="form-select">
-                        <option value="true" th:selected="${hostDto.isVerified}">검증됨</option>
-                        <option value="false" th:selected="${!hostDto.isVerified}">미검증</option>
+                        <option value="검증" th:selected="${hostDto.isVerified == '검증'}">검증</option>
+                        <option value="검증 중" th:selected="${hostDto.isVerified == '검증 중'}">검증 중</option>
+                        <option value="미검증" th:selected="${hostDto.isVerified == '미검증'}">미검증</option>
                     </select>
                 </div>
 
@@ -210,38 +214,36 @@
                     <div id="message-status" class="mt-3"></div>
                 </div>
 
-                <button id="make-admin-btn" class="btn btn-danger" style="position: absolute; bottom: 20px; right: 20px; z-index: 10;">
-                    관리자 등록
-                </button>
+
             </div>
         </div>
         <!-- 호스트 영업신고증 정보 -->
         <div class="info-container p-4 mt-4">
             <h4 class="text-center" style="font-size:20px;">📄 호스트 영업신고증 정보</h4>
 
-            <div th:if="${licenseDto == null}" class="mt-3 text-center">
+            <div th:if="${license == null}" class="mt-3 text-center">
                 <p class="text-danger">해당 호스트는 영업신고증을 제출하지 않았습니다.</p>
             </div>
 
-            <div th:if="${licenseDto != null}" class="mt-3">
+            <div th:if="${license != null}" class="mt-3">
                 <!-- 영업신고증 기본 정보 -->
                 <table class="table table-bordered">
                     <tbody>
                     <tr>
                         <th style="width: 30%;">호스트 ID</th>
-                        <td th:text="${licenseDto.hostId}"></td>
+                        <td th:text="${license.hostId}"></td>
                     </tr>
                     <tr>
                         <th>영업신고증 유형</th>
-                        <td th:text="${licenseDto.businessType}"></td>
+                        <td th:text="${license.businessType}"></td>
                     </tr>
                     <tr>
                         <th>발급 지역</th>
-                        <td th:text="${licenseDto.region}"></td>
+                        <td th:text="${license.region}"></td>
                     </tr>
                     <tr>
                         <th>신고증 제출 날짜</th>
-                        <td th:text="${#dates.format(licenseDto.uploadedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${#temporals.format(license.uploadedAt, 'yyyy-MM-dd HH:mm')}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -250,7 +252,7 @@
                 <div class="text-center mt-3">
                     <h5>📷 신고증 이미지</h5>
                     <div class="license-image-container mt-2">
-                        <img th:src="@{/uploads/licenses/{fileName}(fileName=${licenseDto.fileName})}"
+                        <img th:src="${license.licenseFileUrl}"
                              class="img-fluid border rounded" style="max-width: 400px;"
                              alt="영업신고증 이미지">
                     </div>

@@ -37,4 +37,5 @@
         SELECT host_id FROM host WHERE user_id = #{userId}
     </select>
 
+
 </mapper>
