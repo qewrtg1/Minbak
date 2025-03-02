@@ -37,7 +37,7 @@
         </thead>
         <tbody id="categoryList">
         <tr th:each="category, iterStat : ${categories}" class="sortable-item" th:data-id="${category.categoryId}">
-          <td class="text-center"><i class="bi bi-list"></i></td>
+          <td class="text-center" th:text="${category.categoryOrder}"><i class="bi bi-list"></i></td>
           <td th:text="${category.name}"></td>
           <td>
             <div class="d-flex gap-2">

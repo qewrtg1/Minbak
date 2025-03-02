@@ -51,7 +51,7 @@ public class CategoresController {
     }
 
     // [U] 카테고리 수정 처리
-    @PostMapping("/{id}")
+    @PostMapping("/edit/{id}")
     public String updateCategory(@PathVariable int id, @ModelAttribute("category") CategoresDto categoresDto) {
         categoresDto.setCategoryId(id);
         categoresService.updateCategory(categoresDto);

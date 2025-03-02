@@ -26,8 +26,8 @@ public class CategoresService {
     }
 
     // 새 카테고리 생성
-    public int createCategory(CategoresDto categoresDto) {
-        return categoresMapper.createCategory(categoresDto);
+    public void createCategory(CategoresDto categoresDto) {
+        categoresMapper.createCategory(categoresDto);
     }
 
     // 카테고리 수정

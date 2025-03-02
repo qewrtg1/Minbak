@@ -4,11 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.categores.CategoresMapper">
 
-    <!-- 1. 전체 카테고리 조회 -->
+    <!-- 1. 전체 카테고리 조회 (order 기준 정렬) -->
     <select id="findAllCategories" resultType="com.minbak.web.categores.CategoresDto">
-        SELECT category_id, name
+        SELECT *
         FROM categories
+        ORDER BY `category_order` ASC
     </select>
+
     <!-- 2. 단일 카테고리 조회 (ID 기준) -->
     <select id="findCategoryById" parameterType="int" resultType="com.minbak.web.categores.CategoresDto">
         SELECT category_id, name
@@ -37,9 +39,9 @@
 
     <!-- 카테고리 순서 수정 -->
     <update id="updateCategoryOrder">
-        UPDATE board_categories
-        SET `order` = #{order}
-        WHERE id = #{id}
+        UPDATE categories
+        SET `category_order` = #{categoryOrder}
+        WHERE category_id = #{categoryId}
     </update>
 
 </mapper>
