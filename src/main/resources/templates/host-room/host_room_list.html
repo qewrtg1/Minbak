@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>호스트 숙소 목록</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>나의 숙소 목록</h2>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>숙소 ID</th>
+    <th>숙소 이름</th>
+    <th>주소</th>
+    <th>가격</th>
+    <th>설명</th>
+    <th>수정</th>
+    <th>삭제</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- 숙소 목록 반복 출력 -->
+  <tr th:each="room : ${rooms}">
+    <td th:text="${room.roomId}"></td>
+    <td th:text="${room.name}"></td>
+    <td th:text="${room.address}"></td>
+    <td th:text="${room.price}"></td>
+    <td th:text="${room.content}"></td>
+    <td>
+      <a th:href="@{/user/host/room/edit/{id}(id=${room.roomId})}">수정</a>
+    </td>
+    <td>
+      <form th:action="@{/user/host/room/delete}" method="post">
+        <input type="hidden" name="roomId" th:value="${room.roomId}">
+        <button type="submit">삭제</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/user/host/room/add">새 숙소 등록</a>
+</body>
+</html>
