@@ -7,6 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface HostTodayMapper {
+    List<HostTodayDto> findMyRooms(@Param("userId") int userId);
     List<HostTodayDto> getCheckOut(@Param("userId") int userId);
     List<HostTodayDto> getOngoing(@Param("userId") int userId);
     List<HostTodayDto> getCheckIn(@Param("userId") int userId);

@@ -1,6 +1,7 @@
 package com.minbak.web.host_today;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,10 @@ import java.util.List;
 public class HostTodayService {
 
     private final HostTodayMapper hostTodayMapper;
+
+    public List<HostTodayDto> findMyRooms(@Param("userId") int userId) {
+        return hostTodayMapper.findMyRooms(userId);
+    }
 
     public List<HostTodayDto> getCheckOut(int userId) {
         return hostTodayMapper.getCheckOut(userId);
