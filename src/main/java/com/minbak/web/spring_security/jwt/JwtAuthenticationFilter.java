@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+//OncePerRequestFilter는 모든 요청에대해 실행되는 코드라 따로 설정해줘야함
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -32,8 +33,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     UsersMapper usersMapper;
 
     @Override
+    //OncePerRequestFilter 설정 변경
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String requestURI = request.getRequestURI();
+
+        // ✅ "/admin/**" 경로에서는 JWT 필터 실행하지 않음
+        return requestURI.startsWith("/admin/");
+    }
+
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
 
         // 요청 쿠키에서 jwtToken 값 가져오기
         String jwtToken = jwtUtil.getJwtTokenFromCookies(request);
@@ -78,6 +90,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 기존 Access Token이 유효하면 사용자 인증 처리
             String username = jwtUtil.extractUsername(jwtToken);
             List<String> roles = jwtUtil.extractRoles(jwtToken);
+
+            //user,HOST이렇게 오는 role을 ROLE_USER 이런식으로 만들어줌 UserRole 이눔?클래스
+            roles.replaceAll(UserRole::toRoleName);
+
+//            for(int i=0;i<roles.size();i++){
+//                roles.set(i,UserRole.fromRoleName(roles.get(i)));
+//            }
 
             UserDetails userDetails = new CustomUserDetails(usersMapper.findUserByEmail(username), roles);
 

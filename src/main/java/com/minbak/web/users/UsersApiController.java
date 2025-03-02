@@ -19,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,10 +40,13 @@ public class UsersApiController {
     private final CustomUserDetailsService customUserDetailsService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserDto userDTO) {
+    public ResponseEntity<Map<String, String>> signup(@RequestBody UserDto userDTO) {
         usersService.createUser(userDTO);
-        return ResponseEntity.ok("Signup successful");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Signup successful");
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> user, HttpServletResponse response) {

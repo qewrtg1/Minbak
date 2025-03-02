@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>숙소 기본 정보 입력</title>
+    <style>
+        /* 전체 화면을 중앙 정렬 */
+        body {
+          margin: 0;
+          padding: 0;
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f0f0f0;
+          font-family: Arial, sans-serif;
+        }
+        /* 컨텐츠를 담는 박스 */
+        .container {
+          background-color: #fff;
+          padding: 30px 40px;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          text-align: center;
+        }
+        h1 {
+          margin-bottom: 30px;
+        }
+        /* 카운터 컨테이너 */
+        .counter-container {
+          margin-bottom: 30px;
+        }
+        .counter {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+        .counter span.label {
+          font-size: 1.2rem;
+          flex: 1;
+          text-align: left;
+          padding-left: 10px;
+        }
+        /* -/+ 버튼 및 카운트 표시 영역 */
+        .controls {
+          display: flex;
+          align-items: center;
+        }
+        .controls button {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: none;
+          background-color: #ff9800;
+          color: #fff;
+          font-size: 1.2rem;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: background-color 0.2s;
+        }
+        .controls button:hover {
+          background-color: #e68900;
+        }
+        .controls span.count {
+          display: inline-block;
+          width: 50px;
+          text-align: center;
+          font-size: 1.2rem;
+          margin: 0 10px;
+        }
+        /* 다음 버튼 */
+        .next-btn {
+          background-color: #ff9800;
+          color: #fff;
+          padding: 15px 30px;
+          border: none;
+          border-radius: 5px;
+          font-size: 1.2rem;
+          text-decoration: none;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        .next-btn:hover {
+          background-color: #e68900;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>숙소 기본 정보를 알려주세요.</h1>
+    <div class="counter-container">
+        <div class="counter">
+            <span class="label">게스트</span>
+            <div class="controls">
+                <button onclick="decrement('guest')">-</button>
+                <span class="count" id="guestCount">0</span>
+                <button onclick="increment('guest')">+</button>
+            </div>
+        </div>
+        <div class="counter">
+            <span class="label">침실</span>
+            <div class="controls">
+                <button onclick="decrement('bedroom')">-</button>
+                <span class="count" id="bedroomCount">0</span>
+                <button onclick="increment('bedroom')">+</button>
+            </div>
+        </div>
+        <div class="counter">
+            <span class="label">침대</span>
+            <div class="controls">
+                <button onclick="decrement('bed')">-</button>
+                <span class="count" id="bedCount">0</span>
+                <button onclick="increment('bed')">+</button>
+            </div>
+        </div>
+        <div class="counter">
+            <span class="label">욕실</span>
+            <div class="controls">
+                <button onclick="decrement('bathroom')">-</button>
+                <span class="count" id="bathroomCount">0</span>
+                <button onclick="increment('bathroom')">+</button>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="next-btn">다음</a>
+</div>
+
+<script>
+    function increment(type) {
+      const countEl = document.getElementById(type + 'Count');
+      let count = parseInt(countEl.innerText, 10);
+      if (count < 8) {
+        countEl.innerText = count + 1;
+      }
+    }
+
+    function decrement(type) {
+      const countEl = document.getElementById(type + 'Count');
+      let count = parseInt(countEl.innerText, 10);
+      if (count > 0) {
+        countEl.innerText = count - 1;
+      }
+    }
+</script>
+</body>
+</html>

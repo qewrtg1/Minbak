@@ -8,6 +8,11 @@
     <img src="/uploads/logo-text.png" alt="로고" height="40"> <!-- 로고 -->
   </a>
 
+  <!--메시지 존재하면 얼럿-->
+  <div th:if="${message}" class="alert alert-success" role="alert">
+    <span th:text="${message}"></span>
+  </div>
+
   <!-- ✅ 우측 유저 정보 -->
   <div class="user-menu">
 
@@ -66,6 +71,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+              <a href="/signup" class="btn btn-success">회원가입</a> <!-- ✅ 회원가입 버튼 추가 -->
               <button type="button" class="btn btn-primary" id="loginBtn">로그인</button>
             </div>
           </div>

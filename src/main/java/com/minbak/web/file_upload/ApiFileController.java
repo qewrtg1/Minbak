@@ -1,9 +1,11 @@
 package com.minbak.web.file_upload;
 
+import com.minbak.web.spring_security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +31,8 @@ public class ApiFileController {
     @PostMapping("/upload-multiple")
     public ResponseEntity<?> uploadMultipleFiles(
             @RequestParam("roomId") int roomId,
-            @RequestParam("files") MultipartFile[] files) {
+            @RequestParam("files") MultipartFile[] files,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (files.length == 0) {
             return ResponseEntity.badRequest().body("업로드할 파일이 없습니다.");
@@ -39,7 +42,7 @@ public class ApiFileController {
 
         for (MultipartFile file : files) {
             try {
-                ImageFileDto imageFile = fileService.saveFile(file, roomId,"rooms");
+                ImageFileDto imageFile = fileService.saveFile(file, roomId,"rooms",userDetails.getUserId());
                 uploadedFiles.add(imageFile);
             } catch (IOException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -53,14 +56,15 @@ public class ApiFileController {
     @PostMapping("/upload-profile")
     public ResponseEntity<?> uploadProfile(
             @RequestParam("userId") int userId,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("업로드할 파일이 없습니다.");
         }
 
         try {
-            ImageFileDto imageFile = fileService.saveFile(file, userId, "users");
+            ImageFileDto imageFile = fileService.saveFile(file, userId, "users",userDetails.getUserId());
             return ResponseEntity.ok(imageFile);
 
         } catch (IOException e) {

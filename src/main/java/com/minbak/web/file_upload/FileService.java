@@ -1,7 +1,9 @@
 package com.minbak.web.file_upload;
 
+import com.minbak.web.spring_security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +24,7 @@ public class FileService {
     FileMapper fileMapper;
 
 
-    public ImageFileDto saveFile(MultipartFile file, int roomId, String type) throws IOException {
+    public ImageFileDto saveFile(MultipartFile file, int roomId, String type, Integer userId) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
 
@@ -42,7 +44,9 @@ public class FileService {
         imageFile.setEntityType(type); // type 타입으로 저장
         //해당 room의Id
         imageFile.setEntityId(roomId);
-        // TODO 유저 아이디 추가
+        //유저 아이디 추가
+        imageFile.setUserId(userId);
+
         fileMapper.insertImageFile(imageFile);
 
         return imageFile;

@@ -95,6 +95,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll() // 공개 API
                         .requestMatchers("/login","/api/login", "/api/refresh", "/api/signup","/","/room/**","/uploads/**").permitAll()
+                        .requestMatchers("/host/**").hasRole("HOST")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(auth -> auth
