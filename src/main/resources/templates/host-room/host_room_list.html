@@ -29,18 +29,24 @@
     <td th:text="${room.price}"></td>
     <td th:text="${room.content}"></td>
     <td>
-      <a th:href="@{/user/host/room/edit/{id}(id=${room.roomId})}">수정</a>
+      <a th:href="@{/host/room/edit/{id}(id=${room.roomId})}">수정</a>
     </td>
     <td>
-      <form th:action="@{/user/host/room/delete}" method="post">
-        <input type="hidden" name="roomId" th:value="${room.roomId}">
-        <button type="submit">삭제</button>
-      </form>
+<!--      <form th:action="@{/host/room/delete}" method="post">-->
+<!--        <input type="hidden" name="roomId" th:value="${room.roomId}">-->
+<!--        <button type="submit">삭제</button>-->
+<!--      </form>-->
+
+      <a th:href="@{/host/room/delete/{roomId}(roomId=${room.roomId})}"
+         onclick="return confirm('정말 삭제하시겠습니까?');">
+        <button>삭제</button>
+      </a>
+
     </td>
   </tr>
   </tbody>
 </table>
 
-<a href="/user/host/room/add">새 숙소 등록</a>
+<a href="/host/room/add"><button>숙소 등록</button></a>
 </body>
 </html>

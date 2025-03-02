@@ -4,14 +4,33 @@
 
 <mapper namespace="com.minbak.web.host_room.HostRoomMapper">
 
-<!--    호스트 여부를 확인하는 SQL을 작성-->
-    <select id="isHostUser" parameterType="int" resultType="boolean">
-        SELECT EXISTS (
-        SELECT 1 FROM host WHERE user_id = #{userId}
-        )
-    </select>
-<!--숙소 목록 조회-->
+
+    <!--숙소 목록 조회-->
     <select id="findRoomsByHost" parameterType="int" resultType="com.minbak.web.host_room.HostRoomDTO">
         SELECT * FROM rooms WHERE user_id = #{userId}
     </select>
+    <!--숙소 추가-->
+    <insert id="insertHostRoom" parameterType="com.minbak.web.host_room.HostRoomDTO">
+        INSERT INTO rooms (user_id, name, title, content, address, price, max_guests, building_type)
+        VALUES (#{userId}, #{name}, #{title}, #{content}, #{address}, #{price}, #{maxGuests}, #{buildingType});
+    </insert>
+
+
+    <!-- 숙소 정보 불러오기 -->
+    <select id="findRoomById" parameterType="int" resultType="com.minbak.web.host_room.HostRoomDTO">
+        SELECT * FROM rooms WHERE room_id = #{roomId};
+    </select>
+
+    <!-- 숙소 수정 -->
+    <update id="updateHostRoom" parameterType="com.minbak.web.host_room.HostRoomDTO">
+        UPDATE rooms
+        SET name = #{name}, title = #{title}, content = #{content},
+        address = #{address}, price = #{price}, max_guests = #{maxGuests}, building_type = #{buildingType}
+        WHERE room_id = #{roomId};
+    </update>
+    <!--숙소 삭제>-->
+    <delete id="deleteHostRoom" parameterType="int">
+        DELETE FROM rooms WHERE room_id = #{roomId};
+    </delete>
+
 </mapper>
