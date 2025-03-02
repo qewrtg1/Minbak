@@ -1,6 +1,7 @@
 package com.minbak.web.global;
 
 import com.minbak.web.main_page.MainPageService;
+import com.minbak.web.user_YH.dto.DetailUserResponse;
 import com.minbak.web.users.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,13 @@ public class GlobalControllerAdvice {
 
         if (authentication != null){
             int userId = usersService.findUserIdByEmail(authentication.getName());
+            DetailUserResponse detailUserResponse = usersService.getUserInfo(userId);
 
-            model.addAttribute("headerUser",usersService.getUserInfo(userId));
+            if(usersService.findHostByUserId(userId) != null){
+                detailUserResponse.setIsHost(true);
+            }
+
+            model.addAttribute("headerUser",detailUserResponse);
 
         }else {
             model.addAttribute("headerUser",usersService.getUserInfo(0));
