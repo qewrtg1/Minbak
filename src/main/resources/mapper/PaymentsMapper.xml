@@ -94,4 +94,98 @@
         WHERE merchant_uid = #{merchantUid}
     </update>
 
+    <!--결제정보 필터링 조회    -->
+    <select id="filterPaymentsByPaymentDto" parameterType="com.minbak.web.payments.RequestPaymentDto" resultType="com.minbak.web.payments.PaymentDto">
+            SELECT * FROM payments
+            <where>
+            <if test="paymentId != null">
+                AND payment_id = #{paymentId}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="bookId != null">
+                AND book_id = #{bookId}
+            </if>
+
+            <!-- 금액 범위 조건 추가 -->
+            <if test="minAmount != null">
+                AND amount &gt; #{minAmount}
+            </if>
+            <if test="maxAmount != null">
+                AND amount &lt; #{maxAmount}
+            </if>
+
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="method != null and method != ''">
+                AND method = #{method}
+            </if>
+            <if test="transactionId != null and transactionId != ''">
+                AND transaction_id = #{transactionId}
+            </if>
+            <if test="paidAt != null">
+                AND paid_at = #{paidAt}
+            </if>
+            <if test="createdAt != null">
+                AND created_at = #{createdAt}
+            </if>
+            <if test="roomName != null and roomName != ''">
+                AND room_name = #{roomName}
+            </if>
+            <if test="merchantUid != null and merchantUid != ''">
+                AND merchant_uid = #{merchantUid}
+            </if>
+            </where>
+        ORDER BY payment_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 필터 결제 정보 개수 조회 -->
+    <select id="countFilterPayments" resultType="int" parameterType="com.minbak.web.payments.RequestPaymentDto">
+            SELECT count(*) FROM payments
+            <where>
+                <if test="paymentId != null">
+                    AND payment_id = #{paymentId}
+                </if>
+                <if test="userId != null">
+                    AND user_id = #{userId}
+                </if>
+                <if test="bookId != null">
+                    AND book_id = #{bookId}
+                </if>
+
+                <!-- 금액 범위 조건 추가 -->
+                <if test="minAmount != null">
+                    AND amount &gt; #{minAmount}
+                </if>
+                <if test="maxAmount != null">
+                    AND amount &lt; #{maxAmount}
+                </if>
+
+                <if test="status != null and status != ''">
+                    AND status = #{status}
+                </if>
+                <if test="method != null and method != ''">
+                    AND method = #{method}
+                </if>
+                <if test="transactionId != null and transactionId != ''">
+                    AND transaction_id = #{transactionId}
+                </if>
+                <if test="paidAt != null">
+                    AND paid_at = #{paidAt}
+                </if>
+                <if test="createdAt != null">
+                    AND created_at = #{createdAt}
+                </if>
+                <if test="roomName != null and roomName != ''">
+                    AND room_name = #{roomName}
+                </if>
+                <if test="merchantUid != null and merchantUid != ''">
+                    AND merchant_uid = #{merchantUid}
+                </if>
+            </where>
+    </select>
+
 </mapper>

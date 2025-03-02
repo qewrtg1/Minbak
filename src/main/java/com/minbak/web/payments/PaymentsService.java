@@ -63,4 +63,15 @@ public class PaymentsService {
         paymentsMapper.updateBookStatus(status,bookId);
     }
 
+    // 예약 필터 적용하여 결제 정보 조회
+    public PageDto<PaymentDto> filterPaymentsByPaymentDto(RequestPaymentDto requestPaymentDto,int page, int size){
+        int offset = (page-1)*size;
+        int totalPage = paymentsMapper.countFilterPayments(requestPaymentDto);
+        requestPaymentDto.setLimit(size);
+        requestPaymentDto.setOffset(offset);
+        List<PaymentDto> paymentDtos=paymentsMapper.filterPaymentsByPaymentDto(requestPaymentDto);
+       PageDto<PaymentDto> pageDto=new PageDto<>(page,size,totalPage,paymentDtos);
+        return  pageDto;
+    }
+
 }

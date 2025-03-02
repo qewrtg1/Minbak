@@ -16,8 +16,8 @@
     <div class="card p-4 shadow-sm">
         <div class="mb-3">
             <p><strong>결제 ID:</strong> <span th:text="${payment.paymentId}"></span></p>
-            <p><strong>회원 ID:</strong> <span th:text="${payment.userId}"></span></p>
-            <p><strong>예약 ID:</strong> <span th:text="${payment.bookId}"></span></p>
+            <p><a style=" text-decoration: none" th:href="@{/admin/users/detail/{userId}(userId=${payment.userId})}"><strong>회원 ID:</strong> <span th:text="${payment.userId}"></span></a></p>
+            <p><a style=" text-decoration: none" th:href="@{/admin/books/{bookId}(bookId=${payment.bookId})}"><strong>예약 ID:</strong> <span th:text="${payment.bookId}"></span></a></p>
             <p><strong>금액:</strong> <span th:text="${payment.amount}"></span> 원</p>
             <p><strong>상태:</strong> <span th:text="${payment.status}"></span></p>
             <p><strong>결제 방법:</strong> <span th:text="${payment.method}"></span></p>
