@@ -14,7 +14,7 @@
                 display: flex;
                 gap: 20px;
                 max-width: 1680px;
-                margin: 50px auto;
+                margin: 0px auto 50px;
                 padding: 20px;
             }
 
@@ -63,7 +63,7 @@
             /* 중형 카드 */
             .medium-card {
                 width: calc(30%); /* 너비를 줄여서 너무 길어 보이는 문제 해결 */
-                height: 250px; /* 높이를 늘려서 너무 낮아 보이는 문제 해결 */
+                height: 270px; /* 높이를 늘려서 너무 낮아 보이는 문제 해결 */
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -113,12 +113,11 @@
                 max-width: 100%;
             }
 
-
         </style>
     </th:block>
 </head>
 
-<body>
+<body style="overflow-y:hidden;">
 <th:block layout:fragment="content">
     <main class="main-content">
         <div class="dashboard-container">
@@ -217,135 +216,131 @@
 
 
                 <div class="card small-card">최근 신고 내역<br>신고한 사람, 신고당한 사람, 사유, 해결 여부</div>
+                <div class="dashboard-container">
 
-                <!-- 추가 html-->
-<!--    -->
-<!--                &lt;!&ndash; 지역별 숙소 &ndash;&gt;-->
-<!--                <div class="card medium-card" style="width: 100%;">-->
-<!--                    <strong>지역별 숙소 개수</strong>-->
-<!--                    <div class="reported-rooms-container">-->
-<!--                        <table class="reported-rooms-table">-->
-<!--                            <thead>-->
-<!--                            <tr>-->
-<!--                                <th>지역</th>-->
-<!--                                <th>숙소 개수</th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr th:each="region : ${regionRoomCounts}">-->
-<!--                                <td th:text="${region.regionName}"></td>-->
-<!--                                <td th:text="${region.roomCount}"></td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--    -->
-<!--                &lt;!&ndash; 카테고리별 인기 숙소 &ndash;&gt;-->
-<!--                <div class="card medium-card" style="width: 100%;">-->
-<!--                    <strong>카테고리별 인기 숙소</strong>-->
-<!--                    <div class="reported-rooms-container">-->
-<!--                        <table class="reported-rooms-table">-->
-<!--                            <thead>-->
-<!--                            <tr>-->
-<!--                                <th>카테고리</th>-->
-<!--                                <th>숙소 이름</th>-->
-<!--                                <th>예약 건수</th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr th:each="room : ${popularCategoryRooms}">-->
-<!--                                <td th:text="${room.categoryName}"></td>-->
-<!--                                <td>-->
-<!--                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}"-->
-<!--                                       th:text="${room.roomName}" style="text-decoration: none; color: #007bff;">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                                <td th:text="${room.bookCount}"></td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--    -->
-<!--                &lt;!&ndash; 옵션별 인기 숙소 &ndash;&gt;-->
-<!--                <div class="card medium-card" style="width: 100%;">-->
-<!--                    <strong>옵션별 인기 숙소</strong>-->
-<!--                    <div class="reported-rooms-container">-->
-<!--                        <table class="reported-rooms-table">-->
-<!--                            <thead>-->
-<!--                            <tr>-->
-<!--                                <th>옵션</th>-->
-<!--                                <th>숙소 이름</th>-->
-<!--                                <th>예약 건수</th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr th:each="room : ${popularOptionRooms}">-->
-<!--                                <td th:text="${room.optionName}"></td>-->
-<!--                                <td>-->
-<!--                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}"-->
-<!--                                       th:text="${room.roomName}" style="text-decoration: none; color: #007bff;">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                                <td th:text="${room.bookCount}"></td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--    -->
-<!--                &lt;!&ndash; 인기 많은 숙소 &ndash;&gt;-->
-<!--                <div class="card medium-card" style="width: 100%;">-->
-<!--                    <strong>인기 많은 숙소 (TOP 5)</strong>-->
-<!--                    <div class="reported-rooms-container">-->
-<!--                        <table class="reported-rooms-table">-->
-<!--                            <thead>-->
-<!--                            <tr>-->
-<!--                                <th>숙소 이름</th>-->
-<!--                                <th>예약 건수</th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr th:each="room : ${topBookedRooms}">-->
-<!--                                <td>-->
-<!--                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}"-->
-<!--                                       th:text="${room.roomName}" style="text-decoration: none; color: #007bff;">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                                <td th:text="${room.bookCount}"></td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--    -->
-<!--                &lt;!&ndash; 별점별 숙소 &ndash;&gt;-->
-<!--                <div class="card medium-card" style="width: 100%;">-->
-<!--                    <strong>별점별 숙소</strong>-->
-<!--                    <div class="reported-rooms-container">-->
-<!--                        <table class="reported-rooms-table">-->
-<!--                            <thead>-->
-<!--                            <tr>-->
-<!--                                <th>숙소 이름</th>-->
-<!--                                <th>별점</th>-->
-<!--                                <th>리뷰 수</th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr th:each="room : ${topRatedRooms}">-->
-<!--                                <td>-->
-<!--                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}"-->
-<!--                                       th:text="${room.roomName}" style="text-decoration: none; color: #007bff;">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                                <td th:text="${room.rating}"></td>-->
-<!--                                <td th:text="${room.reviewCount}"></td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                </div>-->
+
+            </div>
+
+            <!-- 대시보드 추가 섹션 -->
+            <div class="dashboard-left" style="display: flex; flex-wrap: wrap; gap: 20px;">
+
+                <!-- 지역별 숙소 개수 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>지역별 숙소 개수</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>지역</th>
+                                <th>숙소 개수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="region : ${regionRoomCounts}">
+                                <td th:text="${region.city}"></td>
+                                <td th:text="${region.roomCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 인기 카테고리 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>인기 카테고리 (TOP 5)</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>카테고리</th>
+                                <th>예약 건수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="category : ${popularCategories}">
+                                <td th:text="${category.categoryName}"></td>
+                                <td th:text="${category.bookingCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 인기 옵션 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>인기 옵션 (TOP 5)</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>옵션</th>
+                                <th>사용된 숙소 개수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="option : ${popularOptions}">
+                                <td th:text="${option.optionName}"></td>
+                                <td th:text="${option.usageCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 인기 많은 숙소 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>인기 많은 숙소 (TOP 5)</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>숙소 이름</th>
+                                <th>예약 건수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="room : ${popularRooms}">
+                                <td>
+                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}"
+                                       th:text="${room.roomName}" style="text-decoration: none; color: #007bff;">
+                                    </a>
+                                </td>
+                                <td th:text="${room.bookingCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 별점 높은 숙소 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>별점 높은 숙소 (TOP 5)</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>숙소 이름</th>
+                                <th>평균 별점</th>
+                                <th>리뷰 수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="room : ${topRatedRooms}">
+                                <td>
+                                    <a th:href="@{/admin/rooms/detail/{id}(id=${room.roomId})}"
+                                       th:text="${room.roomName}" style="text-decoration: none; color: #007bff;">
+                                    </a>
+                                </td>
+                                <td th:text="${room.avgRating}"></td>
+                                <td th:text="${room.reviewCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
 
             </section>
 

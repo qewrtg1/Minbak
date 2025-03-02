@@ -23,41 +23,61 @@ public class DashBoardController {
 
     @GetMapping
     public String dashBoard(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        // ✅ 캐싱된 데이터 가져오기 (신고 건수, 통계, 예약 데이터)
+        // 캐싱된 데이터 가져오기 (신고 건수, 통계, 예약 데이터)
         model.addAttribute("userReportCount", dashBoardService.getUserReportCount());
         model.addAttribute("roomReportCount", dashBoardService.getRoomReportCount());
         model.addAttribute("hostVerificationCount", dashBoardService.getHostVerificationCount());
 
-        // ✅ 캐싱된 사용자 비율 가져오기
+        // 캐싱된 사용자 비율 가져오기
         Map<String, Integer> userRatio = dashBoardService.getUserRatio();
         model.addAttribute("userRatio", userRatio);
 
-        // ✅ 캐싱된 월별 예약 데이터 추가
+        // 캐싱된 월별 예약 데이터 추가
         model.addAttribute("monthlyReservations", dashBoardService.getMonthlyReservations());
 
-        // ✅ 캐싱된 월별 매출 데이터 추가
+        // 캐싱된 월별 매출 데이터 추가
         model.addAttribute("monthlyRevenue", dashBoardService.getMonthlyRevenue());
 
-        // ✅ 캐싱된 통계 데이터 추가
+        // 캐싱된 통계 데이터 추가
         model.addAttribute("statistics", dashBoardService.getStatistics());
 
-        // ✅ 캐싱된 최신 신고 숙소 데이터 추가
+        // 캐싱된 최신 신고 숙소 데이터 추가
         model.addAttribute("recentReportedRooms", dashBoardService.getRecentReportedRooms());
 
-        // ✅ 캐싱된 예약 취소 비율 데이터 추가
+        // 캐싱된 예약 취소 비율 데이터 추가
         model.addAttribute("reservationRatio", dashBoardService.getReservationStatusRatio());
 
-        // ✅ 캐싱된 관리자 리스트 추가
+        // 캐싱된 관리자 리스트 추가
         model.addAttribute("adminList", dashBoardService.getAllAdmins());
 
-        // ✅ 캐싱된 카테고리별 숙소 개수 추가
+        // 캐싱된 카테고리별 숙소 개수 추가
         model.addAttribute("categoryRoomCounts", dashBoardService.getRoomsByCategory());
 
-        // ✅ 캐싱된 옵션별 숙소 개수 추가
+        // 캐싱된 옵션별 숙소 개수 추가
         model.addAttribute("optionRoomCounts", dashBoardService.getRoomsByOption());
 
-        // ✅ 유저 정보 캐싱 적용
+        // 유저 정보 캐싱 적용
         model.addAttribute("user", usersService.findUserByUserId(userDetails.getUserId()));
+
+        // 지역별 숙소 개수
+        List<RegionRoomCountDto> regionRoomCounts = dashBoardService.countRoomsByRegion();
+        model.addAttribute("regionRoomCounts", regionRoomCounts);
+
+        // 인기 카테고리 (Top 5)
+        List<PopularCategoryDto> popularCategories = dashBoardService.findPopularCategory();
+        model.addAttribute("popularCategories", popularCategories);
+
+        // 인기 옵션 (Top 5)
+        List<PopularOptionDto> popularOptions = dashBoardService.findPopularOption();
+        model.addAttribute("popularOptions", popularOptions);
+
+        // 인기 많은 숙소 (Top 5)
+        List<PopularRoomDto> popularRooms = dashBoardService.findPopularRooms();
+        model.addAttribute("popularRooms", popularRooms);
+
+        // 별점 높은 숙소 (Top 5)
+        List<TopRatedRoomDto> topRatedRooms = dashBoardService.getTopRatedRooms();
+        model.addAttribute("topRatedRooms", topRatedRooms);
 
         return "dash-board";
     }

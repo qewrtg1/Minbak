@@ -27,6 +27,16 @@ public interface DashBoardMapper {
     List<OptionRoomCountDto> countRoomsByOption();
     void insertMessage(Integer senderId, Integer receiverId, String content);
 
+    List<RegionRoomCountDto> countRoomsByRegion();
+
+    List<PopularCategoryDto> findPopularCategory();
+
+    List<PopularOptionDto> findPopularOption();
+
+    List<PopularRoomDto> findPopularRooms();
+
+    List<TopRatedRoomDto> findTopRatedRooms();
+
 }
 
 

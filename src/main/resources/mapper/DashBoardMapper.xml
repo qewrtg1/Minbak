@@ -130,5 +130,99 @@
     </insert>
 
 
+    <!-- 지역별 숙소 개수 조회 -->
+    <select id="countRoomsByRegion" resultType="com.minbak.web.dash_board.RegionRoomCountDto">
+        SELECT
+        CASE
+        WHEN address LIKE '제주%' THEN '제주'
+        WHEN address LIKE '서울%' THEN '서울'
+        WHEN address LIKE '부산%' THEN '부산'
+        WHEN address LIKE '속초%' THEN '속초'
+        WHEN address LIKE '강릉%' THEN '강릉'
+        WHEN address LIKE '전주%' THEN '전주'
+        WHEN address LIKE '대구%' THEN '대구'
+        WHEN address LIKE '경주%' THEN '경주'
+        WHEN address LIKE '여수%' THEN '여수'
+        WHEN address LIKE '서귀포%' THEN '서귀포'
+        WHEN address LIKE '대전%' THEN '대전'
+        WHEN address LIKE '인천%' THEN '인천'
+        END AS city,
+        COUNT(*) AS room_count
+        FROM rooms
+        WHERE address LIKE '서울%'
+        OR address LIKE '부산%'
+        OR address LIKE '제주%'
+        OR address LIKE '속초%'
+        OR address LIKE '강릉%'
+        OR address LIKE '전주%'
+        OR address LIKE '대구%'
+        OR address LIKE '경주%'
+        OR address LIKE '여수%'
+        OR address LIKE '서귀포%'
+        OR address LIKE '대전%'
+        OR address LIKE '인천%'
+        GROUP BY city
+        ORDER BY room_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 인기 카테고리 -->
+    <select id="findPopularCategory" resultType="com.minbak.web.dash_board.PopularCategoryDto">
+        SELECT
+        rc.category_id,
+        c.name AS category_name,
+        COUNT(b.book_id) AS booking_count
+        FROM rooms_categories rc
+        JOIN categories c ON rc.category_id = c.category_id
+        JOIN rooms r ON rc.room_id = r.room_id
+        JOIN books b ON r.room_id = b.room_id  -- 예약이 존재하는 숙소만 카운트
+        GROUP BY rc.category_id, c.name
+        ORDER BY booking_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 옵션별 인기 숙소 (예약 많은 순) -->
+    <select id="findPopularOption" resultType="com.minbak.web.dash_board.PopularOptionDto">
+        SELECT
+        ro.option_id,
+        ro.name AS option_name,
+        COUNT(rro.room_id) AS usage_count
+        FROM rooms_room_options rro
+        JOIN room_options ro ON rro.option_id = ro.option_id
+        GROUP BY ro.option_id, ro.name
+        ORDER BY usage_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 인기 많은 숙소 (예약 많은 순) -->
+    <select id="findPopularRooms" resultType="com.minbak.web.dash_board.PopularRoomDto">
+        SELECT
+        r.room_id,
+        r.name AS room_name,
+        r.address,
+        COUNT(b.book_id) AS booking_count
+        FROM rooms r
+        JOIN books b ON r.room_id = b.room_id  -- 예약이 존재하는 숙소만 카운트
+        GROUP BY r.room_id, r.name, r.address
+        ORDER BY booking_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 별점별 숙소 (평균 별점 높은 순) -->
+    <select id="findTopRatedRooms" resultType="com.minbak.web.dash_board.TopRatedRoomDto">
+        SELECT
+        r.room_id,
+        r.name AS room_name,
+        r.address,
+        ROUND(AVG(rev.score), 2) AS avg_rating,
+        COUNT(rev.review_id) AS review_count
+        FROM rooms r
+        JOIN review rev ON r.room_id = rev.book_id
+        GROUP BY r.room_id, r.name, r.address
+        HAVING review_count > 0
+        ORDER BY avg_rating DESC, review_count DESC
+        LIMIT 5;
+    </select>
+
 </mapper>
 

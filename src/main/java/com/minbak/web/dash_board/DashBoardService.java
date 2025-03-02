@@ -116,5 +116,30 @@ public class DashBoardService {
     public void sendMessage(Integer senderId, Integer receiverId, String content) {
         dashBoardMapper.insertMessage(senderId, receiverId, content);
     }
+
+    @Cacheable(value = "dashboard", key = "'RegionRoomCountDto'")
+    public List<RegionRoomCountDto> countRoomsByRegion() {
+        return dashBoardMapper.countRoomsByRegion();
+    }
+
+    @Cacheable(value = "dashboard", key = "'PopularCategoryDto'")
+    public List<PopularCategoryDto> findPopularCategory() {
+        return dashBoardMapper.findPopularCategory();
+    }
+
+    @Cacheable(value = "dashboard", key = "'PopularOptionDto'")
+    public List<PopularOptionDto> findPopularOption() {
+        return dashBoardMapper.findPopularOption();
+    }
+
+    @Cacheable(value = "dashboard", key = "'PopularRoomDto'")
+    public List<PopularRoomDto> findPopularRooms() {
+        return dashBoardMapper.findPopularRooms();
+    }
+
+    @Cacheable(value = "dashboard", key = "'topRatedRooms'")
+    public List<TopRatedRoomDto> getTopRatedRooms() {
+        return dashBoardMapper.findTopRatedRooms();
+    }
 }
 
