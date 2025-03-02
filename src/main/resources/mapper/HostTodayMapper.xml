@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.host_today.HostTodayMapper">
+    <!--호스팅 페이지-->
+    <select id="findMyRooms" resultType="com.minbak.web.host_today.HostTodayDto">
+        select r.title, r.address, (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS roomImageUrl
+        from rooms r
+        where r.user_id = #{userId};
+    </select>
+    <select id="getCheckOut" resultType="com.minbak.web.host_today.HostTodayDto">
+        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        from books b
+        join users u ON b.user_id = u.user_id
+        join rooms r ON b.room_id = r.room_id
+        where r.user_id = #{userId}
+        and b.status = '완료'
+        and b.end_date = current_date()
+    </select>
+
+    <select id="getOngoing" resultType="com.minbak.web.host_today.HostTodayDto">
+        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        from books b
+        join users u ON b.user_id = u.user_id
+        join rooms r ON b.room_id = r.room_id
+        where r.user_id = #{userId}
+        and current_date() between b.start_date and b.end_date
+    </select>
+
+    <select id="getCheckIn" resultType="com.minbak.web.host_today.HostTodayDto">
+        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        from books b
+        left join users u ON b.user_id = u.user_id
+        left join rooms r ON b.room_id = r.room_id
+        where r.user_id = #{userId}
+        and b.status = '완료'
+        and b.start_date = current_date()
+    </select>
+
+    <select id="getUpcoming" resultType="com.minbak.web.host_today.HostTodayDto">
+        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        from books b
+        join users u ON b.user_id = u.user_id
+        join rooms r ON b.room_id = r.room_id
+        where r.user_id = #{userId}
+        and b.start_date > current_date()
+        and b.status in ('대기', '완료')
+        order by b.start_date
+    </select>
+
+    <select id="getPendingReviews" resultType="com.minbak.web.host_today.HostTodayDto">
+        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        WHERE entity_id = r.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        from books b
+        join users u ON b.user_id = u.user_id
+        join rooms r ON b.room_id = r.room_id
+        join review rv on b.book_id = rv.book_id
+        where r.user_id = #{userId}
+        and current_date() > b.end_date
+        and b.status = '완료'
+        and rv.review_id is null
+    </select>
+</mapper>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>호스트 알림판</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .reservation-container { max-width: 1100px; margin: 50px auto; padding: 20px; border-radius: 8px; background: white; }
+        .status-pending { color: #ff9800; font-weight: bold; }
+        .status-approved { color: #4caf50; font-weight: bold; }
+        .status-declined { color: #f44336; font-weight: bold; }
+        .btn-action { margin-right: 5px; }
+
+        /* ✅ 헤더 스타일 */
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #ddd; background: white; }
+        .menu { display: flex; gap: 20px; font-weight: 500; }
+        .menu a { text-decoration: none; color: black; transition: 0.2s; }
+        .menu a:hover { color: #ff385c; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+        /* ✅ 섹션 스타일 */
+        .section { padding-top: 64px; color: #222; }
+        .contents { padding: 0 80px; }
+        .roomList { display: flex; }
+        .room-item { margin-left: 10px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .guide { margin-top: 8px; color: #6a6a6a; font-size: 1rem; line-height: 1.25rem; }
+        .guide>span { color: #717171; font-size: 1rem; font-weight: 400; line-height: 1.25rem; }
+        .reservation-item { border: 1px solid #ddd; border-radius: 5px; margin-bottom: 1rem; }
+        .reservation-details { padding: 1rem; }
+
+        /* ✅ 필터 스타일 */
+        .filter-container { padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 15px; }
+        .row { display: flex; align-items: center; }
+        .img-fluid { border-radius: 8px; }
+    </style>
+</head>
+<body>
+<!-- ✅ 헤더 -->
+<div class="header">
+    <a href="/">
+        <img src="/uploads/logo-text.png" alt="로고" height="30"> <!-- 로고 -->
+    </a>
+
+    <!-- ✅ 중앙 메뉴 -->
+    <nav class="menu">
+        <a href="/host/today">투데이</a>
+        <a href="/host/rooms">숙소</a>
+        <a href="/host/messages">메시지</a>
+        <a href="/host/books">예약</a>
+        <a href="/host/new-room">새로운 숙소 등록하기</a>
+    </nav>
+
+    <!-- ✅ 우측 유저 정보 -->
+    <div class="user-menu">
+        <button class="btn btn-light">🔔 알림</button>
+        <img th:src="${headerUser.profileImageUrl}" alt="프로필 이미지" class="profile-img">
+        <span th:text="${headerUser.name}">사용자 이름</span>
+    </div>
+</div>
+
+<!-- ✅ 섹션 영역 -->
+<div class="section">
+    <div class="contents">
+        <h1 th:text="${headerUser.name} + '님, 안녕하세요!'"></h1>
+        <h2 class="guide">
+            <span>숙소 등록 후 24시간이 지나면 게스트가 숙소를 예약할 수 있습니다. 예약을 받을 수 있도록 숙소 설정을 마쳐보세요.</span>
+        </h2>
+        <!--등록된 숙소가 존재하지 않을 경우-->
+        <div class="roomList">
+            <div class="room-item">
+                <div style="color: red">중요 정보 입력하기</div>
+                <div style="color: red">숙소 등록을 완료하려면 필수</div>
+                <a style="color: inherit" href="/host/license">계속</a>
+            </div>
+        </div>
+        <!--등록된 숙소가 존재할 경우-->
+        <div th:if="${hasRooms}" class="roomList">
+            <div class="room-item" th:each="room : ${rooms}">
+                <img th:src="${room.roomImageUrl}" alt="숙소 이미지" class="img-fluid rounded" style="width: 350px; height: 180px; margin-bottom: 10px; object-fit: cover;">
+                <h6 class="card-title" th:text="${room.title}"></h6>
+                <div class="card-text" th:text="${room.address}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ 예약 영역 -->
+<div class="container reservation-container">
+    <h1>예약</h1>
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item"><button class="nav-link active" onclick="fetchData('checkout')">체크아웃 예정</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('ongoing')">현재 호스팅 중</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('checkin')">체크인 예정</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('upcoming')">예정</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('pending-review')">작성할 후기</button></li>
+    </ul>
+    <div id="reservationList" class="mb-3"></div>
+</div>
+
+<!-- ✅ Bootstrap & JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    // 페이지 로드 시 자동으로 체크아웃 예정 데이터를 가져오기
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchData('checkout'); // 페이지가 로드되면 체크아웃 예정 목록을 자동으로 가져옴
+    });
+    function fetchData(status) {
+        axios.get(`/host/today/${status}`)
+            .then(function(response) {
+                const data = response.data;
+                const reservationListContainer = document.getElementById('reservationList');
+                reservationListContainer.innerHTML = ''; // 기존 목록을 비움
+
+                // 데이터가 없으면 메시지를 표시
+                if (data.length === 0) {
+                    reservationListContainer.innerHTML = `<p>현재 ${status}에 해당하는 예약이 없습니다.</p>`;
+                    return;
+                }
+
+                // 데이터 렌더링
+                data.forEach(function(item) {
+                    const reservationElement = document.createElement('div');
+                    reservationElement.classList.add('reservation-item');
+                    reservationElement.innerHTML = `
+                        <div class="card-body">
+                            <div class="row mb-3 align-items-center">
+                                <!-- 좌측: 숙소 이미지 -->
+                                <div class="col-md-6">
+                                    <img src="${item.roomImageUrl}" alt="숙소 이미지" class="img-fluid rounded" style="width: 100%; height: 180px; object-fit: cover;">
+                                </div>
+                                <!-- 우측: 예약 정보 -->
+                                <div class="col-md-6">
+                                    <h5>${item.roomName}</h5>
+                                    <p><strong>게스트 이름:</strong> ${item.userName}</p>
+                                    <p><strong>체크인:</strong> ${formatDate(item.startDate)}</p>
+                                    <p><strong>체크아웃:</strong> ${formatDate(item.endDate)}</p>
+                                    <p><strong>손님 수:</strong> ${item.guestsNum}</p>
+                                    <p><strong>상태:</strong> ${item.status}</p>
+                                    ${item.reviewId === null ? `<p><strong>작성할 후기 있음</strong></p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    reservationListContainer.appendChild(reservationElement);
+                });
+            })
+            .catch(function(error) {
+                console.error('Error fetching data:', error);
+            });
+
+        // 탭 버튼 활성화 처리
+        document.querySelectorAll(".nav-link").forEach(button => {
+            button.classList.remove("active");
+        });
+
+        let activeButton = document.querySelector(`.nav-link[onclick="fetchData('${status}')"]`);
+        if (activeButton) {
+            activeButton.classList.add("active");
+        }
+    }
+
+    // 날짜를 "YYYY-MM-DD" 형식으로 변환
+    function formatDate(date) {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+</script>
+
+</body>
+</html>

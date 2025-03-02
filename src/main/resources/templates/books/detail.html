@@ -46,25 +46,34 @@
         margin-bottom: 10px;
       }
       /* 버튼 스타일 */
-      .btn-custom {
+      .btn-back, .btn-custom, .btn-danger {
         width: 100%;
         padding: 10px;
         font-size: 16px;
+        border-radius: 5px;
+      }
+      .btn-back {
+        line-height: 1.5;
+        background-color: #00b600;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-bottom: 20px;
+      }
+      .btn-back:hover {
+        background-color: #008000;
+      }
+      .btn-custom {
         background-color: #007bff;
         color: white;
         border: none;
-        border-radius: 5px;
         cursor: pointer;
+        line-height: 1.5;
         transition: background-color 0.3s;
       }
       .btn-custom:hover {
         background-color: #0056b3;
-      }
-      .btn-danger {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 5px;
       }
       .booksFoot h4 {
         text-align: center;
@@ -147,6 +156,7 @@
         </div>
 
         <div class="mt-4">
+          <button class="btn-back" onclick="location.href='/admin/books'">돌아가기</button>
           <button onclick="editReq()" class="btn-custom">수정</button>
           <button onclick="deleteReq()" class="btn btn-danger mt-3">삭제</button>
         </div>
@@ -160,14 +170,14 @@
   </main>
 </th:block>
 <th:block layout:fragment="js">
+  <script th:inline="javascript">
+    const editReq = () => {
+      location.href = `/admin/books/edit/[[${books.bookId}]]`;
+    }
+    const deleteReq = () => {
+      location.href = `/admin/books/delete/[[${books.bookId}]]`;
+    }
+  </script>
 </th:block>
-<script th:inline="javascript">
-  const editReq = () => {
-    location.href = `/admin/books/edit/[[${books.bookId}]]`;
-  }
-  const deleteReq = () => {
-    location.href = `/admin/books/delete/[[${books.bookId}]]`;
-  }
-</script>
 </body>
 </html>
