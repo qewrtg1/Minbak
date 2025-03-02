@@ -4,8 +4,8 @@
 <mapper namespace="com.minbak.web.file_upload.FileMapper">
 
     <insert id="insertImageFile">
-        INSERT INTO image_files (file_url, file_name, file_size, entity_type, entity_id, uploaded_at)
-        VALUES (#{fileUrl}, #{fileName}, #{fileSize}, #{entityType}, #{entityId}, NOW());
+        INSERT INTO image_files (file_url, file_name, file_size,user_id, entity_type, entity_id, uploaded_at)
+        VALUES (#{fileUrl}, #{fileName}, #{fileSize}, #{userId}, #{entityType}, #{entityId}, NOW());
     </insert>
 
     <select id="findImagesByRoomId" resultType="com.minbak.web.file_upload.ImageFileDto">

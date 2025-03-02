@@ -9,6 +9,7 @@ public class ImageFileDto {
     private int imageId;
     private String fileUrl;
     private String fileName;
+    private Integer userId;
     private int fileSize;
     private String entityType;
     private int entityId;

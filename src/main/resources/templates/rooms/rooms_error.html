@@ -1,21 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
 <head>
     <meta charset="UTF-8">
     <title>Room Not Found</title>
 </head>
+<th:block layout:fragment="css">
+
 <style>
+
     /* Custom width */
     .main-content {
         width: 1680px;
         background-color: rgba(0, 0, 0, 0.05);
     }
 </style>
+</th:block>
 <body>
+<th:block layout:fragment="content">
+
+    <!-- 본문 내용 -->
+    <main class="main-content">
 <div class="main-content">
 <h1>Error: Room Not Found</h1>
 <p th:text="${errorMessage}"></p>
 <a href="/admin/board/rooms/rooms_list">Back to Room List</a>
 </div>
+    </main>
+</th:block>
 </body>
 </html>

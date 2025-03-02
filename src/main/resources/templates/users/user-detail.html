@@ -215,6 +215,49 @@
                 </button>
             </div>
         </div>
+        <!-- 호스트 영업신고증 정보 -->
+        <div class="info-container p-4 mt-4">
+            <h4 class="text-center" style="font-size:20px;">📄 호스트 영업신고증 정보</h4>
+
+            <div th:if="${licenseDto == null}" class="mt-3 text-center">
+                <p class="text-danger">해당 호스트는 영업신고증을 제출하지 않았습니다.</p>
+            </div>
+
+            <div th:if="${licenseDto != null}" class="mt-3">
+                <!-- 영업신고증 기본 정보 -->
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th style="width: 30%;">호스트 ID</th>
+                        <td th:text="${licenseDto.hostId}"></td>
+                    </tr>
+                    <tr>
+                        <th>영업신고증 유형</th>
+                        <td th:text="${licenseDto.businessType}"></td>
+                    </tr>
+                    <tr>
+                        <th>발급 지역</th>
+                        <td th:text="${licenseDto.region}"></td>
+                    </tr>
+                    <tr>
+                        <th>신고증 제출 날짜</th>
+                        <td th:text="${#dates.format(licenseDto.uploadedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- 영업신고증 이미지 -->
+                <div class="text-center mt-3">
+                    <h5>📷 신고증 이미지</h5>
+                    <div class="license-image-container mt-2">
+                        <img th:src="@{/uploads/licenses/{fileName}(fileName=${licenseDto.fileName})}"
+                             class="img-fluid border rounded" style="max-width: 400px;"
+                             alt="영업신고증 이미지">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 </th:block>
 <th:block layout:fragment="js">

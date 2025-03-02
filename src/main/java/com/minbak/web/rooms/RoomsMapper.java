@@ -10,13 +10,22 @@ import java.util.Optional;
 
 @Mapper
 public interface RoomsMapper {
+
     // rooms 의 디테일
     RoomsDto getRoomsList(int roomId);
+
+
+
     // rooms 의 전체 리스트
-    List<RoomsListDto> selectRoomNames(@Param("offset") int offset, @Param("size") int size);
-    int selectTotalRoomsCount();
+    List<RoomsListDto> selectRoomNames(@Param("keyword") String keyword,@Param("offset") int offset, @Param("size") int size);
+    int selectTotalRoomsCount(String keyword);
+
+    // 검색어가 없는 경우 모든 방 목록
+    List<RoomsListDto> selectAllRooms(@Param("offset") int offset, @Param("size") int size);
+
     // 수정 페이지
     RoomsDto getRoomById(int roomId);
+
     // 수정 기능
     void updateRoom(RoomsDto roomsDto);
     void deleteRoom(int roomId);
