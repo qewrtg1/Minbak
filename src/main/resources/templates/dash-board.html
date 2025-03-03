@@ -338,7 +338,46 @@
                         </table>
                     </div>
                 </div>
-
+                <!-- 요일별 예약건수 순위 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>예약건수가 많은 요일</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>요일</th>
+                                <th>예약 건수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="book : ${topDayOfWeek}">
+                                <td th:text="${book.dayOfWeek}"></td>
+                                <td th:text="${book.reservationCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 지역별 예약건수 순위 -->
+                <div class="card medium-card" style="width: calc(50% - 10px);">
+                    <strong>예약건수가 많은 지역 (TOP 5)</strong>
+                    <div class="reported-rooms-container">
+                        <table class="reported-rooms-table">
+                            <thead>
+                            <tr>
+                                <th>지역명</th>
+                                <th>예약 건수</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="book : ${topBooksOfRegion}">
+                                <td th:text="${book.region}"></td>
+                                <td th:text="${book.reservationCount}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
 

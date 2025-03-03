@@ -36,4 +36,8 @@ public interface BooksMapper {
     List<BooksDto> selectWaitings();
 
     List<BooksDto> paidAndCheckIn();
+
+    List<TopDayOfWeekDto> findTopBooksDayOfWeek();
+
+    List<TopBooksOfRegionDto> findTopBookOfRegion();
 }

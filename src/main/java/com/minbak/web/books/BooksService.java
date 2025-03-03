@@ -74,4 +74,12 @@ public class BooksService {
     public List<BooksDto> paidAndCheckIn() {
         return booksMapper.paidAndCheckIn();
     }
+
+    public List<TopDayOfWeekDto> findTopBooks() {
+        return booksMapper.findTopBooksDayOfWeek();
+    }
+
+    public List<TopBooksOfRegionDto> findTopBooksOfRegion() {
+        return booksMapper.findTopBookOfRegion();
+    }
 }
