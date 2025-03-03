@@ -273,6 +273,7 @@ public class UsersController {
     public String registerHost(@ModelAttribute HostDto hostDto) {
 
         usersService.createHost(hostDto);
+        usersService.makeHost(hostDto.getUserId());
 
         return "redirect:/admin/users/detail/" + hostDto.getUserId(); // 성공 페이지로 리다이렉트
     }

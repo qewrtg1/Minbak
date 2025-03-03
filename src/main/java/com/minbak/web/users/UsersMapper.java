@@ -113,6 +113,8 @@ public interface UsersMapper {
 
     public void makeAdmin(String userId);
 
+    public void makeHost(Integer userId);
+
     public List<UserReportDto> searchUserReports(int limit, int offset,String reporterEmail,
                                                  String reportedUserEmail,
                                                  String reportReason,

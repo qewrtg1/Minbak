@@ -178,6 +178,10 @@ public class UsersService {
         usersMapper.makeAdmin(userId);
     }
 
+    public void makeHost(Integer userId) {
+        usersMapper.makeHost(userId);
+    }
+
     public PageDto<UserReportDto> searchUserReports(int page, int size,String reporterEmail,
                                                     String reportedUserEmail,
                                                     String reportReason,

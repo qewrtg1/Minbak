@@ -440,5 +440,9 @@
         DELETE FROM host WHERE user_id = #{userId}
     </delete>
 
-
+    <!--호스트 추가-->
+    <insert id="makeHost">
+        INSERT INTO users_roles (user_id, role_id)
+        VALUES (#{user_id}, 2)  <!-- user_id 값은 동적으로 받아오며, role_id는 3으로 고정 -->
+    </insert>
 </mapper>
