@@ -360,6 +360,7 @@ public class UsersController {
         // 영업신고증 삭제
         licenseService.deleteLicenseByHostId(hostId);
 
+
         // 호스트 상태를 "미검증"으로 변경
         HostDto hostDto = new HostDto();
         hostDto.setHostId(hostId);
@@ -367,7 +368,44 @@ public class UsersController {
         usersService.updateHost(hostDto);
 
         redirectAttributes.addFlashAttribute("message", "영업신고증이 삭제되었습니다.");
-        return "redirect:/admin/users";
+        return "redirect:/admin/users/detail/"+licenseService.getUserIdByHostId(hostId);
     }
+
+    @GetMapping("/rooms/create")
+    public String createRoomPage(@RequestParam("userId") int userId,Model model){
+        model.addAttribute("userId",userId);
+        return "/users/create-room";
+    }
+
+    @PostMapping("/rooms/create")
+    public String createRoom(
+            @RequestParam("userId") int userId,  // 숙소 등록한 사용자 ID
+            @ModelAttribute UserRoomsDto userRoomsDto,  // 숙소 정보 DTO
+            @RequestParam("roomImages") MultipartFile[] roomImages,  // 다중 파일 업로드
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // ✅ 숙소 정보 저장
+            userRoomsDto.setUserId(userId);
+            usersService.insertRoom(userRoomsDto);
+
+            // ✅ 이미지 파일 저장 (다중 업로드)
+            for (MultipartFile file : roomImages) {
+                if (!file.isEmpty()) {
+                    ImageFileDto imageFile = fileService.saveFile(file, userRoomsDto.getRoomId(), "rooms", userId);
+                    System.out.println("✅ 저장된 파일: " + imageFile.getFileUrl());
+                }
+            }
+
+            redirectAttributes.addFlashAttribute("message", "숙소가 성공적으로 등록되었습니다.");
+            
+            return "redirect:/admin/rooms/"+userRoomsDto.getRoomId()+"/categories-options";  //숙소칼럼 생성 후 카테고리 및 옵션설정
+
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("message", "숙소 등록 중 오류가 발생했습니다.");
+            return "redirect:/admin/users";
+        }
+    }
+
 }
 

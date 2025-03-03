@@ -150,5 +150,6 @@ public interface UsersMapper {
 
     void deleteHostByUserId(int userId);
 
+    void insertRoom(UserRoomsDto userRoomsDto);
 
 }

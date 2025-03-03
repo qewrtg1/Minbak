@@ -445,4 +445,15 @@
         INSERT INTO users_roles (user_id, role_id)
         VALUES (#{user_id}, 2)  <!-- user_id 값은 동적으로 받아오며, role_id는 3으로 고정 -->
     </insert>
+
+    <!--숙소 등록-->
+    <insert id="insertRoom" useGeneratedKeys="true" keyProperty="roomId">
+        INSERT INTO rooms (
+        user_id, title, name, content, address, latitude, longitude, price,
+        max_guests, bedrooms, beds, bathrooms, building_type, use_guide
+        ) VALUES (
+        #{userId}, #{title}, #{name}, #{content}, #{address}, #{latitude}, #{longitude}, #{price},
+        #{maxGuests}, #{bedrooms}, #{beds}, #{bathrooms}, #{buildingType}, #{useGuide}
+        )
+    </insert>
 </mapper>

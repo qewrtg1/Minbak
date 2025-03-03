@@ -157,7 +157,7 @@
                 </div>
 
                 <!-- 숙소 등록 버튼 -->
-                <a href="/admin/rooms/create" class="btn btn-sm btn-primary">숙소 등록</a>
+                <a th:href="@{/admin/rooms/create(userId=${userDto.userId})}" class="btn btn-sm btn-primary">숙소 등록</a>
             </div>
 
 

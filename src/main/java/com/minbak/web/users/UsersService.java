@@ -222,4 +222,8 @@ public class UsersService {
     public void createHost(HostDto hostDto){
         usersMapper.insertHost(hostDto);
     }
+
+    public void insertRoom(UserRoomsDto userRoomsDto){
+        usersMapper.insertRoom(userRoomsDto);
+    }
 }

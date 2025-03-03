@@ -34,7 +34,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/admin/**")
                 .authorizeHttpRequests(auth -> auth  // HTTP 요청에 대한 접근 권한을 설정합니다.
-                        .requestMatchers("/admin/login", "/admin/file/**","/admin/api/**","/admin/signup").permitAll()
+                        .requestMatchers("/admin/login", "/admin/file/**","/admin/api/**","/admin/signup","/admin/test").permitAll()
                         .requestMatchers("/admin/user/{id}").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // 그 외는 인증을 요구
