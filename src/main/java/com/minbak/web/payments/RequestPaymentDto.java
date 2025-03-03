@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class RequestPaymentDto {
     private Integer paymentId;
     private Integer userId;
+    private String userEmail;
     private Integer bookId;
     private BigDecimal minAmount; // 최소 금액
     private BigDecimal maxAmount; // 최대 금액

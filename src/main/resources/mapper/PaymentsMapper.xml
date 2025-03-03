@@ -96,96 +96,119 @@
 
     <!--결제정보 필터링 조회    -->
     <select id="filterPaymentsByPaymentDto" parameterType="com.minbak.web.payments.RequestPaymentDto" resultType="com.minbak.web.payments.PaymentDto">
-            SELECT * FROM payments
-            <where>
+        SELECT p.*
+        FROM payments p
+        LEFT JOIN books b ON p.book_id = b.book_id  <!-- rooms 테이블과 JOIN -->
+        LEFT JOIN rooms r ON b.room_id = r.room_id
+        LEFT JOIN users u ON p.user_id = u.user_id  <!-- users 테이블과 JOIN -->
+        <where>
             <if test="paymentId != null">
-                AND payment_id = #{paymentId}
+                AND p.payment_id = #{paymentId}
             </if>
             <if test="userId != null">
-                AND user_id = #{userId}
+                AND p.user_id = #{userId}
             </if>
             <if test="bookId != null">
-                AND book_id = #{bookId}
+                AND p.book_id = #{bookId}
             </if>
 
             <!-- 금액 범위 조건 추가 -->
             <if test="minAmount != null">
-                AND amount &gt; #{minAmount}
+                AND p.amount &gt; #{minAmount}
             </if>
             <if test="maxAmount != null">
-                AND amount &lt; #{maxAmount}
+                AND p.amount &lt; #{maxAmount}
             </if>
 
             <if test="status != null and status != ''">
-                AND status = #{status}
+                AND p.status = #{status}
             </if>
             <if test="method != null and method != ''">
-                AND method = #{method}
+                AND p.method = #{method}
             </if>
             <if test="transactionId != null and transactionId != ''">
-                AND transaction_id = #{transactionId}
+                AND p.transaction_id = #{transactionId}
             </if>
             <if test="paidAt != null">
-                AND paid_at = #{paidAt}
+                AND p.paid_at = #{paidAt}
             </if>
             <if test="createdAt != null">
-                AND created_at = #{createdAt}
+                AND p.created_at = #{createdAt}
             </if>
+
+            <!-- roomName 조건 추가 (rooms 테이블에서 가져옴) -->
             <if test="roomName != null and roomName != ''">
-                AND room_name = #{roomName}
+                AND r.name LIKE CONCAT('%', #{roomName}, '%')
             </if>
+
+            <!-- userEmail 조건 추가 (users 테이블에서 가져옴) -->
+            <if test="userEmail != null and userEmail != ''">
+                AND u.user_email = #{userEmail}
+            </if>
+
             <if test="merchantUid != null and merchantUid != ''">
-                AND merchant_uid = #{merchantUid}
+                AND p.merchant_uid = #{merchantUid}
             </if>
-            </where>
-        ORDER BY payment_id DESC
+        </where>
+        ORDER BY p.payment_id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <!-- 필터 결제 정보 개수 조회 -->
     <select id="countFilterPayments" resultType="int" parameterType="com.minbak.web.payments.RequestPaymentDto">
-            SELECT count(*) FROM payments
-            <where>
-                <if test="paymentId != null">
-                    AND payment_id = #{paymentId}
-                </if>
-                <if test="userId != null">
-                    AND user_id = #{userId}
-                </if>
-                <if test="bookId != null">
-                    AND book_id = #{bookId}
-                </if>
+            SELECT count(*)  FROM payments p
+        LEFT JOIN books b ON p.book_id = b.book_id  <!-- rooms 테이블과 JOIN -->
+        LEFT JOIN rooms r ON b.room_id = r.room_id
+        LEFT JOIN users u ON p.user_id = u.user_id  <!-- users 테이블과 JOIN -->
+        <where>
+            <if test="paymentId != null">
+                AND p.payment_id = #{paymentId}
+            </if>
+            <if test="userId != null">
+                AND p.user_id = #{userId}
+            </if>
+            <if test="bookId != null">
+                AND p.book_id = #{bookId}
+            </if>
 
-                <!-- 금액 범위 조건 추가 -->
-                <if test="minAmount != null">
-                    AND amount &gt; #{minAmount}
-                </if>
-                <if test="maxAmount != null">
-                    AND amount &lt; #{maxAmount}
-                </if>
+            <!-- 금액 범위 조건 추가 -->
+            <if test="minAmount != null">
+                AND p.amount &gt; #{minAmount}
+            </if>
+            <if test="maxAmount != null">
+                AND p.amount &lt; #{maxAmount}
+            </if>
 
-                <if test="status != null and status != ''">
-                    AND status = #{status}
-                </if>
-                <if test="method != null and method != ''">
-                    AND method = #{method}
-                </if>
-                <if test="transactionId != null and transactionId != ''">
-                    AND transaction_id = #{transactionId}
-                </if>
-                <if test="paidAt != null">
-                    AND paid_at = #{paidAt}
-                </if>
-                <if test="createdAt != null">
-                    AND created_at = #{createdAt}
-                </if>
-                <if test="roomName != null and roomName != ''">
-                    AND room_name = #{roomName}
-                </if>
-                <if test="merchantUid != null and merchantUid != ''">
-                    AND merchant_uid = #{merchantUid}
-                </if>
-            </where>
+            <if test="status != null and status != ''">
+                AND p.status = #{status}
+            </if>
+            <if test="method != null and method != ''">
+                AND p.method = #{method}
+            </if>
+            <if test="transactionId != null and transactionId != ''">
+                AND p.transaction_id = #{transactionId}
+            </if>
+            <if test="paidAt != null">
+                AND p.paid_at = #{paidAt}
+            </if>
+            <if test="createdAt != null">
+                AND p.created_at = #{createdAt}
+            </if>
+
+            <!-- roomName 조건 추가 (rooms 테이블에서 가져옴) -->
+            <if test="roomName != null and roomName != ''">
+                AND r.name = #{roomName}
+            </if>
+
+            <!-- userEmail 조건 추가 (users 테이블에서 가져옴) -->
+            <if test="userEmail != null and userEmail != ''">
+                AND u.user_email = #{userEmail}
+            </if>
+
+            <if test="merchantUid != null and merchantUid != ''">
+                AND p.merchant_uid = #{merchantUid}
+            </if>
+        </where>
     </select>
 
 </mapper>

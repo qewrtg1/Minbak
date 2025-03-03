@@ -95,7 +95,6 @@ public class PaymentsService {
             paymentDto.setDateDifference(ChronoUnit.DAYS
                     .between(booksMapper.selectBookById(paymentDto.getBookId()).getStartDate()
                             ,booksMapper.selectBookById(paymentDto.getBookId()).getEndDate()));
-
         }
        PageDto<PaymentDto> pageDto=new PageDto<>(page,size,totalPage,paymentDtos);
         return  pageDto;
