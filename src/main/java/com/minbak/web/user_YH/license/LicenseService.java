@@ -37,7 +37,7 @@ public class LicenseService {
     }
 
     // ✅ user_id로 host_id 조회
-    public int getHostIdByUserId(int userId) {
+    public Integer getHostIdByUserId(int userId) {
         return licenseMapper.getHostIdByUserId(userId);
     }
 }

@@ -429,4 +429,16 @@
         WHERE host_id = #{hostId}
     </update>
 
+    <!-- 호스트 등록 -->
+    <insert id="insertHost">
+        INSERT INTO host (user_id, hobby, introduction, is_verified, account_number)
+        VALUES (#{userId}, #{hobby}, #{introduction}, #{isVerified}, #{accountNumber})
+    </insert>
+
+    <!-- 호스트 삭제 -->
+    <delete id="deleteHostByUserId">
+        DELETE FROM host WHERE user_id = #{userId}
+    </delete>
+
+
 </mapper>

@@ -214,4 +214,8 @@ public class UsersService {
     public int findUserIdByEmail(String email){
         return usersMapper.findUserIdByEmail(email);
     }
+
+    public void createHost(HostDto hostDto){
+        usersMapper.insertHost(hostDto);
+    }
 }

@@ -143,4 +143,10 @@ public interface UsersMapper {
     public Boolean checkRefreshTokenIsExpired(String refreshToken);
 
     public void deleteExpiredRefreshTokens(Timestamp timestamp);
+
+    void insertHost(HostDto hostDto);
+
+    void deleteHostByUserId(int userId);
+
+
 }

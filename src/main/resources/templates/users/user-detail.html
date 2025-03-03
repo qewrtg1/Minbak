@@ -111,8 +111,12 @@
 
             <h4 class="text-center" style="font-size:20px;">호스팅 정보</h4>
             <div th:if="${hostDto == null}" class="mt-5" style="height:250px; text-align:center;">
-                호스트 유저가 아닙니다.
+                <p>호스트 유저가 아닙니다.</p>
+
+                <!-- 호스트 생성 버튼 -->
+                <a th:href="@{/admin/users/create/host(userId=${userDto.userId})}" class="btn btn-primary mt-3">호스트 생성</a>
             </div>
+
             <form action="/admin/users/hosts/update" method="POST" th:if="${hostDto != null}">
                 <input id="hostId" type="hidden" name="hostId" th:value="${hostDto.hostId}">
                 <input type="hidden" name="userId" th:value="${userDto.userId}">
@@ -222,8 +226,15 @@
             <h4 class="text-center" style="font-size:20px;">📄 호스트 영업신고증 정보</h4>
 
             <div th:if="${license == null}" class="mt-3 text-center">
-                <p class="text-danger">해당 호스트는 영업신고증을 제출하지 않았습니다.</p>
+                <p class="text-danger">
+                    해당 호스트는 영업신고증을 제출하지 않았습니다.
+                    <!-- 영업신고증 제출 버튼 -->
+                    <div th:if="${hostDto != null}">
+                        <a th:href="@{/admin/license/upload(hostId=${hostDto.hostId})}" class="btn btn-sm btn-primary ms-2">영업신고증 제출</a>
+                    </div>
+                </p>
             </div>
+
 
             <div th:if="${license != null}" class="mt-3">
                 <!-- 영업신고증 기본 정보 -->

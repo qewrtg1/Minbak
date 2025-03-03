@@ -199,11 +199,17 @@ public class UsersController {
     @GetMapping("/users/detail/{id}")
     public String userDetail(@PathVariable("id") int userId,Model model){
 
-        int hostId = licenseService.getHostIdByUserId(userId);
-        LicenseDto licenseDto = licenseService.getBusinessLicenseByHostId(hostId);
-        licenseDto.setLicenseFileUrl(fileMapper.findLicenseImagesUrlByHostId(hostId));
+        Integer hostId = licenseService.getHostIdByUserId(userId);
 
-        model.addAttribute("license",licenseDto);
+        if(hostId != null){
+            LicenseDto licenseDto = licenseService.getBusinessLicenseByHostId(hostId);
+            if(licenseDto != null){
+                licenseDto.setLicenseFileUrl(fileMapper.findLicenseImagesUrlByHostId(hostId));
+            }
+            model.addAttribute("license",licenseDto);
+        }
+
+
         model.addAttribute("userDto",usersService.findUserByUserId(userId));
         model.addAttribute("hostDto",usersService.findHostByUserId(userId));
 
@@ -254,6 +260,21 @@ public class UsersController {
         }
 
         return "redirect:/admin/users/detail/" + userDto.getUserId();
+    }
+
+    @GetMapping("/users/create/host")
+    public String createHostPage(@RequestParam int userId,Model model){
+
+        model.addAttribute("userId",userId);
+        return "/users/create-host";
+    }
+
+    @PostMapping("/users/create/host")
+    public String registerHost(@ModelAttribute HostDto hostDto) {
+
+        usersService.createHost(hostDto);
+
+        return "redirect:/admin/users/detail/" + hostDto.getUserId(); // 성공 페이지로 리다이렉트
     }
 
     @PostMapping("/users/hosts/update")
