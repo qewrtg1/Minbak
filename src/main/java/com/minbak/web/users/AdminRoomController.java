@@ -9,9 +9,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminRoomController {
 
 
-//    @GetMapping("/create")
-//    public String adminCreateRoom(){
-//
-//    }
 
 }
