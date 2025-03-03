@@ -1,5 +1,7 @@
 package com.minbak.web.users;
 
+import com.minbak.web.categores.CategoryDto;
+import com.minbak.web.categores.OptionDto;
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.file_upload.FileMapper;
 import com.minbak.web.file_upload.FileService;
@@ -406,6 +408,41 @@ public class UsersController {
             return "redirect:/admin/users";
         }
     }
+
+    @GetMapping("/rooms/{roomId}/categories-options")
+    public String showCategoryAndOptions(@PathVariable("roomId") int roomId, Model model) {
+        List<CategoryDto> categories = usersService.getAllCategories();
+        Map<String, List<OptionDto>> optionsByCategory = usersService.getOptionsGroupedByCategory();
+
+
+        model.addAttribute("room",usersService.getRoomById(roomId));
+        model.addAttribute("roomId", roomId);
+        model.addAttribute("categories", categories);
+        model.addAttribute("optionsByCategory", optionsByCategory);
+
+        return "/users/categories-options"; // Thymeleaf 페이지
+    }
+
+    @PostMapping("/rooms/{roomId}/categories-options")
+    public String saveCategoryAndOptions(
+            @PathVariable("roomId") int roomId,
+            @RequestParam(value = "categoryIds", required = false) List<Integer> categoryIds,
+            @RequestParam(value = "optionIds", required = false) List<Integer> optionIds,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // 숙소의 기존 카테고리 및 옵션을 제거 후 새롭게 저장
+            usersService.updateRoomCategories(roomId, categoryIds);
+            usersService.updateRoomOptions(roomId, optionIds);
+
+            redirectAttributes.addFlashAttribute("success", "숙소 카테고리 및 옵션이 성공적으로 저장되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "숙소 카테고리 및 옵션 저장 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/admin/rooms/detail/" + roomId;
+    }
+
 
 }
 

@@ -456,4 +456,60 @@
         #{maxGuests}, #{bedrooms}, #{beds}, #{bathrooms}, #{buildingType}, #{useGuide}
         )
     </insert>
+
+    <!-- 모든 카테고리 가져오기 (단, "인기 숙소"는 제외) -->
+    <select id="getAllCategories" resultType="com.minbak.web.categores.CategoryDto">
+        SELECT category_id, name
+        FROM categories
+        WHERE name != '인기 숙소'
+        ORDER BY category_order ASC;
+    </select>
+
+    <!-- 모든 옵션을 카테고리별로 그룹화해서 가져오기 -->
+    <select id="getOptionsGroupedByCategory" resultType="com.minbak.web.categores.OptionDto">
+        SELECT option_id, name, options_category
+        FROM room_options
+        ORDER BY options_category, option_id;
+    </select>
+
+
+    <!-- room_id로 숙소 정보 가져오기 -->
+    <select id="getRoomById" resultType="com.minbak.web.users.UserRoomsDto">
+        SELECT
+        room_id, user_id, title, name, content, address, price,
+        use_guide, latitude, longitude, max_guests,
+        bedrooms, beds, bathrooms, building_type
+        FROM rooms
+        WHERE room_id = #{roomId}
+    </select>
+
+    <!-- 기존 숙소 카테고리 삭제 -->
+    <delete id="deleteRoomCategories">
+        DELETE FROM rooms_categories WHERE room_id = #{roomId}
+    </delete>
+
+    <!-- 새로운 숙소 카테고리 추가 -->
+    <insert id="insertRoomCategories">
+        INSERT INTO rooms_categories (room_id, category_id)
+        VALUES
+        <foreach collection="categoryIds" item="categoryId" separator=",">
+            (#{roomId}, #{categoryId})
+        </foreach>
+    </insert>
+
+
+    <!-- 기존 숙소 옵션 삭제 -->
+    <delete id="deleteRoomOptions">
+        DELETE FROM rooms_room_options WHERE room_id = #{roomId}
+    </delete>
+
+    <!-- 새로운 숙소 옵션 추가 -->
+    <insert id="insertRoomOptions">
+            INSERT INTO rooms_room_options (room_id, option_id)
+            VALUES
+        <foreach collection="optionIds" item="optionId" separator=",">
+        (#{roomId}, #{optionId})
+        </foreach>
+    </insert>
+
 </mapper>

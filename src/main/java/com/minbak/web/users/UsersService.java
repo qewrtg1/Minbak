@@ -1,5 +1,7 @@
 package com.minbak.web.users;
 
+import com.minbak.web.categores.CategoryDto;
+import com.minbak.web.categores.OptionDto;
 import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.payments.PaymentDto;
@@ -20,6 +22,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersService {
@@ -226,4 +229,35 @@ public class UsersService {
     public void insertRoom(UserRoomsDto userRoomsDto){
         usersMapper.insertRoom(userRoomsDto);
     }
+
+    public List<CategoryDto> getAllCategories(){
+        return usersMapper.getAllCategories();
+    }
+
+    public Map<String, List<OptionDto>> getOptionsGroupedByCategory() {
+        List<OptionDto> options = usersMapper.getOptionsGroupedByCategory();
+        return options.stream()
+                .collect(Collectors.groupingBy(OptionDto::getOptionsCategory)); // 카테고리별로 그룹화
+    }
+
+    public UserRoomsDto getRoomById(int roomId){
+        return usersMapper.getRoomById(roomId);
+    }
+
+    // 숙소에 선택한 카테고리 업데이트
+    public void updateRoomCategories(int roomId, List<Integer> categoryIds) {
+        usersMapper.deleteRoomCategories(roomId); // 기존 카테고리 삭제
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            usersMapper.insertRoomCategories(roomId, categoryIds);
+        }
+    }
+
+    // 숙소에 선택한 옵션 업데이트
+    public void updateRoomOptions(int roomId, List<Integer> optionIds) {
+        usersMapper.deleteRoomOptions(roomId); // 기존 옵션 삭제
+        if (optionIds != null && !optionIds.isEmpty()) {
+            usersMapper.insertRoomOptions(roomId, optionIds);
+        }
+    }
+
 }
