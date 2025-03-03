@@ -92,11 +92,11 @@
 <div class="container reservation-container">
     <h1>예약</h1>
     <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><button class="nav-link active" onclick="fetchData('checkout')">체크아웃 예정</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="fetchData('ongoing')">현재 호스팅 중</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="fetchData('checkin')">체크인 예정</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="fetchData('upcoming')">예정</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="fetchData('pending-review')">작성할 후기</button></li>
+        <li class="nav-item"><button class="nav-link active" onclick="fetchData('checkout')">체크아웃 예정 <span id="count-checkout">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('ongoing')">현재 호스팅 중 <span id="count-ongoing">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('checkin')">체크인 예정 <span id="count-checkin">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('upcoming')">예정 <span id="count-upcoming">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="fetchData('pending-review')">작성할 후기 <span id="count-pending-review">(0건)</span></button></li>
     </ul>
     <div id="reservationList" class="mb-3"></div>
 </div>
@@ -106,28 +106,46 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    // 페이지 로드 시 자동으로 체크아웃 예정 데이터를 가져오기
     document.addEventListener("DOMContentLoaded", function() {
-        fetchData('checkout'); // 페이지가 로드되면 체크아웃 예정 목록을 자동으로 가져옴
+        // 페이지 로드 시 모든 상태별 예약 데이터를 가져옵니다.
+        fetchAllReservationCounts(); // 모든 예약 상태에 대한 데이터를 한 번에 가져오기
     });
-    function fetchData(status) {
+
+    function fetchAllReservationCounts() {
+        // 예약 상태 목록
+        const statuses = ['checkout', 'ongoing', 'checkin', 'upcoming', 'pending-review'];
+
+        // 각 상태별로 데이터를 가져와서 건수 업데이트
+        statuses.forEach(status => {
+            fetchData(status, false); // `false`로 클릭 없이 상태 데이터를 가져오게 설정
+        });
+    }
+
+    function fetchData(status, updateTab = true) {
         axios.get(`/host/today/${status}`)
             .then(function(response) {
                 const data = response.data;
                 const reservationListContainer = document.getElementById('reservationList');
-                reservationListContainer.innerHTML = ''; // 기존 목록을 비움
+                const count = data.length; // 상태별 예약 건수
 
-                // 데이터가 없으면 메시지를 표시
-                if (data.length === 0) {
-                    reservationListContainer.innerHTML = `<p>현재 ${status}에 해당하는 예약이 없습니다.</p>`;
-                    return;
-                }
+                // 상태별 예약 건수 표시 업데이트
+                updateReservationCount(status, count);
 
-                // 데이터 렌더링
-                data.forEach(function(item) {
-                    const reservationElement = document.createElement('div');
-                    reservationElement.classList.add('reservation-item');
-                    reservationElement.innerHTML = `
+                if (updateTab) {
+                    // 탭 클릭 시 예약 목록을 업데이트합니다.
+                    reservationListContainer.innerHTML = ''; // 기존 목록을 비움
+
+                    // 데이터가 없으면 메시지를 표시
+                    if (data.length === 0) {
+                        reservationListContainer.innerHTML = `<p>현재 ${status}에 해당하는 예약이 없습니다.</p>`;
+                        return;
+                    }
+
+                    // 데이터 렌더링
+                    data.forEach(function(item) {
+                        const reservationElement = document.createElement('div');
+                        reservationElement.classList.add('reservation-item');
+                        reservationElement.innerHTML = `
                         <div class="card-body">
                             <div class="row mb-3 align-items-center">
                                 <!-- 좌측: 숙소 이미지 -->
@@ -147,21 +165,32 @@
                             </div>
                         </div>
                     `;
-                    reservationListContainer.appendChild(reservationElement);
-                });
+                        reservationListContainer.appendChild(reservationElement);
+                    });
+                }
+
+                // 탭 버튼 활성화 처리 (클릭 시에만)
+                if (updateTab) {
+                    document.querySelectorAll(".nav-link").forEach(button => {
+                        button.classList.remove("active");
+                    });
+
+                    let activeButton = document.querySelector(`.nav-link[onclick="fetchData('${status}')"]`);
+                    if (activeButton) {
+                        activeButton.classList.add("active");
+                    }
+                }
             })
             .catch(function(error) {
                 console.error('Error fetching data:', error);
             });
+    }
 
-        // 탭 버튼 활성화 처리
-        document.querySelectorAll(".nav-link").forEach(button => {
-            button.classList.remove("active");
-        });
-
-        let activeButton = document.querySelector(`.nav-link[onclick="fetchData('${status}')"]`);
-        if (activeButton) {
-            activeButton.classList.add("active");
+    function updateReservationCount(status, count) {
+        // 각 탭에 해당하는 예약 건수를 "(n건)" 형식으로 업데이트
+        const countElement = document.getElementById(`count-${status}`);
+        if (countElement) {
+            countElement.innerText = `(${count}건)`;
         }
     }
 
