@@ -1,52 +1,261 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>호스트 숙소 목록</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .reservation-container { max-width: 1100px; margin: 50px auto; padding: 20px; border-radius: 8px; background: white; }
+    .status-pending { color: #ff9800; font-weight: bold; }
+    .status-approved { color: #4caf50; font-weight: bold; }
+    .status-declined { color: #f44336; font-weight: bold; }
+    .btn-action { margin-right: 5px; }
+
+    /* ✅ 헤더 스타일 */
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #ddd; background: white; }
+    .menu { display: flex; gap: 20px; font-weight: 500; }
+    .menu a { text-decoration: none; color: black; transition: 0.2s; }
+    .menu a:hover { color: #ff385c; }
+    .user-menu { display: flex; align-items: center; gap: 15px; }
+    .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+    /* ✅ 섹션 스타일 */
+    .section { padding-top: 64px; color: #222; }
+    .contents { padding: 0 80px; }
+    .roomList { display: flex; }
+    .room-item { margin-left: 10px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+    .guide { margin-top: 8px; color: #6a6a6a; font-size: 1rem; line-height: 1.25rem; }
+    .guide>span { color: #717171; font-size: 1rem; font-weight: 400; line-height: 1.25rem; }
+    .reservation-item { border: 1px solid #ddd; border-radius: 5px; margin-bottom: 1rem; }
+    .reservation-details { padding: 1rem; }
+
+    /* ✅ 필터 스타일 */
+    .filter-container { padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 15px; }
+    .row { display: flex; align-items: center; }
+    .img-fluid { border-radius: 8px; }
+
+
+    .container {
+      margin-top: 50px;
+      width: 90%; /* 화면의 90%를 사용 (원하는 값으로 조절 가능) */
+      max-width: 1600px; /* 최대 너비 제한 (너무 커지는 걸 방지) */
+    }
+
+
+    .page-title {
+      margin: 0;
+      font-size: 40px;
+    }
+
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th, .table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+      font-weight: bold;
+    }
+
+    .room-status {
+      font-weight: bold;
+    }
+
+    img {
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+
+
+
+  /* ✅ 제목과 버튼을 같은 줄에 배치 */
+.title-bar {
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  margin-bottom: 20px; /* 제목 아래 간격 */
+  padding: 10px 20px; /* 좌우 여백 추가 */
+}
+
+/* ✅ 제목 스타일 수정 */
+.page-title {
+  margin: 0; /* 기본 마진 제거 */
+  font-size: 24px; /* 원하는 크기로 조절 */
+  padding-left: 10px; /* 좌측 여백 추가 */
+}
+
+/* ✅ 우측 버튼 컨테이너 */
+.top-right-buttons {
+  display: flex;
+  gap: 10px; /* 버튼 간격 */
+  align-items: center; /* 버튼 높이 맞춤 */
+}
+
+/* ✅ 아이콘 버튼 스타일 */
+.icon-button {
+  background: #f8f9fa;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.icon-button:hover {
+  background: #ddd;
+}
+
+
+/* ✅ 검색창 스타일 */
+.search-container {
+  position: absolute;
+  top: 70px; /* 제목과 일정 거리 두기 */
+  right: 30px;
+  display: none; /* 기본적으로 숨김 */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-container input {
+  padding: 5px;
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.search-container button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+  </style>
 </head>
+
+
+
 <body>
-<h2>나의 숙소 목록</h2>
+  <!-- ✅ 헤더 -->
+  <div class="header">
+    <a href="/">
+      <img src="/uploads/logo-text.png" alt="로고" height="30">
+    </a>
+    <nav class="menu">
+      <a href="/host/today">투데이</a>
+      <a href="/host_room/list">숙소</a>
+      <a href="/host/messages">메시지</a>
+      <a href="/host/books">예약</a>
+      <a href="/host_room/add">새로운 숙소 등록하기</a>
+    </nav>
 
-<table border="1">
-  <thead>
-  <tr>
-    <th>숙소 ID</th>
-    <th>숙소 이름</th>
-    <th>주소</th>
-    <th>가격</th>
-    <th>설명</th>
-    <th>수정</th>
-    <th>삭제</th>
-  </tr>
-  </thead>
-  <tbody>
-  <!-- 숙소 목록 반복 출력 -->
-  <tr th:each="room : ${rooms}">
-    <td th:text="${room.roomId}"></td>
-    <td th:text="${room.name}"></td>
-    <td th:text="${room.address}"></td>
-    <td th:text="${room.price}"></td>
-    <td th:text="${room.content}"></td>
-    <td>
-      <a th:href="@{/host/room/edit/{id}(id=${room.roomId})}">수정</a>
-    </td>
-    <td>
-<!--      <form th:action="@{/host/room/delete}" method="post">-->
-<!--        <input type="hidden" name="roomId" th:value="${room.roomId}">-->
-<!--        <button type="submit">삭제</button>-->
-<!--      </form>-->
+    <!-- ✅ 우측 유저 정보 -->
+    <div class="user-menu">
+      <button class="btn btn-light">🔔 알림</button>
+      <img th:src="${headerUser.profileImageUrl}" alt="프로필 이미지" class="profile-img">
+      <span th:text="${headerUser.name}">사용자 이름</span>
+    </div>
 
-      <a th:href="@{/host/room/delete/{roomId}(roomId=${room.roomId})}"
-         onclick="return confirm('정말 삭제하시겠습니까?');">
-        <button>삭제</button>
-      </a>
+  </div>
 
-    </td>
-  </tr>
-  </tbody>
-</table>
 
-<a href="/host/room/add"><button>숙소 등록</button></a>
+
+  <div class="container">
+    <!-- ✅ 제목과 버튼을 같은 줄에 배치 -->
+    <div class="title-bar">
+      <h2 class="page-title">숙소</h2>
+
+      <!-- ✅ 우측 상단 버튼 -->
+      <div class="top-right-buttons">
+        <!-- 1. 검색 버튼 -->
+        <button class="icon-button" id="searchButton">🔍</button>
+
+        <!-- 2. 보기 방식 변경 버튼 -->
+        <button class="icon-button">⬜</button>
+
+        <!-- 3. 숙소 추가 페이지 이동 버튼 -->
+        <button class="icon-button" onclick="location.href='/host_room/add'">➕</button>
+      </div>
+    </div>
+
+    <!-- ✅ 검색창을 `title-bar` 바깥으로 이동 -->
+    <div id="searchContainer" class="search-container">
+      <input type="text" id="searchInput" placeholder="숙소 검색...">
+      <button onclick="closeSearch()">✖</button>
+    </div>
+
+    <table class="table">
+      <thead>
+      <tr>
+        <th>숙소</th>
+        <th>위치</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="room : ${rooms}">
+        <td>
+<!--          <img th:src="${room.roomImageUrl}" alt="숙소 이미지" style="width: 50px; height: 50px; border-radius: 8px;">-->
+          <span th:text="${room.name}"></span>
+        </td>
+        <td th:text="${room.address}"></td>
+        <td class="room-status" style="color: red;">조치 필요</td>
+        <td>
+          <a class="btn btn-primary btn-sm" th:href="@{/host_room/edit/{id}(id=${room.roomId})}">수정</a>
+          <a class="btn btn-danger btn-sm" th:href="@{/host_room/delete/{id}(id=${room.roomId})}" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+
+  <!-- ✅ Bootstrap & JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+
+  <script>
+    // 검색창 열기
+    document.getElementById("searchButton").addEventListener("click", function() {
+        let searchBox = document.getElementById("searchContainer");
+        searchBox.style.display = searchBox.style.display === "block" ? "none" : "block";
+    });
+
+    // 검색창 닫기
+    function closeSearch() {
+        document.getElementById("searchContainer").style.display = "none";
+    }
+  </script>
+
+
 </body>
 </html>
