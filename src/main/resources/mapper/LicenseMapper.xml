@@ -37,5 +37,11 @@
         SELECT host_id FROM host WHERE user_id = #{userId}
     </select>
 
+    <delete id="deleteLicenseByHostId">
+        DELETE FROM business_license WHERE host_id = #{hostId}
+    </delete>
 
+    <select id="getLicenseByHostId" resultType="com.minbak.web.user_YH.license.LicenseDto">
+        SELECT * FROM business_license WHERE host_id = #{hostId}
+    </select>
 </mapper>

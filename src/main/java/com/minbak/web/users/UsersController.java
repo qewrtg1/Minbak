@@ -336,5 +336,38 @@ public class UsersController {
         return "redirect:/admin/users/detail/"+userId;
     }
 
+    @PostMapping("/users/license/delete")
+    public String deleteLicense(@RequestParam("hostId") int hostId, RedirectAttributes redirectAttributes) {
+        // 영업신고증 존재 여부 확인
+        LicenseDto license = licenseService.getLicenseByHostId(hostId);
+        if (license == null) {
+            redirectAttributes.addFlashAttribute("message", "해당 호스트의 영업신고증이 존재하지 않습니다.");
+            return "redirect:/admin/users";
+        }
+
+        // 영업신고증 파일 삭제
+        try {
+            boolean isFileDeleted = fileService.deleteFile(fileService.findLicenseImagesUrlByHostId(hostId));
+            if (!isFileDeleted) {
+                redirectAttributes.addFlashAttribute("message", "파일 삭제 중 오류가 발생했습니다.");
+                return "redirect:/admin/users";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "파일 삭제 실패: " + e.getMessage());
+            return "redirect:/admin/users";
+        }
+
+        // 영업신고증 삭제
+        licenseService.deleteLicenseByHostId(hostId);
+
+        // 호스트 상태를 "미검증"으로 변경
+        HostDto hostDto = new HostDto();
+        hostDto.setHostId(hostId);
+        hostDto.setIsVerified("미검증");
+        usersService.updateHost(hostDto);
+
+        redirectAttributes.addFlashAttribute("message", "영업신고증이 삭제되었습니다.");
+        return "redirect:/admin/users";
+    }
 }
 
