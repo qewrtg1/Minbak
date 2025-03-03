@@ -39,4 +39,9 @@ public interface PaymentsMapper {
     PaymentDto getPaymentByMerchantUid(String merchantUid); // 주문 조회
     void updatePaymentStatus(PaymentDto payment); // 결제 상태 업데이트
 
+    //필터 적용 결제정보 조회
+    List<PaymentDto> filterPaymentsByPaymentDto(RequestPaymentDto requestPaymentDto);
+    //필터 적용 결제정보 갯수 조회
+    int countFilterPayments(RequestPaymentDto requestPaymentDto);
+
 }

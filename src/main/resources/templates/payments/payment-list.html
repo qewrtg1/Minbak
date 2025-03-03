@@ -10,6 +10,65 @@
 <div class="container" style="max-width: 1680px; margin-top: 20px;">
   <!-- 제목 -->
   <h1 class="text-center mb-4">결제 목록</h1>
+<!--검색 필터-->
+  <div class="container mt-4">
+    <h3>결제 검색 필터</h3>
+    <form method="post" th:action="@{/admin/payments/filter}" th:object="${requestPaymentDto}">
+      <div class="row">
+        <div class="col-md-2 mb-3">
+          <label for="paymentId">결제 ID</label>
+          <input type="number" class="form-control" id="paymentId" name="paymentId" placeholder="결제 ID">
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="userId">회원 ID</label>
+          <input type="number" class="form-control" id="userId" name="userId" placeholder="회원 ID">
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="userEmail">회원 이메일</label>
+          <input type="text" class="form-control" id="userEmail" name="userEmail" placeholder="회원 이메일">
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="bookId">예약 ID</label>
+          <input type="number" class="form-control" id="bookId" name="bookId" placeholder="예약 ID">
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="minAmount">최소금액</label>
+          <input type="number" class="form-control" id="minAmount" name="minAmount" placeholder="최소금액">
+        </div>
+        ~
+        <div class="col-md-2 mb-3">
+          <label for="maxAmount">최대금액</label>
+          <input type="number" class="form-control" id="maxAmount" name="maxAmount" placeholder="최대금액">
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="roomName">숙소이름</label>
+          <input type="text" class="form-control" id="roomName" name="roomName" placeholder="숙소 이름">
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="status">상태</label>
+          <select class="form-control" id="status" name="status">
+            <option value="">상태 선택</option>
+            <option value="결제 완료">완료</option>
+            <option value="결제 대기">대기</option>
+          </select>
+        </div>
+<!--        결제 방법 밸류 값 어떻게?-->
+        <div class="col-md-2 mb-3">
+          <label for="method">결제 방법</label>
+          <select class="form-control" id="method" name="method">
+            <option value="">결제 방법 선택</option>
+            <option value="KG이니시스">KG이니시스</option>
+            <option value="페이팔">페이팔</option>
+            <option value="카카오페이">카카오페이</option>
+            <option value="토스페이">토스페이</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">검색</button>
+    </form>
+  </div>
+
+<!--검색 필터-->
 
   <!-- 테이블 -->
   <table class="table table-bordered table-striped">
@@ -17,10 +76,14 @@
     <tr>
       <th>결제 ID</th>
       <th>회원 ID</th>
+      <th>회원 이메일</th>
       <th>예약 ID</th>
+      <th>숙소 이름</th>
+      <th>숙박 일수</th>
       <th>금액</th>
       <th>상태</th>
       <th>결제 방법</th>
+      <th>결제 신청 시간</th>
       <th>결제 완료 시간</th>
       <th>작업</th>
     </tr>
@@ -28,11 +91,19 @@
     <tbody>
     <tr th:each="payment : ${pageDto.objects}">
       <td th:text="${payment.paymentId}"></td>
-      <td th:text="${payment.userId}"></td>
-      <td th:text="${payment.bookId}"></td>
+      <td>
+        <a style=" text-decoration: none" th:href="@{/admin/users/detail/{userId}(userId=${payment.userId})}"><span th:text="${payment.userId}"></span></a>
+      </td>
+      <td th:text="${payment.userEmail}"></td>
+      <td>
+        <a style=" text-decoration: none" th:href="@{/admin/books/{bookId}(bookId=${payment.bookId})}"><span th:text="${payment.bookId}"></span></a>
+      </td>
+      <td th:text="${payment.roomName}"></td>
+      <td th:text="${payment.dateDifference}"></td>
       <td th:text="${payment.amount}"></td>
       <td th:text="${payment.status}"></td>
       <td th:text="${payment.method}"></td>
+      <td th:text="${#temporals.format(payment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
       <td th:text="${payment.paidAt}"></td>
       <td>
         <!-- 수정, 삭제 링크 -->
@@ -48,13 +119,13 @@
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${pageDto.hasPrev} ? '' : 'disabled'">
-        <a class="page-link" th:href="@{/payment?page={page}(page=${pageDto.currentPage - 1})}">«</a>
+        <a class="page-link" th:href="@{/admin/payments?page={page}(page=${pageDto.currentPage - 1})}">«</a>
       </li>
       <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}">
-        <a class="page-link" th:classappend="${pageDto.currentPage == i} ? 'active text-white' : ''" th:href="@{/payment?page={i}&category={categoryId}(i=${i},categoryId=${categoryId})}" th:text="${i}"></a>
+        <a class="page-link" th:classappend="${pageDto.currentPage == i} ? 'active text-white' : ''" th:href="@{/admin/payments?page={i}(i=${i})}" th:text="${i}"></a>
       </li>
       <li class="page-item" th:classappend="${pageDto.hasNext} ? '' : 'disabled'">
-        <a class="page-link" th:href="@{/payment?page={page}(page=${pageDto.currentPage + 1})}">»</a>
+        <a class="page-link" th:href="@{/admin/payments?page={page}(page=${pageDto.currentPage + 1})}">»</a>
       </li>
     </ul>
   </nav>

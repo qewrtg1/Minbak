@@ -2,7 +2,10 @@ package com.minbak.web.check_books;
 
 
 import com.minbak.web.check_books.dto.CheckBookDto;
+import com.minbak.web.check_books.dto.CheckBookHostDto;
 import com.minbak.web.check_books.dto.CheckBookRoomDto;
+import com.minbak.web.payments.PaymentDto;
+import com.minbak.web.users.HostDto;
 import com.minbak.web.users.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,4 +22,7 @@ public interface CheckBookMapper {
     List<String> findRoomImageUrlsByRoomId(int roomId);
     UserDto findUserByUserId(int userId);
     CheckBookDto findBookByBookId(int bookId);
+    PaymentDto findPaymentByBookId(int bookId);
+    String findUserUrlByUserId(int userId);
+    CheckBookHostDto findHostByUserId(int userId);
 }
