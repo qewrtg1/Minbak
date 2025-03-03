@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 public class BooksDto {
     private Integer bookId;
-    private String status = "대기";
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer guestsNum;
