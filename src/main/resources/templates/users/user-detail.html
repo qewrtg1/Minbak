@@ -150,10 +150,16 @@
         <!-- 유저 추가 정보 -->
         <div class="info-container p-4">
 
-            <div class="info-box border-bottom pb-3 mb-3">
-                <h4>📅 최근 접속일</h4>
-                <p class="fw-bold">2025-02-13 (리프레시 토큰으로 구현?)</p>
+            <div class="info-box border-bottom pb-3 mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h4>📅 최근 접속일</h4>
+                    <p class="fw-bold">2025-02-13 (리프레시 토큰으로 구현?)</p>
+                </div>
+
+                <!-- 숙소 등록 버튼 -->
+                <a href="/admin/rooms/create" class="btn btn-sm btn-primary">숙소 등록</a>
             </div>
+
 
             <div class="info-box border-bottom pb-3 mb-3">
                 <h4>🏠 보유 숙소</h4>
@@ -466,7 +472,7 @@
             rooms.forEach(room => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td><a href="/admin/rooms/${room.roomId}">${room.name}</a></td>
+                    <td><a href="/admin/rooms/detail/${room.roomId}">${room.name}</a></td>
                     <td>${room.price}</td>
                     <td>${room.address}</td>
                 `;

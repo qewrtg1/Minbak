@@ -135,10 +135,10 @@ public class UsersService {
         return new UserPageDto<>(page,size,totalItems,paymentDtos);
     }
 
-    public UserPageDto<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int page, int size, int userId){
+    public UserPageDto<UserRoomsDto> findRoomsByLimitAndOffsetAndUserId(int page, int size, int userId){
 
         int offset = (page-1)*size;
-        List<RoomsDto> roomsDtos = usersMapper.findRoomsByLimitAndOffsetAndUserId(size,offset,userId);
+        List<UserRoomsDto> roomsDtos = usersMapper.findRoomsByLimitAndOffsetAndUserId(size,offset,userId);
 
         int totalItems = usersMapper.countRoomsByUserId(userId);
 

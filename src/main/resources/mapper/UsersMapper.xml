@@ -167,7 +167,7 @@
     </select>
 
     <!--유저아이디를 갖고 해당 유저의 룸 페지징데이터 가져오기-->
-    <select id="findRoomsByLimitAndOffsetAndUserId" resultType="com.minbak.web.rooms.RoomsDto">
+    <select id="findRoomsByLimitAndOffsetAndUserId" resultType="com.minbak.web.users.UserRoomsDto">
         SELECT *
         FROM rooms
         WHERE user_id = #{userId}

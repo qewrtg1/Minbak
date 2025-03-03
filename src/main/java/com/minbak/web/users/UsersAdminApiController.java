@@ -50,7 +50,7 @@ public class UsersAdminApiController {
     }
 
     @GetMapping("/users/rooms")
-    public UserPageDto<RoomsDto> getRoomsByUserPageing(
+    public UserPageDto<UserRoomsDto> getRoomsByUserPageing(
             @RequestParam("userId") int userId,    // 검색어
             @RequestParam("page") int page,           // 현재 페이지
             @RequestParam("size") int size            // 페이지 크기

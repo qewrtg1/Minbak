@@ -77,7 +77,7 @@ public interface UsersMapper {
 
     public int countRoomsByUserId(int userId);
 
-    public List<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
+    public List<UserRoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
 
     public void deleteUserByUserId(int userId);
 
