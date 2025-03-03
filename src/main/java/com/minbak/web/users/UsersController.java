@@ -2,6 +2,8 @@ package com.minbak.web.users;
 
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.file_upload.FileMapper;
+import com.minbak.web.file_upload.FileService;
+import com.minbak.web.file_upload.ImageFileDto;
 import com.minbak.web.spring_security.CustomUserDetails;
 import com.minbak.web.user_YH.license.LicenseDto;
 import com.minbak.web.user_YH.license.LicenseService;
@@ -19,7 +21,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,6 +43,9 @@ public class UsersController {
 
     @Autowired
     FileMapper fileMapper;
+
+    @Autowired
+    FileService fileService;
 
     @GetMapping("/login")
     public String loginPage() {
@@ -283,6 +291,49 @@ public class UsersController {
         usersService.updateHost(hostDto);
         model.addAttribute("message", "호스트 정보가 성공적으로 수정되었습니다.");
         return "redirect:/admin/users/detail/" + hostDto.getUserId();
+    }
+
+    @GetMapping("/users/license/create")
+    public String licenseCreatePage(@RequestParam int hostId,
+                                    @RequestParam int userId, Model model){
+
+        model.addAttribute("hostId",hostId);
+        model.addAttribute("userDto",usersService.findUserByUserId(userId));
+        return "/users/license-create";
+    }
+
+    @PostMapping("/users/license/create")
+    public String registerBusinessLicense(@ModelAttribute LicenseDto licenseDto,
+                                          @RequestParam("userId") int userId,
+                                          @RequestParam("file") MultipartFile file,
+                                          RedirectAttributes redirectAttributes) {
+
+        // 파일이 비어있는지 확인
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "첨부한 파일이 없습니다.");
+            return "redirect:/admin/license/create";
+        }
+
+        try {
+            // 파일 저장 및 파일 URL 생성
+            ImageFileDto imageFile = fileService.saveFile(file, licenseDto.getHostId(), "license", userId);
+            licenseDto.setLicenseFileUrl(imageFile.getFileUrl());
+        } catch (IOException e) {
+            throw new RuntimeException("파일 저장 중 오류 발생", e);
+        }
+
+        // 영업신고증 정보 저장
+        licenseService.addBusinessLicense(licenseDto);
+
+        // 호스트 검증 상태 업데이트 (검증 중)
+        HostDto hostDto = new HostDto();
+        hostDto.setHostId(licenseDto.getHostId());
+        hostDto.setIsVerified("검증 중");
+        usersService.updateHost(hostDto);
+
+        redirectAttributes.addFlashAttribute("message", "호스트의 영업신고증이 등록되었습니다.");
+
+        return "redirect:/admin/users/detail/"+userId;
     }
 
 }

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영업신고증 대리등록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 700px;
+            margin-top: 50px;
+        }
+        .header-title {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .description {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2 class="header-title">영업신고증 대리등록</h2>
+    <p class="description">
+        관리자는 호스트를 대신하여 영업신고증을 등록할 수 있습니다.
+        아래 호스트 정보를 확인한 후 신고증을 제출하세요.
+    </p>
+
+
+    <!-- ✅ 호스트 정보 표시 (인풋창 없이 텍스트만 표시) -->
+    <h5 class="mt-4">호스트 정보</h5>
+    <div class="mb-3">
+        <label class="form-label">이름</label>
+        <p class="form-control-plaintext" th:text="${userDto.name}"></p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">이메일</label>
+        <p class="form-control-plaintext" th:text="${userDto.email}"></p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">전화번호</label>
+        <p class="form-control-plaintext" th:text="${userDto.phoneNumber}"></p>
+    </div>
+    <form action="/admin/users/license/create" method="post" enctype="multipart/form-data">
+
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+        <input type="hidden" name="userId" th:value="${userDto.userId}">
+        <input type="hidden" name="hostId" th:value="${hostId}">
+        <!-- ✅ 영업신고증 유형 -->
+        <h5 class="mt-4">영업신고증 유형</h5>
+        <div class="list-group">
+            <label class="list-group-item">
+                <input type="radio" name="businessType" value="일반숙박업" class="form-check-input" checked>
+                일반숙박업
+            </label>
+            <label class="list-group-item">
+                <input type="radio" name="businessType" value="생활숙박업" class="form-check-input">
+                생활숙박업
+            </label>
+            <label class="list-group-item">
+                <input type="radio" name="businessType" value="외국인관광도시민박업" class="form-check-input">
+                외국인관광도시민박업
+            </label>
+            <label class="list-group-item">
+                <input type="radio" name="businessType" value="한옥체험업" class="form-check-input">
+                한옥체험업
+            </label>
+            <label class="list-group-item">
+                <input type="radio" name="businessType" value="농어촌민박사업" class="form-check-input">
+                농어촌민박사업
+            </label>
+            <label class="list-group-item">
+                <input type="radio" name="businessType" value="실증특례" class="form-check-input">
+                실증특례
+            </label>
+        </div>
+
+        <!-- ✅ 발급 지역 선택 -->
+        <h5 class="mt-4">발급 지역</h5>
+        <select class="form-select" name="region">
+            <option value="서울">서울</option>
+            <option value="부산">부산</option>
+            <option value="대구">대구</option>
+            <option value="인천">인천</option>
+            <option value="광주">광주</option>
+            <option value="대전">대전</option>
+            <option value="울산">울산</option>
+            <option value="세종">세종</option>
+            <option value="경기도">경기도</option>
+            <option value="강원도">강원도</option>
+            <option value="충청북도">충청북도</option>
+            <option value="충청남도">충청남도</option>
+            <option value="전라북도">전라북도</option>
+            <option value="전라남도">전라남도</option>
+            <option value="경상북도">경상북도</option>
+            <option value="경상남도">경상남도</option>
+            <option value="제주도">제주도</option>
+        </select>
+
+        <!-- ✅ 영업신고증 첨부 파일 -->
+        <h5 class="mt-4">영업신고증 첨부</h5>
+        <div class="mb-3">
+            <input type="file" class="form-control" name="file" accept=".jpg, .png, .pdf" required>
+            <small class="text-muted">JPG, PNG, PDF 파일만 업로드 가능합니다.</small>
+        </div>
+
+        <!-- ✅ 제출 버튼 -->
+        <button type="submit" class="btn btn-primary w-100 mt-4">대리 등록하기</button>
+    </form>
+
+</div>
+
+</body>
+</html>
