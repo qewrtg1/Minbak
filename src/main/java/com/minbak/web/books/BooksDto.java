@@ -21,6 +21,10 @@ public class BooksDto {
     private RoomsDto room;
     private PaymentDto payment;
 
+    private String userName;
+    private String phoneNumber;
+    private String roomName;
+
     private String searchType; // 예약번호, 예약자명, 연락처 등
     private String keyword; // 검색어
     private String dateType; // 체크인, 체크아웃 날짜

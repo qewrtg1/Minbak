@@ -1,5 +1,8 @@
 package com.minbak.web.dash_board;
 
+import com.minbak.web.books.BooksService;
+import com.minbak.web.books.TopBooksOfRegionDto;
+import com.minbak.web.books.TopDayOfWeekDto;
 import com.minbak.web.spring_security.CustomUserDetails;
 import com.minbak.web.users.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ public class DashBoardController {
 
     private final DashBoardService dashBoardService;
     private final UsersService usersService;
+    private final BooksService booksService;
 
     @GetMapping
     public String dashBoard(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -78,6 +82,12 @@ public class DashBoardController {
         // 별점 높은 숙소 (Top 5)
         List<TopRatedRoomDto> topRatedRooms = dashBoardService.getTopRatedRooms();
         model.addAttribute("topRatedRooms", topRatedRooms);
+
+        List<TopDayOfWeekDto> topDayOfWeek = booksService.findTopBooks();
+        model.addAttribute("topDayOfWeek", topDayOfWeek);
+
+        List<TopBooksOfRegionDto> topBooksOfRegion = booksService.findTopBooksOfRegion();
+        model.addAttribute("topBooksOfRegion", topBooksOfRegion);
 
         return "dash-board";
     }
