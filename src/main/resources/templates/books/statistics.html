@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
+<head>
+    <meta charset="UTF-8">
+    <title>예약 통계</title>
+    <th:block layout:fragment="css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+            }
+            canvas {
+                border: 1px solid #ddd;
+                display: block;
+                margin: 20px auto;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <main class="main-content">
+        <div class="card medium-card">
+            <strong>예약이 가장 많은 요일</strong>
+            <canvas id="reservationOfDay"></canvas>
+        </div>
+        <div class="card medium-card">
+            <strong>예약이 가장 많은 지역</strong>
+            <canvas id="reservationOfPlace"></canvas>
+        </div>
+    </main>
+</th:block>
+</body>
+<th:block layout:fragment="js">
+    <!-- Chart.js 스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        // 옵션별 숙소 개수 데이터 가져오기
+        let optionData = [[${daysCounts}]];
+        console.log("옵션별 숙소 개수 데이터:", optionData);
+
+        let optionLabels = [];
+        let optionCounts = [];
+
+        optionData.forEach(option => {
+            optionLabels.push(option.optionName);
+            optionCounts.push(option.roomCount);
+        });
+
+        // 옵션별 숙소 개수 차트 생성 (변수명 변경)
+        const ctxOption = document.getElementById("reservationOfDay").getContext("2d");
+
+        new Chart(ctxOption, {
+            type: "bar",
+            data: {
+                labels: optionLabels,
+                datasets: [{
+                    label: "숙소 개수",
+                    data: optionCounts,
+                    backgroundColor: "rgba(255, 99, 132, 0.6)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0 // 소수점 제거
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</th:block>
+</html>

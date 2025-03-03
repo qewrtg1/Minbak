@@ -33,7 +33,7 @@ public interface BooksMapper {
 
     List<Map<String, Object>> findMonthlyBooks(@Param("year") int year, @Param("month") int month);
 
-    List<Map<String, Object>> selectWaitings();
+    List<BooksDto> selectWaitings();
 
     List<BooksDto> paidAndCheckIn();
 }

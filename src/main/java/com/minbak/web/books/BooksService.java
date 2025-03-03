@@ -67,12 +67,8 @@ public class BooksService {
         return roomStatusMap;
     }
 
-    public List<Map<String, Object>> getWaitingBooks() {
-        return booksMapper.selectWaitings().stream().map(book -> {
-            book.put("startDate", ((java.sql.Date) book.get("start_date")).toLocalDate());
-            book.remove("start_date");
-            return book;
-        }).collect(Collectors.toList());
+    public List<BooksDto> getWaitingBooks() {
+        return booksMapper.selectWaitings();
     }
 
     public List<BooksDto> paidAndCheckIn() {
