@@ -26,7 +26,8 @@
         </a>
       </div>
       <button class="btn btn-light">🔔 알림</button>
-      <img th:src="${headerUser.profileImageUrl}" alt="프로필 이미지" class="profile-img">
+      <img th:src="${headerUser.profileImageUrl != null} ? ${headerUser.profileImageUrl} : '/uploads/3966f510-65f8-46e7-af79-5f23ae159e6b_user-1.png'"
+           alt="프로필 이미지" class="profile-img">
       <span th:text="${headerUser.name}">사용자 이름</span>
 
       <!-- ✅ 부트스트랩 드롭다운 메뉴 추가 -->

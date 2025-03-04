@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>숙소 수정</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .editor-container { display: flex; height: 100vh; }
+    .sidebar { width: 30%; padding: 20px; border-right: 1px solid #ddd; background: #f8f9fa; overflow-y: auto; }
+    .content { width: 70%; padding: 20px; display: flex; justify-content: center; align-items: center; }
+    .edit-box { width: 50%; text-align: center; }
+    .item { padding: 15px; border-radius: 8px; cursor: pointer; background: white; margin-bottom: 10px; border: 1px solid #ddd; }
+    .item:hover { background: #e9ecef; }
+    .selected { border: 2px solid #007bff; background: #e7f1ff; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<div th:replace="~{host-pages/common/header}"></div>
+
+<!-- roomId를 저장하는 숨겨진 input -->
+<input type="hidden" id="roomId" th:value="${room.roomId}">
+
+<div class="container-fluid editor-container">
+  <!-- 왼쪽 패널 (숙소 개요) -->
+  <div class="sidebar">
+    <h4 class="mb-4">숙소 페이지 에디터</h4>
+
+    <!-- 활성화/비활성화 토글 -->
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" id="roomActive"
+             th:checked="${room.isActive}" onchange="toggleActiveStatus(this)">
+      <label class="form-check-label" for="roomActive">숙소 활성화</label>
+    </div>
+
+    <div class="item" onclick="showEditSection('name')"><strong>이름</strong></div>
+    <div class="item" onclick="showEditSection('content')"><strong>설명</strong></div>
+    <div class="item" onclick="showEditSection('price')"><strong>가격</strong></div>
+    <div class="item" onclick="showEditSection('guests')"><strong>최대 숙박 인원</strong></div>
+    <div class="item" onclick="showEditSection('details')"><strong>침실/침대/욕실</strong></div>
+    <div class="item" onclick="showEditSection('type')"><strong>숙소 유형</strong></div>
+    <div class="item" onclick="showEditSection('useGuide')"><strong>이용 가이드</strong></div>
+    <div class="item" onclick="showEditSection('location')"><strong>위치</strong></div>
+    <div class="item" onclick="showEditSection('images')"><strong>사진 관리</strong></div>
+    <div class="item" onclick="showEditSection('categories')"><strong>카테고리</strong></div>
+    <div class="item" onclick="showEditSection('options')"><strong>숙소 옵션</strong></div>
+  </div>
+
+  <!-- 오른쪽 패널 (수정 폼) -->
+  <div class="content">
+    <div id="edit-name" class="edit-box hidden">
+      <h4>숙소 이름 수정</h4>
+      <input type="text" class="form-control mb-3" id="roomName" th:value="${room.name}">
+      <button class="btn btn-primary w-100" onclick="saveChanges('name')">저장</button>
+    </div>
+
+    <div id="edit-content" class="edit-box hidden">
+      <h4>숙소 설명 수정</h4>
+      <textarea class="form-control mb-3" id="roomContent" th:text="${room.content}"></textarea>
+      <button class="btn btn-primary w-100" onclick="saveChanges('content')">저장</button>
+    </div>
+
+    <div id="edit-price" class="edit-box hidden">
+      <h4>숙소 가격 수정</h4>
+      <input type="number" class="form-control mb-3" id="roomPrice" th:value="${room.price}">
+      <button class="btn btn-primary w-100" onclick="saveChanges('price')">저장</button>
+    </div>
+
+    <div id="edit-guests" class="edit-box hidden">
+      <h4>최대 숙박 인원 수정</h4>
+      <input type="number" class="form-control mb-3" id="maxGuests" th:value="${room.maxGuests}">
+      <button class="btn btn-primary w-100" onclick="saveChanges('guests')">저장</button>
+    </div>
+
+    <div id="edit-type" class="edit-box hidden">
+      <h4>숙소 유형 수정</h4>
+      <select class="form-select mb-3" id="roomType">
+        <option value="아파트" th:selected="${room.buildingType == '아파트'}">아파트</option>
+        <option value="주택" th:selected="${room.buildingType == '주택'}">주택</option>
+        <option value="빌라" th:selected="${room.buildingType == '빌라'}">빌라</option>
+      </select>
+      <button class="btn btn-primary w-100" onclick="saveChanges('type')">저장</button>
+    </div>
+
+    <div id="edit-useGuide" class="edit-box hidden">
+      <h4>이용 가이드 수정</h4>
+      <textarea class="form-control mb-3" id="useGuide" th:text="${room.useGuide}"></textarea>
+      <button class="btn btn-primary w-100" onclick="saveChanges('useGuide')">저장</button>
+    </div>
+
+    <div id="edit-location" class="edit-box hidden">
+      <h4>숙소 위치 수정</h4>
+      <input type="number" class="form-control mb-2" id="latitude" placeholder="위도" th:value="${room.latitude}" step="0.000001">
+      <input type="number" class="form-control mb-3" id="longitude" placeholder="경도" th:value="${room.longitude}" step="0.000001">
+      <button class="btn btn-primary w-100" onclick="saveChanges('location')">저장</button>
+    </div>
+
+    <div id="edit-images" class="edit-box hidden">
+      <h4>숙소 사진 관리</h4>
+      <input type="file" class="form-control mb-3" multiple>
+      <button class="btn btn-primary w-100" onclick="saveChanges('images')">저장</button>
+    </div>
+
+    <div id="edit-details" class="edit-box hidden">
+      <h4>숙소 상세 정보 수정</h4>
+      <label>침실 개수</label>
+      <input type="number" class="form-control mb-2" id="bedrooms" th:value="${room.bedrooms}">
+
+      <label>침대 개수</label>
+      <input type="number" class="form-control mb-2" id="beds" th:value="${room.beds}">
+
+      <label>욕실 개수</label>
+      <input type="number" class="form-control mb-3" id="bathrooms" th:value="${room.bathrooms}">
+
+      <button class="btn btn-primary w-100" onclick="saveChanges('details')">저장</button>
+    </div>
+
+    <div id="edit-categories" class="edit-box hidden">
+      <h4>숙소 카테고리 수정</h4>
+      <input type="text" class="form-control mb-3" id="roomCategories"
+             th:value="${#strings.arrayJoin(room.categories, ',')}">
+      <button class="btn btn-primary w-100" onclick="saveChanges('categories')">저장</button>
+    </div>
+
+    <div id="edit-options" class="edit-box hidden">
+      <h4>숙소 옵션 수정</h4>
+      <input type="text" class="form-control mb-3" id="roomOptions"
+             th:value="${#strings.arrayJoin(room.options, ',')}">
+      <button class="btn btn-primary w-100" onclick="saveChanges('options')">저장</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+<script>
+  function toggleActiveStatus(checkbox) {
+      let roomId = document.getElementById('roomId').value; // 숙소 ID 가져오기
+      fetch('/host/api/host-edit-room/toggle-active', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ roomId: parseInt(roomId), isActive: checkbox.checked })
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert('숙소 상태가 변경되었습니다.');
+      })
+      .catch(error => {
+          console.error('변경 오류:', error);
+          alert('상태 변경 중 오류 발생');
+      });
+  }
+
+</script>
+
+<script>
+
+function showEditSection(section) {
+    document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+    document.querySelector('#edit-' + section).classList.remove('hidden');
+
+    document.querySelectorAll('.item').forEach(item => item.classList.remove('selected'));
+    document.querySelector(`[onclick="showEditSection('${section}')"]`).classList.add('selected');
+}
+
+function saveChanges(section) {
+  let updatedData = { roomId: document.getElementById('roomId').value }; // 숙소 ID 포함
+
+  switch (section) {
+      case 'name':
+          updatedData.name = document.getElementById('roomName').value.trim();
+          break;
+      case 'content':
+          updatedData.content = document.getElementById('roomContent').value.trim();
+          break;
+      case 'price':
+          updatedData.price = parseInt(document.getElementById('roomPrice').value) || 0;
+          break;
+      case 'guests':
+          updatedData.maxGuests = parseInt(document.getElementById('maxGuests').value) || 1;
+          break;
+      case 'details':
+          updatedData.bedrooms = parseInt(document.getElementById('bedrooms').value) || 1;
+          updatedData.beds = parseInt(document.getElementById('beds').value) || 1;
+          updatedData.bathrooms = parseInt(document.getElementById('bathrooms').value) || 1;
+          break;
+      case 'type':
+          updatedData.buildingType = document.getElementById('roomType').value;
+          break;
+      case 'useGuide':
+          updatedData.useGuide = document.getElementById('useGuide').value.trim();
+          break;
+      case 'location':
+          updatedData.latitude = parseFloat(document.getElementById('latitude').value) || 0;
+          updatedData.longitude = parseFloat(document.getElementById('longitude').value) || 0;
+          break;
+      case 'categories':
+          updatedData.categories = document.getElementById('roomCategories').value.trim().split(',');
+          break;
+      case 'options':
+          updatedData.options = document.getElementById('roomOptions').value.trim().split(',');
+          break;
+  }
+
+  fetch('/api/rooms/update', {
+      method: 'PATCH',  // 일부 필드만 변경하므로 PATCH 사용
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData)
+  })
+  .then(response => response.json())
+  .then(data => {
+      alert('저장되었습니다!');
+  })
+  .catch(error => {
+      console.error('저장 오류:', error);
+      alert('저장 중 오류 발생');
+  });
+
+
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

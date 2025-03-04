@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.user_YH.host_edit_room.HostEditRoomMapper">
+
+    <!-- 숙소 정보 가져오기 -->
+    <select id="getHostRoomById" resultType="com.minbak.web.user_YH.host_edit_room.dto.HostRoomEditDto">
+        SELECT
+        r.room_id AS roomId,
+        r.name,
+        r.content,
+        r.price,
+        r.max_guests AS maxGuests,
+        r.bedrooms,
+        r.beds,
+        r.bathrooms,
+        r.building_type AS buildingType,
+        r.use_guide AS useGuide,
+        r.latitude,
+        r.longitude,
+        r.is_active AS isActive
+        FROM rooms r
+        WHERE r.room_id = #{roomId}
+    </select>
+
+    <!-- 숙소 카테고리 가져오기 -->
+    <select id="getRoomCategories" resultType="string">
+        SELECT c.name
+        FROM categories c
+        JOIN rooms_categories rc ON c.category_id = rc.category_id
+        WHERE rc.room_id = #{roomId}
+    </select>
+
+    <!-- 숙소 옵션 가져오기 -->
+    <select id="getRoomOptions" resultType="string">
+        SELECT o.name
+        FROM room_options o
+        JOIN rooms_room_options ro ON o.option_id = ro.option_id
+        WHERE ro.room_id = #{roomId}
+    </select>
+
+    <!-- 숙소 이미지 가져오기 -->
+    <select id="getRoomImages" resultType="string">
+        SELECT file_url FROM image_files
+        WHERE entity_type = 'rooms' AND entity_id = #{roomId}
+    </select>
+
+    <!-- 숙소 활성화 상태 업데이트 -->
+    <update id="updateRoomActiveStatus">
+        UPDATE rooms
+        SET is_active = #{isActive}
+        WHERE room_id = #{roomId}
+    </update>
+
+    <!-- 특정 숙소의 활성화 상태 가져오기 -->
+    <select id="getRoomActiveStatus" resultType="boolean">
+        SELECT is_active FROM rooms WHERE room_id = #{roomId}
+    </select>
+
+    <!-- roomId로 호스트(user_id) 가져오기 -->
+    <select id="getHostUserIdByRoomId" resultType="int">
+        SELECT user_id FROM rooms WHERE room_id = #{roomId}
+    </select>
+
+</mapper>
