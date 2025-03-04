@@ -24,6 +24,8 @@ public interface LicenseMapper {
 
     Integer getHostIdByUserId(int userId);
 
+    Integer getUserIdByHostId(int hostId);
+
     void deleteLicenseByHostId(int hostId);
 
     LicenseDto getLicenseByHostId(int hostId);

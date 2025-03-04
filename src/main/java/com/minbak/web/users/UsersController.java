@@ -350,10 +350,10 @@ public class UsersController {
         // 영업신고증 파일 삭제
         try {
             boolean isFileDeleted = fileService.deleteFile(fileService.findLicenseImagesUrlByHostId(hostId));
-            if (!isFileDeleted) {
-                redirectAttributes.addFlashAttribute("message", "파일 삭제 중 오류가 발생했습니다.");
-                return "redirect:/admin/users";
-            }
+//            if (!isFileDeleted) {
+//                redirectAttributes.addFlashAttribute("message", "파일 삭제 중 오류가 발생했습니다.");
+//                return "redirect:/admin/users";
+//            }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "파일 삭제 실패: " + e.getMessage());
             return "redirect:/admin/users";

@@ -43,7 +43,7 @@ public class LicenseService {
     }
 
     public Integer getUserIdByHostId(int hostId) {
-        return licenseMapper.getHostIdByUserId(hostId);
+        return licenseMapper.getUserIdByHostId(hostId);
     }
 
     // 특정 호스트의 영업신고증 조회
