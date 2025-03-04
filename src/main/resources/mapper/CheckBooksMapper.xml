@@ -98,6 +98,12 @@
         user_id=#{userId}
     </select>
 
+    <select id="findUserNameByUserId" resultType="String">
+        select name
+        from users
+        where
+        user_id=#{userId}
+    </select>
 
 
 

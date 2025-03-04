@@ -23,6 +23,7 @@ public class CheckBookDto {
         private Integer roomId;
         private UserDto user;
         private HostDto host;
+        private String hostName;
         private CheckBookRoomDto room;
         private PaymentDto payment;
         private String roomUrl;

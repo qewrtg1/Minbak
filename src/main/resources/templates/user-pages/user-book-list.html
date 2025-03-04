@@ -115,7 +115,6 @@
 
     <div th:each="book: ${booksPageDto.objects}">
       <div class="room-card">
-        <!-- 이미지는 안함 -->
         <img th:src="${book.roomUrl}" class="room-image" alt="숙소 이미지">
 
         <div>
@@ -129,7 +128,7 @@
             </div>
           </div>
           <p class="text-muted small">
-            호스트: <span th:text="${book.user.name}">키다리여우님</span><br>
+            호스트: <span th:text="${book.hostName}">키다리여우님</span><br>
             <span th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}"></span> -
             <span th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}"></span>
           </p>

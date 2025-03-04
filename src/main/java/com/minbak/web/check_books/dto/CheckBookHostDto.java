@@ -14,6 +14,7 @@ public class CheckBookHostDto {
 
         private int hostId;
         private int userId;  // 유저 ID
+        private String hostName;
         private String hobby;
         private String introduction;
         private String isVerified;

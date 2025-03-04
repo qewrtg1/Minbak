@@ -32,11 +32,11 @@
         </div>
       </div>
       <div class="user-list mt-3">
-        <div class="user-item" th:each="chat : ${userChats}" th:attr="data-chat-id=${chat.chatId}" onclick="loadChat(this)">
-          <img src="/static/img/user-icon.png" alt="User Icon" width="40" height="40" class="me-2">
+        <div class="user-item" th:each="userMessageList : ${userMessageLists}" th:attr="data-chat-id=${userMessageList.chatRoomId}" onclick="loadChat(this)">
+          <img src="챗룸아이디 상대방 이미지링크" alt="User Icon" width="40" height="40" class="me-2">
           <div>
-            <h6 th:text="${chat.userName}">유저 이름</h6>
-            <p class="text-muted small" th:text="${chat.lastMessage}">마지막 메시지</p>
+            <h6 th:text="${userMessageList.ChatRoomUserName}">유저 이름</h6>
+            <p class="text-muted small" th:text="${chat.lastMessageContent}">마지막 메시지</p>
           </div>
           <span class="text-muted small ms-auto" th:text="${chat.lastMessageTime}">2.20.</span>
         </div>
@@ -68,8 +68,8 @@
 
 <script>
   function loadChat(element) {
-      let chatId = element.getAttribute("data-chat-id");
-      window.location.href = '/messages?chatId=' + chatId;
+      let chatRoomId = element.getAttribute("data-chat-id");
+      window.location.href = '/user/messageList?chatRoomId=' + chatRoomId;
   }
 
   function sendMessage() {
