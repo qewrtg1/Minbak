@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,6 +13,7 @@ public class PaymentDto {
 
     private Integer paymentId;
     private Integer userId;
+    private String userEmail;
     private Integer bookId;
     private BigDecimal amount;
     private String status;
@@ -21,6 +23,9 @@ public class PaymentDto {
     private LocalDateTime createdAt;
     private String roomName;
     private String merchantUid;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private long dateDifference;
 
 
 }

@@ -37,4 +37,16 @@
         SELECT host_id FROM host WHERE user_id = #{userId}
     </select>
 
+    <!-- host_id로 user_id 조회 -->
+    <select id="getUserIdByHostId" resultType="int">
+        SELECT user_id FROM host WHERE host_id = #{host_id}
+    </select>
+
+    <delete id="deleteLicenseByHostId">
+        DELETE FROM business_license WHERE host_id = #{hostId}
+    </delete>
+
+    <select id="getLicenseByHostId" resultType="com.minbak.web.user_YH.license.LicenseDto">
+        SELECT * FROM business_license WHERE host_id = #{hostId}
+    </select>
 </mapper>

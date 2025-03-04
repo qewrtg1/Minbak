@@ -2,122 +2,101 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.dash_board.DashBoardMapper">
 
+    <!-- ✅ MyBatis 2차 캐싱 활성화 -->
+    <cache eviction="LRU" flushInterval="600000" size="512" readOnly="true"/>
+
     <!-- 유저 신고 미해결 건수 조회 -->
     <select id="countUserReports" resultType="int">
-        SELECT COUNT(*)
-        FROM user_reports
-        WHERE status = '대기'
+        SELECT COUNT(*) FROM user_reports WHERE status = '대기'
     </select>
 
     <!-- 숙소 신고 미해결 건수 조회 -->
     <select id="countRoomReports" resultType="int">
-        SELECT COUNT(*)
-        FROM rooms_reports
-        WHERE status = 'PENDING'
+        SELECT COUNT(*) FROM rooms_reports WHERE status = 'PENDING'
     </select>
 
-    <!-- 호스트 인증 신청 건수 조회 (is_verified = 0 인 경우) -->
+    <!-- 호스트 인증 신청 건수 조회 -->
     <select id="countHostVerifications" resultType="int">
-        SELECT COUNT(*)
-        FROM host
-        WHERE is_verified = 0
+        SELECT COUNT(*) FROM host WHERE is_verified = '검증 중'
     </select>
 
     <!-- 전체 유저 수 조회 -->
     <select id="countTotalUsers" resultType="int">
-        SELECT COUNT(*) FROM users;
+        SELECT COUNT(*) FROM users
     </select>
 
     <!-- 호스트 유저 수 조회 -->
     <select id="countHosts" resultType="int">
-        SELECT COUNT(*) FROM users_roles WHERE role_id = 2;
+        SELECT COUNT(*) FROM users_roles WHERE role_id = 2
     </select>
 
-    <!--지금으로부터 5개월까지의 예약 데이터 개수 가져오기-->
+    <!-- ✅ 캐시 적용: 최근 5개월간 예약 데이터 -->
     <select id="findMonthlyReservations" resultType="com.minbak.web.dash_board.MonthlyReservationDto">
         SELECT DATE_FORMAT(start_date, '%Y-%m') AS month,
         COUNT(*) AS book_count
         FROM books
-        WHERE start_date >= LAST_DAY(DATE_SUB(NOW(), INTERVAL 5 MONTH)) + INTERVAL 1 DAY
-        AND  LAST_DAY(DATE_ADD(NOW(), INTERVAL 1 MONTH)) + INTERVAL 1 DAY > start_date
+        WHERE start_date BETWEEN DATE_SUB(NOW(), INTERVAL 5 MONTH) AND NOW()
         GROUP BY month
         ORDER BY month;
     </select>
 
-
-    <!-- 월별 매출 데이터 조회 -->
+    <!-- ✅ 캐시 적용: 월별 매출 데이터 -->
     <select id="findMonthlyRevenue" resultType="com.minbak.web.dash_board.MonthlyRevenueDto">
         SELECT DATE_FORMAT(paid_at, '%Y-%m') AS month,
         SUM(amount) AS revenue
         FROM payments
-        WHERE paid_at >= LAST_DAY(DATE_SUB(NOW(), INTERVAL 5 MONTH)) + INTERVAL 1 DAY
-        AND LAST_DAY(NOW()) + INTERVAL 1 DAY > paid_at
-            AND status = '결제 완료'  <!-- 결제 완료된 건만 포함 -->
+        WHERE paid_at BETWEEN DATE_SUB(NOW(), INTERVAL 5 MONTH) AND NOW()
+        AND status = '결제 완료'
         GROUP BY month
         ORDER BY month;
     </select>
 
-    <!-- 전체 숙소 수 -->
+    <!-- ✅ 전체 숙소 수 조회 -->
     <select id="countTotalRooms" resultType="int">
-        SELECT COUNT(*) FROM rooms;
+        SELECT COUNT(*) FROM rooms
     </select>
 
-    <!-- 오늘 가입한 사용자 수 -->
+    <!-- ✅ 오늘 가입한 사용자 수 -->
     <select id="countTodayUsers" resultType="int">
-        SELECT COUNT(*)
-        FROM users
-        WHERE DATE(created_at) = CURDATE();
+        SELECT COUNT(*) FROM users WHERE DATE(created_at) = CURDATE()
     </select>
 
-    <!-- 총 매출 (결제 완료된 금액 합산) -->
+    <!-- ✅ 총 매출 조회 -->
     <select id="sumTotalRevenue" resultType="decimal">
-        SELECT COALESCE(SUM(amount), 0)
-        FROM payments
-        WHERE status = '결제 완료';
+        SELECT COALESCE(SUM(amount), 0) FROM payments WHERE status = '결제 완료'
     </select>
 
-    <!-- 미처리 신고 건수 -->
+    <!-- ✅ 미처리 신고 건수 -->
     <select id="countPendingReports" resultType="int">
-        SELECT COUNT(*)
-        FROM user_reports
-        WHERE status = '대기';
+        SELECT COUNT(*) FROM user_reports WHERE status = '대기'
     </select>
 
-    <!-- 리뷰 평균 점수 -->
+    <!-- ✅ 리뷰 평균 점수 -->
     <select id="avgReviewScore" resultType="decimal">
-        SELECT COALESCE(AVG(score), 0)
-        FROM review;
+        SELECT COALESCE(AVG(score), 0) FROM review
     </select>
 
-    <!-- 최근 신고된 숙소 최신순 5개 조회 -->
+    <!-- ✅ 최근 신고된 숙소 (최신순 5개) -->
     <select id="findRecentReportedRooms" resultType="com.minbak.web.dash_board.ReportedRoomDto">
-        SELECT
-        u.user_id,
-        u.email AS user_email,
-        r.room_id,
-        r.name AS room_name,
-        r.address,
-        r.price
+        SELECT u.user_id, u.email AS user_email, r.room_id, r.name AS room_name, r.address, r.price
         FROM rooms_reports rr
         JOIN rooms r ON rr.room_id = r.room_id
         JOIN users u ON r.user_id = u.user_id
         ORDER BY rr.report_id DESC
-        LIMIT 4
+        LIMIT 5;
     </select>
 
-    <!-- 전체 예약 건수 조회 -->
+    <!-- ✅ 전체 예약 건수 -->
     <select id="countTotalReservations" resultType="int">
-        SELECT COUNT(*) FROM books;
+        SELECT COUNT(*) FROM books
     </select>
 
-    <!-- 취소된 예약 건수 조회 (취소 상태: '이용자 취소', '숙박업자 취소') -->
+    <!-- ✅ 취소된 예약 건수 -->
     <select id="countCancelledReservations" resultType="int">
-        SELECT COUNT(*)
-        FROM books
-        WHERE status IN ('이용자 취소', '숙박업자 취소');
+        SELECT COUNT(*) FROM books WHERE status IN ('이용자 취소', '숙박업자 취소')
     </select>
 
-    <!-- 관리자 리스트 조회 -->
+    <!-- ✅ 관리자 리스트 -->
     <select id="findAllAdmins" resultType="com.minbak.web.dash_board.AdminDto">
         SELECT u.user_id AS id, u.email, u.phone_number AS phoneNumber
         FROM users u
@@ -126,7 +105,7 @@
         WHERE r.role = 'ROLE_ADMIN';
     </select>
 
-    <!-- 카테고리별 숙소 개수 조회 (상위 8개) -->
+    <!-- ✅ 카테고리별 숙소 개수 조회 -->
     <select id="countRoomsByCategory" resultType="com.minbak.web.dash_board.CategoryRoomCountDto">
         SELECT c.name AS categoryName, COUNT(rc.room_id) AS roomCount
         FROM categories c
@@ -136,8 +115,7 @@
         LIMIT 8;
     </select>
 
-
-    <!-- 옵션별 숙소 개수 조회 -->
+    <!-- ✅ 옵션별 숙소 개수 조회 -->
     <select id="countRoomsByOption" resultType="com.minbak.web.dash_board.OptionRoomCountDto">
         SELECT o.name AS optionName, COUNT(rro.room_id) AS roomCount
         FROM room_options o
@@ -151,4 +129,100 @@
         VALUES (#{senderId}, #{receiverId}, #{content});
     </insert>
 
+
+    <!-- 지역별 숙소 개수 조회 -->
+    <select id="countRoomsByRegion" resultType="com.minbak.web.dash_board.RegionRoomCountDto">
+        SELECT
+        CASE
+        WHEN address LIKE '제주%' THEN '제주'
+        WHEN address LIKE '서울%' THEN '서울'
+        WHEN address LIKE '부산%' THEN '부산'
+        WHEN address LIKE '속초%' THEN '속초'
+        WHEN address LIKE '강릉%' THEN '강릉'
+        WHEN address LIKE '전주%' THEN '전주'
+        WHEN address LIKE '대구%' THEN '대구'
+        WHEN address LIKE '경주%' THEN '경주'
+        WHEN address LIKE '여수%' THEN '여수'
+        WHEN address LIKE '서귀포%' THEN '서귀포'
+        WHEN address LIKE '대전%' THEN '대전'
+        WHEN address LIKE '인천%' THEN '인천'
+        END AS city,
+        COUNT(*) AS room_count
+        FROM rooms
+        WHERE address LIKE '서울%'
+        OR address LIKE '부산%'
+        OR address LIKE '제주%'
+        OR address LIKE '속초%'
+        OR address LIKE '강릉%'
+        OR address LIKE '전주%'
+        OR address LIKE '대구%'
+        OR address LIKE '경주%'
+        OR address LIKE '여수%'
+        OR address LIKE '서귀포%'
+        OR address LIKE '대전%'
+        OR address LIKE '인천%'
+        GROUP BY city
+        ORDER BY room_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 인기 카테고리 -->
+    <select id="findPopularCategory" resultType="com.minbak.web.dash_board.PopularCategoryDto">
+        SELECT
+        rc.category_id,
+        c.name AS category_name,
+        COUNT(b.book_id) AS booking_count
+        FROM rooms_categories rc
+        JOIN categories c ON rc.category_id = c.category_id
+        JOIN rooms r ON rc.room_id = r.room_id
+        JOIN books b ON r.room_id = b.room_id  -- 예약이 존재하는 숙소만 카운트
+        GROUP BY rc.category_id, c.name
+        ORDER BY booking_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 옵션별 인기 숙소 (예약 많은 순) -->
+    <select id="findPopularOption" resultType="com.minbak.web.dash_board.PopularOptionDto">
+        SELECT
+        ro.option_id,
+        ro.name AS option_name,
+        COUNT(rro.room_id) AS usage_count
+        FROM rooms_room_options rro
+        JOIN room_options ro ON rro.option_id = ro.option_id
+        GROUP BY ro.option_id, ro.name
+        ORDER BY usage_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 인기 많은 숙소 (예약 많은 순) -->
+    <select id="findPopularRooms" resultType="com.minbak.web.dash_board.PopularRoomDto">
+        SELECT
+        r.room_id,
+        r.name AS room_name,
+        r.address,
+        COUNT(b.book_id) AS booking_count
+        FROM rooms r
+        JOIN books b ON r.room_id = b.room_id  -- 예약이 존재하는 숙소만 카운트
+        GROUP BY r.room_id, r.name, r.address
+        ORDER BY booking_count DESC
+        LIMIT 5;
+    </select>
+
+    <!-- 별점별 숙소 (평균 별점 높은 순) -->
+    <select id="findTopRatedRooms" resultType="com.minbak.web.dash_board.TopRatedRoomDto">
+        SELECT
+        r.room_id,
+        r.name AS room_name,
+        r.address,
+        ROUND(AVG(rev.score), 2) AS avg_rating,
+        COUNT(rev.review_id) AS review_count
+        FROM rooms r
+        JOIN review rev ON r.room_id = rev.book_id
+        GROUP BY r.room_id, r.name, r.address
+        HAVING review_count > 0
+        ORDER BY avg_rating DESC, review_count DESC
+        LIMIT 5;
+    </select>
+
 </mapper>
+

@@ -12,4 +12,17 @@
         SELECT * FROM image_files WHERE entity_type = 'rooms' AND entity_id = #{roomId}
     </select>
 
+    <select id="findLicenseImagesUrlByHostId">
+        SELECT file_url
+        FROM image_files
+        WHERE entity_type = 'license'
+        AND entity_id = #{hostId}
+        ORDER BY image_id DESC
+        LIMIT 1
+    </select>
+
+    <delete id="deleteFileDataByUrl">
+        DELETE FROM image_files WHERE file_url = #{fileUrl}
+    </delete>
+
 </mapper>

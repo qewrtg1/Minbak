@@ -1,5 +1,7 @@
 package com.minbak.web.users;
 
+import com.minbak.web.categores.CategoryDto;
+import com.minbak.web.categores.OptionDto;
 import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.payments.PaymentDto;
@@ -20,6 +22,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersService {
@@ -135,10 +138,10 @@ public class UsersService {
         return new UserPageDto<>(page,size,totalItems,paymentDtos);
     }
 
-    public UserPageDto<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int page, int size, int userId){
+    public UserPageDto<UserRoomsDto> findRoomsByLimitAndOffsetAndUserId(int page, int size, int userId){
 
         int offset = (page-1)*size;
-        List<RoomsDto> roomsDtos = usersMapper.findRoomsByLimitAndOffsetAndUserId(size,offset,userId);
+        List<UserRoomsDto> roomsDtos = usersMapper.findRoomsByLimitAndOffsetAndUserId(size,offset,userId);
 
         int totalItems = usersMapper.countRoomsByUserId(userId);
 
@@ -161,7 +164,7 @@ public class UsersService {
     }
 
     public PageDto<HostResponseDto> searchHostsWithRoomCount(int page, int size, String name, String email, Boolean enabled,
-                                                             LocalDate startDate, LocalDate endDate, Integer bookCount, Boolean isVerified){
+                                                             LocalDate startDate, LocalDate endDate, Integer bookCount, String isVerified){
         int offset = (page-1)*size;
         int totalItems = usersMapper.countHostsWithRoomCount(name,email,enabled,startDate,endDate,bookCount);
 
@@ -176,6 +179,10 @@ public class UsersService {
 
     public void makeAdmin(String userId){
         usersMapper.makeAdmin(userId);
+    }
+
+    public void makeHost(Integer userId) {
+        usersMapper.makeHost(userId);
     }
 
     public PageDto<UserReportDto> searchUserReports(int page, int size,String reporterEmail,
@@ -214,4 +221,43 @@ public class UsersService {
     public int findUserIdByEmail(String email){
         return usersMapper.findUserIdByEmail(email);
     }
+
+    public void createHost(HostDto hostDto){
+        usersMapper.insertHost(hostDto);
+    }
+
+    public void insertRoom(UserRoomsDto userRoomsDto){
+        usersMapper.insertRoom(userRoomsDto);
+    }
+
+    public List<CategoryDto> getAllCategories(){
+        return usersMapper.getAllCategories();
+    }
+
+    public Map<String, List<OptionDto>> getOptionsGroupedByCategory() {
+        List<OptionDto> options = usersMapper.getOptionsGroupedByCategory();
+        return options.stream()
+                .collect(Collectors.groupingBy(OptionDto::getOptionsCategory)); // 카테고리별로 그룹화
+    }
+
+    public UserRoomsDto getRoomById(int roomId){
+        return usersMapper.getRoomById(roomId);
+    }
+
+    // 숙소에 선택한 카테고리 업데이트
+    public void updateRoomCategories(int roomId, List<Integer> categoryIds) {
+        usersMapper.deleteRoomCategories(roomId); // 기존 카테고리 삭제
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            usersMapper.insertRoomCategories(roomId, categoryIds);
+        }
+    }
+
+    // 숙소에 선택한 옵션 업데이트
+    public void updateRoomOptions(int roomId, List<Integer> optionIds) {
+        usersMapper.deleteRoomOptions(roomId); // 기존 옵션 삭제
+        if (optionIds != null && !optionIds.isEmpty()) {
+            usersMapper.insertRoomOptions(roomId, optionIds);
+        }
+    }
+
 }

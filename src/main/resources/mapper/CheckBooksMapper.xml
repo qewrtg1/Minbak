@@ -74,22 +74,31 @@
         book_id=#{bookId}
     </select>
 
+    <select id="findPaymentByBookId" resultType="com.minbak.web.payments.PaymentDto">
+        select *
+        from payments
+        where
+        book_id=#{bookId}
+        limit 1
+    </select>
+
+    <select id="findUserUrlByUserId" resultType="String">
+        select file_url
+        from image_files
+        where
+        entity_type='users' and entity_id=#{userId}
+        order by uploaded_at desc
+        limit 1
+    </select>
+
+    <select id="findHostByUserId" resultType="com.minbak.web.check_books.dto.CheckBookHostDto">
+        select *
+        from host
+        where
+        user_id=#{userId}
+    </select>
 
 
 
 
-    <!-- 예약 ID로 예약 정보를 가져오는 쿼리 -->
-<!--    <select id="selectBookById" resultType="com.minbak.web.books.BooksDto">-->
-<!--        SELECT-->
-<!--        b.book_id AS bookId,-->
-<!--        b.status,-->
-<!--        b.start_date AS startDate,-->
-<!--        b.end_date AS endDate,-->
-<!--        b.guests_num AS guestsNum,-->
-<!--        b.request,-->
-<!--        b.user_id AS userId,-->
-<!--        b.room_id AS roomId-->
-<!--        FROM books b-->
-<!--        WHERE b.book_id = #{bookId}-->
-<!--    </select>-->
 </mapper>

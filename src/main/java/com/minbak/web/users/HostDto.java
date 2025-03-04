@@ -10,6 +10,6 @@ public class HostDto {
     private int userId;  // 유저 ID
     private String hobby;
     private String introduction;
-    private boolean isVerified;
+    private String isVerified;
     private String accountNumber;
 }

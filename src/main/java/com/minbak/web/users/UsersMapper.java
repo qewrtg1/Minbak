@@ -1,5 +1,7 @@
 package com.minbak.web.users;
 
+import com.minbak.web.categores.CategoryDto;
+import com.minbak.web.categores.OptionDto;
 import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
@@ -77,7 +79,7 @@ public interface UsersMapper {
 
     public int countRoomsByUserId(int userId);
 
-    public List<RoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
+    public List<UserRoomsDto> findRoomsByLimitAndOffsetAndUserId(int limit, int offset, int userId);
 
     public void deleteUserByUserId(int userId);
 
@@ -99,7 +101,7 @@ public interface UsersMapper {
             LocalDate startDate,
             LocalDate endDate,
             Integer roomCount,
-            Boolean isVerified
+            String isVerified
     );
 
     public Integer countHostsWithRoomCount(String name,
@@ -112,6 +114,8 @@ public interface UsersMapper {
     public HostResponseDto findHostByUserId(int userId);
 
     public void makeAdmin(String userId);
+
+    public void makeHost(Integer userId);
 
     public List<UserReportDto> searchUserReports(int limit, int offset,String reporterEmail,
                                                  String reportedUserEmail,
@@ -143,4 +147,28 @@ public interface UsersMapper {
     public Boolean checkRefreshTokenIsExpired(String refreshToken);
 
     public void deleteExpiredRefreshTokens(Timestamp timestamp);
+
+    void insertHost(HostDto hostDto);
+
+    void deleteHostByUserId(int userId);
+
+    void insertRoom(UserRoomsDto userRoomsDto);
+
+    List<CategoryDto> getAllCategories();
+
+    List<OptionDto> getOptionsGroupedByCategory();
+
+    UserRoomsDto getRoomById(int roomId);
+
+    // 기존 숙소 카테고리 삭제
+    void deleteRoomCategories(@Param("roomId") int roomId);
+
+    // 새로운 숙소 카테고리 추가
+    void insertRoomCategories(@Param("roomId") int roomId, @Param("categoryIds") List<Integer> categoryIds);
+
+    // 기존 숙소 옵션 삭제
+    void deleteRoomOptions(@Param("roomId") int roomId);
+
+    // 새로운 숙소 옵션 추가
+    void insertRoomOptions(@Param("roomId") int roomId, @Param("optionIds") List<Integer> optionIds);
 }
