@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>숙소의 매력 돋보이기</title>
   <style>
     body {
+        background-color: #ffffff;
+        color: #333;
+        font-family: Arial, sans-serif;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
-        font-family: Arial, sans-serif;
     }
     .container {
         display: flex;
@@ -19,23 +21,36 @@
     }
     .text-section {
         flex: 1;
+        text-align: left;
+        padding: 20px;
+    }
+    .step-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ff9800; /* 노란색 포인트 */
+    }
+    .step-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    .step-description {
+        font-size: 1.2rem;
+        color: #555;
+        line-height: 1.6;
     }
     .image-section {
         flex: 1;
-        background-color: #f0f0f0;
         display: flex;
         justify-content: center;
         align-items: center;
     }
-    .image-placeholder {
-        width: 80%;
-        height: 300px;
-        background-color: #ccc;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-        color: #666;
+    .image-placeholder img {
+        width: 500px;
+        height: 500px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     .next-btn {
         position: fixed;
@@ -59,16 +74,21 @@
 
 <div class="container">
   <div class="text-section">
-    <h3>2단계</h3>
-    <h1>숙소의 매력을<br>돋보이게 하세요</h1>
-    <p>이 단계에서는 숙소에 갖춰진 편의시설과 사진 5장 이상을<br>추가한 후 숙소 이름과 설명을 작성하시면 됩니다.</p>
+    <p class="step-number">2단계</p>
+    <h1 class="step-title">숙소의 매력을<br>돋보이게 하세요</h1>
+    <p class="step-description">
+      이 단계에서는 숙소에 갖춰진 편의시설과 사진 5장 이상을<br>
+      추가한 후 숙소 이름과 설명을 작성하시면 됩니다.
+    </p>
   </div>
   <div class="image-section">
-    <div class="image-placeholder">이미지 공간</div>
+    <div class="image-placeholder">
+      <img src="/images/house3.jpg" alt="숙소 이미지">
+    </div>
   </div>
 </div>
 
-<a href="#" class="next-btn">다음</a>
+<a href="/host/option" class="next-btn">다음</a>
 
 </body>
 </html>

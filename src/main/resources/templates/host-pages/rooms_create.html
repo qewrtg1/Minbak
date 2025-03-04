@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +56,7 @@
 <div class="welcome-box">
     <h1>안녕하세요, <span th:text="${name}"></span>님!</h1>
     <p>새로운 숙소를 등록하려면 아래 버튼을 클릭해주세요.</p>
-    <a href="#" class="btn btn-primary">
+    <a href="/host/overview" class="btn btn-primary">
         <i class="bi bi-house-door-fill"></i> 새로운 숙소 등록
     </a>
 </div>

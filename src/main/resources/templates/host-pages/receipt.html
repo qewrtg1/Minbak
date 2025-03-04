@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>숙소 검토하기</title>
   <style>
-    /* 기본 스타일 설정 */
     body {
         font-family: Arial, sans-serif;
         background-color: #fff;
@@ -28,52 +27,55 @@
         color: #555;
     }
 
-    /* 미리보기 박스 */
     .preview-container {
-        width: 350px;
+        width: 350px; /* 기존 박스 크기 유지 */
         border: 1px solid #ddd;
         border-radius: 10px;
         padding: 20px;
-        background-color: #fff8e1;
+        background-color: #fff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .preview-container img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
+        width: 350px; /* 기존보다 50px 증가 */
+        height: 350px;
+        object-fit: cover;
+        border-radius: 15px;
     }
 
     .title {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: bold;
         margin-top: 10px;
+        align-self: flex-start; /* 제목을 이미지 왼쪽에 맞춤 */
     }
 
     .price {
-        font-size: 18px;
+        font-size: 14px;
         color: #ff9800;
         margin-top: 5px;
+        align-self: flex-start; /* 가격도 이미지 왼쪽 정렬 */
     }
 
-    /* 다음 버튼 스타일 */
-    .next-btn {
+     .next-btn {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #ffeb3b;
-        color: #333;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ff9800;
         border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
         border-radius: 5px;
-        font-size: 16px;
+        color: #fff;
         cursor: pointer;
         text-decoration: none;
-        font-weight: bold;
     }
 
     .next-btn:hover {
-        background-color: #fdd835;
+        background-color: #e68900;
     }
   </style>
 </head>
@@ -82,15 +84,40 @@
 <h1>숙소 검토하기</h1>
 <p>게스트에게 표시되는 정보는 다음과 같습니다. 모든 정보가 정확한지 확인하세요.</p>
 
-<!-- 미리보기 컨테이너 -->
 <div class="preview-container">
-  <img src="숙소_이미지_URL" alt="숙소 이미지">
-  <p class="title">숙소 제목</p>
-  <p class="price">₩ 숙소 가격</p>
+  <img id="roomImage" src="#" alt="숙소 이미지">
+  <p class="title" id="roomTitle">숙소 제목</p>
+  <p class="price" id="roomPrice">₩ 숙소 가격</p>
 </div>
 
-<!-- 다음 버튼 -->
-<a href="#" class="next-btn">다음</a>
+<a href="/host/publish" class="next-btn">다음</a>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 🔍 localStorage에서 값 가져오기
+    const roomTitle = localStorage.getItem('title') || "숙소 제목을 입력하세요";
+    const roomPrice = localStorage.getItem('weekDayPrice') || "0";  // ✅ weekDayPrice 사용
+    const uploadedPhotos = JSON.parse(localStorage.getItem('imageUrls')) || [];
+
+    // ✅ 숙소 제목 적용
+    document.getElementById('roomTitle').textContent = roomTitle;
+
+    // ✅ 숙소 가격 적용 (숫자 형식 변환)
+    document.getElementById('roomPrice').textContent = `₩${parseInt(roomPrice).toLocaleString()}`;
+
+    // ✅ 이미지가 있으면 첫 번째 이미지를 표시
+    if (uploadedPhotos.length > 0) {
+        document.getElementById('roomImage').src = uploadedPhotos[0];
+    } else {
+        document.getElementById('roomImage').src = "https://via.placeholder.com/350?text=No+Image";
+    }
+
+    // 📌 `console.log` 추가해서 저장된 값 확인
+    console.log("🔍 roomTitle:", roomTitle);
+    console.log("🔍 roomPrice (weekDayPrice):", roomPrice);
+    console.log("🔍 uploadedPhotos:", uploadedPhotos);
+});
+</script>
 
 </body>
 </html>

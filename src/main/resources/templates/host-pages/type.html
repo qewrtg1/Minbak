@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>숙소 유형 선택</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome 아이콘 추가 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
   <style>
     body {
@@ -35,7 +34,7 @@
         color: white;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: background-color 0.3s, transform 0.2s;
         display: flex;
         align-items: center;
     }
@@ -44,6 +43,10 @@
     }
     .type-buttons button:hover {
         background-color: #e68900;
+        transform: scale(1.05);
+    }
+    .selected {
+        background-color: #d77d00 !important;
     }
     .next-btn {
         position: fixed;
@@ -79,22 +82,54 @@
   </button>
 </div>
 
-<a href="#" class="next-btn">다음</a>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<a href="/host/location" class="next-btn">다음</a>
 
 <script>
-  // 버튼 클릭 시 선택된 유형을 출력하는 스크립트
-  const buttons = document.querySelectorAll('.type-buttons button');
+  let selectedType = null;
+const buttons = document.querySelectorAll('.type-buttons button');
+const nextBtn = document.querySelector('.next-btn');
 
-  buttons.forEach(button => {
-      button.addEventListener('click', function() {
-          const selectedType = this.getAttribute('data-type');
-          console.log('선택된 유형:', selectedType);
-          // 선택된 유형에 따른 처리 추가 가능
-      });
-  });
+// 🌟 페이지 로드 시 기존 선택 값 불러오기
+document.addEventListener("DOMContentLoaded", function () {
+    const savedType = localStorage.getItem('buildingType'); // ✅ 변경된 키 확인
+    console.log("🔍 불러온 buildingType 값:", savedType); // 🔎 디버깅용 로그 추가
+
+    if (savedType) {
+        selectedType = savedType;
+        buttons.forEach(btn => {
+            if (btn.getAttribute('data-type') === savedType) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+});
+
+// 🌟 버튼 클릭 이벤트 (선택 값 저장)
+buttons.forEach(button => {
+    button.addEventListener('click', function () {
+        // 기존 선택된 버튼 스타일 제거
+        buttons.forEach(btn => btn.classList.remove('selected'));
+
+        // 새로운 선택 적용
+        selectedType = this.getAttribute('data-type');
+        this.classList.add('selected');
+
+        // localStorage에 저장
+        localStorage.setItem('buildingType', selectedType);
+        console.log("✅ 저장된 buildingType 값:", selectedType); // 🔎 디버깅용 로그 추가
+    });
+});
+
+// 🌟 "다음" 버튼 클릭 이벤트
+nextBtn.addEventListener('click', function (event) {
+    console.log("▶️ 다음 버튼 클릭됨 - 선택된 값:", selectedType); // 🔎 디버깅용 로그 추가
+    if (!selectedType) {
+        event.preventDefault();
+        alert('숙소 유형을 선택해주세요!');
+    } else {
+        window.location.href = '/host/location'; // ✅ 다음 페이지 이동
+    }
+});
 </script>
 
 </body>

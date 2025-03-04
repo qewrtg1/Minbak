@@ -58,7 +58,26 @@
 
 <textarea placeholder="숙소 설명을 입력해주세요."></textarea>
 
-<a href="#" class="next-btn">다음</a>
+<a href="/host/useGuide" class="next-btn">다음</a>
+<script>
+  const descriptionInput = document.querySelector('textarea');
+
+  // 📌 기존에 저장된 설명 불러오기 (콘솔 확인 추가)
+  document.addEventListener("DOMContentLoaded", function() {
+      const savedDescription = localStorage.getItem("description"); // ✅ 키값 일관되게 유지
+      console.log("🔍 저장된 설명 (로드 시):", savedDescription); // ✅ 콘솔에서 값 확인
+
+      if (savedDescription) {
+          descriptionInput.value = savedDescription;
+      }
+  });
+
+  // 📌 입력할 때마다 저장 (콘솔 로그 추가)
+  descriptionInput.addEventListener('input', function() {
+      console.log("✍ 입력한 설명:", descriptionInput.value); // ✅ 콘솔에서 값 확인
+      localStorage.setItem("description", descriptionInput.value);  // ✅ `description`으로 저장
+  });
+</script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>주중/주말 요금 설정</title>
   <style>
-    /* 기본 설정 */
+    /* 기본 스타일 */
     body {
         font-family: Arial, sans-serif;
         background-color: #fff;
@@ -16,107 +16,38 @@
         height: 100vh;
         margin: 0;
     }
-
     h1 {
         color: #000;
-        margin-top: 20px;
         font-size: 24px;
     }
-
     form {
         text-align: center;
         width: 100%;
         max-width: 600px;
     }
-
-    /* 주중 요금 입력 필드 크기 조정 */
     input[type="number"] {
         padding: 10px;
-        width: 50%; /* 너비를 50%로 줄임 */
+        width: 50%;
         margin: 10px 0;
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
     }
-
-    /* 최종 결과 텍스트 */
-    .result {
-        margin: 10px 0;
+    .result, .final-price {
         font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
     }
-
-    /* 할증률 설정 부분 */
     .premium-rate {
         margin: 20px 0;
-        text-align: center;
     }
-
-    /* 할증률 바 */
     input[type="range"] {
         width: 80%;
-        margin: 10px 0;
     }
-
-    /* 할증률 값 표시 */
     .rate-value {
-        display: block;
         font-size: 18px;
         margin-top: 5px;
     }
-
-    /* '저장' 버튼 */
-    .next-btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #ffeb3b;
-        color: #333;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        text-decoration: none;
-        margin-top: 20px;
-    }
-
-    .next-btn:hover {
-        background-color: #fdd835;
-    }
-
-    /* 최종 요금 표시 */
-    .final-price {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-    }
-
-    /* 할증률 바 영역 */
-    .premium-rate input[type="range"] {
-        border: 2px solid #ffeb3b;
-        border-radius: 5px;
-    }
-
-    /* 위치 및 정렬을 위한 추가 스타일 */
-    .form-container {
-        width: 100%;
-        max-width: 600px;
-    }
-
-    .result {
-        font-size: 20px;
-        color: #333;
-    }
-
-    .premium-rate input[type="range"] {
-        background-color: #ffeb3b;
-        border-radius: 5px;
-    }
-
-    /* 텍스트 가운데 정렬 */
-    .text-center {
-        text-align: center;
-    }
-
-    /* 다음 버튼 오른쪽 하단 배치 */
     .next-btn {
         position: fixed;
         bottom: 30px;
@@ -139,15 +70,15 @@
 
 <h1>이제 주중/주말 요금을 설정하세요</h1>
 
-<form action="/save-rates" method="POST" class="form-container">
+<form class="form-container">
   <!-- 주중 요금 입력 -->
   <input type="number" id="weekDayPrice" name="weekDayPrice" placeholder="주중 요금을 입력하세요" min="0">
   <div class="result" id="result"></div>
 
-  <h1>주말 프리미엄</h1>
+  <h1>주말 할증률</h1>
 
-  <!-- 할증률 설정 -->
-  <div class="premium-rate text-center">
+  <!-- 주말 할증률 설정 -->
+  <div class="premium-rate">
     <label for="premiumRate">할증률 설정 (0%~100%):</label>
     <input type="range" id="premiumRate" name="premiumRate" min="0" max="100" value="0" step="1">
     <span class="rate-value" id="rateValue">0%</span>
@@ -155,14 +86,10 @@
 
   <!-- 최종 요금 -->
   <div class="final-price" id="finalPrice"></div>
-
-  <!-- 최종 요금을 hidden input으로 저장 -->
-  <input type="hidden" id="finalRatePrice" name="finalRatePrice">
-
 </form>
 
 <!-- 다음 버튼 -->
-<a href="#" class="next-btn">다음</a>
+<a href="/host/receipt" class="next-btn">다음</a>
 
 <script>
   const weekDayPriceInput = document.getElementById('weekDayPrice');
@@ -170,39 +97,55 @@
   const premiumRateInput = document.getElementById('premiumRate');
   const rateValue = document.getElementById('rateValue');
   const finalPriceDiv = document.getElementById('finalPrice');
-  const finalRatePriceInput = document.getElementById('finalRatePrice');
 
-  // 주중 요금 입력 후 결과값을 표시하는 함수
+  // 페이지 로드 시 저장된 데이터 불러오기
+  document.addEventListener('DOMContentLoaded', function() {
+      const savedWeekDayPrice = localStorage.getItem('weekDayPrice');
+      const savedPremiumRate = localStorage.getItem('premiumRate');
+
+      if (savedWeekDayPrice !== null) {
+          weekDayPriceInput.value = savedWeekDayPrice;
+          resultDiv.innerHTML = `₩${parseInt(savedWeekDayPrice).toLocaleString()}`;
+          updateFinalPrice(parseInt(savedWeekDayPrice));
+      }
+      if (savedPremiumRate !== null) {
+          premiumRateInput.value = savedPremiumRate;
+          rateValue.innerText = `${savedPremiumRate}%`;
+          updateFinalPrice(parseInt(weekDayPriceInput.value));
+      }
+  });
+
+  // 주중 요금 입력 시 localStorage에 저장
   weekDayPriceInput.addEventListener('input', function() {
       const price = parseFloat(weekDayPriceInput.value);
       if (!isNaN(price) && price > 0) {
           resultDiv.innerHTML = `₩${price.toLocaleString()}`;
-          updateFinalPrice(price); // 주중 요금이 입력되면 최종 가격도 업데이트
+          localStorage.setItem('weekDayPrice', price);
+          updateFinalPrice(price);
       } else {
           resultDiv.innerHTML = '';
-          finalPriceDiv.innerHTML = ''; // 주중 요금이 없으면 최종 가격도 지워짐
+          finalPriceDiv.innerHTML = '';
+          localStorage.removeItem('weekDayPrice');
       }
   });
 
-  // 할증률 계산기 업데이트
+  // 주말 할증률 입력 시 localStorage에 저장
   premiumRateInput.addEventListener('input', function() {
       const rate = premiumRateInput.value;
       rateValue.innerText = `${rate}%`;
-      const weekDayPrice = parseFloat(weekDayPriceInput.value);
-      if (!isNaN(weekDayPrice) && weekDayPrice > 0) {
-          updateFinalPrice(weekDayPrice); // 할증률이 변할 때마다 최종 가격 업데이트
-      }
+      localStorage.setItem('premiumRate', rate);
+      updateFinalPrice(parseFloat(weekDayPriceInput.value));
   });
 
-  // 할증률에 맞춰 최종 가격을 계산하는 함수
+  // 최종 요금 계산 (DB 저장 X, 화면에서만 표시)
   function updateFinalPrice(weekDayPrice) {
-      const rate = parseFloat(premiumRateInput.value);
-      const premiumPrice = weekDayPrice * (1 + rate / 100); // 주중 요금에 할증률을 적용
-      finalPriceDiv.innerHTML = `최종 요금: ₩${premiumPrice.toLocaleString()}`;
+      if (isNaN(weekDayPrice) || weekDayPrice <= 0) return;
 
-      // 최종 요금을 hidden input에 저장
-      finalRatePriceInput.value = premiumPrice;
+      const rate = parseFloat(premiumRateInput.value);
+      const premiumPrice = weekDayPrice * (1 + rate / 100);
+      finalPriceDiv.innerHTML = `예상 주말 요금: ₩${premiumPrice.toLocaleString()}`;
   }
 </script>
 
 </body>
+</html>

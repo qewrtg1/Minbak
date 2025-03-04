@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>숙소 편의시설 선택</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
   <style>
     body {
         font-family: Arial, sans-serif;
@@ -84,65 +83,96 @@
   <div class="category">
     <h3>필수</h3>
     <div class="grid">
-      <div class="option"><i class="fas fa-wifi"></i> 와이파이</div>
-      <div class="option"><i class="fas fa-utensils"></i> 주방</div>
-      <div class="option"><i class="fas fa-tshirt"></i> 세탁기</div>
-      <div class="option"><i class="fas fa-wind"></i> 건조기</div>
-      <div class="option"><i class="fas fa-snowflake"></i> 에어컨</div>
-      <div class="option"><i class="fas fa-thermometer-half"></i> 난방</div>
-      <div class="option"><i class="fas fa-laptop"></i> 업무 공간</div>
-      <div class="option"><i class="fas fa-tv"></i> TV</div>
-      <div class="option"><i class="fas fa-wind"></i> 헤어드라이어</div>
-      <div class="option"><i class="fa-solid fa-shirt"></i> 다리미</div>
+      <div class="option" data-option="와이파이"><i class="fas fa-wifi"></i> 와이파이</div>
+      <div class="option" data-option="주방"><i class="fas fa-utensils"></i> 주방</div>
+      <div class="option" data-option="세탁기"><i class="fas fa-tshirt"></i> 세탁기</div>
+      <div class="option" data-option="건조기"><i class="fas fa-wind"></i> 건조기</div>
+      <div class="option" data-option="에어컨"><i class="fas fa-snowflake"></i> 에어컨</div>
+      <div class="option" data-option="난방"><i class="fas fa-thermometer-half"></i> 난방</div>
+      <div class="option" data-option="업무 공간"><i class="fas fa-laptop"></i> 업무 공간</div>
+      <div class="option" data-option="TV"><i class="fas fa-tv"></i> TV</div>
+      <div class="option" data-option="헤어드라이어"><i class="fas fa-wind"></i> 헤어드라이어</div>
+      <div class="option" data-option="다리미"><i class="fa-solid fa-shirt"></i> 다리미</div>
     </div>
   </div>
 
   <div class="category">
     <h3>특징</h3>
     <div class="grid">
-      <div class="option"><i class="fas fa-swimmer"></i> 수영장</div>
-      <div class="option"><i class="fas fa-bath"></i> 대형 욕조</div>
-      <div class="option"><i class="fas fa-parking"></i> 무료 주차</div>
-      <div class="option"><i class="fas fa-charging-station"></i> 전기차 충전</div>
-      <div class="option"><i class="fas fa-baby"></i> 아기 침대</div>
-      <div class="option"><i class="fas fa-bed"></i> 킹사이즈 침대</div>
-      <div class="option"><i class="fas fa-dumbbell"></i> 헬스장</div>
-      <div class="option"><i class="fas fa-fire"></i> 바비큐</div>
-      <div class="option"><i class="fas fa-coffee"></i> 조식</div>
-      <div class="option"><i class="fa-solid fa-fire"></i> 벽난로</div>
-      <div class="option"><i class="fas fa-smoking"></i> 흡연 가능</div>
+      <div class="option" data-option="수영장"><i class="fas fa-swimmer"></i> 수영장</div>
+      <div class="option" data-option="대형 욕조"><i class="fas fa-bath"></i> 대형 욕조</div>
+      <div class="option" data-option="무료 주차"><i class="fas fa-parking"></i> 무료 주차</div>
+      <div class="option" data-option="전기차 충전"><i class="fas fa-charging-station"></i> 전기차 충전</div>
+      <div class="option" data-option="아기 침대"><i class="fas fa-baby"></i> 아기 침대</div>
+      <div class="option" data-option="킹사이즈 침대"><i class="fas fa-bed"></i> 킹사이즈 침대</div>
+      <div class="option" data-option="헬스장"><i class="fas fa-dumbbell"></i> 헬스장</div>
+      <div class="option" data-option="바비큐"><i class="fas fa-fire"></i> 바비큐</div>
+      <div class="option" data-option="조식"><i class="fas fa-coffee"></i> 조식</div>
+      <div class="option" data-option="벽난로"><i class="fa-solid fa-fire"></i> 벽난로</div>
+      <div class="option" data-option="흡연 가능"><i class="fas fa-smoking"></i> 흡연 가능</div>
     </div>
   </div>
 
   <div class="category">
     <h3>위치</h3>
     <div class="grid">
-      <div class="option"><i class="fas fa-umbrella-beach"></i> 해변</div>
-      <div class="option"><i class="fas fa-water"></i> 수변</div>
-      <div class="option"><i class="fas fa-skiing"></i> 스키 출입</div>
+      <div class="option" data-option="해변"><i class="fas fa-umbrella-beach"></i> 해변</div>
+      <div class="option" data-option="수변"><i class="fas fa-water"></i> 수변</div>
+      <div class="option" data-option="스키 출입"><i class="fas fa-skiing"></i> 스키 출입</div>
     </div>
   </div>
 
   <div class="category">
     <h3>안전</h3>
     <div class="grid">
-      <div class="option"><i class="fas fa-bell"></i> 화재경보기</div>
-      <div class="option"><i class="fas fa-exclamation-triangle"></i> 일산화탄소 경보기</div>
+      <div class="option" data-option="화재경보기"><i class="fas fa-bell"></i> 화재경보기</div>
+      <div class="option" data-option="일산화탄소 경보기"><i class="fas fa-exclamation-triangle"></i> 일산화탄소 경보기</div>
     </div>
   </div>
 
 </div>
 
-<a href="#" class="next-btn">다음</a>
+<!-- 다음 버튼 -->
+<a href="/host/photos" class="next-btn" onclick="goToNextPage()">다음</a>
 
 <script>
   const options = document.querySelectorAll('.option');
 
+  // 옵션 선택 토글
   options.forEach(option => {
       option.addEventListener('click', () => {
           option.classList.toggle('selected');
       });
   });
+
+  function goToNextPage() {
+      let selectedOptions = [];
+      document.querySelectorAll('.option.selected').forEach(option => {
+          selectedOptions.push(option.getAttribute("data-option"));
+      });
+
+      if (selectedOptions.length === 0) {
+          alert("최소한 하나 이상의 옵션을 선택해주세요!");
+          return;
+      }
+
+      // 선택된 옵션을 로컬 스토리지에 저장
+      localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
+
+      // 다음 페이지로 이동
+      window.location.href = "/host/photos";
+  }
+
+  // 이전 선택된 옵션 유지 (뒤로 가기 했을 때)
+  document.addEventListener("DOMContentLoaded", () => {
+      let savedOptions = JSON.parse(localStorage.getItem("selectedOptions")) || [];
+      options.forEach(option => {
+          if (savedOptions.includes(option.getAttribute("data-option"))) {
+              option.classList.add("selected");
+          }
+      });
+  });
+
 </script>
 
 </body>

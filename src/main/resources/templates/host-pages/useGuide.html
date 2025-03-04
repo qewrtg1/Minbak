@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>숙소 이용 가이드</title>
+  <style>
+    body {
+        background-color: #ffffff;
+        color: #333;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    .textarea-container {
+        position: relative;
+        width: 600px;
+        height: 200px;
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+    textarea {
+        width: 100%;
+        height: 100%;
+        font-size: 1.2rem;
+        padding: 10px;
+        border-radius: 5px;
+        border: 2px solid #ccc;
+        resize: none;
+    }
+    .char-count {
+        position: absolute;
+        bottom: -25px;
+        left: 10px;
+        font-size: 0.9rem;
+        color: #888;
+    }
+    .next-btn {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ff9800;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .next-btn:hover {
+        background-color: #e68900;
+    }
+  </style>
+</head>
+<body>
+
+<h1>숙소 이용 가이드를 작성해주세요</h1>
+<p>게스트가 숙소를 이용할 때 필요한 정보를 입력해주세요.<br>
+  예: 체크인 시간, 시설 이용 규칙, 주의 사항 등</p>
+
+<div class="textarea-container">
+  <textarea id="useGuideInput" maxlength="500" placeholder="숙소 이용 가이드를 입력해주세요."></textarea>
+  <p class="char-count" id="charCount">0/500</p>
+</div>
+
+<a href="/host/finish-setup" class="next-btn" id="nextBtn">다음</a>
+
+<script>
+  const useGuideInput = document.getElementById('useGuideInput');
+  const charCount = document.getElementById('charCount');
+  const nextBtn = document.getElementById('nextBtn');
+
+  // 이전에 입력했던 값 불러오기
+  window.onload = function() {
+      const savedGuide = localStorage.getItem("useGuide");
+      if (savedGuide) {
+          useGuideInput.value = savedGuide;
+          charCount.textContent = savedGuide.length + "/500";
+      }
+  };
+
+  // 글자 수 업데이트
+  useGuideInput.addEventListener('input', function() {
+      const currentLength = useGuideInput.value.length;
+      charCount.textContent = currentLength + '/500';
+      localStorage.setItem("useGuide", useGuideInput.value);
+  });
+
+  // 다음 버튼 클릭 시 데이터 저장
+  nextBtn.addEventListener('click', function(event) {
+      if (useGuideInput.value.trim() === "") {
+          alert("이용 가이드를 입력해주세요!");
+          event.preventDefault();
+      }
+  });
+</script>
+
+</body>
+</html>

@@ -141,8 +141,8 @@
 </div>
 
 <!-- 다음 버튼 -->
-<a href="#" class="next-btn">다음</a>
-<script>
+<a href="/host/floor-plan" class="next-btn">다음</a>
+<script >
   let map, marker, autocomplete;
 
 function initMap() {
@@ -157,12 +157,12 @@ function initMap() {
     title: "현재 위치",
   });
 
-  // Autocomplete 사용 (SearchBox 대신)
+  // Autocomplete (Google Places API)
   autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"), {
     fields: ["address_components", "geometry"],
   });
 
-  autocomplete.addListener("place_changed", function() {
+  autocomplete.addListener("place_changed", function () {
     const place = autocomplete.getPlace();
     if (!place.geometry) return;
 
@@ -171,68 +171,153 @@ function initMap() {
     displayAddressInfo(place);
   });
 
-  // 지도 클릭 시 이벤트는 그대로 유지
-  map.addListener('click', function(event) {
+  // 지도 클릭 이벤트
+  map.addListener('click', function (event) {
     marker.setPosition(event.latLng);
     const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ location: event.latLng }, function(results, status) {
+    geocoder.geocode({ location: event.latLng }, function (results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         displayAddressInfo(results[0]);
       }
     });
   });
-}
 
-  // 현재 위치 불러오기 함수
-  function getCurrentLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
-        map.setCenter(latLng);
-        marker.setPosition(latLng);
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ location: latLng }, function(results, status) {
-          if (status === google.maps.GeocoderStatus.OK) {
-            displayAddressInfo(results[0]);
-          }
-        });
-      }, function() {
-        alert("현재 위치를 가져올 수 없습니다.");
-      });
-    } else {
-      alert("이 브라우저에서는 Geolocation을 지원하지 않습니다.");
+  // 📌 `localStorage`에서 데이터 불러오기 (초기 로드 시)
+  let savedLocation = localStorage.getItem("selectedLocation");
+  if (savedLocation) {
+    savedLocation = JSON.parse(savedLocation);
+
+    document.getElementById('province').value = savedLocation.province || "";
+    document.getElementById('city').value = savedLocation.city || "";
+    document.getElementById('district').value = savedLocation.district || "";
+    document.getElementById('road-address').value = savedLocation.roadAddress || "";
+    document.getElementById('apartment').value = savedLocation.apartment || "";
+    document.getElementById('building-name').value = savedLocation.buildingName || "";
+    document.getElementById('postal-code').value = savedLocation.postalCode || "";
+
+    if (savedLocation.latitude && savedLocation.longitude) {
+      marker.setPosition({ lat: savedLocation.latitude, lng: savedLocation.longitude });
+      map.setCenter({ lat: savedLocation.latitude, lng: savedLocation.longitude });
     }
   }
+}
 
-  // 주소 정보를 input 필드에 출력하여 사용자가 수정할 수 있도록 함
-  function displayAddressInfo(place) {
-    document.getElementById('address-info').style.display = 'block';
-    const addressComponents = place.address_components;
-    addressComponents.forEach(component => {
-      const types = component.types;
-      if (types.includes("administrative_area_level_1")) {
-        document.getElementById('province').value = component.long_name;
-      }
-      if (types.includes("locality")) {
-        document.getElementById('city').value = component.long_name;
-      }
-      if (types.includes("sublocality_level_1")) {
-        document.getElementById('district').value = component.long_name;
-      }
-      if (types.includes("route")) {
-        document.getElementById('road-address').value = component.long_name;
-      }
-      if (types.includes("premise")) {
-        document.getElementById('apartment').value = component.long_name;
-      }
-      if (types.includes("building")) {
-        document.getElementById('building-name').value = component.long_name;
-      }
-      if (types.includes("postal_code")) {
-        document.getElementById('postal-code').value = component.long_name;
-      }
+function getCurrentLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
+      map.setCenter(latLng);
+      marker.setPosition(latLng);
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: latLng }, function (results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          displayAddressInfo(results[0]);
+        }
+      });
+    }, function () {
+      alert("현재 위치를 가져올 수 없습니다.");
     });
+  } else {
+    alert("이 브라우저에서는 Geolocation을 지원하지 않습니다.");
   }
+}
+
+function displayAddressInfo(place) {
+  document.getElementById('address-info').style.display = 'block';
+
+  const addressComponents = place.address_components;
+  let addressData = {
+    province: "",
+    city: "",
+    district: "",
+    roadAddress: "",
+    apartment: "",
+    buildingName: "",
+    postalCode: "",
+    latitude: place.geometry.location.lat(),
+    longitude: place.geometry.location.lng()
+  };
+
+  addressComponents.forEach(component => {
+    const types = component.types;
+    if (types.includes("administrative_area_level_1")) {
+      addressData.province = component.long_name;
+    }
+    if (types.includes("locality")) {
+      addressData.city = component.long_name;
+    }
+    if (types.includes("sublocality_level_1")) {
+      addressData.district = component.long_name;
+    }
+    if (types.includes("route")) {
+      addressData.roadAddress = component.long_name;
+    }
+    if (types.includes("premise")) {
+      addressData.apartment = component.long_name;
+    }
+    if (types.includes("building")) {
+      addressData.buildingName = component.long_name;
+    }
+    if (types.includes("postal_code")) {
+      addressData.postalCode = component.long_name;
+    }
+  });
+
+  // 입력 필드에 값 설정
+  document.getElementById('province').value = addressData.province;
+  document.getElementById('city').value = addressData.city;
+  document.getElementById('district').value = addressData.district;
+  document.getElementById('road-address').value = addressData.roadAddress;
+  document.getElementById('apartment').value = addressData.apartment;
+  document.getElementById('building-name').value = addressData.buildingName;
+  document.getElementById('postal-code').value = addressData.postalCode;
+
+  // 📌 `localStorage`에 저장
+  localStorage.setItem("selectedLocation", JSON.stringify(addressData));
+}
+
+// "다음" 버튼 클릭 시 저장 & 유효성 검사
+document.querySelector('.next-btn').addEventListener('click', function (event) {
+    let selectedLocation = {
+        province: document.getElementById('province').value,
+        city: document.getElementById('city').value,
+        district: document.getElementById('district').value,
+        roadAddress: document.getElementById('road-address').value,
+        apartment: document.getElementById('apartment').value,
+        buildingName: document.getElementById('building-name').value,
+        postalCode: document.getElementById('postal-code').value,
+        latitude: marker.getPosition().lat(),
+        longitude: marker.getPosition().lng()
+    };
+
+    // 📌 `address`를 조합하여 하나의 문자열로 만들기
+    let addressParts = [
+        selectedLocation.province,
+        selectedLocation.city,
+        selectedLocation.district,
+        selectedLocation.roadAddress,
+        selectedLocation.apartment,
+        selectedLocation.buildingName,
+        selectedLocation.postalCode ? `우편번호: ${selectedLocation.postalCode}` : ""
+    ].filter(Boolean).join(", "); // 빈 값 제외하고 콤마(,)로 연결
+
+    //  `localStorage`에 최종 저장
+    localStorage.setItem("selectedLocation", JSON.stringify(selectedLocation));
+    localStorage.setItem("address", addressParts); // 최종 주소 저장
+    localStorage.setItem("latitude", selectedLocation.latitude);
+    localStorage.setItem("longitude", selectedLocation.longitude);
+
+    console.log(" 저장된 주소:", addressParts);
+    console.log(" 저장된 위도:", selectedLocation.latitude);
+    console.log(" 저장된 경도:", selectedLocation.longitude);
+
+    if (!selectedLocation.roadAddress) {
+        event.preventDefault();
+        alert('위치를 입력해주세요!');
+    } else {
+        window.location.href = '/host/floor-plan'; // 다음 페이지로 이동
+    }
+});
 </script>
 </body>
 </html>

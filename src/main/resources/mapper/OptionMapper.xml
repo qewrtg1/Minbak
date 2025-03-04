@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.host_pages.OptionMapper">
+
+    <!-- 전체 카테고리의 옵션만 가져오기 -->
+    <select id="getAllOptions" resultType="com.minbak.web.host_pages.dto.OptionDto">
+        SELECT option_id, name, options_category AS optionCategory
+        FROM room_options
+    </select>
+
+    <!-- 특정 카테고리의 옵션만 가져오기 -->
+    <select id="getOptionsByCategory" parameterType="String" resultType="com.minbak.web.host_pages.dto.OptionDto">
+        SELECT option_id, name, options_category AS optionCategory
+        FROM room_options
+        WHERE options_category = #{category}
+    </select>
+
+</mapper>

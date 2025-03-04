@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.host_pages.CreateHostMapper">
+
+    <insert id="insertRoom" useGeneratedKeys="true" parameterType="com.minbak.web.host_pages.dto.HostDto">
+        INSERT INTO rooms (user_id, name, title, content, address, price, use_guide,
+        building_type, latitude, longitude, max_guests, bedrooms, beds, bathrooms)
+        VALUES (#{userId}, #{name}, #{title}, #{content}, #{address}, #{price}, #{useGuide},
+        #{buildingType}, #{latitude}, #{longitude}, #{maxGuests}, #{bedrooms}, #{beds}, #{bathrooms});
+    </insert>
+
+    <select id="getUserNameById" parameterType="int" resultType="String">
+        SELECT name FROM users WHERE user_id = #{userId}
+    </select>
+
+
+
+
+
+
+
+
+</mapper>
