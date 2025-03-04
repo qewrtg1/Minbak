@@ -135,10 +135,11 @@ public class MessageService {
         messageMapper.updateMessageCheck(userId,chatRoomId);
     }
 
-//    public List<messageDto> showUserMessageDetail(){
+    public List<MessageDto> showUserMessageDetail(int userId, int chatRoomId){
+        List<MessageDto> messageDtos=messageMapper.findMessagesByIds(userId,chatRoomId);
 
-
-//    }
+        return messageDtos;
+    }
 
 
 }

@@ -21,7 +21,7 @@ public class CheckBookDto {
         private String request;
         private Integer userId;
         private Integer roomId;
-        private UserDto user;
+        private UserDto user;   //호스트 유저 dto
         private HostDto host;
         private String hostName;
         private CheckBookRoomDto room;

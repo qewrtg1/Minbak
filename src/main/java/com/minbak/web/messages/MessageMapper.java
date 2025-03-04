@@ -14,6 +14,7 @@ public interface MessageMapper {
 
 //    유저 아이디에 따른 메세지 조회
     List<MessageDto> findMessagesById(int user_id);
+    List<MessageDto> findMessagesByIds(int user_id,int chatRoomId);
     MessageDto findMessageByMessageId(int messageId);
 
 //    유저 이메일에 따른 유저 id 조회

@@ -10,6 +10,22 @@
     .chat-content { background-color: #fff; padding: 15px; }
     .user-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; display: flex; align-items: center; }
     .user-item:hover { background-color: #e9ecef; }
+
+    /* 유저 리스트 항목에 대한 스타일 */
+    .user-box {
+      cursor: pointer;
+      background-color: #f8f9fa; /* 기본 배경색 */
+      transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .user-box:hover {
+      background-color: #e9ecef; /* 마우스를 올렸을 때 배경색 */
+    }
+
     .chat-messages { height: 65vh; overflow-y: auto; padding: 10px; }
     .message { padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 75%; }
     .received { background-color: #f1f1f1; align-self: flex-start; }
@@ -32,54 +48,36 @@
         </div>
       </div>
       <div class="user-list mt-3">
-        <div class="user-item" th:each="userMessageList : ${userMessageLists}" th:attr="data-chat-id=${userMessageList.chatRoomId}" onclick="loadChat(this)">
-          <img src="챗룸아이디 상대방 이미지링크" alt="User Icon" width="40" height="40" class="me-2">
-          <div>
-            <h6 th:text="${userMessageList.ChatRoomUserName}">유저 이름</h6>
-            <p class="text-muted small" th:text="${chat.lastMessageContent}">마지막 메시지</p>
-          </div>
-          <span class="text-muted small ms-auto" th:text="${chat.lastMessageTime}">2.20.</span>
-        </div>
-      </div>
-    </div>
+        <div th:each="userMessageList, iterStat : ${userMessageLists}"
+             th:attr="data-chat-id=${userMessageList.chatRoomId}"
+             onclick="loadChat(this)"
+             class="user-box"
+        style="cursor: pointer;">
 
-    <!-- 중앙 패널 (대화 내용) -->
-    <div class="col-9 chat-content d-flex flex-column">
-      <div class="chat-header">
-        <h4 th:text="${selectedChat.userName}">선택된 유저</h4>
-      </div>
-      <div class="chat-messages d-flex flex-column">
-        <div class="message received" th:each="msg : ${messages}" th:if="${msg.sender != 'me'}">
-          <p th:text="${msg.content}">상대 메시지</p>
-          <span class="text-muted small" th:text="${msg.sentAt}">11:06</span>
+        <!-- Profile Image -->
+        <img th:src="@{${detailUserResponseLists[iterStat.index].profileImageUrl}}" alt="User Icon" width="40" height="40" class="me-3 rounded-circle" style="pointer-events: none;">
+
+        <!-- User Info -->
+        <div class="d-flex flex-column">
+          <h6 th:text="${userMessageList.ChatRoomUserName}" class="mb-1">유저 이름</h6>
+          <p class="text-muted small mb-0" th:text="${userMessageList.lastMessageContent}">마지막 메시지</p>
         </div>
-        <div class="message sent align-self-end" th:each="msg : ${messages}" th:if="${msg.sender == 'me'}">
-          <p th:text="${msg.content}">내 메시지</p>
-          <span class="text-light small" th:text="${msg.sentAt}">11:06</span>
-        </div>
-      </div>
-      <div class="chat-input">
-        <input type="text" class="form-control" placeholder="메시지를 입력하세요..." id="messageInput">
-        <button class="btn btn-primary" onclick="sendMessage()">전송</button>
+
+        <!-- Time -->
+        <span class="text-muted small ms-auto" th:text="${#temporals.format(userMessageList.lastMessageTime, 'yyyy년 M월 d일 HH시 mm분 ss초')}">2.20.</span>
       </div>
     </div>
   </div>
+
+  <!-- 중앙 패널 (대화 내용) -->
+  <!-- 대화 내용은 주석 처리되어 있으며, 필요한 경우 활성화할 수 있습니다 -->
+</div>
 </div>
 
 <script>
   function loadChat(element) {
       let chatRoomId = element.getAttribute("data-chat-id");
-      window.location.href = '/user/messageList?chatRoomId=' + chatRoomId;
-  }
-
-  function sendMessage() {
-      let messageInput = document.getElementById("messageInput");
-      let message = messageInput.value;
-      if (message.trim() === "") return;
-
-      // 서버 API로 메시지 전송 (AJAX 사용 가능)
-      console.log("보낸 메시지:", message);
-      messageInput.value = "";
+      window.location.href = '/user/messageList/' + chatRoomId;
   }
 </script>
 

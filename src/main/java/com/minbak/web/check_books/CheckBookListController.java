@@ -56,6 +56,7 @@ public class CheckBookListController {
                                       @PathVariable("bookId") int bookId,
                                       Model model){
 
+//        예약id로 조회 테이블 조인으로 room연결,유저연결
         CheckBookDto checkBookDto=checkBookService.findBookByBookId(bookId);
         checkBookDto.setUser(checkBookService.findUserByUserId(checkBookDto.getRoom().getUserId()));
         checkBookDto.setRoomUrls(checkBookService.findRoomImageUrlsByRoomId(checkBookService.findBookByBookId(bookId).getRoomId()));
