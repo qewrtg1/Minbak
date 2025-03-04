@@ -146,21 +146,5 @@ public class MessageController {
         return "redirect:/admin/message/list";
     }
 // ------------------------------------------유저페이지 기능------------------------------------
-    @GetMapping("/userMessageList")
-    public String showUserMessageList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
-
-        List<UserMessageListDto> userMessageLists=messageService.showUserMessageList(userDetails.getUserId());
-        model.addAttribute("userMessageLists",userMessageLists);
-
-
-        return "/message/chatRoom";
-    }
-//    유저 읽음,안읽음 체크 기능
-    @PostMapping("/userMessageList")
-    public void checkUserMessage(@RequestParam int chatRoomId,@AuthenticationPrincipal CustomUserDetails userDetails){
-
-        messageService.checkIsRead(userDetails.getUserId(),chatRoomId);
-
-    }
 
 }

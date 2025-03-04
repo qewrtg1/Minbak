@@ -56,4 +56,22 @@ public class FileService {
         return fileMapper.findImagesByRoomId(roomId);
     }
 
+    public boolean deleteFile(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return false;
+        }
+        String cleanedUrl = fileUrl.replaceFirst("^/uploads", "");
+
+        Path filePath = Paths.get(uploadDirectory, cleanedUrl); // 실제 저장된 경로
+        try {
+            fileMapper.deleteFileDataByUrl(fileUrl);
+            return Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("파일 삭제 실패: " + fileUrl, e);
+        }
+    }
+
+    public String findLicenseImagesUrlByHostId(int hostId){
+        return fileMapper.findLicenseImagesUrlByHostId(hostId);
+    }
 }

@@ -95,54 +95,7 @@
 </head>
 <body>
 <!-- ✅ 헤더 -->
-<style>
-  /* ✅ 헤더 스타일 */
-  .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #ddd; background: white; }
-  .menu { display: flex; gap: 20px; font-weight: 500; }
-  .menu a { text-decoration: none; color: black; transition: 0.2s; }
-  .menu a:hover { color: #ff385c; }
-  .user-menu { display: flex; align-items: center; gap: 15px; }
-  .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-  <div class="header">
-    <a href="/">
-      <img src="/uploads/logo-text.png" alt="로고" height="40"> <!-- 로고 -->
-    </a>
-</style>
-
-<div class="header">
-  <a href="/">
-    <img src="/uploads/logo-text.png" alt="로고" height="40"> <!-- 로고 -->
-  </a>
-
-  <!-- ✅ 우측 유저 정보 -->
-  <div class="user-menu">
-
-    <!-- ✅ 유저 정보가 있을 때 -->
-    <div th:if="${user != null}" class="d-flex align-items-center gap-3">
-      <button class="btn btn-light">🔔 알림</button>
-      <img th:src="${user.profileImageUrl}" alt="프로필 이미지" class="profile-img">
-      <span th:text="${user.name}">사용자 이름</span>
-
-      <!-- ✅ 부트스트랩 드롭다운 메뉴 추가 -->
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          메뉴
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="userMenuDropdown">
-          <li><a class="dropdown-item" href="/profile">내 프로필</a></li>
-          <li><a class="dropdown-item" href="/settings">설정</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item text-danger" href="/logout">로그아웃</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- ✅ 유저 정보가 없을 때 로그인 버튼 표시 -->
-    <div th:if="${user == null}">
-      <a href="/login" class="btn btn-primary">로그인</a>
-    </div>
-  </div>
-</div>
+<div th:replace="~{user-pages/common/header}"></div>
 
 <div class="container mt-5">
   <h2 class="mb-4 text-center text-primary">내 예약 목록</h2>
@@ -162,7 +115,6 @@
 
     <div th:each="book: ${booksPageDto.objects}">
       <div class="room-card">
-        <!-- 이미지는 안함 -->
         <img th:src="${book.roomUrl}" class="room-image" alt="숙소 이미지">
 
         <div>
@@ -176,7 +128,7 @@
             </div>
           </div>
           <p class="text-muted small">
-            호스트: <span th:text="${book.user.name}">키다리여우님</span><br>
+            호스트: <span th:text="${book.hostName}">키다리여우님</span><br>
             <span th:text="${#temporals.format(book.startDate, 'yyyy년 M월 d일')}"></span> -
             <span th:text="${#temporals.format(book.endDate, 'yyyy년 M월 d일')}"></span>
           </p>

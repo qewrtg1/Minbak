@@ -1,9 +1,15 @@
 package com.minbak.web.categores;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/admin/categories")
 public class CategoresController {
@@ -45,7 +51,7 @@ public class CategoresController {
     }
 
     // [U] 카테고리 수정 처리
-    @PostMapping("/{id}")
+    @PostMapping("/edit/{id}")
     public String updateCategory(@PathVariable int id, @ModelAttribute("category") CategoresDto categoresDto) {
         categoresDto.setCategoryId(id);
         categoresService.updateCategory(categoresDto);
@@ -58,4 +64,7 @@ public class CategoresController {
         categoresService.deleteCategory(id);
         return "redirect:/admin/categories";
     }
+
+
+
 }

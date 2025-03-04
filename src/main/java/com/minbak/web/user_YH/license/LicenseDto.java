@@ -13,4 +13,5 @@ public class LicenseDto {
     private String businessType;
     private String region;
     private LocalDateTime uploadedAt; // MyBatis에서 자동 매핑됨
+    private String licenseFileUrl;
 }

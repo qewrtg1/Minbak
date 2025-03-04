@@ -95,7 +95,7 @@ public class BooksController {
 
     @GetMapping("/wait")
     public String getWaitingBooks(Model model) {
-        List<Map<String, Object>> waitingBooks = booksService.getWaitingBooks();
+        List<BooksDto> waitingBooks = booksService.getWaitingBooks();
         model.addAttribute("waitingBooks", waitingBooks);
         return "books/wait";
     }

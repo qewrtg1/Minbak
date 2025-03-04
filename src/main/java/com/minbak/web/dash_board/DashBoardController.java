@@ -1,9 +1,12 @@
 package com.minbak.web.dash_board;
 
+import com.minbak.web.books.BooksService;
+import com.minbak.web.books.TopBooksOfRegionDto;
+import com.minbak.web.books.TopDayOfWeekDto;
 import com.minbak.web.spring_security.CustomUserDetails;
-import com.minbak.web.users.UserDto;
 import com.minbak.web.users.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,81 +18,77 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/dashboard")
+@RequiredArgsConstructor
 public class DashBoardController {
 
-    @Autowired
-    DashBoardService dashBoardService;
-
-    @Autowired
-    UsersService usersService;
+    private final DashBoardService dashBoardService;
+    private final UsersService usersService;
+    private final BooksService booksService;
 
     @GetMapping
-    public String dashBoard(Model model,
-                            @AuthenticationPrincipal CustomUserDetails userDetails){
-        // 서비스에서 신고 건수 가져오기
-        int userReportCount = dashBoardService.getUserReportCount();
-        int roomReportCount = dashBoardService.getRoomReportCount();
-        int hostVerificationCount = dashBoardService.getHostVerificationCount();
+    public String dashBoard(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // 캐싱된 데이터 가져오기 (신고 건수, 통계, 예약 데이터)
+        model.addAttribute("userReportCount", dashBoardService.getUserReportCount());
+        model.addAttribute("roomReportCount", dashBoardService.getRoomReportCount());
+        model.addAttribute("hostVerificationCount", dashBoardService.getHostVerificationCount());
 
-        // 모델에 데이터 추가
-        model.addAttribute("userReportCount", userReportCount);
-        model.addAttribute("roomReportCount", roomReportCount);
-        model.addAttribute("hostVerificationCount", hostVerificationCount);
-
+        // 캐싱된 사용자 비율 가져오기
         Map<String, Integer> userRatio = dashBoardService.getUserRatio();
-
-        if (userRatio == null || userRatio.isEmpty()) {
-            userRatio.put("hostCount", 0);
-            userRatio.put("guestCount", 0);
-        }
-
-        // 월별 예약 데이터 추가
-        List<MonthlyReservationDto> monthlyReservations = dashBoardService.getMonthlyReservations();
-        model.addAttribute("monthlyReservations", monthlyReservations);
-
-        // 월별 결제 데이터 추가
-        List<MonthlyRevenueDto> monthlyRevenue = dashBoardService.getMonthlyRevenue();
-        model.addAttribute("monthlyRevenue", monthlyRevenue);
-
         model.addAttribute("userRatio", userRatio);
 
-        // 통계 데이터 가져오기
-        Map<String, Object> statistics = dashBoardService.getStatistics();
+        // 캐싱된 월별 예약 데이터 추가
+        model.addAttribute("monthlyReservations", dashBoardService.getMonthlyReservations());
 
-        // 모델에 데이터 추가
-        model.addAttribute("statistics", statistics);
+        // 캐싱된 월별 매출 데이터 추가
+        model.addAttribute("monthlyRevenue", dashBoardService.getMonthlyRevenue());
 
-        // 최신 신고 숙소 데이터 가져오기
-        List<ReportedRoomDto> recentReportedRooms = dashBoardService.getRecentReportedRooms();
+        // 캐싱된 통계 데이터 추가
+        model.addAttribute("statistics", dashBoardService.getStatistics());
 
-        // 모델에 데이터 추가
-        model.addAttribute("recentReportedRooms", recentReportedRooms);
+        // 캐싱된 최신 신고 숙소 데이터 추가
+        model.addAttribute("recentReportedRooms", dashBoardService.getRecentReportedRooms());
 
+        // 캐싱된 예약 취소 비율 데이터 추가
+        model.addAttribute("reservationRatio", dashBoardService.getReservationStatusRatio());
 
-        // 예약 취소 비율 데이터 가져오기
-        Map<String, Integer> reservationRatio = dashBoardService.getReservationStatusRatio();
+        // 캐싱된 관리자 리스트 추가
+        model.addAttribute("adminList", dashBoardService.getAllAdmins());
 
-        // 모델에 데이터 추가
-        model.addAttribute("reservationRatio", reservationRatio);
+        // 캐싱된 카테고리별 숙소 개수 추가
+        model.addAttribute("categoryRoomCounts", dashBoardService.getRoomsByCategory());
 
-        // 관리자 리스트 가져오기
-        List<AdminDto> adminList = dashBoardService.getAllAdmins();
+        // 캐싱된 옵션별 숙소 개수 추가
+        model.addAttribute("optionRoomCounts", dashBoardService.getRoomsByOption());
 
-        // 모델에 데이터 추가
-        model.addAttribute("adminList", adminList);
+        // 유저 정보 캐싱 적용
+        model.addAttribute("user", usersService.findUserByUserId(userDetails.getUserId()));
 
-        // 카테고리별 숙소 개수 데이터 추가
-        List<CategoryRoomCountDto> categoryRoomCounts = dashBoardService.getRoomsByCategory();
-        model.addAttribute("categoryRoomCounts", categoryRoomCounts);
+        // 지역별 숙소 개수
+        List<RegionRoomCountDto> regionRoomCounts = dashBoardService.countRoomsByRegion();
+        model.addAttribute("regionRoomCounts", regionRoomCounts);
 
-        List<OptionRoomCountDto> optionRoomCounts = dashBoardService.getRoomsByOption();
-        model.addAttribute("optionRoomCounts", optionRoomCounts);
+        // 인기 카테고리 (Top 5)
+        List<PopularCategoryDto> popularCategories = dashBoardService.findPopularCategory();
+        model.addAttribute("popularCategories", popularCategories);
 
-        //유저 정보 가져와서 전달
-        model.addAttribute("user",usersService.findUserByUserId(userDetails.getUserId()));
+        // 인기 옵션 (Top 5)
+        List<PopularOptionDto> popularOptions = dashBoardService.findPopularOption();
+        model.addAttribute("popularOptions", popularOptions);
 
-        // Thymeleaf 템플릿 경로 반환
+        // 인기 많은 숙소 (Top 5)
+        List<PopularRoomDto> popularRooms = dashBoardService.findPopularRooms();
+        model.addAttribute("popularRooms", popularRooms);
+
+        // 별점 높은 숙소 (Top 5)
+        List<TopRatedRoomDto> topRatedRooms = dashBoardService.getTopRatedRooms();
+        model.addAttribute("topRatedRooms", topRatedRooms);
+
+        List<TopDayOfWeekDto> topDayOfWeek = booksService.findTopBooks();
+        model.addAttribute("topDayOfWeek", topDayOfWeek);
+
+        List<TopBooksOfRegionDto> topBooksOfRegion = booksService.findTopBooksOfRegion();
+        model.addAttribute("topBooksOfRegion", topBooksOfRegion);
+
         return "dash-board";
     }
-
 }

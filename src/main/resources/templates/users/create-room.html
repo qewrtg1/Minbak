@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>숙소 등록</title>
+  <th:block layout:fragment="css">
+  <!-- ✅ 카카오 지도 API -->
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=b885630c0823c3db8c4b7d8da74981dd&libraries=services"></script>
+  <!-- ✅ 카카오 주소 검색 API -->
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+  <style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .container {
+        max-width: 900px;
+        margin-top: 50px;
+    }
+    .header-title {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+    #map {
+        width: 100%;
+        height: 300px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-top: 10px;
+    }
+
+  </style>
+  </th:block>
+</head>
+<body>
+<th:block layout:fragment="content">
+
+  <main class="main-content">
+<div class="container">
+  <h2 class="header-title text-center">🏠 숙소 등록</h2>
+  <p class="text-center text-muted">숙소 정보를 입력하세요.</p>
+
+  <form action="/admin/rooms/create" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <!-- ✅ 왼쪽: 주소 검색 및 지도 -->
+      <div class="col-md-6">
+
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+        <input type="hidden" name="userId" th:value="${userId}">
+        <!-- 주소 검색 -->
+        <div class="mb-3">
+          <label for="address" class="form-label">📍 숙소 주소</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="address" name="address" readonly required>
+            <button type="button" class="btn btn-primary" onclick="openAddressSearch()">주소 검색</button>
+          </div>
+        </div>
+
+        <!-- 위도 / 경도 정보 -->
+        <div class="row">
+          <div class="col-md-6">
+            <label for="latitude">🌍 위도 (Latitude)</label>
+            <input type="text" class="form-control" id="latitude" name="latitude" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="longitude">🌎 경도 (Longitude)</label>
+            <input type="text" class="form-control" id="longitude" name="longitude" readonly>
+          </div>
+        </div>
+
+        <!-- 지도 표시 -->
+        <div id="map"></div>
+
+        <div class="mb-3 mt-3">
+          <label for="buildingType" class="form-label">건물 유형</label>
+          <select class="form-select" id="buildingType" name="buildingType" required>
+            <option value="아파트">아파트</option>
+            <option value="주택">주택</option>
+            <option value="빌라">빌라</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ✅ 오른쪽: 숙소 정보 입력 -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="title" class="form-label">숙소 제목</label>
+          <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="name" class="form-label">숙소 이름</label>
+          <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3 mt-3">
+          <label for="useGuide" class="form-label">📖 숙박 이용 안내</label>
+          <textarea class="form-control" id="useGuide" name="useGuide" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="content" class="form-label">숙소 설명</label>
+          <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="price" class="form-label">숙박 가격 (₩)</label>
+          <input type="number" class="form-control" id="price" name="price" required>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- ✅ 침실, 침대, 욕실 개수 -->
+    <div class="row mt-3">
+      <div class="col-md-3">
+        <label for="maxGuests" class="form-label">최대 숙박 인원</label>
+        <input type="number" class="form-control" id="maxGuests" name="maxGuests" min="0" required>
+      </div>
+      <div class="col-md-3">
+        <label for="bedrooms" class="form-label">침실 개수</label>
+        <input type="number" class="form-control" id="bedrooms" name="bedrooms" min="0" required>
+      </div>
+      <div class="col-md-3">
+        <label for="beds" class="form-label">침대 개수</label>
+        <input type="number" class="form-control" id="beds" name="beds" min="0" required>
+      </div>
+      <div class="col-md-3">
+        <label for="bathrooms" class="form-label">욕실 개수</label>
+        <input type="number" class="form-control" id="bathrooms" name="bathrooms" min="0" required>
+      </div>
+    </div>
+
+
+    <!-- ✅ 숙소 이미지 업로드 -->
+    <!-- ✅ 숙소 이미지 업로드 (다중 파일 선택 가능) -->
+    <div class="mb-3 mt-3">
+      <label for="roomImages" class="form-label">숙소 이미지 업로드</label>
+      <input type="file" class="form-control" id="roomImages" name="roomImages" accept="image/*" multiple required>
+    </div>
+
+
+    <!-- ✅ 제출 버튼 -->
+    <button type="submit" class="btn btn-primary w-100 mt-3">카테고리 및 옵션 설정</button>
+  </form>
+</div>
+  </main>
+</th:block>
+
+</body>
+<th:block layout:fragment="js">
+
+<script>
+  var map, geocoder, marker;
+
+  function initMap() {
+      console.log("🚀 지도 로딩 중...");
+      var defaultLocation = new kakao.maps.LatLng(37.5665, 126.9780); // 초기 위치 (서울 시청)
+
+      map = new kakao.maps.Map(document.getElementById('map'), {
+          center: defaultLocation,
+          level: 3 // 지도 확대 레벨
+      });
+
+      geocoder = new kakao.maps.services.Geocoder();
+      marker = new kakao.maps.Marker({ position: defaultLocation, map: map });
+
+      console.log("✅ 지도 로딩 완료!");
+  }
+
+  function openAddressSearch() {
+      console.log("📍 주소 검색 실행");
+      new daum.Postcode({
+          oncomplete: function(data) {
+              var fullAddress = data.roadAddress || data.jibunAddress;
+              document.getElementById("address").value = fullAddress;
+
+              // ✅ 주소 → 위도/경도 변환
+              geocoder.addressSearch(fullAddress, function(result, status) {
+                  if (status === kakao.maps.services.Status.OK) {
+                      var latlng = new kakao.maps.LatLng(result[0].y, result[0].x);
+                      document.getElementById("latitude").value = result[0].y;
+                      document.getElementById("longitude").value = result[0].x;
+
+                      // ✅ 지도 이동 및 마커 표시
+                      map.setCenter(latlng);
+                      marker.setPosition(latlng);
+
+                      console.log("🗺 지도 위치 업데이트: " + fullAddress);
+                  } else {
+                      alert("⚠ 위도/경도 정보를 찾을 수 없습니다.");
+                  }
+              });
+          }
+      }).open();
+  }
+
+  window.onload = function() {
+      initMap();
+  };
+</script>
+</th:block>
+</html>

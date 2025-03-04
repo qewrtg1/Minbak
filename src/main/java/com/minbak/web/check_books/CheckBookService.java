@@ -28,7 +28,9 @@ public class CheckBookService {
             // 예약 목록을 가져옵니다.
             List<CheckBookDto> booksList = checkBookMapper.selectBooks(offset, size, userId);
 //            room dto 들고와서 북스dto에 넣습니다
-
+//            for (CheckBookDto book : booksList){
+//                book.getHost().setHostName(checkBookMapper.findHostNameByUserId(book.getRoom().getUserId()));
+//            }
 
             // 총 예약 항목 수를 가져옵니다.
             int totalItems = checkBookMapper.countBooks(userId);
@@ -59,6 +61,10 @@ public class CheckBookService {
         }
         public CheckBookHostDto findHostByUserId(int userId){
             return checkBookMapper.findHostByUserId(userId);
+        }
+
+        public String findUserNameByUserId(int userId){
+            return checkBookMapper.findUserNameByUserId(userId);
         }
 
 

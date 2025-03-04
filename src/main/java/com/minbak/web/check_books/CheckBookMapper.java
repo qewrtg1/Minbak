@@ -25,4 +25,5 @@ public interface CheckBookMapper {
     PaymentDto findPaymentByBookId(int bookId);
     String findUserUrlByUserId(int userId);
     CheckBookHostDto findHostByUserId(int userId);
+    String findUserNameByUserId(int userId);
 }

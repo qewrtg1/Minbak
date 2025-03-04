@@ -21,4 +21,6 @@ public interface CategoresMapper {
         // 카테고리 삭제
         int deleteCategory(int id);
 
+        //카테로기 순서 업데이트
+        void updateCategoryOrder(Integer categoryId, int categoryOrder);
 }

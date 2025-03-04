@@ -124,7 +124,8 @@ public class MessageService {
 
         List<UserMessageListDto> userMessageLists=messageMapper.showUserMessageList(user_id);
         for (UserMessageListDto userMessageListDto : userMessageLists) {
-            userMessageListDto.setIsRead(messageMapper.findMessageByMessageId(userMessageListDto.getLastMessageId()).getIsRead());  // 예를 들어, 메시지를 읽은 것으로 표시
+            userMessageListDto.setIsRead(messageMapper.findMessageByMessageId(userMessageListDto.getLastMessageId()).getIsRead());// 예를 들어, 메시지를 읽은 것으로 표시
+            userMessageListDto.setChatRoomUserName(usersMapper.findUserByUserId(userMessageListDto.getChatRoomId()).getName());
         }
 
         return userMessageLists;
@@ -134,7 +135,10 @@ public class MessageService {
         messageMapper.updateMessageCheck(userId,chatRoomId);
     }
 
+//    public List<messageDto> showUserMessageDetail(){
 
+
+//    }
 
 
 }
