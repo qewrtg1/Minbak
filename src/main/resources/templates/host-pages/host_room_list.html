@@ -14,14 +14,6 @@
     .status-declined { color: #f44336; font-weight: bold; }
     .btn-action { margin-right: 5px; }
 
-    /* ✅ 헤더 스타일 */
-    .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #ddd; background: white; }
-    .menu { display: flex; gap: 20px; font-weight: 500; }
-    .menu a { text-decoration: none; color: black; transition: 0.2s; }
-    .menu a:hover { color: #ff385c; }
-    .user-menu { display: flex; align-items: center; gap: 15px; }
-    .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-
     /* ✅ 섹션 스타일 */
     .section { padding-top: 64px; color: #222; }
     .contents { padding: 0 80px; }
@@ -159,28 +151,7 @@
 
 <body>
   <!-- ✅ 헤더 -->
-  <div class="header">
-    <a href="/">
-      <img src="/uploads/logo-text.png" alt="로고" height="30">
-    </a>
-    <nav class="menu">
-      <a href="/host/today">투데이</a>
-      <a href="/host_room/list">숙소</a>
-      <a href="/host/messages">메시지</a>
-      <a href="/host/books">예약</a>
-      <a href="/host_room/add">새로운 숙소 등록하기</a>
-    </nav>
-
-    <!-- ✅ 우측 유저 정보 -->
-    <div class="user-menu">
-      <button class="btn btn-light">🔔 알림</button>
-      <img th:src="${headerUser.profileImageUrl}" alt="프로필 이미지" class="profile-img">
-      <span th:text="${headerUser.name}">사용자 이름</span>
-    </div>
-
-  </div>
-
-
+  <div th:replace="~{host-pages/common/header}"></div>
 
   <div class="container">
     <!-- ✅ 제목과 버튼을 같은 줄에 배치 -->
@@ -222,10 +193,10 @@
           <span th:text="${room.name}"></span>
         </td>
         <td th:text="${room.address}"></td>
-        <td class="room-status" style="color: red;">조치 필요(임시)</td>
+        <td class="room-status" style="color: red;"></td>
         <td>
-          <a class="btn btn-primary btn-sm" th:href="@{/host_room/edit/{id}(id=${room.roomId})}">수정</a>
-          <a class="btn btn-danger btn-sm" th:href="@{/host_room/delete/{id}(id=${room.roomId})}" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+          <a class="btn btn-primary btn-sm" th:href="@{/host/room/edit/{id}(id=${room.roomId})}">수정</a>
+          <a class="btn btn-danger btn-sm" th:href="@{/host/room/delete/{id}(id=${room.roomId})}" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
         </td>
       </tr>
       </tbody>

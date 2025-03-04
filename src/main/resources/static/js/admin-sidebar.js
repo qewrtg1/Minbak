@@ -72,18 +72,16 @@ document.addEventListener("DOMContentLoaded", function () {
             pageTitle = "유저 목록";
         } else if (path.includes("/admin/users")) {
             pageTitle = "유저 관리";
-        } else if (path.includes("/admin/rooms/list")) {
-            pageTitle = "숙소 목록";
         } else if (path.includes("/admin/rooms")) {
             pageTitle = "숙소 관리";
-        } else if (path.includes("/admin/bookings")) {
+        } else if (path.includes("/admin/books")) {
             pageTitle = "예약 관리";
-        } else if (path.includes("/admin/reviews")) {
+        } else if (path.includes("/admin/review")) {
             pageTitle = "리뷰 관리";
-        } else if (path.includes("/admin/notices")) {
-            pageTitle = "공지사항";
-        } else if (path.includes("/admin/messages")) {
+        } else if (path.includes("/admin/message")) {
             pageTitle = "메시지";
+        } else if (path.includes("/admin/payments")) {
+            pageTitle = "결제 관리";
         }
 
         header.innerHTML = `
