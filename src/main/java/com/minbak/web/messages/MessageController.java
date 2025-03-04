@@ -157,11 +157,10 @@ public class MessageController {
     }
 //    유저 읽음,안읽음 체크 기능
     @PostMapping("/userMessageList")
-    public String checkUserMessage(@RequestParam int chatRoomId,@AuthenticationPrincipal CustomUserDetails userDetails){
+    public void checkUserMessage(@RequestParam int chatRoomId,@AuthenticationPrincipal CustomUserDetails userDetails){
 
         messageService.checkIsRead(userDetails.getUserId(),chatRoomId);
 
-        return "redirect:/admin/message/userMessageList";
     }
 
 }
