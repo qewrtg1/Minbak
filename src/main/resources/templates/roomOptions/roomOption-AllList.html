@@ -24,6 +24,7 @@
         <th>주소</th>
         <th>가격</th>
         <th>편의시설</th>
+        <th>카테고리</th> <!-- 카테고리 추가 -->
     </tr>
     </thead>
     <tbody>
@@ -33,6 +34,7 @@
         <td th:text="${room.address}"></td>
         <td th:text="${room.price}"></td>
         <td th:text="${room.amenities}"></td>
+        <td th:text="${room.optionsCategory}"></td> <!-- 카테고리 표시 -->
     </tr>
     </tbody>
 </table>

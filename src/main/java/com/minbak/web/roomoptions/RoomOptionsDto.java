@@ -22,5 +22,7 @@ public class RoomOptionsDto {
     private String address;
     private int price;
     private List<String> amenities; // 편의시설 목록 추가
+    private String optionsCategory; // 추가된 옵션 카테고리 필드
+
 
 }

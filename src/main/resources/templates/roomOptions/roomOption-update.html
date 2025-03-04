@@ -11,6 +11,12 @@
   <input type="text" th:field="*{name}" />
   <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></span>
   <br/>
+
+  <label>카테고리: </label>
+  <input type="text" th:field="*{optionsCategory}" />
+  <span th:if="${#fields.hasErrors('optionsCategory')}" th:errors="*{optionsCategory}" style="color:red;"></span>
+  <br/>
+
   <button type="submit">수정</button>
 </form>
 <br/>

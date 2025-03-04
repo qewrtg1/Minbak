@@ -15,11 +15,11 @@ import java.util.List;
 public class RoomOptionsController {
 
     private final RoomOptionsService roomOptionsService;
+
     @Autowired
     public RoomOptionsController(RoomOptionsService roomOptionsService) {
         this.roomOptionsService = roomOptionsService;
     }
-
 
     // 1. 편의시설 목록 조회
     @GetMapping
