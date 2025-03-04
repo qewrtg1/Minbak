@@ -50,6 +50,7 @@ public class APIPortOneController {
             // 결제 승인 & DB 업데이트
             portOneService.updatePaymentStatus(storedPayment.getMerchantUid(), impUid);
 
+
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "결제 검증 성공",
