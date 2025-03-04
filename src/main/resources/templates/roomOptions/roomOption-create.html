@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>편의시설 추가</title>
+</head>
+<body>
+<h2>새 편의시설 추가</h2>
+<form th:action="@{/admin/roomoptions/create}" method="post" th:object="${roomOption}">
+  <label>이름: </label>
+  <input type="text" th:field="*{name}" />
+  <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></span>
+  <br/>
+  <button type="submit">추가</button>
+</form>
+<br/>
+<a href="/admin/roomoptions">목록으로 돌아가기</a>
+</body>
+</html>

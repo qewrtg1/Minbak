@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>숙소 등록</title>
+</head>
+<body>
+<h2>숙소 등록</h2>
+<form th:action="@{/host/room/add}" method="post">
+    <label>숙소 이름:</label>
+    <input type="text" name="name" required><br>
+
+    <label>숙소 title:</label>
+    <input type="text" name="title" required><br>
+
+    <label>숙소 설명:</label>
+    <textarea name="content" required></textarea><br>
+
+    <label>주소:</label>
+    <input type="text" name="address" required><br>
+
+    <label>가격:</label>
+    <input type="number" name="price" required><br>
+
+    <label>최대 인원:</label>
+    <input type="number" name="maxGuests" required><br>
+
+    <label for="buildingType">건물 유형:</label>
+    <select id="buildingType" name="buildingType" required>
+        <option value="아파트">아파트</option>
+        <option value="주택">주택</option>
+        <option value="빌라">빌라</option>
+    </select>
+
+    <button type="submit">숙소 등록</button>
+</form>
+</body>
+</html>
