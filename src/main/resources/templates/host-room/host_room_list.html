@@ -40,13 +40,12 @@
 
     .container {
       margin-top: 50px;
-      width: 90%; /* 화면의 90%를 사용 (원하는 값으로 조절 가능) */
-      max-width: 1600px; /* 최대 너비 제한 (너무 커지는 걸 방지) */
+      width: 100%; /* 화면의 90%를 사용 (원하는 값으로 조절 가능) */
+      width: 1600px; /* 최대 너비 제한 (너무 커지는 걸 방지) */
     }
 
 
     .page-title {
-      margin: 0;
       font-size: 40px;
     }
 
@@ -197,7 +196,7 @@
         <button class="icon-button">⬜</button>
 
         <!-- 3. 숙소 추가 페이지 이동 버튼 -->
-        <button class="icon-button" onclick="location.href='/host_room/add'">➕</button>
+        <button class="icon-button" onclick="location.href='/host/room/add'">➕</button>
       </div>
     </div>
 
@@ -223,7 +222,7 @@
           <span th:text="${room.name}"></span>
         </td>
         <td th:text="${room.address}"></td>
-        <td class="room-status" style="color: red;">조치 필요</td>
+        <td class="room-status" style="color: red;">조치 필요(임시)</td>
         <td>
           <a class="btn btn-primary btn-sm" th:href="@{/host_room/edit/{id}(id=${room.roomId})}">수정</a>
           <a class="btn btn-danger btn-sm" th:href="@{/host_room/delete/{id}(id=${room.roomId})}" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>

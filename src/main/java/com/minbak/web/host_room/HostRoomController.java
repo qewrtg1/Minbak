@@ -37,7 +37,7 @@ public class HostRoomController {
     // 숙소 등록 폼 페이지
     @GetMapping("/add")
     public String showAddRoomForm() {
-        return "host-room/host_room_form";
+        return "host-room/host_room_add";
     }
 
     // 숙소 등록 처리
