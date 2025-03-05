@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Noto Sans KR', sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -21,33 +21,34 @@
     }
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
         justify-content: center;
     }
     .category {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
     .option {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
         border: 2px solid #ddd;
         border-radius: 10px;
         cursor: pointer;
         transition: 0.2s;
         background: white;
-        font-size: 12px;
+        font-size: 14px;
         text-align: center;
-        padding: 5px;
+        padding: 10px;
+        font-weight: 500;
     }
     .option i {
-        font-size: 20px;
-        margin-bottom: 4px;
-        color: #666;
+        font-size: 24px;
+        margin-bottom: 6px;
+        color: #555;
     }
     .option.selected {
         background-color: #ff9800;
@@ -57,22 +58,25 @@
     .option.selected i {
         color: white;
     }
-    .next-btn {
-        display: block;
-        margin: 20px auto;
-        background-color: #ff9800;
-        border: none;
-        padding: 12px 24px;
-        font-size: 1rem;
-        border-radius: 5px;
-        color: #fff;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-    }
-    .next-btn:hover {
-        background-color: #e68900;
-    }
+     /* ✅ "다음" 버튼을 오른쪽 하단에 고정 */
+  .next-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ff9800;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+  }
+  .next-btn:hover {
+      background-color: #e68900;
+  }
+
   </style>
 </head>
 <body>
@@ -80,97 +84,104 @@
 <div class="container">
   <h2>숙소에 제공되는 편의시설을 선택하세요.</h2>
 
-  <div class="category">
-    <h3>필수</h3>
-    <div class="grid">
-      <div class="option" data-option="와이파이"><i class="fas fa-wifi"></i> 와이파이</div>
-      <div class="option" data-option="주방"><i class="fas fa-utensils"></i> 주방</div>
-      <div class="option" data-option="세탁기"><i class="fas fa-tshirt"></i> 세탁기</div>
-      <div class="option" data-option="건조기"><i class="fas fa-wind"></i> 건조기</div>
-      <div class="option" data-option="에어컨"><i class="fas fa-snowflake"></i> 에어컨</div>
-      <div class="option" data-option="난방"><i class="fas fa-thermometer-half"></i> 난방</div>
-      <div class="option" data-option="업무 공간"><i class="fas fa-laptop"></i> 업무 공간</div>
-      <div class="option" data-option="TV"><i class="fas fa-tv"></i> TV</div>
-      <div class="option" data-option="헤어드라이어"><i class="fas fa-wind"></i> 헤어드라이어</div>
-      <div class="option" data-option="다리미"><i class="fa-solid fa-shirt"></i> 다리미</div>
-    </div>
-  </div>
+  <form id="charmForm" action="/host/option/save" method="post">
+    <!-- ✅ 숨겨진 입력 필드 (선택한 옵션 ID 리스트) -->
+    <input type="hidden" id="selectedOptionsInput" name="optionIds">
 
-  <div class="category">
-    <h3>특징</h3>
-    <div class="grid">
-      <div class="option" data-option="수영장"><i class="fas fa-swimmer"></i> 수영장</div>
-      <div class="option" data-option="대형 욕조"><i class="fas fa-bath"></i> 대형 욕조</div>
-      <div class="option" data-option="무료 주차"><i class="fas fa-parking"></i> 무료 주차</div>
-      <div class="option" data-option="전기차 충전"><i class="fas fa-charging-station"></i> 전기차 충전</div>
-      <div class="option" data-option="아기 침대"><i class="fas fa-baby"></i> 아기 침대</div>
-      <div class="option" data-option="킹사이즈 침대"><i class="fas fa-bed"></i> 킹사이즈 침대</div>
-      <div class="option" data-option="헬스장"><i class="fas fa-dumbbell"></i> 헬스장</div>
-      <div class="option" data-option="바비큐"><i class="fas fa-fire"></i> 바비큐</div>
-      <div class="option" data-option="조식"><i class="fas fa-coffee"></i> 조식</div>
-      <div class="option" data-option="벽난로"><i class="fa-solid fa-fire"></i> 벽난로</div>
-      <div class="option" data-option="흡연 가능"><i class="fas fa-smoking"></i> 흡연 가능</div>
+    <!-- ✅ "필수" 카테고리 -->
+    <div class="category">
+      <h3>필수</h3>
+      <div class="grid">
+        <div class="option" data-option-id="1"><i class="fas fa-wifi"></i> 와이파이</div>
+        <div class="option" data-option-id="2"><i class="fas fa-utensils"></i> 주방</div>
+        <div class="option" data-option-id="3"><i class="fas fa-tshirt"></i> 세탁기</div>
+        <div class="option" data-option-id="4"><i class="fas fa-wind"></i> 건조기</div>
+        <div class="option" data-option-id="5"><i class="fas fa-snowflake"></i> 에어컨</div>
+        <div class="option" data-option-id="6"><i class="fas fa-thermometer-half"></i> 난방</div>
+        <div class="option" data-option-id="7"><i class="fas fa-laptop"></i> 업무 공간</div>
+        <div class="option" data-option-id="8"><i class="fas fa-tv"></i> TV</div>
+        <div class="option" data-option-id="9"><i class="fas fa-wind"></i> 헤어드라이어</div>
+        <div class="option" data-option-id="10"><i class="fas fa-shirt"></i> 다리미</div>
+      </div>
     </div>
-  </div>
 
-  <div class="category">
-    <h3>위치</h3>
-    <div class="grid">
-      <div class="option" data-option="해변"><i class="fas fa-umbrella-beach"></i> 해변</div>
-      <div class="option" data-option="수변"><i class="fas fa-water"></i> 수변</div>
-      <div class="option" data-option="스키 출입"><i class="fas fa-skiing"></i> 스키 출입</div>
+    <!-- ✅ "특징" 카테고리 -->
+    <div class="category">
+      <h3>특징</h3>
+      <div class="grid">
+        <div class="option" data-option-id="11"><i class="fas fa-swimmer"></i> 수영장</div>
+        <div class="option" data-option-id="12"><i class="fas fa-bath"></i> 대형 욕조</div>
+        <div class="option" data-option-id="13"><i class="fas fa-parking"></i> 무료 주차</div>
+        <div class="option" data-option-id="14"><i class="fas fa-charging-station"></i> 전기차 충전</div>
+        <div class="option" data-option-id="15"><i class="fas fa-baby"></i> 아기 침대</div>
+        <div class="option" data-option-id="16"><i class="fas fa-bed"></i> 킹사이즈 침대</div>
+        <div class="option" data-option-id="17"><i class="fas fa-dumbbell"></i> 헬스장</div>
+        <div class="option" data-option-id="18"><i class="fas fa-fire"></i> 바비큐</div>
+        <div class="option" data-option-id="19"><i class="fas fa-coffee"></i> 조식</div>
+        <div class="option" data-option-id="20"><i class="fas fa-fire-alt"></i> 벽난로</div>
+        <div class="option" data-option-id="21"><i class="fas fa-smoking"></i> 흡연 가능</div>
+      </div>
     </div>
-  </div>
 
-  <div class="category">
-    <h3>안전</h3>
-    <div class="grid">
-      <div class="option" data-option="화재경보기"><i class="fas fa-bell"></i> 화재경보기</div>
-      <div class="option" data-option="일산화탄소 경보기"><i class="fas fa-exclamation-triangle"></i> 일산화탄소 경보기</div>
+    <!-- ✅ "위치" 카테고리 -->
+    <div class="category">
+      <h3>위치</h3>
+      <div class="grid">
+        <div class="option" data-option-id="22"><i class="fas fa-umbrella-beach"></i> 해변</div>
+        <div class="option" data-option-id="23"><i class="fas fa-water"></i> 수변</div>
+        <div class="option" data-option-id="24"><i class="fas fa-skiing"></i> 스키 출입</div>
+      </div>
     </div>
-  </div>
 
+    <!-- ✅ "안전" 카테고리 -->
+    <div class="category">
+      <h3>안전</h3>
+      <div class="grid">
+        <div class="option" data-option-id="25"><i class="fas fa-bell"></i> 화재경보기</div>
+        <div class="option" data-option-id="26"><i class="fas fa-exclamation-triangle"></i> 일산화탄소 경보기</div>
+      </div>
+    </div>
+
+    <!-- ✅ "다음" 버튼 -->
+    <a href="/host/photos" class="next-btn">다음</a>
+  </form>
 </div>
-
-<!-- 다음 버튼 -->
-<a href="/host/photos" class="next-btn" onclick="goToNextPage()">다음</a>
 
 <script>
   const options = document.querySelectorAll('.option');
 
-  // 옵션 선택 토글
+  // ✅ 옵션 선택 토글
   options.forEach(option => {
       option.addEventListener('click', () => {
           option.classList.toggle('selected');
+          updateSelectedOptions();
       });
   });
 
-  function goToNextPage() {
+  function updateSelectedOptions() {
       let selectedOptions = [];
       document.querySelectorAll('.option.selected').forEach(option => {
-          selectedOptions.push(option.getAttribute("data-option"));
+          selectedOptions.push(option.getAttribute("data-option-id"));
       });
 
-      if (selectedOptions.length === 0) {
-          alert("최소한 하나 이상의 옵션을 선택해주세요!");
-          return;
-      }
+      // ✅ 선택된 옵션을 hidden input에 저장하여 폼으로 전송
+      document.getElementById("selectedOptionsInput").value = selectedOptions.join(",");
 
-      // 선택된 옵션을 로컬 스토리지에 저장
-      localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
-
-      // 다음 페이지로 이동
-      window.location.href = "/host/photos";
+      // ✅ 콘솔에 선택된 옵션 출력
+      console.clear();
+      console.log("📌 [선택된 옵션]");
+      selectedOptions.forEach(option => console.log("✔ 옵션 ID:", option));
   }
 
-  // 이전 선택된 옵션 유지 (뒤로 가기 했을 때)
-  document.addEventListener("DOMContentLoaded", () => {
-      let savedOptions = JSON.parse(localStorage.getItem("selectedOptions")) || [];
-      options.forEach(option => {
-          if (savedOptions.includes(option.getAttribute("data-option"))) {
-              option.classList.add("selected");
-          }
-      });
+  // ✅ "다음" 버튼 클릭 시 최종 선택된 옵션 출력
+  document.querySelector('.next-btn').addEventListener('click', function(event) {
+      event.preventDefault(); // 기본 동작 방지 (디버깅용)
+
+      let selectedOptions = document.getElementById("selectedOptionsInput").value;
+      console.log("🚀 최종 선택된 옵션 리스트:", selectedOptions);
+
+      // ✅ 정상적으로 동작하면 페이지 이동
+      window.location.href = "/host/photos";
   });
 
 </script>

@@ -1,102 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Maps with Search and Icon</title>
-  <!-- Google Maps API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA50X20VvIVk9sELnewUrtok0ZJYWrtVzE&libraries=places&callback=initMap" async defer></script>
-  <!-- FontAwesome (for the search icon) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <title>숙소 위치 선택</title>
+
+  <!-- ✅ Google Maps API -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA50X20VvIVk9sELnewUrtok0ZJYWrtVzE&libraries=places&callback=initMap"></script>
+
   <style>
-    /* 전체 페이지 레이아웃 */
     body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
     }
 
+    /* ✅ 지도 컨테이너 */
+    #map-container {
+      width: 66vw;
+      height: 66vh;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ✅ 지도 */
     #map {
-    width: 800px;
-    height: 800px;
-    margin: 0 auto;
-    display: block;
-}
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+    }
 
-    /* 검색창 스타일 */
+    /* ✅ 검색창 스타일 */
     .search-container {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        width: 400px;
-        display: flex;
-        align-items: center;
-        background-color: white;
-        border-radius: 25px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: 400px;
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-radius: 25px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 5px;
     }
-
     .search-container input {
-        width: 100%;
-        padding: 10px;
-        padding-left: 35px; /* 아이콘을 위한 여백 */
-        border: none;
-        border-radius: 25px;
-        font-size: 16px;
-        box-sizing: border-box;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .search-container button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: -30px;
+    }
+    .search-container button i {
+      font-size: 18px;
+      color: #777;
     }
 
-    .search-container i {
-        position: absolute;
-        left: 10px; /* 아이콘 위치 */
-        font-size: 20px;
-        color: #777;
-    }
-
-    /* 버튼 스타일 */
+    /* ✅ 현재 위치 버튼 */
     .current-location-btn {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .current-location-btn:hover { background-color: #0056b3; }
+
+    /* ✅ 입력창 컨테이너 (처음에는 숨김) */
+    #address-container {
+      width: 350px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+      position: relative;
     }
 
-    .current-location-btn:hover {
-        background-color: #0056b3;
+    /* ✅ 입력 필드 스타일 */
+    #address-container label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      text-align: left;
+    }
+    #address-container input {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
     }
 
-    #address-info {
-        display: none;
-        position: absolute;
-        top: 80px;
-        right: 150px;
-        width: 300px;
-        background-color: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 10;
-}
-     #address-info label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-    #address-info input {
-        width: 100%;
-        padding: 5px;
-        font-size: 14px;
-        margin-top: 2px;
-    }
-
-     /* 다음 버튼 스타일 (숙소 유형 선택 페이지와 동일) */
+    /* ✅ "다음" 버튼 (오른쪽 하단 고정) */
     .next-btn {
       position: fixed;
       bottom: 30px;
@@ -109,215 +128,132 @@
       color: #fff;
       cursor: pointer;
       text-decoration: none;
-      z-index: 10;
+      display: none;
     }
-    .next-btn:hover {
-      background-color: #e68900;
-    }
+    .next-btn:hover { background-color: #e68900; }
   </style>
 </head>
 <body>
-<!-- 현재 위치 버튼 -->
-<button class="current-location-btn" onclick="getCurrentLocation()">현재 위치 정보</button>
 
-<!-- 지도 -->
-<div id="map"></div>
+<!-- ✅ 지도 컨테이너 -->
+<div id="map-container">
+  <!-- ✅ 검색창 -->
+  <div class="search-container">
+    <input type="text" id="search-box" placeholder="주소를 검색하세요." onkeypress="handleEnter(event)">
+    <button onclick="searchAddress()"><i class="fas fa-search"></i></button>
+  </div>
 
-<!-- 검색창 -->
-<div class="search-container">
-  <i class="fas fa-search"></i> <!-- 검색 아이콘 -->
-  <input type="text" id="address" placeholder="주소를 입력하세요.">
+  <!-- ✅ 현재 위치 버튼 -->
+  <button class="current-location-btn" onclick="getCurrentLocation()">현재 위치 정보 보기</button>
+
+  <!-- ✅ 지도 -->
+  <div id="map"></div>
 </div>
 
-<!-- 주소 세부 정보 -->
-<div id="address-info">
-  <label>도/특별-광역시: <input type="text" id="province"></label>
-  <label>도시: <input type="text" id="city"></label>
-  <label>군/구: <input type="text" id="district"></label>
-  <label>도로명 주소: <input type="text" id="road-address"></label>
-  <label>아파트 층수/호수: <input type="text" id="apartment"></label>
-  <label>건물명: <input type="text" id="building-name"></label>
-  <label>우편번호: <input type="text" id="postal-code"></label>
-</div>
+<!-- ✅ 입력 필드 -->
+<form id="locationForm" action="/host/location/save" method="post">
+  <div id="address-container">
+    <label>도/특별-광역시: <input type="text" id="province" name="province"></label>
+    <label>도시: <input type="text" id="city" name="city"></label>
+    <label>군/구: <input type="text" id="district" name="district"></label>
+    <label>도로명 주소: <input type="text" id="road-address" name="roadAddress"></label>
+    <label>아파트 층수/호수, 건물명: <input type="text" id="building-name" name="buildingName"></label>
+    <label>우편번호: <input type="text" id="postal-code" name="postalCode"></label>
 
-<!-- 다음 버튼 -->
-<a href="/host/floor-plan" class="next-btn">다음</a>
-<script >
-  let map, marker, autocomplete;
+    <!-- ✅ 숨겨진 위도 & 경도 필드 -->
+    <input type="hidden" id="latitude" name="latitude">
+    <input type="hidden" id="longitude" name="longitude">
 
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 37.5665, lng: 126.9788 },
-    zoom: 15,
-  });
+    <!-- ✅ 다음 버튼 -->
+    <button type="submit" class="next-btn" id="next-btn">다음</button>
+  </div>
+</form>
 
-  marker = new google.maps.Marker({
-    map: map,
-    position: { lat: 37.5665, lng: 126.9788 },
-    title: "현재 위치",
-  });
+<script>
+  let map, marker;
 
-  // Autocomplete (Google Places API)
-  autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"), {
-    fields: ["address_components", "geometry"],
-  });
+  window.initMap = function() {
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: 37.5665, lng: 126.9788 },
+      zoom: 15,
+    });
 
-  autocomplete.addListener("place_changed", function () {
-    const place = autocomplete.getPlace();
-    if (!place.geometry) return;
+    marker = new google.maps.Marker({
+      map: map,
+      position: { lat: 37.5665, lng: 126.9788 },
+      title: "현재 위치",
+    });
+  };
 
-    map.setCenter(place.geometry.location);
-    marker.setPosition(place.geometry.location);
-    displayAddressInfo(place);
-  });
+  function showAddressContainer() {
+    document.getElementById("address-container").style.display = "block";
+    document.getElementById("next-btn").style.display = "block";
+  }
 
-  // 지도 클릭 이벤트
-  map.addListener('click', function (event) {
-    marker.setPosition(event.latLng);
+  window.getCurrentLocation = function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
+        map.setCenter(latLng);
+        marker.setPosition(latLng);
+        getAddressFromCoords(latLng.lat, latLng.lng);
+        showAddressContainer();
+      });
+    }
+  };
+
+  window.getAddressFromCoords = function(latitude, longitude) {
     const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ location: event.latLng }, function (results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
+    geocoder.geocode({ location: { lat: latitude, lng: longitude } }, function (results, status) {
+      if (status === "OK") {
         displayAddressInfo(results[0]);
       }
     });
-  });
-
-  // 📌 `localStorage`에서 데이터 불러오기 (초기 로드 시)
-  let savedLocation = localStorage.getItem("selectedLocation");
-  if (savedLocation) {
-    savedLocation = JSON.parse(savedLocation);
-
-    document.getElementById('province').value = savedLocation.province || "";
-    document.getElementById('city').value = savedLocation.city || "";
-    document.getElementById('district').value = savedLocation.district || "";
-    document.getElementById('road-address').value = savedLocation.roadAddress || "";
-    document.getElementById('apartment').value = savedLocation.apartment || "";
-    document.getElementById('building-name').value = savedLocation.buildingName || "";
-    document.getElementById('postal-code').value = savedLocation.postalCode || "";
-
-    if (savedLocation.latitude && savedLocation.longitude) {
-      marker.setPosition({ lat: savedLocation.latitude, lng: savedLocation.longitude });
-      map.setCenter({ lat: savedLocation.latitude, lng: savedLocation.longitude });
-    }
-  }
-}
-
-function getCurrentLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
-      map.setCenter(latLng);
-      marker.setPosition(latLng);
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ location: latLng }, function (results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-          displayAddressInfo(results[0]);
-        }
-      });
-    }, function () {
-      alert("현재 위치를 가져올 수 없습니다.");
-    });
-  } else {
-    alert("이 브라우저에서는 Geolocation을 지원하지 않습니다.");
-  }
-}
-
-function displayAddressInfo(place) {
-  document.getElementById('address-info').style.display = 'block';
-
-  const addressComponents = place.address_components;
-  let addressData = {
-    province: "",
-    city: "",
-    district: "",
-    roadAddress: "",
-    apartment: "",
-    buildingName: "",
-    postalCode: "",
-    latitude: place.geometry.location.lat(),
-    longitude: place.geometry.location.lng()
   };
 
-  addressComponents.forEach(component => {
-    const types = component.types;
-    if (types.includes("administrative_area_level_1")) {
-      addressData.province = component.long_name;
-    }
-    if (types.includes("locality")) {
-      addressData.city = component.long_name;
-    }
-    if (types.includes("sublocality_level_1")) {
-      addressData.district = component.long_name;
-    }
-    if (types.includes("route")) {
-      addressData.roadAddress = component.long_name;
-    }
-    if (types.includes("premise")) {
-      addressData.apartment = component.long_name;
-    }
-    if (types.includes("building")) {
-      addressData.buildingName = component.long_name;
-    }
-    if (types.includes("postal_code")) {
-      addressData.postalCode = component.long_name;
-    }
-  });
+  window.displayAddressInfo = function(place) {
+    const components = {};
+    place.address_components.forEach(component => {
+      component.types.forEach(type => {
+        components[type] = component.long_name;
+      });
+    });
 
-  // 입력 필드에 값 설정
-  document.getElementById('province').value = addressData.province;
-  document.getElementById('city').value = addressData.city;
-  document.getElementById('district').value = addressData.district;
-  document.getElementById('road-address').value = addressData.roadAddress;
-  document.getElementById('apartment').value = addressData.apartment;
-  document.getElementById('building-name').value = addressData.buildingName;
-  document.getElementById('postal-code').value = addressData.postalCode;
+    document.getElementById("province").value = components["administrative_area_level_1"] || "";
+    document.getElementById("city").value = components["locality"] || "";
+    document.getElementById("district").value = components["sublocality_level_1"] || "";
+    document.getElementById("road-address").value = components["route"] || "";
+    document.getElementById("postal-code").value = components["postal_code"] || "";
 
-  // 📌 `localStorage`에 저장
-  localStorage.setItem("selectedLocation", JSON.stringify(addressData));
-}
+    document.getElementById("latitude").value = place.geometry.location.lat();
+    document.getElementById("longitude").value = place.geometry.location.lng();
+  };
 
-// "다음" 버튼 클릭 시 저장 & 유효성 검사
-document.querySelector('.next-btn').addEventListener('click', function (event) {
-    let selectedLocation = {
-        province: document.getElementById('province').value,
-        city: document.getElementById('city').value,
-        district: document.getElementById('district').value,
-        roadAddress: document.getElementById('road-address').value,
-        apartment: document.getElementById('apartment').value,
-        buildingName: document.getElementById('building-name').value,
-        postalCode: document.getElementById('postal-code').value,
-        latitude: marker.getPosition().lat(),
-        longitude: marker.getPosition().lng()
-    };
-
-    // 📌 `address`를 조합하여 하나의 문자열로 만들기
-    let addressParts = [
-        selectedLocation.province,
-        selectedLocation.city,
-        selectedLocation.district,
-        selectedLocation.roadAddress,
-        selectedLocation.apartment,
-        selectedLocation.buildingName,
-        selectedLocation.postalCode ? `우편번호: ${selectedLocation.postalCode}` : ""
-    ].filter(Boolean).join(", "); // 빈 값 제외하고 콤마(,)로 연결
-
-    //  `localStorage`에 최종 저장
-    localStorage.setItem("selectedLocation", JSON.stringify(selectedLocation));
-    localStorage.setItem("address", addressParts); // 최종 주소 저장
-    localStorage.setItem("latitude", selectedLocation.latitude);
-    localStorage.setItem("longitude", selectedLocation.longitude);
-
-    console.log(" 저장된 주소:", addressParts);
-    console.log(" 저장된 위도:", selectedLocation.latitude);
-    console.log(" 저장된 경도:", selectedLocation.longitude);
-
-    if (!selectedLocation.roadAddress) {
-        event.preventDefault();
-        alert('위치를 입력해주세요!');
-    } else {
-        window.location.href = '/host/floor-plan'; // 다음 페이지로 이동
+  // ✅ 🔥 `handleEnter` 함수 다시 추가 (Enter 키로 검색 가능)
+  window.handleEnter = function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      searchAddress();
     }
-});
+  };
+
+  // ✅ 🔥 검색 버튼 클릭 시 실행될 `searchAddress` 함수 추가
+  window.searchAddress = function() {
+    const searchBox = document.getElementById("search-box").value;
+    const geocoder = new google.maps.Geocoder();
+
+    geocoder.geocode({ address: searchBox }, function (results, status) {
+      if (status === "OK") {
+        map.setCenter(results[0].geometry.location);
+        marker.setPosition(results[0].geometry.location);
+        displayAddressInfo(results[0]);
+        showAddressContainer();
+      } else {
+        alert("주소를 찾을 수 없습니다.");
+      }
+    });
+  };
 </script>
+
 </body>
 </html>

@@ -11,20 +11,14 @@
         background-color: #ffffff;
         color: #333;
         font-family: Arial, sans-serif;
-        position: relative;
-        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        height: 100vh;
     }
-    h1 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-    }
-    .type-buttons {
-        margin-bottom: 20px;
-    }
+    h1 { font-size: 2rem; margin-bottom: 20px; }
+    .type-buttons { margin-bottom: 20px; }
     .type-buttons button {
         font-size: 1.2rem;
         margin: 10px;
@@ -38,16 +32,9 @@
         display: flex;
         align-items: center;
     }
-    .type-buttons button i {
-        margin-right: 10px;
-    }
-    .type-buttons button:hover {
-        background-color: #e68900;
-        transform: scale(1.05);
-    }
-    .selected {
-        background-color: #d77d00 !important;
-    }
+    .type-buttons button i { margin-right: 10px; }
+    .type-buttons button:hover { background-color: #e68900; transform: scale(1.05); }
+    .selected { background-color: #d77d00 !important; }
     .next-btn {
         position: fixed;
         bottom: 30px;
@@ -61,75 +48,52 @@
         cursor: pointer;
         text-decoration: none;
     }
-    .next-btn:hover {
-        background-color: #e68900;
-    }
+    .next-btn:hover { background-color: #e68900; }
   </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-<h1>다음 중 숙소의 유형은 무엇인가요?</h1>
+<h1>숙소 유형을 선택하세요</h1>
 
+<!-- ✅ AJAX로 값 저장 (페이지 이동 없음) -->
 <div class="type-buttons">
-  <button data-type="주택">
+  <button type="button" class="type-btn" data-value="주택">
     <i class="fas fa-home"></i> 주택
   </button>
-  <button data-type="아파트">
+
+  <button type="button" class="type-btn" data-value="아파트">
     <i class="fas fa-building"></i> 아파트
   </button>
-  <button data-type="빌라">
+
+  <button type="button" class="type-btn" data-value="빌라">
     <i class="fas fa-house-user"></i> 빌라
   </button>
 </div>
 
-<a href="/host/location" class="next-btn">다음</a>
+<!-- ✅ "다음" 버튼: 선택한 값이 있을 때만 활성화 -->
+<a href="/host/location" class="next-btn" id="next-btn" style="display: none;">다음</a>
 
 <script>
-  let selectedType = null;
-const buttons = document.querySelectorAll('.type-buttons button');
-const nextBtn = document.querySelector('.next-btn');
+  $(document).ready(function() {
+      $(".type-btn").click(function() {
+          var selectedType = $(this).data("value");
 
-// 🌟 페이지 로드 시 기존 선택 값 불러오기
-document.addEventListener("DOMContentLoaded", function () {
-    const savedType = localStorage.getItem('buildingType'); // ✅ 변경된 키 확인
-    console.log("🔍 불러온 buildingType 값:", savedType); // 🔎 디버깅용 로그 추가
+          // AJAX 요청으로 선택한 값 저장
+          $.post("/host/type/save", { buildingType: selectedType }, function(response) {
+              if (response === "success") {
+                  console.log("✅ 숙소 유형 저장됨:", selectedType);
 
-    if (savedType) {
-        selectedType = savedType;
-        buttons.forEach(btn => {
-            if (btn.getAttribute('data-type') === savedType) {
-                btn.classList.add('selected');
-            }
-        });
-    }
-});
+                  // 버튼 선택 상태 업데이트
+                  $(".type-btn").removeClass("selected");
+                  $("[data-value='" + selectedType + "']").addClass("selected");
 
-// 🌟 버튼 클릭 이벤트 (선택 값 저장)
-buttons.forEach(button => {
-    button.addEventListener('click', function () {
-        // 기존 선택된 버튼 스타일 제거
-        buttons.forEach(btn => btn.classList.remove('selected'));
-
-        // 새로운 선택 적용
-        selectedType = this.getAttribute('data-type');
-        this.classList.add('selected');
-
-        // localStorage에 저장
-        localStorage.setItem('buildingType', selectedType);
-        console.log("✅ 저장된 buildingType 값:", selectedType); // 🔎 디버깅용 로그 추가
-    });
-});
-
-// 🌟 "다음" 버튼 클릭 이벤트
-nextBtn.addEventListener('click', function (event) {
-    console.log("▶️ 다음 버튼 클릭됨 - 선택된 값:", selectedType); // 🔎 디버깅용 로그 추가
-    if (!selectedType) {
-        event.preventDefault();
-        alert('숙소 유형을 선택해주세요!');
-    } else {
-        window.location.href = '/host/location'; // ✅ 다음 페이지 이동
-    }
-});
+                  // "다음" 버튼 표시
+                  $("#next-btn").show();
+              }
+          });
+      });
+  });
 </script>
 
 </body>
