@@ -91,40 +91,40 @@ public class UsersApiController {
         }
     }
 
-    @PostMapping("/refresh")
-    //HttpServletRequest 서블릿은 클라이언트의 요청을 받아오는 자바객체
-    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request,HttpServletResponse response) {
-
-        String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
-
-        if (!jwtUtil.validateToken(refreshToken)) {
-            //401에러 전달 로그인페이지로 이동시켜야함
-            //로컬데이터에 엑세스토큰삭제해야함
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid Refresh Token"));
-        }
-
-        //리프레시토큰의 유저네임 받아와서
-        String username = jwtUtil.extractUsername(refreshToken);
-        //유저네임으로 UserDetails생성
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        //Refresh Rotate(리프레시토큰 재발급)
-        String newRefreshToken = jwtUtil.generateRefreshToken(username);
-        response.addCookie(jwtUtil.createRefreshCookie("refreshToken", newRefreshToken));
-
-        //발급한 토큰 데이터베이스에 저장
-        usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
-
-        //발급했던 토큰 데이터 삭제
-        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
-        
-        //accessToken 전달(클라이언트서버에서 로컬에 저장)
-        String newAccessToken = jwtUtil.generateAccessToken(username, roles);
-        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
-    }
+//    @PostMapping("/refresh")
+//    //HttpServletRequest 서블릿은 클라이언트의 요청을 받아오는 자바객체
+//    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request,HttpServletResponse response) {
+//
+//        String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
+//
+//        if (!jwtUtil.validateToken(refreshToken)) {
+//            //401에러 전달 로그인페이지로 이동시켜야함
+//            //로컬데이터에 엑세스토큰삭제해야함
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid Refresh Token"));
+//        }
+//
+//        //리프레시토큰의 유저네임 받아와서
+//        String username = jwtUtil.extractUsername(refreshToken);
+//        //유저네임으로 UserDetails생성
+//        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//
+//        //Refresh Rotate(리프레시토큰 재발급)
+//        String newRefreshToken = jwtUtil.generateRefreshToken(username);
+//        response.addCookie(jwtUtil.createRefreshCookie("refreshToken", newRefreshToken));
+//
+//        //발급한 토큰 데이터베이스에 저장
+//        usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
+//
+//        //발급했던 토큰 데이터 삭제
+//        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
+//
+//        //accessToken 전달(클라이언트서버에서 로컬에 저장)
+//        String newAccessToken = jwtUtil.generateAccessToken(username, roles);
+//        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+//    }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<String> user(@PathVariable String username,

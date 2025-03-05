@@ -13,7 +13,9 @@
         COUNT(rv.review_id) AS reviewCount,
         COALESCE(AVG(rv.score), 0) AS reviewScore
         FROM rooms r
-        LEFT JOIN review rv ON r.room_id = rv.book_id
+        LEFT JOIN books b ON r.room_id = b.room_id
+        LEFT JOIN review rv ON b.book_id = rv.book_id
+        WHERE r.is_active = 1
         GROUP BY r.room_id
         ORDER BY r.room_id DESC
         LIMIT 20;
