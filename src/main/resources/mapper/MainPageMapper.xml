@@ -25,7 +25,7 @@
     </select>
 
 <!--카테고리 오더순으로 가져오기-->
-    <select id="findCategories" resultType="com.minbak.web.categores.CategoresDto">
+    <select id="findCategories" resultType="com.minbak.web.categories.CategoriesDto">
         SELECT category_id, name, category_order FROM categories ORDER BY category_order ASC;
     </select>
 

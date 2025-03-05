@@ -1,11 +1,10 @@
 package com.minbak.web.users;
 
-import com.minbak.web.categores.CategoryDto;
-import com.minbak.web.categores.OptionDto;
+import com.minbak.web.categories.CategoryDto;
+import com.minbak.web.categories.OptionDto;
 import com.minbak.web.spring_security.jwt.RefreshTokenDto;
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.payments.PaymentDto;
-import com.minbak.web.rooms.RoomsDto;
 import com.minbak.web.user_YH.RoomDetailMapper;
 import com.minbak.web.user_YH.dto.DetailUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

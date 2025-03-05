@@ -1,8 +1,7 @@
-package com.minbak.web.categores;
+package com.minbak.web.categories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,7 @@ import java.util.Map;
 public class CategoriesApiController {
 
     @Autowired
-    CategoresService categoresService;
+    CategoriesService categoriesService;
 
     @PostMapping("/reorder")
     //카테고리 순서대로 재배열
@@ -27,7 +26,7 @@ public class CategoriesApiController {
         List<Integer> newOrder = request.get("order");
 
         // 카테고리 순서 변경 로직
-        categoresService.updateCategoryOrder(newOrder);
+        categoriesService.updateCategoryOrder(newOrder);
 
         // 순서 변경이 완료되었음을 알리는 응답
         Map<String, String> response = new HashMap<>();

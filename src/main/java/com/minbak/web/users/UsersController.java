@@ -1,7 +1,7 @@
 package com.minbak.web.users;
 
-import com.minbak.web.categores.CategoryDto;
-import com.minbak.web.categores.OptionDto;
+import com.minbak.web.categories.CategoryDto;
+import com.minbak.web.categories.OptionDto;
 import com.minbak.web.common.dto.PageDto;
 import com.minbak.web.file_upload.FileMapper;
 import com.minbak.web.file_upload.FileService;
