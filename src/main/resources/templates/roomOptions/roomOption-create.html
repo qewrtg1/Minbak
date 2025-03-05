@@ -12,7 +12,12 @@
   <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></span>
   <br/>
   <label>카테고리: </label>
-  <input type="text" th:field="*{optionsCategory}" />
+  <select th:field="*{optionsCategory}">
+    <option value="필수">필수</option>
+    <option value="특징">특징</option>
+    <option value="위치">위치</option>
+    <option value="안전">안전</option>
+  </select>
   <span th:if="${#fields.hasErrors('optionsCategory')}" th:errors="*{optionsCategory}" style="color:red;"></span>
   <br/>
   <button type="submit">추가</button>

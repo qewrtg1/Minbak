@@ -30,22 +30,25 @@
       <table class="table table-hover align-middle">
         <thead class="table-dark">
         <tr>
-          <th scope="col">순서</th>
-          <th scope="col">카테고리 이름</th>
-          <th scope="col">액션</th>
+          <th class="text-center" scope="col">순서</th>
+          <th class="text-center" scope="col">카테고리 이름</th>
+          <th class="text-center" scope="col">액션</th>
         </tr>
         </thead>
         <tbody id="categoryList">
         <tr th:each="category, iterStat : ${categories}" class="sortable-item" th:data-id="${category.categoryId}">
           <td class="text-center" th:text="${category.categoryOrder}"><i class="bi bi-list"></i></td>
-          <td th:text="${category.name}"></td>
-          <td>
-            <div class="d-flex gap-2">
+          <td class="text-center" th:text="${category.name}"></td> <!-- 가운데 정렬 추가 -->
+          <td class="text-center"> <!-- 가운데 정렬 추가 -->
+            <div class="d-flex gap-2 justify-content-center"> <!-- 버튼 정렬 -->
               <a th:href="@{/admin/categories/edit/{id}(id=${category.categoryId})}" class="btn btn-warning btn-sm">수정</a>
               <form th:action="@{/admin/categories/delete/{id}(id=${category.categoryId})}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
               </form>
             </div>
+          </td>
+        </tr>
+        </tbody>
           </td>
         </tr>
         </tbody>

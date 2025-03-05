@@ -39,9 +39,9 @@ public class RoomOptionsController {
     // 3. 새 편의시설 추가 (폼 제출)
     @PostMapping("/create")
     public String createRoomOption(@Valid @ModelAttribute("roomOption") RoomOptionsDto roomOptionsDto,
-                                   BindingResult result) {
-        if (result.hasErrors()) {
-            return "roomOptions/roomOption-create";
+                                   BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "roomOption-create";
         }
         roomOptionsService.addRoomOption(roomOptionsDto);
         return "redirect:/admin/roomoptions";  // 목록 페이지로 리다이렉트
@@ -58,18 +58,22 @@ public class RoomOptionsController {
         return "roomOptions/roomOption-update";  // templates/roomOptions/roomOption-update.html 렌더링
     }
 
-    // 5. 편의시설 수정 (폼 제출)
     @PostMapping("/update/{optionId}")
     public String updateRoomOption(@PathVariable int optionId,
                                    @Valid @ModelAttribute("roomOption") RoomOptionsDto roomOptionsDto,
-                                   BindingResult result) {
+                                   BindingResult result,
+                                   Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("roomOption", roomOptionsDto);  // 오류 발생 시 모델에 객체 다시 추가
             return "roomOptions/roomOption-update";
         }
+
         roomOptionsDto.setOptionId(optionId);
         roomOptionsService.updateRoomOption(roomOptionsDto);
+
         return "redirect:/admin/roomoptions";
     }
+
 
     // 6. 편의시설 삭제
     @PostMapping("/delete/{optionId}")

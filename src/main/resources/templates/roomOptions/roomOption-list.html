@@ -31,16 +31,16 @@
                 <thead class="table-dark">
                 <tr>
                     <th scope="col" class="text-center">ID</th>
-                    <th scope="col">이름</th>
-                    <th scope="col">카테고리</th> <!-- 카테고리 추가 -->
+                    <th scope="col" class="text-center">이름</th>
+                    <th scope="col" class="text-center">카테고리</th>
                     <th scope="col" class="text-center">액션</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="option : ${options}">
                     <td class="text-center" th:text="${option.optionId}"></td>
-                    <td th:text="${option.name}"></td>
-                    <td th:text="${option.optionsCategory}"></td> <!-- 카테고리 표시 -->
+                    <td class="text-center" th:text="${option.name}"></td>
+                    <td class="text-center" th:text="${option.optionsCategory}"></td> <!-- 카테고리 표시 -->
                     <td>
                         <div class="d-flex gap-2 justify-content-center">
                             <a th:href="@{/admin/roomoptions/update/{id}(id=${option.optionId})}" class="btn btn-warning btn-sm">수정</a>
