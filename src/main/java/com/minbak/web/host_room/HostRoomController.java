@@ -20,12 +20,9 @@ public class HostRoomController {
 
     private final HostRoomService hostRoomService; // 서비스 주입
 
-
-
     //숙소 목록 조회
-    @GetMapping("/list")
+    @GetMapping("")
     public String showHostRooms(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-
         // 🚀 숙소 목록 불러오기
         List<HostRoomDTO> hostRooms = hostRoomService.getRoomsByHost(userDetails.getUserId());
         //userDetails.getUserId() : 로그인한 사람의 user id값을 불러옴.
