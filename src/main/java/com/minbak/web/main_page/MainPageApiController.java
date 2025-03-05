@@ -24,15 +24,7 @@ public class MainPageApiController {
     @GetMapping
     public MainPageResponseDto getMainPageData() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (!Objects.equals(authentication.getName(), "anonymousUser")){
-            Integer userId = usersService.findUserIdByEmail(authentication.getName());
-            return mainPageService.getMainPageData(userId);
-
-        }else {
-            return mainPageService.getMainPageData(0);
-        }
+        return mainPageService.getMainPageData();
 
     }
 }

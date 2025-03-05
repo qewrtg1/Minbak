@@ -34,18 +34,22 @@ public class CustomOAuth2User implements OAuth2User {
             collection.add(new GrantedAuthority() {
                 @Override
                 public String getAuthority() {
-                    return "ROLE_"+role.toUpperCase();
+                    return role;
                 }
             });
         }
 
-        return null;
+        return collection;
     }
 
     @Override
     public String getName() {
         //oauth2_authorized_client 테이블에 저장될 primary키(principal_name)를 바꿔주기 위해 커스텀
         return oAuth2Response.getName()+","+oAuth2Response.getProviderId();
+    }
+
+    public String getEmail(){
+        return oAuth2Response.getEmail();
     }
 
     public String getUsername(){

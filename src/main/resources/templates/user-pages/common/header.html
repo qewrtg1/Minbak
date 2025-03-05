@@ -107,29 +107,29 @@
     const loginError = document.getElementById("loginError");
 
     if (!loginModalElement) {
-        console.error("❌ loginModal 요소를 찾을 수 없습니다.");
+        console.error("loginModal 요소를 찾을 수 없습니다.");
         return;
     }
 
     if (!openModalBtn) {
-        console.error("❌ 로그인 버튼(#openLoginModal)을 찾을 수 없습니다.");
+        console.error("로그인 버튼(#openLoginModal)을 찾을 수 없습니다.");
         return;
     }
 
 
-    // ✅ 서버에서 렌더링한 유저 정보 가져오기
+    // 서버에서 렌더링한 유저 정보 가져오기
     const user = /*[[${headerUser}]]*/ null; // Thymeleaf에서 유저 정보 가져오기
 
 
     console.log("Thymeleaf에서 받은 사용자 정보:", user);
 
-    // ✅ 로그인 버튼 클릭 시 모달 열기
+    // 로그인 버튼 클릭 시 모달 열기
     openModalBtn.addEventListener("click", function() {
         console.log("로그인 모달 열기 버튼 클릭됨!");
         loginModal.show(); // 모달 열기
     });
 
-    // 🔹 로그인 상태 확인 & UI 업데이트
+    // 로그인 상태 확인 & UI 업데이트
     function checkAuth() {
       if (user) {
         openModalBtn.classList.add("d-none");
@@ -140,7 +140,7 @@
       }
     }
 
-    // 🔹 로그인 요청
+    // 로그인 요청
     loginBtn.addEventListener("click", async function() {
       const username = document.getElementById("email").value;
       const password = document.getElementById("password").value;
@@ -157,19 +157,19 @@
 
       if (response.ok) {
         loginModal.hide();
-        location.reload(); // ✅ 로그인 성공 후 페이지 새로고침하여 Thymeleaf 변수 반영
+        location.reload(); // 로그인 성공 후 페이지 새로고침하여 Thymeleaf 변수 반영
       } else {
         console.log("로그인 실패!");
         loginError.textContent = "로그인 실패! 이메일 또는 비밀번호를 확인하세요.";
       }
     });
 
-    // 🔹 로그아웃 기능 (서버에서 세션 제거)
+    // 로그아웃 기능 (서버에서 세션 제거)
     logoutBtn.addEventListener("click", async function() {
       console.log("로그아웃 실행");
 
       await fetch("/api/logout", { method: "POST" });
-      location.reload(); // ✅ 로그아웃 후 페이지 새로고침하여 UI 업데이트
+      location.reload(); // 로그아웃 후 페이지 새로고침하여 UI 업데이트
     });
 
     checkAuth(); // 페이지 로드 시 로그인 상태 확인

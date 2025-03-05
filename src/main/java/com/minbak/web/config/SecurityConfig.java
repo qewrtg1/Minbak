@@ -127,7 +127,8 @@ public class SecurityConfig {
     public SecurityFilterChain OAuth2SecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
-//                .securityMatcher("/login/**","/OAuth2/**")
+                .securityMatcher("/login/**", "/oauth2/**")
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
 
@@ -139,6 +140,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll())
+
 
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

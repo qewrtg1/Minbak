@@ -10,4 +10,9 @@ public class UserLoginController {
     public String loginPage(){
         return "/user-pages/user-login";
     }
+
+    @GetMapping("/oauth2/redirect")
+    public String goToMainPg(){
+        return "/user-pages/redirect-page";
+    }
 }

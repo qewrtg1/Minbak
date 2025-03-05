@@ -92,6 +92,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             //로그인폼으로 userId가져오기
             userDto.setUserId(usersMapper.selectUserIdByLoginFrom(loginFrom));
         }
+        
+        //OAuth2로 로그인했는데 같은 이메일 사용자가 있으면 오류(나중엔 참고하자)
 
         //유저 id로 권한을 받아서 가져오기
         List<String> roles = usersMapper.selectUserRoles(userDto.getUserId());
