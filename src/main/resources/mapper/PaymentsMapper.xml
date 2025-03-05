@@ -24,6 +24,13 @@
         VALUES (#{userId}, #{bookId}, #{amount}, #{status}, #{method}, #{transactionId}, #{paidAt})
     </insert>
 
+
+    <!-- 결제 고유 ID(merchant_uid)로 book_id 조회 -->
+    <select id="findBookIdByMerchantUid" resultType="int">
+        SELECT book_id FROM payments WHERE merchant_uid = #{merchantUid}
+    </select>
+
+
     <!-- 결제 정보 수정 -->
     <update id="updatePayment">
         UPDATE payments
