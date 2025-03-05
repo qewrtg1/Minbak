@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' //OAuth2 의존성
 	// https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk/1.14.0
 	implementation 'com.paypal.sdk:rest-api-sdk:1.14.0' //페이팔 의존성
 	//spring boot에서 다른 서버로 http요청 보내는 의존성

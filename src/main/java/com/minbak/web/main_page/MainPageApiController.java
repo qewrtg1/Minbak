@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/main")
 public class MainPageApiController {
@@ -24,8 +26,8 @@ public class MainPageApiController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null){
-            int userId = usersService.findUserIdByEmail(authentication.getName());
+        if (!Objects.equals(authentication.getName(), "anonymousUser")){
+            Integer userId = usersService.findUserIdByEmail(authentication.getName());
             return mainPageService.getMainPageData(userId);
 
         }else {

@@ -46,9 +46,9 @@
         FROM users WHERE email = #{email}
     </select>
 
-    <select id="findUserIdByEmail" resultType="int">
+    <select id="findUserIdByEmail">
         SELECT user_id
-        FROM users WHERE email = #{username}
+        FROM users WHERE email = #{email}
     </select>
 
     <insert id="createRefreshTokenData" parameterType="com.minbak.web.spring_security.jwt.RefreshTokenDto">
@@ -511,5 +511,35 @@
         (#{roomId}, #{optionId})
         </foreach>
     </insert>
+
+
+    <!--OAuth2-->
+    <select id="selectLoginFromByLoginFrom" resultType="String">
+        SELECT `login_from` FROM users
+        WHERE login_from = #{loginFrom}
+    </select>
+
+    <insert id="signUp" parameterType="com.minbak.web.users.UserDto" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO users (email, password, name, login_from, phone_number)
+        VALUES (#{email}, #{password}, #{name}, #{loginFrom}, #{phoneNumber})
+    </insert>
+
+    <insert id="insertUserRole">
+        INSERT INTO users_roles (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <select id="selectUserIdByLoginFrom" resultType="Integer">
+        SELECT user_id
+        FROM users
+        WHERE login_from = #{loginFrom}
+    </select>
+
+    <select id="selectUserRoles" resultType="String">
+        SELECT r.role
+        FROM roles r
+        JOIN users_roles ur ON r.role_id = ur.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
 
 </mapper>

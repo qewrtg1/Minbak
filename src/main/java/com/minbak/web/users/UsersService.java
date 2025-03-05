@@ -218,7 +218,10 @@ public class UsersService {
         usersMapper.updateHost(hostDto);
     }
 
-    public int findUserIdByEmail(String email){
+    public Integer findUserIdByEmail(String email){
+        if (email.equals("anonymousUser")){
+            return null;
+        }
         return usersMapper.findUserIdByEmail(email);
     }
 
