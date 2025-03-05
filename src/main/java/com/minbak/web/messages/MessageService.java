@@ -124,11 +124,14 @@ public class MessageService {
 
         List<UserMessageListDto> userMessageLists=messageMapper.showUserMessageList(user_id);
         for (UserMessageListDto userMessageListDto : userMessageLists) {
-            userMessageListDto.setIsRead(messageMapper.findMessageByMessageId(userMessageListDto.getLastMessageId()).getIsRead());// 예를 들어, 메시지를 읽은 것으로 표시
+            userMessageListDto.setIsUnRead(messageMapper.findMessageByMessageId(userMessageListDto.getLastMessageId()).getIsRead());// 예를 들어, 메시지를 읽은 것으로 표시
             userMessageListDto.setChatRoomUserName(usersMapper.findUserByUserId(userMessageListDto.getChatRoomId()).getName());
         }
 
         return userMessageLists;
+    }
+    public Integer countMessagesByIds(int userId,int chatRoomId){
+        return messageMapper.countMessagesByIds(userId, chatRoomId);
     }
 //    유저 메세지 읽음 표시 포스트 요청
     public void checkIsRead(int userId,int chatRoomId){

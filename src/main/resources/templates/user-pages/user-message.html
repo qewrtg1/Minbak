@@ -7,7 +7,7 @@
   <style>
     .message-container { height: 100vh; }
     .message-list { background-color: #f8f9fa; padding: 15px; overflow-y: auto; border-right: 1px solid #ddd; }
-    .chat-content { background-color: #fff; padding: 15px; }
+    .chat-content { background-color: #fff; padding: 15px; height: 100%; display: flex; flex-direction: column; }
     .user-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; display: flex; align-items: center; }
     .user-item:hover { background-color: #e9ecef; }
 
@@ -26,13 +26,49 @@
       background-color: #e9ecef; /* 마우스를 올렸을 때 배경색 */
     }
 
-    .chat-messages { height: 65vh; overflow-y: auto; padding: 10px; }
-    .message { padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 75%; }
-    .received { background-color: #f1f1f1; align-self: flex-start; }
-    .sent { background-color: #007bff; color: white; align-self: flex-end; }
-    .chat-input { margin-top: 15px; display: flex; }
-    .chat-input input { flex-grow: 1; margin-right: 10px; }
-    .chat-header { border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px; }
+    .chat-messages {
+    height: 65vh;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 10px;
+<!--    max-width: 75%;-->
+    display: flex;
+    flex-direction: column;
+}
+
+.received {
+    background-color: #f1f1f1;
+    align-self: flex-start; /* 왼쪽 정렬 */
+}
+
+.sent {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end; /* 오른쪽 정렬 */
+}
+
+.chat-input {
+    margin-top: 30px;
+    display: flex;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.chat-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
   </style>
 </head>
 <body>
@@ -52,26 +88,55 @@
              th:attr="data-chat-id=${userMessageList.chatRoomId}"
              onclick="loadChat(this)"
              class="user-box"
-        style="cursor: pointer;">
+             style="cursor: pointer;">
 
-        <!-- Profile Image -->
-        <img th:src="@{${detailUserResponseLists[iterStat.index].profileImageUrl}}" alt="User Icon" width="40" height="40" class="me-3 rounded-circle" style="pointer-events: none;">
+          <!-- Profile Image -->
+          <img th:src="@{${detailUserResponseLists[iterStat.index].profileImageUrl}}" alt="User Icon" width="40" height="40" class="me-3 rounded-circle" style="pointer-events: none;">
 
-        <!-- User Info -->
-        <div class="d-flex flex-column">
-          <h6 th:text="${userMessageList.ChatRoomUserName}" class="mb-1">유저 이름</h6>
-          <p class="text-muted small mb-0" th:text="${userMessageList.lastMessageContent}">마지막 메시지</p>
+          <!-- User Info -->
+          <div class="d-flex flex-column">
+            <h6 th:text="${userMessageList.ChatRoomUserName}" class="mb-1">유저 이름</h6>
+            <p class="text-muted small mb-0" th:text="${userMessageList.lastMessageContent}">마지막 메시지</p>
+          </div>
+
+          <!-- Time -->
+          <span class="text-muted small ms-auto" th:text="${#temporals.format(userMessageList.lastMessageTime, 'yyyy년 M월 d일 HH시 mm분')}">2.20.</span>
+          <!--읽음 읽지않음-->
+          <span th:if="${userMessageList.isUnRead > 0}" class="badge bg-danger ms-auto">
+            <span th:text="${userMessageList.isUnRead}"></span>
+          </span>
         </div>
+      </div>
+    </div>
 
-        <!-- Time -->
-        <span class="text-muted small ms-auto" th:text="${#temporals.format(userMessageList.lastMessageTime, 'yyyy년 M월 d일 HH시 mm분 ss초')}">2.20.</span>
+    <!-- 중앙 패널 (대화 내용) -->
+    <div class="col-9 chat-content">
+      <!-- 채팅 헤더 -->
+      <div class="chat-header">
+        <div th:if="userMessages != null">
+        <h5 th:text="${chatRoomName}">유저 이름</h5>
+        </div>
+      </div>
+
+      <!-- 채팅 메시지들 -->
+      <div class="chat-messages">
+        <div th:each="userMessage : ${userMessages}" th:class="${userMessage.senderId == userId ? 'message sent' : 'message received'}">
+          <div th:class="${userMessage.senderId == userId ? 'message sent' : 'message received'}">
+            <p th:text="${userMessage.content}"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 입력창 -->
+      <div class="chat-input">
+        <form id="messageForm">
+          <input type="text" class="form-control messageContent" placeholder="메시지를 입력하세요..." />
+          <input type="number" style="display:none" class="form-control" th:value="${chatRoomName}" />
+          <button class="btn btn-primary">보내기</button>
+        </form>
       </div>
     </div>
   </div>
-
-  <!-- 중앙 패널 (대화 내용) -->
-  <!-- 대화 내용은 주석 처리되어 있으며, 필요한 경우 활성화할 수 있습니다 -->
-</div>
 </div>
 
 <script>
@@ -79,6 +144,42 @@
       let chatRoomId = element.getAttribute("data-chat-id");
       window.location.href = '/user/messageList/' + chatRoomId;
   }
+
+<!--  비동기 ajax-->
+
+    document.getElementById('messageForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 페이지 리로딩을 방지
+
+        const content = document.getElementById('messageContent').value;
+
+        // AJAX로 메시지 전송
+        fetch('/messageList', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: content,
+                // 필요한 다른 데이터 (예: senderId, receiverId 등)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 메시지가 성공적으로 전송되었을 때
+            if (data.success) {
+                // 새 메시지를 UI에 추가 (예시)
+                const messageBox = document.getElementById('messages');
+                const newMessage = document.createElement('div');
+                newMessage.textContent = content;  // 응답받은 메시지 내용을 표시
+                messageBox.appendChild(newMessage);
+
+                // 메시지 입력칸 초기화
+                document.getElementById('messageContent').value = '';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
