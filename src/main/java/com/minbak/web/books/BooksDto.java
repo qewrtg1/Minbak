@@ -1,5 +1,6 @@
 package com.minbak.web.books;
 
+import com.minbak.web.file_upload.ImageFileDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
 import com.minbak.web.users.UserDto;
@@ -20,6 +21,7 @@ public class BooksDto {
     private UserDto user;
     private RoomsDto room;
     private PaymentDto payment;
+    private ImageFileDto file;
 
     private String userName;
     private String phoneNumber;

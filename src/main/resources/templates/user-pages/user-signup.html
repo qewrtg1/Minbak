@@ -32,6 +32,12 @@
             <div class="mb-3">
               <label for="phone_number" class="form-label">전화번호</label>
               <input type="text" class="form-control" id="phone_number" name="phone_number">
+              <button type="button" class="btn btn-secondary mt-2" id="sendVerificationCodeBtn">인증 코드 발송</button>
+            </div>
+            <div class="mb-3">
+              <label for="verification_code" class="form-label">인증 코드</label>
+              <input type="text" class="form-control" id="verification_code" name="verification_code" required>
+              <small id="verificationMessage" class="text-danger"></small>
             </div>
             <div class="mb-3">
               <label for="signup-password" class="form-label">비밀번호</label>
@@ -60,13 +66,27 @@
     const loginModalElement = document.getElementById("loginModal");
     const loginModal = new bootstrap.Modal(loginModalElement);
 
+    <!--회원가입 진행 (휴대폰 인증)-->
+    const sendVerificationCodeBtn = document.getElementById("sendVerificationCodeBtn");
+    const phoneNumberInput = document.getElementById("phone_number");
+    const verificationCodeInput = document.getElementById("verification_code");
+    const verificationMessage = document.getElementById("verificationMessage");
+
+    let generatedVerificationCode = ""; // 서버에서 받은 인증 코드
+
+    <!--인증 코드 발송 버튼 클릭 시-->
+    sendVerificationCodeBtn.addEventListener("click", async function() {
+      const phoneNumber = phoneNumberInput.value.trim();
+      if (!phoneNumber) {
+        alert("전화번호를 입력하세요.");
+        return;
+      }
+    }
+
     openModalBtn2.addEventListener("click", function() {
       console.log("로그인 모달 열기 버튼 클릭됨!");
       loginModal.show(); // 모달 열기
     });
-
-
-
 
 
     function validatePassword() {

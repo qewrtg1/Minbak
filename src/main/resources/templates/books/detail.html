@@ -39,11 +39,11 @@
         background-color: #f9f9f9;
       }
       .booking-details h5 {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         color: #007bff;
       }
       .booking-details div {
-        margin-bottom: 10px;
+        margin-bottom: 25px;
       }
       /* 버튼 스타일 */
       .btn-back, .btn-custom, .btn-danger {
@@ -86,71 +86,33 @@
 <th:block layout:fragment="content">
   <main class="main-content">
     <div class="books">
-      <div class="booksHead">
-        <h3 class="text-center">예약 관리</h3>
-        <div class="menu">
-          <a href="/admin/books" class="btn btn-primary">예약목록</a>
-          <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
-          <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
-          <a href="/admin/books/paidAndCheckIn" class="btn btn-secondary">투숙예정</a>
-        </div>
-      </div>
       <div class="booksSec">
-        <h3 class="text-center">예약 상세정보</h3>
+        <h3 class="text-center" style="margin-bottom: 15px;">예약 상세정보</h3>
       </div>
 
       <section>
         <div class="booking-details">
+          <img th:src="${books.file.fileUrl}" alt="숙소 이미지" class="img-fluid rounded" style="width: 600px; margin-bottom: 10px; object-fit: cover;">
           <h5>예약 번호</h5>
           <div th:text="${books.bookId}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>예약자명</h5>
           <div th:text="${books.user.name}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>연락처</h5>
           <div th:text="${books.user.phoneNumber}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>이메일</h5>
           <div th:text="${books.user.email}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>숙소명</h5>
           <div th:text="${books.room.name}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>체크인 날짜</h5>
           <div th:text="${books.startDate}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>체크아웃 날짜</h5>
           <div th:text="${books.endDate}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>예약인원 수</h5>
           <div th:text="${books.guestsNum}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>결제금액</h5>
           <div th:text="${books.payment.amount}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>특별 요청사항</h5>
           <div th:text="${books.request}"></div>
-        </div>
-
-        <div class="booking-details">
           <h5>예약 상태</h5>
           <div th:text="${books.status}"></div>
         </div>
