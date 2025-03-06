@@ -204,6 +204,17 @@
         font-size: 20px;
         margin-bottom: 5px;
     }
+    .room-link {
+      text-decoration: none; /* 밑줄 제거 */
+      color: inherit;        /* 부모 요소(혹은 기본 텍스트) 색상 상속 */
+    }
+
+    .room-link:hover,
+    .room-link:focus,
+    .room-link:visited {
+      text-decoration: none; /* 호버, 포커스, 방문한 링크 상태에서도 밑줄 제거 */
+      color: inherit;        /* 링크 색상도 기본 텍스트 색상 유지 */
+    }
 
   </style>
 </head>
@@ -318,55 +329,51 @@
       }
   }
 
-  // 숙소 목록 생성
   function displayRooms(rooms) {
-      const roomsContainer = document.getElementById("rooms-container");
-      roomsContainer.innerHTML = ""; // 기존 목록 초기화
+    const roomsContainer = document.getElementById("rooms-container");
+    roomsContainer.innerHTML = ""; // 기존 목록 초기화
 
-      rooms.forEach(room => {
-          const card = document.createElement("div");
-          card.className = "col-md-3 mb-4"; /* 한 줄에 4개씩 배치 */
-          card.innerHTML = `
-            <a href="/room/${room.roomId}" class="room-link">
-                <div class="card">
-                    <div id="carousel-${room.roomId}" class="carousel slide">
-                        <div class="carousel-inner">
-                            ${room.images.map((image, index) => `
-                                <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                                    <img src="${image.fileUrl}" class="d-block w-100" alt="숙소 이미지">
-                                </div>
-                            `).join("")}
-                        </div>
-                        <a class="carousel-control-prev" href="#carousel-${room.roomId}" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carousel-${room.roomId}" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a>
-                    </div>
+    rooms.forEach(room => {
+      const card = document.createElement("div");
+      card.className = "col-md-3 mb-4"; // 한 줄에 4개씩 배치
 
-                    <div class="card-body">
-                        <h6 class="card-title">${room.title}</h6>
-                        <p class="card-text">${room.address}</p>
-                        <p class="card-text"><strong>₩${room.price.toLocaleString()} / 박</strong></p>
-                        <p class="card-text">⭐ ${room.reviewScore} (리뷰 ${room.reviewCount}개)</p>
+      // 이미지 정보가 객체인지 배열인지 확인하고, 단일 이미지 URL 추출
+      let imageUrl = "/images/no-image.jpg"; // 기본 이미지
+      if (room.images) {
+        if (Array.isArray(room.images)) {
+          // 배열이면 첫 번째 이미지 사용 (만약 배열에 값이 있다면)
+          if (room.images.length > 0) {
+            imageUrl = room.images[0].fileUrl;
+          }
+        } else {
+          // 배열이 아니라면, 객체 형태로 내려온 것으로 가정
+          imageUrl = room.images.fileUrl || imageUrl;
+        }
+      }
 
-                        ${room.recentReview ? `
-                            <div class="review-box">
-                                <p><strong>${room.recentReview.userName}</strong>:
-                                    ${room.recentReview.content} (⭐ ${room.recentReview.score})
-                                </p>
-                            </div>
-                        ` : ""}
-                    </div>
+      card.innerHTML = `
+        <a href="/room/${room.roomId}" class="room-link">
+          <div class="card">
+            <!-- 단일 이미지 표시 -->
+            <img src="${imageUrl}" class="card-img-top" alt="숙소 이미지" />
+            <div class="card-body">
+              <h6 class="card-title">${room.title}</h6>
+              <p class="card-text">${room.address}</p>
+              <p class="card-text"><strong>₩${room.price.toLocaleString()} / 박</strong></p>
+              <p class="card-text">⭐ ${room.reviewScore} (리뷰 ${room.reviewCount}개)</p>
+              ${room.recentReview ? `
+                <div class="review-box">
+                  <p><strong>${room.recentReview.userName}</strong>: ${room.recentReview.content} (⭐ ${room.recentReview.score})</p>
                 </div>
-            </a>
-          `;
-          roomsContainer.appendChild(card);
-      });
+              ` : ""}
+            </div>
+          </div>
+        </a>
+      `;
+      roomsContainer.appendChild(card);
+    });
   }
+
 
   function filterRooms(category) {
       console.log(category + " 필터 적용됨 (필터 기능 추가 필요)");

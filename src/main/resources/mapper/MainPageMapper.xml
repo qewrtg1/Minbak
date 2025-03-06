@@ -21,10 +21,18 @@
         LIMIT 20;
     </select>
 
-<!--숙소 이미지 가져오기-->
+    <!-- 숙소 이미지 중 파일명을 알파벳 순으로 정렬하여 1개만 가져오기 -->
     <select id="findRoomImages" resultType="com.minbak.web.main_page.dto.MainImageFileDto">
-        SELECT file_url, file_name FROM image_files WHERE entity_type = 'rooms' AND entity_id = #{roomId};
+        SELECT
+        file_url,
+        file_name
+        FROM image_files
+        WHERE entity_type = 'rooms'
+        AND entity_id = #{roomId}
+        ORDER BY file_name ASC
+        LIMIT 1;
     </select>
+
 
 <!--카테고리 오더순으로 가져오기-->
     <select id="findCategories" resultType="com.minbak.web.categores.CategoresDto">
