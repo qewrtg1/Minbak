@@ -1,153 +1,186 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>숙소 사진 추가</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     body {
-        background-color: #ffffff;
-        text-align: center;
-        font-family: Arial, sans-serif;
-        padding-top: 50px;
-    }
-    h1, p {
-        margin-bottom: 20px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding: 50px 20px;
+      background-color: #f9f9f9;
     }
 
-    /* ✅ 사진 업로드 박스 */
-    .photo-upload-container {
-        width: 200px;
-        height: 200px;
-        border: 2px solid #ff9800;
-        border-radius: 10px;
-        background-color: #fafafa;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-        margin: 0 auto;
-        cursor: pointer;
-    }
-    .photo-upload-container label {
-        font-size: 16px;
-        color: #ff9800;
-        cursor: pointer;
-    }
-    .photo-upload-container input[type="file"] {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
     }
 
-    /* ✅ 미리보기 */
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    /* ✅ 업로드 컨테이너 */
+    .upload-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #ff9800;
+      border-radius: 10px;
+      width: 300px;
+      height: 200px;
+      background-color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: auto;
+      position: relative;
+    }
+
+    .upload-container:hover {
+      background-color: #fff3e0;
+    }
+
+    .upload-container i {
+      font-size: 40px;
+      color: #ff9800;
+    }
+
+    .upload-container span {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .upload-container input {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* ✅ 미리보기 스타일 */
     .photo-preview {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-    }
-    .photo-preview .photo-item {
-        position: relative;
-        display: inline-block;
-    }
-    .photo-preview img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
     }
 
-    /* ✅ 삭제 버튼 */
+    .photo-item {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .delete-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: red;
-        color: white;
-        border: none;
-        width: 20px;
-        height: 20px;
-        font-size: 14px;
-        border-radius: 50%;
-        cursor: pointer;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(255, 0, 0, 0.8);
+      color: white;
+      border: none;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      border-radius: 50%;
+      cursor: pointer;
     }
 
-    /* ✅ "다음" 버튼 (오른쪽 하단 고정) */
-    .next-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background-color: #ff9800;
-        padding: 15px 30px;
-        border-radius: 5px;
-        color: #fff;
-        text-decoration: none;
-        cursor: pointer;
-        border: none;
+    .delete-btn:hover {
+      background: rgba(255, 0, 0, 1);
     }
+
+    /* ✅ 다음 버튼 */
+    .next-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ff9800;
+      padding: 15px 30px;
+      border-radius: 5px;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
     .next-btn:hover {
-        background-color: #e68900;
+      background-color: #e68900;
     }
   </style>
 </head>
 <body>
 
 <h1>숙소 사진 추가하기</h1>
-<p>최소 1장, 최대 5장의 사진을 제출해주세요.</p>
+<p>최소 1장, 최대 5장의 사진을 업로드하세요.</p>
 
-<!-- ✅ 사진 추가 공간 -->
-<form id="photoForm" th:action="@{/host/photos/save}" method="post" enctype="multipart/form-data">
-  <div class="photo-upload-container">
-    <input type="file" id="photoUpload" name="photos" accept="image/*" multiple>
-    <label for="photoUpload">사진 추가</label>
-  </div>
+<!-- ✅ 사진 업로드 -->
+<div class="upload-container" onclick="document.getElementById('photoUpload').click()">
+  <i class="fas fa-upload"></i>
+  <span>클릭하여 사진 추가</span>
+  <input type="file" id="photoUpload" accept="image/*" multiple>
+</div>
 
-  <!-- ✅ 선택된 사진 미리보기 -->
-  <div class="photo-preview" id="photoPreview">
-    <!-- ✅ 타임리프를 사용하여 기존 이미지 표시 -->
-    <div class="photo-item" th:each="photo, iterStat : ${hostDto.imageUrls}">
-      <img th:src="${photo}" alt="사진 미리보기">
-      <button type="button" class="delete-btn" th:data-index="${iterStat.index}" onclick="deletePhoto(this)">x</button>
-    </div>
-  </div>
+<!-- ✅ 선택된 사진 미리보기 -->
+<div class="photo-preview" id="photoPreview"></div>
 
-  <!-- ✅ 다음 버튼 -->
-  <button type="submit" class="next-btn">다음</button>
+<!-- ✅ 다음 버튼 -->
+<form action="/host/photos/save" method="post">
+  <input type="hidden" name="photoUrls" id="photoUrls">
+  <button type="submit" class="next-btn" onclick="savePhotos()">다음</button>
 </form>
 
 <script>
-  const photoInput = document.getElementById('photoUpload');
-  const photoPreview = document.getElementById('photoPreview');
+  let uploadedPhotos = JSON.parse(localStorage.getItem("imageUrls")) || [];
+
+  // ✅ 기존 사진 불러오기 (뒤로가기 시에도 유지)
+  document.addEventListener("DOMContentLoaded", function() {
+    loadSavedPhotos();
+  });
+
+  function loadSavedPhotos() {
+    document.getElementById("photoPreview").innerHTML = "";
+    uploadedPhotos.forEach((photo, index) => {
+      displayPhoto(photo, index);
+    });
+  }
 
   function displayPhoto(photo, index) {
-    const div = document.createElement('div');
-    div.classList.add('photo-item');
+    const div = document.createElement("div");
+    div.classList.add("photo-item");
 
-    const img = document.createElement('img');
+    const img = document.createElement("img");
     img.src = photo;
     div.appendChild(img);
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.innerText = 'x';
-    deleteBtn.classList.add('delete-btn');
-    deleteBtn.setAttribute('data-index', index);
-    deleteBtn.onclick = function () {
-      deletePhoto(this);
-    };
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "x";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.onclick = () => deletePhoto(index);
     div.appendChild(deleteBtn);
 
-    photoPreview.appendChild(div);
+    document.getElementById("photoPreview").appendChild(div);
   }
 
-  photoInput.addEventListener('change', function() {
-    const files = this.files;
-    if (photoPreview.children.length + files.length > 5) {
-      alert('최대 5장의 사진만 업로드 가능합니다.');
+  document.getElementById("photoUpload").addEventListener("change", function(event) {
+    const files = event.target.files;
+    if (uploadedPhotos.length + files.length > 5) {
+      alert("최대 5장의 사진만 업로드 가능합니다.");
       return;
     }
 
@@ -155,15 +188,31 @@
       const file = files[i];
       const reader = new FileReader();
       reader.onload = function(e) {
-        displayPhoto(e.target.result, photoPreview.children.length);
+        uploadedPhotos.push(e.target.result);
+        displayPhoto(e.target.result, uploadedPhotos.length - 1);
+        localStorage.setItem("imageUrls", JSON.stringify(uploadedPhotos));
       };
       reader.readAsDataURL(file);
     }
+
+    // ✅ 파일 선택 창이 다시 열리지 않도록 리셋
+    event.target.value = "";
   });
 
-  function deletePhoto(button) {
-    const index = button.getAttribute('data-index');
-    button.parentElement.remove();
+  function deletePhoto(index) {
+    uploadedPhotos.splice(index, 1);
+    localStorage.setItem("imageUrls", JSON.stringify(uploadedPhotos));
+    loadSavedPhotos();
+  }
+
+  function savePhotos() {
+    if (uploadedPhotos.length === 0) {
+      alert("최소 1장의 사진을 업로드해주세요!");
+      return;
+    }
+
+    document.getElementById("photoUrls").value = JSON.stringify(uploadedPhotos);
+    console.log("✅ 저장된 이미지 리스트:", document.getElementById("photoUrls").value);
   }
 </script>
 

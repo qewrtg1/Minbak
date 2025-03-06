@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <title>주중/주말 요금 설정</title>
+  <title>주중 요금 설정</title>
   <style>
     /* 기본 스타일 */
     body {
@@ -33,20 +33,10 @@
         border-radius: 5px;
         font-size: 16px;
     }
-    .result, .final-price {
+    .result {
         font-size: 18px;
         font-weight: bold;
         margin-top: 10px;
-    }
-    .premium-rate {
-        margin: 20px 0;
-    }
-    input[type="range"] {
-        width: 80%;
-    }
-    .rate-value {
-        font-size: 18px;
-        margin-top: 5px;
     }
     .next-btn {
         position: fixed;
@@ -68,83 +58,38 @@
 </head>
 <body>
 
-<h1>이제 주중/주말 요금을 설정하세요</h1>
+<h1>숙박 요금을 입력하세요</h1>
 
-<form class="form-container">
-  <!-- 주중 요금 입력 -->
-  <input type="number" id="weekDayPrice" name="weekDayPrice" placeholder="주중 요금을 입력하세요" min="0">
+<!-- ✅ 주중 요금 입력 폼 -->
+<form action="/host/price/save" method="post">
+  <input type="number" id="weekDayPrice" name="price" placeholder="주중 요금을 입력하세요"
+         min="0" th:value="${hostDto.price}">
   <div class="result" id="result"></div>
 
-  <h1>주말 할증률</h1>
-
-  <!-- 주말 할증률 설정 -->
-  <div class="premium-rate">
-    <label for="premiumRate">할증률 설정 (0%~100%):</label>
-    <input type="range" id="premiumRate" name="premiumRate" min="0" max="100" value="0" step="1">
-    <span class="rate-value" id="rateValue">0%</span>
-  </div>
-
-  <!-- 최종 요금 -->
-  <div class="final-price" id="finalPrice"></div>
+  <!-- ✅ 다음 버튼 -->
+  <button type="submit" class="next-btn">다음</button>
 </form>
-
-<!-- 다음 버튼 -->
-<a href="/host/receipt" class="next-btn">다음</a>
 
 <script>
   const weekDayPriceInput = document.getElementById('weekDayPrice');
   const resultDiv = document.getElementById('result');
-  const premiumRateInput = document.getElementById('premiumRate');
-  const rateValue = document.getElementById('rateValue');
-  const finalPriceDiv = document.getElementById('finalPrice');
 
-  // 페이지 로드 시 저장된 데이터 불러오기
-  document.addEventListener('DOMContentLoaded', function() {
-      const savedWeekDayPrice = localStorage.getItem('weekDayPrice');
-      const savedPremiumRate = localStorage.getItem('premiumRate');
-
-      if (savedWeekDayPrice !== null) {
-          weekDayPriceInput.value = savedWeekDayPrice;
-          resultDiv.innerHTML = `₩${parseInt(savedWeekDayPrice).toLocaleString()}`;
-          updateFinalPrice(parseInt(savedWeekDayPrice));
-      }
-      if (savedPremiumRate !== null) {
-          premiumRateInput.value = savedPremiumRate;
-          rateValue.innerText = `${savedPremiumRate}%`;
-          updateFinalPrice(parseInt(weekDayPriceInput.value));
+  // ✅ 기존 값 불러오기
+  document.addEventListener("DOMContentLoaded", function() {
+      if (weekDayPriceInput.value) {
+          resultDiv.innerHTML = `₩${parseInt(weekDayPriceInput.value).toLocaleString()}`;
       }
   });
 
-  // 주중 요금 입력 시 localStorage에 저장
+  // ✅ 입력 시 숫자 표시 업데이트
   weekDayPriceInput.addEventListener('input', function() {
       const price = parseFloat(weekDayPriceInput.value);
       if (!isNaN(price) && price > 0) {
           resultDiv.innerHTML = `₩${price.toLocaleString()}`;
-          localStorage.setItem('weekDayPrice', price);
-          updateFinalPrice(price);
       } else {
           resultDiv.innerHTML = '';
-          finalPriceDiv.innerHTML = '';
-          localStorage.removeItem('weekDayPrice');
       }
   });
-
-  // 주말 할증률 입력 시 localStorage에 저장
-  premiumRateInput.addEventListener('input', function() {
-      const rate = premiumRateInput.value;
-      rateValue.innerText = `${rate}%`;
-      localStorage.setItem('premiumRate', rate);
-      updateFinalPrice(parseFloat(weekDayPriceInput.value));
-  });
-
-  // 최종 요금 계산 (DB 저장 X, 화면에서만 표시)
-  function updateFinalPrice(weekDayPrice) {
-      if (isNaN(weekDayPrice) || weekDayPrice <= 0) return;
-
-      const rate = parseFloat(premiumRateInput.value);
-      const premiumPrice = weekDayPrice * (1 + rate / 100);
-      finalPriceDiv.innerHTML = `예상 주말 요금: ₩${premiumPrice.toLocaleString()}`;
-  }
 </script>
 
 </body>

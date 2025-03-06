@@ -174,41 +174,86 @@ public class HostController {
         return "host-pages/photos";
     }
     @PostMapping("/photos/save")
-    public String savePhotos(@ModelAttribute("hostDto")HostDto hostDto,
-                             @RequestParam("photos")MultipartFile[] photos){
-        List<String> imageUrls = new ArrayList<>();
-        for(MultipartFile photo : photos){
-            if(!photo.isEmpty()){
-                String fileUrl = "/uploads/" + photo.getOriginalFilename();
-                imageUrls.add(fileUrl);
-            }
-        }
-        hostDto.setImageUrls(imageUrls);
+    public String savePhotos(@ModelAttribute("hostDto") HostDto hostDto,
+                             @RequestParam("photoUrls") List<String> photoUrls) {
 
+        // ✅ 기존 `imageUrls`이 있으면 유지하면서 추가
+        List<String> imageUrls = new ArrayList<>(hostDto.getImageUrls() != null ? hostDto.getImageUrls() : new ArrayList<>());
+
+        imageUrls.addAll(photoUrls); // 새로운 이미지 URL 추가
+        hostDto.setImageUrls(imageUrls); // `hostDto`에 저장
+
+        // ✅ 콘솔 확인 (정상적으로 저장되는지)
         System.out.println("📌 [업로드된 이미지 목록]");
-        imageUrls.forEach(url -> System.out.println("✔ " + url));
+        hostDto.getImageUrls().forEach(url -> System.out.println("✔ " + url));
 
-        return "redirect:/host/roomsName";
+        return "redirect:/host/roomName"; // ✅ 다음 페이지 이동
     }
 
-    @GetMapping("/roomsName")
+
+    @GetMapping("/roomName")
     public String roomsName(){
-        return "host-pages/roomsName";
+        return "host-pages/roomName";
     }
+    @PostMapping("roomName/save")
+    public String saveRoomName(@ModelAttribute("hostDto") HostDto hostDto,
+                               @RequestParam("name") String name){
+        hostDto.setName(name);
+        System.out.println("📌 [저장된 숙소 이름]: " + name);
+        return "redirect:/host/title"; // ✅ 다음 페이지 이동
+    }
+
 
     @GetMapping("/title")
     public String roomsTitle(){
         return "host-pages/title";
+    }
+    @PostMapping("/title/save")
+    public String saveTitle(@ModelAttribute("hostDto") HostDto hostDto,
+                            @RequestParam("title") String title){
+        if(title == null || title.trim().isEmpty()){
+            return "redirect:/host/title?error";
+        }
+
+        hostDto.setTitle(title);
+        System.out.println("📌 [숙소 제목 저장 완료]: " + hostDto.getTitle());
+
+        return "redirect:/host/description";
+
     }
 
     @GetMapping("/description")
     public String description(){
         return "host-pages/description";
     }
+    @PostMapping("/description/save")
+    public String saveDescription(@ModelAttribute("hostDto") HostDto hostDto,
+                                  @RequestParam("content") String content){
+        if(content == null || content.trim().isEmpty()){
+            return "redirect:/host/description?error"; // 빈 값이면 다시 입력
+        }
+
+        hostDto.setContent(content);
+        System.out.println("📌 [숙소 설명 저장 완료]: " + hostDto.getContent());
+
+        return "redirect:/host/useGuide";
+    }
 
     @GetMapping("useGuide")
     public String roomsUseGuide(){
         return "host-pages/useGuide";
+    }
+    @PostMapping("/useGuide/save")
+    public String saveUseGuide(@ModelAttribute("hostDto") HostDto hostDto,
+                               @RequestParam("useGuide") String useGuide){
+        if(useGuide == null || useGuide.trim().isEmpty()){
+            return "redirect:/host/useGuide?error"; // 빈 값이면 다시 입력
+        }
+
+        hostDto.setUseGuide(useGuide);
+        System.out.println("📌 [숙소 이용 가이드 저장 완료]: " + hostDto.getUseGuide());
+
+        return  "redirect:/host/finish-setup";
     }
 
     @GetMapping("/finish-setup")
@@ -220,9 +265,29 @@ public class HostController {
     public String roomsPrice(){
         return "host-pages/price";
     }
+    @PostMapping("/price/save")
+    public String savePrice(@ModelAttribute("hostDto") HostDto hostDto,
+                            @RequestParam("price") Integer price){
+        if(price == null || price <= 0){
+            return "redirect:/host/price?error";
+        }
+
+        hostDto.setPrice(price);
+        System.out.println("📌 [저장된 숙박 요금]: " + hostDto.getPrice());
+
+        return "redirect:/host/receipt";
+    }
 
     @GetMapping("/receipt")
-    public String receipt(){
+    public String receipt(@ModelAttribute("hostDto") HostDto hostDto,Model model){
+        model.addAttribute("hostDto", hostDto);
+
+        // 📌 콘솔 로그로 데이터 확인
+        System.out.println("📌 [미리보기 페이지 데이터]");
+        System.out.println("✔ 숙소 제목: " + hostDto.getTitle());
+        System.out.println("✔ 숙소 가격: " + hostDto.getPrice());
+        System.out.println("✔ 이미지 개수: " + (hostDto.getImageUrls() != null ? hostDto.getImageUrls().size() : 0));
+
         return "host-pages/receipt";
     }
 

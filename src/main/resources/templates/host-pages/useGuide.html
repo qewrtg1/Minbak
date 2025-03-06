@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>숙소 이용 가이드</title>
@@ -24,6 +24,8 @@
     p {
         font-size: 1rem;
         margin-bottom: 20px;
+        max-width: 600px;
+        line-height: 1.5;
     }
     .textarea-container {
         position: relative;
@@ -49,7 +51,7 @@
         color: #888;
     }
     .next-btn {
-        position: absolute;
+        position: fixed;
         bottom: 30px;
         right: 30px;
         background-color: #ff9800;
@@ -67,44 +69,35 @@
 </head>
 <body>
 
-<h1>숙소 이용 가이드를 작성해주세요</h1>
-<p>게스트가 숙소를 이용할 때 필요한 정보를 입력해주세요.<br>
-  예: 체크인 시간, 시설 이용 규칙, 주의 사항 등</p>
+<h1>편안한 숙박을 위한 이용 가이드를 작성하세요</h1>
+<p>게스트가 더욱 편리하게 머무를 수 있도록 체크인/체크아웃 시간, 이용 규칙,
+  시설 사용 방법, 주의 사항 등을 자세히 안내해주세요.</p>
 
-<div class="textarea-container">
-  <textarea id="useGuideInput" maxlength="500" placeholder="숙소 이용 가이드를 입력해주세요."></textarea>
-  <p class="char-count" id="charCount">0/500</p>
-</div>
-
-<a href="/host/finish-setup" class="next-btn" id="nextBtn">다음</a>
+<!-- ✅ 이용 가이드 입력 폼 -->
+<form action="/host/useGuide/save" method="post">
+  <div class="textarea-container">
+        <textarea name="useGuide" id="useGuideInput" maxlength="500"
+                  placeholder="예: 체크인은 오후 3시 이후이며, 체크아웃은 오전 11시까지입니다."
+                  th:text="${hostDto.useGuide}"></textarea>
+    <p class="char-count" id="charCount">0/500</p>
+  </div>
+  <button type="submit" class="next-btn">다음</button>
+</form>
 
 <script>
   const useGuideInput = document.getElementById('useGuideInput');
   const charCount = document.getElementById('charCount');
-  const nextBtn = document.getElementById('nextBtn');
-
-  // 이전에 입력했던 값 불러오기
-  window.onload = function() {
-      const savedGuide = localStorage.getItem("useGuide");
-      if (savedGuide) {
-          useGuideInput.value = savedGuide;
-          charCount.textContent = savedGuide.length + "/500";
-      }
-  };
 
   // 글자 수 업데이트
   useGuideInput.addEventListener('input', function() {
       const currentLength = useGuideInput.value.length;
       charCount.textContent = currentLength + '/500';
-      localStorage.setItem("useGuide", useGuideInput.value);
   });
 
-  // 다음 버튼 클릭 시 데이터 저장
-  nextBtn.addEventListener('click', function(event) {
-      if (useGuideInput.value.trim() === "") {
-          alert("이용 가이드를 입력해주세요!");
-          event.preventDefault();
-      }
+  // ✅ 기존 값 불러오기
+  document.addEventListener("DOMContentLoaded", function() {
+      const currentLength = useGuideInput.value.length;
+      charCount.textContent = currentLength + '/500';
   });
 </script>
 

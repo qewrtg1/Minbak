@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>숙소 제목 입력</title>
@@ -27,8 +27,8 @@
     }
     .textarea-container {
         position: relative;
-        width: 600px; /* 박스의 너비 */
-        height: 100px; /* 박스의 높이 */
+        width: 600px;
+        height: 100px;
         display: inline-block;
         margin-bottom: 30px;
     }
@@ -40,6 +40,7 @@
         border-radius: 5px;
         border: 2px solid #ccc;
         resize: none;
+        outline: none;
     }
     .char-count {
         position: absolute;
@@ -59,6 +60,7 @@
         text-decoration: none;
         border-radius: 5px;
         cursor: pointer;
+        border: none;
     }
     .next-btn:hover {
         background-color: #e68900;
@@ -70,35 +72,46 @@
 <h1>숙소 제목을 정해주세요</h1>
 <p>숙소의 첫인상을 결정하는 중요한 요소입니다. 짧고 기억에 남는 제목을 만들어 보세요.</p>
 
-<div class="textarea-container">
-  <textarea id="titleInput" maxlength="32" placeholder="숙소 제목을 입력하세요"></textarea>
-  <p class="char-count" id="charCount">0/32</p>
-</div>
+<!-- ✅ 제목 입력 -->
+<form action="/host/title/save" method="post">
+  <div class="textarea-container">
+    <textarea id="titleInput" name="title" maxlength="32" placeholder="숙소 제목을 입력하세요"
+              th:text="${hostDto.title}"></textarea>
+    <p class="char-count" id="charCount">0/32</p>
+  </div>
 
-<a href="/host/description" class="next-btn" id="nextBtn">다음</a>
+  <!-- ✅ 다음 버튼 -->
+  <button type="submit" class="next-btn">다음</button>
+</form>
 
 <script>
   const titleInput = document.getElementById("titleInput");
   const charCount = document.getElementById("charCount");
-  const nextBtn = document.getElementById("nextBtn");
 
-  // 글자 수 카운트 업데이트
+  // ✅ 글자 수 카운트 업데이트
   titleInput.addEventListener("input", function() {
       const currentLength = titleInput.value.length;
       charCount.textContent = `${currentLength}/32`;
   });
 
-  // 다음 버튼 클릭 시 localStorage 저장
-  nextBtn.addEventListener("click", function(event) {
-      event.preventDefault(); // 기본 이동 방지
+  // ✅ 기존 데이터 유지 (뒤로 가기)
+  document.addEventListener("DOMContentLoaded", function () {
+      const savedTitle = localStorage.getItem("title");
+      if (savedTitle) {
+          titleInput.value = savedTitle;
+          charCount.textContent = `${savedTitle.length}/32`;
+      }
+  });
+
+  // ✅ 제목 저장 (로컬스토리지 & 제출 전 체크)
+  document.querySelector("form").addEventListener("submit", function(event) {
       const title = titleInput.value.trim();
       if (title.length === 0) {
           alert("숙소 제목을 입력해주세요!");
+          event.preventDefault();
           return;
       }
-
       localStorage.setItem("title", title);
-      window.location.href = "/host/description"; // 다음 페이지로 이동 (숙소 설명 작성 페이지)
   });
 </script>
 
