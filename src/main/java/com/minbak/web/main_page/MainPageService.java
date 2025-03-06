@@ -3,6 +3,7 @@ package com.minbak.web.main_page;
 import com.minbak.web.main_page.dto.MainPageResponseDto;
 import com.minbak.web.main_page.dto.MainRoomDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class MainPageService {
     @Autowired
     private MainPageMapper mainPageMapper;
 
+    @Cacheable(value = "mainPageData")
     public MainPageResponseDto getMainPageData() {
         MainPageResponseDto response = new MainPageResponseDto();
 

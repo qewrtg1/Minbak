@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+	
+	implementation 'com.github.ben-manes.caffeine:caffeine:2.9.3' //캐싱의존성
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' //OAuth2 의존성
 	// https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk/1.14.0
 	implementation 'com.paypal.sdk:rest-api-sdk:1.14.0' //페이팔 의존성
