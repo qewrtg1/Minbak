@@ -5,6 +5,7 @@ import com.minbak.web.user_YH.dto.DetailUserResponse;
 import com.minbak.web.users.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,6 @@ public class GlobalControllerAdvice {
 
     @Autowired
     UsersService usersService;
-
-    @Autowired
-    MainPageService mainPageService;
 
     @ModelAttribute
     public void addGlobalAttributes(Model model, HttpServletRequest request) {

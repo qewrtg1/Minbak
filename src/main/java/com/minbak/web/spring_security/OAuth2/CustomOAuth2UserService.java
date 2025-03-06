@@ -48,7 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //resultcode=00, message=success, id=123123123, name=개호주
         }else if(registrationId.equals("google")){
 
-            oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
+            oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
         }else {
 
             return null;
@@ -60,7 +60,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String loginFrom = oAuth2Response.getProvider()+","+oAuth2Response.getProviderId();
 
         //랜덤 패스워드값 생성
-        String randomPassword = passwordEncoder.encode(generateRandomPassword(10));
 
         //유저 데이터 Dto에 세팅
         UserDto userDto = new UserDto();
@@ -73,6 +72,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         //데이터가 저장돼있지 않으면 (LoginFrom으로 확인)
         if(usersMapper.selectLoginFromByLoginFrom(loginFrom) == null){
+
+            String randomPassword = passwordEncoder.encode(generateRandomPassword(10));
 
             //데이터 추가 세팅
             userDto.setLoginFrom(loginFrom);
