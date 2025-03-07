@@ -140,6 +140,9 @@
   font-size: 16px;
   cursor: pointer;
 }
+  .clickable-row {
+    cursor: pointer;
+}
 
   </style>
 </head>
@@ -204,11 +207,21 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="room : ${rooms}" class="clickable-row"
-          th:data-href="@{/host/room/edit/{id}(id=${room.roomId})}">
+      <tbody>
+
+      <tr th:each="room : ${rooms}" class="clickable-row" th:data-href="@{/host/room/edit/{id}(id=${room.roomId})}">
+        <td>
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- ✅ 대표 이미지 -->
+            <img th:src="@{'/admin/api/file/list/' + ${room.roomId}}"
+                 onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span style=\'color:red;\'>X</span>');"
+                 class="img-thumbnail" width="100">
+          </div>
+        </td>
         <td th:text="${room.name}"></td>
         <td th:text="${room.address}"></td>
         <td class="room-status" style="color: red;">조치 필요(임시)</td>
+
       </tr>
       </tbody>
     </table>
