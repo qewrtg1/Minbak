@@ -1,27 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>숙소 사진 추가</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      padding: 50px 20px;
-      background-color: #f9f9f9;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 20px;
-    }
+    body { text-align: center; font-family: Arial, sans-serif; padding: 50px 20px; background-color: #f9f9f9; }
+    h1 { font-size: 24px; margin-bottom: 10px; }
+    p { font-size: 14px; color: #666; margin-bottom: 20px; }
 
     /* ✅ 업로드 컨테이너 */
     .upload-container {
@@ -39,39 +25,13 @@
       margin: auto;
       position: relative;
     }
-
-    .upload-container:hover {
-      background-color: #fff3e0;
-    }
-
-    .upload-container i {
-      font-size: 40px;
-      color: #ff9800;
-    }
-
-    .upload-container span {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .upload-container input {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
+    .upload-container:hover { background-color: #fff3e0; }
+    .upload-container i { font-size: 40px; color: #ff9800; }
+    .upload-container span { margin-top: 10px; font-size: 14px; color: #555; }
+    .upload-container input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
     /* ✅ 미리보기 스타일 */
-    .photo-preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
+    .photo-preview { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
     .photo-item {
       position: relative;
       width: 100px;
@@ -80,13 +40,7 @@
       overflow: hidden;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
     }
-
-    .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    .photo-item img { width: 100%; height: 100%; object-fit: cover; }
     .delete-btn {
       position: absolute;
       top: 5px;
@@ -100,10 +54,7 @@
       border-radius: 50%;
       cursor: pointer;
     }
-
-    .delete-btn:hover {
-      background: rgba(255, 0, 0, 1);
-    }
+    .delete-btn:hover { background: rgba(255, 0, 0, 1); }
 
     /* ✅ 다음 버튼 */
     .next-btn {
@@ -118,10 +69,7 @@
       cursor: pointer;
       font-size: 1rem;
     }
-
-    .next-btn:hover {
-      background-color: #e68900;
-    }
+    .next-btn:hover { background-color: #e68900; }
   </style>
 </head>
 <body>
@@ -137,7 +85,12 @@
 </div>
 
 <!-- ✅ 선택된 사진 미리보기 -->
-<div class="photo-preview" id="photoPreview"></div>
+<div class="photo-preview" id="photoPreview">
+  <div th:each="image, iterStat : ${hostDto.imageFiles}" class="photo-item">
+    <img th:src="${image.fileUrl}" alt="숙소 이미지"/>
+    <button class="delete-btn" type="button" th:data-index="${iterStat.index}" onclick="deletePhoto(this)">x</button>
+  </div>
+</div>
 
 <!-- ✅ 다음 버튼 -->
 <form action="/host/photos/save" method="post">
@@ -146,19 +99,38 @@
 </form>
 
 <script>
-  let uploadedPhotos = JSON.parse(localStorage.getItem("imageUrls")) || [];
+  let uploadedPhotos = [];  // ✅ 이미지 리스트 저장
 
-  // ✅ 기존 사진 불러오기 (뒤로가기 시에도 유지)
+  // ✅ 기존 이미지 불러오기 (뒤로 가기 시 유지)
   document.addEventListener("DOMContentLoaded", function() {
-    loadSavedPhotos();
-  });
-
-  function loadSavedPhotos() {
-    document.getElementById("photoPreview").innerHTML = "";
-    uploadedPhotos.forEach((photo, index) => {
-      displayPhoto(photo, index);
+    const savedPhotos = document.querySelectorAll(".photo-item img");
+    savedPhotos.forEach((img) => {
+        uploadedPhotos.push({ fileUrl: img.src, fileName: "" }); // ✅ 객체로 저장
     });
-  }
+});
+
+  document.getElementById("photoUpload").addEventListener("change", function(event) {
+    const files = event.target.files;
+
+    if (uploadedPhotos.length + files.length > 5) {
+        alert("최대 5장의 사진만 업로드 가능합니다.");
+        return;
+    }
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (uploadedPhotos.length < 5) {
+                uploadedPhotos.push({ fileUrl: e.target.result, fileName: file.name });
+                displayPhoto(e.target.result, uploadedPhotos.length - 1);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    event.target.value = "";  // ✅ 파일 선택 창 리셋
+  });
 
   function displayPhoto(photo, index) {
     const div = document.createElement("div");
@@ -171,49 +143,31 @@
     const deleteBtn = document.createElement("button");
     deleteBtn.innerText = "x";
     deleteBtn.classList.add("delete-btn");
-    deleteBtn.onclick = () => deletePhoto(index);
+    deleteBtn.setAttribute("data-index", index);
+    deleteBtn.onclick = function() { deletePhoto(this); };
     div.appendChild(deleteBtn);
 
     document.getElementById("photoPreview").appendChild(div);
   }
 
-  document.getElementById("photoUpload").addEventListener("change", function(event) {
-    const files = event.target.files;
-    if (uploadedPhotos.length + files.length > 5) {
-      alert("최대 5장의 사진만 업로드 가능합니다.");
-      return;
-    }
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedPhotos.push(e.target.result);
-        displayPhoto(e.target.result, uploadedPhotos.length - 1);
-        localStorage.setItem("imageUrls", JSON.stringify(uploadedPhotos));
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // ✅ 파일 선택 창이 다시 열리지 않도록 리셋
-    event.target.value = "";
-  });
-
-  function deletePhoto(index) {
+  function deletePhoto(element) {
+    const index = parseInt(element.getAttribute("data-index"));
     uploadedPhotos.splice(index, 1);
-    localStorage.setItem("imageUrls", JSON.stringify(uploadedPhotos));
-    loadSavedPhotos();
+    document.getElementById("photoPreview").innerHTML = "";
+
+    uploadedPhotos.forEach((photo, i) => displayPhoto(photo, i));
+    console.log("🗑️ 삭제 후 남은 사진:", uploadedPhotos);
   }
 
   function savePhotos() {
     if (uploadedPhotos.length === 0) {
-      alert("최소 1장의 사진을 업로드해주세요!");
-      return;
+        alert("최소 1장의 사진을 업로드해주세요!");
+        return;
     }
 
     document.getElementById("photoUrls").value = JSON.stringify(uploadedPhotos);
     console.log("✅ 저장된 이미지 리스트:", document.getElementById("photoUrls").value);
-  }
+}
 </script>
 
 </body>

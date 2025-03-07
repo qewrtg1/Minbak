@@ -6,26 +6,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class HostService {
+public class HostService implements HostServiceInterface{
 
     @Autowired
     private CreateHostMapper createHostMapper;
 
     @Transactional
-    public Integer insertRoom(HostDto hostDto) {
-        try {
-            createHostMapper.insertRoom(hostDto);
-            return hostDto.getRoomId(); // MyBatis에서 자동 생성된 roomId 반환
-        } catch (Exception e) {
-            throw new RuntimeException("숙소 등록 중 오류 발생: " + e.getMessage(), e);
-        }
-    }
+    @Override
+    public int insertRoom(HostDto hostDto) {
+        // 🏡 1. 숙소 정보 `rooms` 테이블에 저장
+        createHostMapper.insertRoom(hostDto);
+        int roomId = hostDto.getRoomId(); // MyBatis에서 자동 생성된 키 가져오기
 
-    public String getUserName(int userId) {
-        try {
-            return createHostMapper.getUserNameById(userId);
-        } catch (Exception e) {
-            throw new RuntimeException("사용자 이름 조회 실패: " + e.getMessage(), e);
+        // 🖼️ 2. 이미지 저장 (`image_files` 테이블) - ✅ 최적화: 한 번의 SQL 실행으로 저장
+        if (hostDto.getImageFiles() != null && !hostDto.getImageFiles().isEmpty()) {
+            hostDto.getImageFiles().forEach(image -> image.setEntityId(roomId)); // roomId 설정
+            createHostMapper.insertRoomImages(hostDto);
         }
+
+        // 🎛️ 3. 옵션 저장 (`rooms_room_options` 테이블) - ✅ 최적화: 한 번의 SQL 실행으로 저장
+        if (hostDto.getOptionIds() != null && !hostDto.getOptionIds().isEmpty()) {
+            createHostMapper.insertRoomOptions(roomId, hostDto.getOptionIds());
+        }
+
+        return roomId;
     }
 }

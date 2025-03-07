@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>호스트 환영 페이지</title>
@@ -83,84 +83,36 @@
   </div>
 </div>
 
-<a href="#" class="start-btn">시작하기</a>
-<script>
-  document.querySelector(".start-btn").addEventListener("click", function() {
-      console.log("🚀 최종 전송 데이터 확인:");
-      console.log("roomId:", localStorage.getItem("roomId"));
-      console.log("userId:", localStorage.getItem("userId"));
-      console.log("userName:", localStorage.getItem("userName"));
-      console.log("name:", localStorage.getItem("name"));
-      console.log("title:", localStorage.getItem("title"));
-      console.log("description:", localStorage.getItem("description"));
-      console.log("selectedLocation:", localStorage.getItem("selectedLocation"));
-      console.log("🔍 최종 price 값:", localStorage.getItem("weekDayPrice"));  // ✅ `weekDayPrice` 사용
+<!-- ✅ 숙소 데이터 최종 전송 폼 -->
+<form th:action="@{/host/register}" method="post">
+  <input type="hidden" name="roomId" th:value="${hostDto.roomId}">
+  <input type="hidden" name="userId" th:value="${hostDto.userId}">
+  <input type="hidden" name="userName" th:value="${hostDto.userName}">
+  <input type="hidden" name="name" th:value="${hostDto.name}">
+  <input type="hidden" name="title" th:value="${hostDto.title}">
+  <input type="hidden" name="content" th:value="${hostDto.content}">
+  <input type="hidden" name="address" th:value="${hostDto.address}">
+  <input type="hidden" name="price" th:value="${hostDto.price}">
+  <input type="hidden" name="useGuide" th:value="${hostDto.useGuide}">
+  <input type="hidden" name="buildingType" th:value="${hostDto.buildingType}">
+  <input type="hidden" name="latitude" th:value="${hostDto.latitude}">
+  <input type="hidden" name="longitude" th:value="${hostDto.longitude}">
+  <input type="hidden" name="maxGuests" th:value="${hostDto.maxGuests}">
+  <input type="hidden" name="bedrooms" th:value="${hostDto.bedrooms}">
+  <input type="hidden" name="beds" th:value="${hostDto.beds}">
+  <input type="hidden" name="bathrooms" th:value="${hostDto.bathrooms}">
 
-      if (!localStorage.getItem("title") || !localStorage.getItem("description") ||
-          !localStorage.getItem("selectedLocation") || !localStorage.getItem("weekDayPrice") ||
-          !localStorage.getItem("buildingType") || !localStorage.getItem("roomDetails")) {
-          alert("필수 정보를 모두 입력해주세요!");
-          return;
-      }
+  <!-- ✅ 이미지 리스트를 JSON 문자열로 변환하여 전달 -->
+  <input type="hidden" name="imageFiles"
+         th:if="${hostDto.imageFiles != null and not #lists.isEmpty(hostDto.imageFiles)}"
+         th:value="${hostDto.imageFiles}">
 
-      const imageUrls = localStorage.getItem("imageUrls")
-          ? JSON.parse(localStorage.getItem("imageUrls"))
-          : [];
+  <!-- ✅ 옵션 리스트를 JSON 문자열로 변환하여 전달 -->
+  <input type="hidden" name="optionIds"
+         th:if="${hostDto.optionIds != null and not #lists.isEmpty(hostDto.optionIds)}"
+         th:value="${hostDto.optionIds}">
+  <button type="submit" class="start-btn">시작하기</button>
+</form>
 
-      if (imageUrls.length < 1) {
-          alert("최소 1장의 이미지를 등록해주세요!");
-          return;
-      }
-
-      const optionIds = localStorage.getItem("selectedOptions")
-          ? JSON.parse(localStorage.getItem("selectedOptions"))
-          : [];
-
-      const selectedLocation = JSON.parse(localStorage.getItem("selectedLocation"));
-      const roomDetails = JSON.parse(localStorage.getItem("roomDetails"));
-
-      const requestData = {
-          roomId: localStorage.getItem("roomId") ? parseInt(localStorage.getItem("roomId")) : null,
-          userId: parseInt(localStorage.getItem("userId")),
-          userName: localStorage.getItem("userName"),
-          name: localStorage.getItem("name"),
-          title: localStorage.getItem("title"),
-          content: localStorage.getItem("description"),
-          address: selectedLocation ? selectedLocation.roadAddress : null,
-          price: parseInt(localStorage.getItem("weekDayPrice")),  // ✅ `weekDayPrice` 사용
-          useGuide: localStorage.getItem("useGuide"),
-          buildingType: localStorage.getItem("buildingType"),
-          latitude: selectedLocation ? parseFloat(selectedLocation.latitude) : null,
-          longitude: selectedLocation ? parseFloat(selectedLocation.longitude) : null,
-          maxGuests: roomDetails ? roomDetails.guests : null,
-          bedrooms: roomDetails ? roomDetails.bedrooms : null,
-          beds: roomDetails ? roomDetails.beds : null,
-          bathrooms: roomDetails ? roomDetails.bathrooms : null,
-          imageUrls: imageUrls,
-          optionIds: optionIds
-      };
-
-      console.log("🚀 최종 전송 데이터:", requestData);
-
-      fetch("/api/host/register", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify(requestData)
-      })
-      .then(response => response.json())
-      .then(data => {
-          console.log("✅ 숙소 등록 완료:", data);
-          alert("숙소가 성공적으로 등록되었습니다!");
-          localStorage.clear();
-          window.location.href = "#";
-      })
-      .catch(error => {
-          console.error("❌ 등록 중 오류 발생:", error);
-          alert("숙소 등록 중 오류가 발생했습니다.");
-      });
-  });
-</script>
 </body>
 </html>

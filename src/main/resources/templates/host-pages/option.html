@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>숙소 편의시설 선택</title>
@@ -58,25 +58,24 @@
     .option.selected i {
         color: white;
     }
-     /* ✅ "다음" 버튼을 오른쪽 하단에 고정 */
-  .next-btn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: #ff9800;
-      border: none;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border-radius: 5px;
-      color: #fff;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-  }
-  .next-btn:hover {
-      background-color: #e68900;
-  }
-
+    /* ✅ "다음" 버튼을 오른쪽 하단에 고정 */
+    .next-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ff9800;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .next-btn:hover {
+        background-color: #e68900;
+    }
   </style>
 </head>
 <body>
@@ -84,8 +83,9 @@
 <div class="container">
   <h2>숙소에 제공되는 편의시설을 선택하세요.</h2>
 
-  <form id="charmForm" action="/host/option/save" method="post">
-    <!-- ✅ 숨겨진 입력 필드 (선택한 옵션 ID 리스트) -->
+  <!-- ✅ Thymeleaf에서 옵션 데이터를 서버로 전송하는 폼 -->
+  <form id="optionForm" action="/host/option/save" method="post">
+    <!-- ✅ 선택된 옵션 ID를 저장하는 hidden input -->
     <input type="hidden" id="selectedOptionsInput" name="optionIds">
 
     <!-- ✅ "필수" 카테고리 -->
@@ -142,48 +142,58 @@
       </div>
     </div>
 
-    <!-- ✅ "다음" 버튼 -->
-    <a href="/host/photos" class="next-btn">다음</a>
+    <!-- ✅ "다음" 버튼 (폼 제출) -->
+    <button type="submit" class="next-btn">다음</button>
   </form>
 </div>
 
 <script>
-  const options = document.querySelectorAll('.option');
+  document.addEventListener("DOMContentLoaded", function() {
+      const options = document.querySelectorAll(".option");
+      const hiddenInput = document.getElementById("selectedOptionsInput");
+      const form = document.querySelector("#optionForm");
 
-  // ✅ 옵션 선택 토글
-  options.forEach(option => {
-      option.addEventListener('click', () => {
-          option.classList.toggle('selected');
-          updateSelectedOptions();
+      // ✅ 기존 선택된 옵션을 JavaScript에서 처리
+      let selectedOptions = new Set();
+
+      // ✅ Thymeleaf에서 기존 선택된 옵션 유지
+      let existingOptions = [[${hostDto.optionIds}]];
+      if (existingOptions && Array.isArray(existingOptions)) {
+          existingOptions.forEach(id => selectedOptions.add(parseInt(id)));
+      }
+
+      // ✅ 선택된 옵션 표시 (초기 로드 시)
+      options.forEach(option => {
+          let optionId = parseInt(option.dataset.optionId);
+          if (selectedOptions.has(optionId)) {
+              option.classList.add("selected");
+          }
+      });
+
+      // ✅ 옵션 클릭 시 선택/해제 처리
+      options.forEach(option => {
+          option.addEventListener("click", function() {
+              let optionId = parseInt(this.dataset.optionId);
+              if (selectedOptions.has(optionId)) {
+                  selectedOptions.delete(optionId);
+                  this.classList.remove("selected");
+              } else {
+                  selectedOptions.add(optionId);
+                  this.classList.add("selected");
+              }
+
+              // ✅ 쉼표로 구분된 문자열로 변환하여 hidden input에 저장
+              hiddenInput.value = Array.from(selectedOptions).join(",");
+              console.log("📌 선택된 옵션 ID:", hiddenInput.value);
+          });
+      });
+
+      // ✅ form 제출 시 `optionIds`를 쉼표로 구분된 문자열로 변환하여 보냄
+      form.addEventListener("submit", function(event) {
+          hiddenInput.value = Array.from(selectedOptions).join(",");
+          console.log("🚀 최종 전송 데이터:", hiddenInput.value);
       });
   });
-
-  function updateSelectedOptions() {
-      let selectedOptions = [];
-      document.querySelectorAll('.option.selected').forEach(option => {
-          selectedOptions.push(option.getAttribute("data-option-id"));
-      });
-
-      // ✅ 선택된 옵션을 hidden input에 저장하여 폼으로 전송
-      document.getElementById("selectedOptionsInput").value = selectedOptions.join(",");
-
-      // ✅ 콘솔에 선택된 옵션 출력
-      console.clear();
-      console.log("📌 [선택된 옵션]");
-      selectedOptions.forEach(option => console.log("✔ 옵션 ID:", option));
-  }
-
-  // ✅ "다음" 버튼 클릭 시 최종 선택된 옵션 출력
-  document.querySelector('.next-btn').addEventListener('click', function(event) {
-      event.preventDefault(); // 기본 동작 방지 (디버깅용)
-
-      let selectedOptions = document.getElementById("selectedOptionsInput").value;
-      console.log("🚀 최종 선택된 옵션 리스트:", selectedOptions);
-
-      // ✅ 정상적으로 동작하면 페이지 이동
-      window.location.href = "/host/photos";
-  });
-
 </script>
 
 </body>

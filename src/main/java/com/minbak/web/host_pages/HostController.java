@@ -1,7 +1,13 @@
 package com.minbak.web.host_pages;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.minbak.web.host_pages.dto.CreateImageDto;
 import com.minbak.web.spring_security.CustomUserDetails;
 import org.apache.catalina.Host;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import com.minbak.web.host_pages.dto.HostDto;
@@ -13,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -21,6 +28,8 @@ import java.util.stream.Collectors;
 public class HostController {
     @Autowired
     private HostService hostService;
+    @Autowired
+    private GetUserNameService getUserNameService;
 
     @ModelAttribute("hostDto")
     public HostDto hostDto() {
@@ -39,7 +48,7 @@ public class HostController {
 
         // userName이 아직 설정되지 않았다면 DB에서 가져오기
         if (hostDto.getUserName() == null) {
-            String userName = hostService.getUserName(hostDto.getUserId());
+            String userName = getUserNameService.getUserName(hostDto.getUserId());
             hostDto.setUserName(userName);
             System.out.println("DB에서 가져온 userName: " + userName); // 로그 확인
         }
@@ -151,45 +160,49 @@ public class HostController {
     public String roomsOption(){
         return "host-pages/option";
     }
+    // ✅ 옵션 저장 (사용자가 선택한 옵션을 세션에 저장)
     @PostMapping("/option/save")
-    public String saveCharm(@ModelAttribute("hostDto") HostDto hostDto,
-                            @RequestParam("optionIds") String optionIds) {
+    public String saveOptions(@ModelAttribute("hostDto") HostDto hostDto,
+                              @RequestParam("optionIds") String optionIdsString) {
+        try {
+            // ✅ 쉼표(,)로 구분된 문자열을 `List<Integer>`로 변환
+            List<Integer> selectedOptions = Arrays.stream(optionIdsString.split(","))
+                    .map(String::trim)  // 공백 제거
+                    .map(Integer::parseInt) // Integer 변환
+                    .collect(Collectors.toList());
 
-        // ✅ 옵션 ID 리스트 저장 (Integer 변환)
-        List<Integer> selectedOptions = Arrays.stream(optionIds.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-        hostDto.setOptionIds(selectedOptions);
+            hostDto.setOptionIds(selectedOptions);
+            System.out.println("📌 [저장된 숙소 옵션] " + selectedOptions);
 
-        // ✅ 콘솔 로그 확인
-        System.out.println("📌 [저장된 숙소 옵션]");
-        selectedOptions.forEach(option -> System.out.println("선택한 옵션 ID: " + option));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ 옵션 변환 오류 발생!");
+        }
 
-        return "redirect:/host/photos"; // ✅ 다음 페이지로 이동
+        return "redirect:/host/photos"; // 다음 단계로 이동
     }
-
 
     @GetMapping("/photos")
     public String photos(){
         return "host-pages/photos";
     }
+    // ✅ 사진 저장 (사용자가 업로드한 이미지 리스트를 세션에 저장)
     @PostMapping("/photos/save")
     public String savePhotos(@ModelAttribute("hostDto") HostDto hostDto,
-                             @RequestParam("photoUrls") List<String> photoUrls) {
+                             @RequestParam("photoUrls") String photoUrlsJson) {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        // ✅ 기존 `imageUrls`이 있으면 유지하면서 추가
-        List<String> imageUrls = new ArrayList<>(hostDto.getImageUrls() != null ? hostDto.getImageUrls() : new ArrayList<>());
+        try {
+            List<CreateImageDto> imageFiles = objectMapper.readValue(photoUrlsJson, new TypeReference<List<CreateImageDto>>() {});
+            hostDto.setImageFiles(imageFiles);
+            System.out.println("📌 저장된 이미지 개수: " + imageFiles.size());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            System.out.println("❌ JSON 변환 오류 발생!");
+        }
 
-        imageUrls.addAll(photoUrls); // 새로운 이미지 URL 추가
-        hostDto.setImageUrls(imageUrls); // `hostDto`에 저장
-
-        // ✅ 콘솔 확인 (정상적으로 저장되는지)
-        System.out.println("📌 [업로드된 이미지 목록]");
-        hostDto.getImageUrls().forEach(url -> System.out.println("✔ " + url));
-
-        return "redirect:/host/roomName"; // ✅ 다음 페이지 이동
+        return "redirect:/host/roomName";
     }
-
 
     @GetMapping("/roomName")
     public String roomsName(){
@@ -279,22 +292,48 @@ public class HostController {
     }
 
     @GetMapping("/receipt")
-    public String receipt(@ModelAttribute("hostDto") HostDto hostDto,Model model){
-        model.addAttribute("hostDto", hostDto);
-
-        // 📌 콘솔 로그로 데이터 확인
-        System.out.println("📌 [미리보기 페이지 데이터]");
-        System.out.println("✔ 숙소 제목: " + hostDto.getTitle());
-        System.out.println("✔ 숙소 가격: " + hostDto.getPrice());
-        System.out.println("✔ 이미지 개수: " + (hostDto.getImageUrls() != null ? hostDto.getImageUrls().size() : 0));
+    public String reviewPage(@ModelAttribute("hostDto") HostDto hostDto, Model model) {
+        // ✅ `imageFiles`가 null이면 빈 리스트 전달 (오류 방지)
+        model.addAttribute("imageFiles", hostDto.getImageFiles() != null ? hostDto.getImageFiles() : new ArrayList<>());
 
         return "host-pages/receipt";
     }
+
 
     @GetMapping("/publish")
     public String publish(){
         return "host-pages/publish";
     }
 
+    // ✅ 최종 등록 페이지 (숙소 등록 요청)
+    @PostMapping("/register")
+    public ResponseEntity<?> registerRoom(@ModelAttribute("hostDto") HostDto hostDto,
+                                          @RequestParam(value = "imageFiles", required = false, defaultValue = "[]") String imageFilesJson,
+                                          @RequestParam(value = "optionIds", required = false, defaultValue = "[]") String optionIdsJson) {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            // 🔹 JSON 데이터를 Java 리스트로 변환
+            List<CreateImageDto> imageFiles = objectMapper.readValue(
+                    (imageFilesJson.equals("[]") || imageFilesJson.isBlank()) ? "[]" : imageFilesJson,
+                    new TypeReference<List<CreateImageDto>>() {});
+
+            List<Integer> optionIds = objectMapper.readValue(
+                    (optionIdsJson.equals("[]") || optionIdsJson.isBlank()) ? "[]" : optionIdsJson,
+                    new TypeReference<List<Integer>>() {});
+
+            // 🔹 DTO에 데이터 저장
+            hostDto.setImageFiles(imageFiles);
+            hostDto.setOptionIds(optionIds);
+
+            // ✅ 숙소 등록 실행
+            int roomId = hostService.insertRoom(hostDto);
+            return ResponseEntity.ok().body(Map.of("message", "숙소 등록 완료!", "roomId", roomId));
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ JSON 데이터 변환 오류");
+        }
+    }
 }
