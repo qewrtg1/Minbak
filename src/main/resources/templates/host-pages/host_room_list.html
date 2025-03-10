@@ -212,10 +212,16 @@
       <tr th:each="room : ${rooms}" class="clickable-row" th:data-href="@{/host/room/edit/{id}(id=${room.roomId})}">
         <td>
           <div style="display: flex; align-items: center; gap: 15px;">
-            <!-- ✅ 대표 이미지 -->
-            <img th:src="@{'/admin/api/file/list/' + ${room.roomId}}"
+            <!-- ✅ 대표 이미지 /'/admin/api/file/list/' + "@{.../-->
+            <img th:src="@{${room.roomId}}"
                  onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span style=\'color:red;\'>X</span>');"
-                 class="img-thumbnail" width="100">
+                 class="img-thumbnail"
+                 width="100">
+            <img th:src="${room.roomImageUrl}"
+                 alt="숙소 이미지"
+                 class="img-fluid rounded"
+                 style="width: 100px; object-fit: cover;">
+
           </div>
         </td>
         <td th:text="${room.name}"></td>

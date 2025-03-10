@@ -146,18 +146,24 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="host : ${hostPageDto.objects}">
+      <tr th:each="host : ${hostPageDto.objects}" class="clickable-row" th:data-href="@{/admin/users/detail/{id}(id=${host.userId})}">
         <td th:text="${host.hostId}">1</td>
         <td th:text="${host.name}">John Doe</td>
-        <td><a th:href="@{/admin/users/detail/{id}(id=${host.userId})}" th:text="${host.email}">johndoe@example.com</a></td>
+        <td th:text="${host.email}">johndoe@example.com</td>
+<!--    <td><a th:href="@{/admin/users/detail/{id}(id=${host.userId})}" th:text="${host.email}">johndoe@example.com</a></td>
+-->
         <td th:text="${host.phoneNumber}">Admin</td>
         <td th:text="${host.userEnabled ? 'Active' : 'Inactive'}">Active</td>
         <td th:text="${host.isVerified}">Active</td>
         <td th:text="${host.roomCount}">5</td>  <!-- 숙소개수 출력 -->
         <td th:text="${host.createdAt}">2022-03-15</td>
+<!--        <td>-->
+<!--          <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm">Delete</a>-->
+<!--        </td>-->
         <td>
-          <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm">Delete</a>
+          <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm" onclick="event.stopPropagation();">Delete</a>
         </td>
+
       </tr>
       </tbody>
     </table>
@@ -175,11 +181,24 @@
     </nav>
 
   </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".clickable-row").forEach(function (row) {
+        row.addEventListener("click", function () {
+          window.location.href = this.getAttribute("data-href");
+        });
+      });
+    });
+  </script>
+
 </th:block>
 <th:block layout:fragment="js">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Axios CDN을 통해 추가 -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </th:block>
+
+
 </body>
 </html>
