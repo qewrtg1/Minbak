@@ -83,9 +83,11 @@ public class UserMessageController {
         Integer userId =userDetails.getUserId();
         List<MessageDto> userMessagesDetail=messageService.showUserMessageDetail(userId,chatRoomId);
         String chatRoomName=usersService.findUserByUserId(chatRoomId).getName();
+        Collections.sort(userMessagesDetail, (m1, m2) -> m1.getSentAt().compareTo(m2.getSentAt()));
         model.addAttribute("userMessages",userMessagesDetail);
         model.addAttribute("userId",userDetails.getUserId());
         model.addAttribute("chatRoomName",chatRoomName);
+        model.addAttribute("chatRoomId",chatRoomId);
         return "/user-pages/user-message";
     }
     //    유저 읽음,안읽음 체크 기능
@@ -96,15 +98,19 @@ public class UserMessageController {
 
     }
     // 메세지 보내기(유저)
-    @PostMapping("/messageList/create")
-    public void createMessageInChatRoom(@RequestParam(required = false) Integer receiverId,
-                              @ModelAttribute MessageDto messageDto,
-                              @AuthenticationPrincipal CustomUserDetails userDetails,
-                              RedirectAttributes redirectAttributes,
-                              BindingResult bindingResult,
-                              Model model){
-
-
-    }
+//    @PostMapping("/messageList/create")
+//    public void createMessageInChatRoom(@RequestBody String content,
+//                                        @RequestBody String chatRoomId,
+//                              @ModelAttribute MessageDto messageDto,
+//                              @AuthenticationPrincipal CustomUserDetails userDetails){
+//
+//        messageDto.setContent(content);
+//        messageDto.setSenderId(userDetails.getUserId());
+//        messageDto.setReceiverId(Integer.valueOf(chatRoomId));
+//
+//        messageService.userCreateMessage(messageDto);
+//
+//
+//    }
 
 }

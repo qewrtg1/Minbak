@@ -143,6 +143,12 @@ public class MessageService {
 
         return messageDtos;
     }
+//  유저메세지 생성
+    public void userCreateMessage(MessageDto messageDto){
+        messageMapper.createMessage(messageDto);
+
+    }
+
 
 
 }

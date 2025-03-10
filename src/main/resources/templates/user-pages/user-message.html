@@ -56,7 +56,7 @@
 
 .chat-input {
     margin-top: 30px;
-    display: flex;
+<!--    display: flex;-->
 }
 
 .chat-input input {
@@ -96,11 +96,12 @@
           <!-- User Info -->
           <div class="d-flex flex-column">
             <h6 th:text="${userMessageList.ChatRoomUserName}" class="mb-1">유저 이름</h6>
-            <p class="text-muted small mb-0" th:text="${userMessageList.lastMessageContent}">마지막 메시지</p>
+            <p class="text-muted small mb-0" style="max-width:164px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" th:text="${userMessageList.lastMessageContent}">마지막 메시지</p>
+
           </div>
 
           <!-- Time -->
-          <span class="text-muted small ms-auto" th:text="${#temporals.format(userMessageList.lastMessageTime, 'yyyy년 M월 d일 HH시 mm분')}">2.20.</span>
+          <span class="text-muted small ms-auto" th:text="${#temporals.format(userMessageList.lastMessageTime, 'yyyy. M. d. a h:mm')}">2.20.</span>
           <!--읽음 읽지않음-->
           <span th:if="${userMessageList.isUnRead > 0}" class="badge bg-danger ms-auto">
             <span th:text="${userMessageList.isUnRead}"></span>
@@ -114,15 +115,20 @@
       <!-- 채팅 헤더 -->
       <div class="chat-header">
         <div th:if="userMessages != null">
-        <h5 th:text="${chatRoomName}">유저 이름</h5>
+          <h5 th:text="${chatRoomName}">유저 이름</h5>
         </div>
       </div>
 
       <!-- 채팅 메시지들 -->
       <div class="chat-messages">
-        <div th:each="userMessage : ${userMessages}" th:class="${userMessage.senderId == userId ? 'message sent' : 'message received'}">
+        <div th:each="userMessage : ${userMessages}"
+             th:class="${userMessage.senderId == userId ? 'message sent' : 'message received'}">
+
           <div th:class="${userMessage.senderId == userId ? 'message sent' : 'message received'}">
             <p th:text="${userMessage.content}"></p>
+
+            <!-- 보낸 시간 표시 (날짜 형식으로 표시) -->
+            <p class="message-time" th:text="${#temporals.format(userMessage.sentAt, 'yyyy. M. d. a h:mm:ss')}"></p>
           </div>
         </div>
       </div>
@@ -130,8 +136,8 @@
       <!-- 입력창 -->
       <div class="chat-input">
         <form id="messageForm">
-          <input type="text" class="form-control messageContent" placeholder="메시지를 입력하세요..." />
-          <input type="number" style="display:none" class="form-control" th:value="${chatRoomName}" />
+          <input type="text" class="form-control messageContent" placeholder="메시지를 입력하세요..." style="height: 100px; width: 100%; font-size: 16px;" />
+          <input type="number" style="display:none" class="form-control" id="chatRoomId" th:value="${chatRoomId}" />
           <button class="btn btn-primary">보내기</button>
         </form>
       </div>
@@ -141,46 +147,50 @@
 
 <script>
   function loadChat(element) {
-      let chatRoomId = element.getAttribute("data-chat-id");
-      window.location.href = '/user/messageList/' + chatRoomId;
+    let chatRoomId = element.getAttribute("data-chat-id");
+    window.location.href = '/user/messageList/' + chatRoomId;
   }
 
-<!--  비동기 ajax-->
+  // 비동기 ajax 처리
+  document.getElementById('messageForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // 페이지 리로딩을 방지
 
-    document.getElementById('messageForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // 페이지 리로딩을 방지
+    let content = document.querySelector('.messageContent').value;
+    let chatRoomId = document.getElementById('chatRoomId').value;
+    const currentTime = new Date().toISOString();  // 현재 시간을 ISO 형식으로 가져옵니다
 
-        const content = document.getElementById('messageContent').value;
+    // 메시지 전송
+    fetch('/user/messageList/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: content,    // 메시지 내용
+        receiverId: chatRoomId
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // 새 메시지를 UI에 추가
+        const messageBox = document.querySelector('.chat-messages');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', 'sent');
+        newMessage.innerHTML = `
+          <p>${content}</p>
+          <p class="message-time">${new Date(currentTime).toLocaleString()}</p>
+        `;
+        messageBox.appendChild(newMessage);
 
-        // AJAX로 메시지 전송
-        fetch('/messageList', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                content: content,
-                // 필요한 다른 데이터 (예: senderId, receiverId 등)
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // 메시지가 성공적으로 전송되었을 때
-            if (data.success) {
-                // 새 메시지를 UI에 추가 (예시)
-                const messageBox = document.getElementById('messages');
-                const newMessage = document.createElement('div');
-                newMessage.textContent = content;  // 응답받은 메시지 내용을 표시
-                messageBox.appendChild(newMessage);
-
-                // 메시지 입력칸 초기화
-                document.getElementById('messageContent').value = '';
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
+        // 메시지 입력칸 초기화
+        document.querySelector('.messageContent').value = '';
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
