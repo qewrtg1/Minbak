@@ -31,7 +31,6 @@ public class RoomOptionsDto {
     private String content;
     private String address;
     private int price;
-//    private List<String> amenities; // 편의시설 목록 추가
     private String amenities;
     // ✅ 추가: 편의시설을 List로 변환하여 사용할 수 있도록 함
     public List<String> getAmenitiesList() {

@@ -29,6 +29,7 @@ public class RoomOptionsController {
         return "roomOptions/roomOption-list";  // templates/roomOptions/roomOption-list.html 렌더링
     }
 
+
     // 2. 새 편의시설 추가 폼 표시
     @GetMapping("/create")
     public String showCreateForm(Model model) {
@@ -88,9 +89,29 @@ public class RoomOptionsController {
     @GetMapping("/test")
     public String getRoomsByAmenities(@RequestParam(required = false) List<String> amenities, Model model) {
         List<RoomOptionsDto> rooms = roomOptionsService.getRoomsByAmenities(amenities != null ? amenities : List.of());
-        model.addAttribute("rooms", rooms); // 모델에 숙소 리스트 추가
+        List<RoomOptionsDto> options = roomOptionsService.getAllRoomOptions();
+
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("options", options); // 편의시설 데이터 추가
+
+        System.out.println("전달된 숙소 목록: " + rooms);
+        System.out.println("전달된 편의시설 목록: " + options);
+
         return "roomOptions/roomOption-AllList"; // Thymeleaf에서 사용할 HTML 파일명 (roomOption-AllList.html)
     }
+
+    @GetMapping("/filter")
+    public String filterRoomOptions(Model model) {
+        List<RoomOptionsDto> options = roomOptionsService.getAllRoomOptions();
+
+        // 🔥 디버깅 코드 추가
+        System.out.println("Thymeleaf로 전달하는 options: " + options);
+
+        model.addAttribute("options", options);  // 모델에 데이터 추가
+        return "roomOptions/roomOption-AllList";  // Thymeleaf 템플릿 호출
+    }
+
+
 }
 
 

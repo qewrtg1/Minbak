@@ -36,7 +36,6 @@
     </delete>
 
 
-<!-- 다대다 기능으로 필요 없을 걸로 추정-->
     <select id="getAllRoomOption" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
         SELECT * FROM rooms
     </select>
