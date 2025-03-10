@@ -3,9 +3,12 @@ package com.minbak.web.host_pages;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.minbak.web.file_upload.FileService;
+import com.minbak.web.file_upload.ImageFileDto;
 import com.minbak.web.host_pages.dto.CreateImageDto;
 import com.minbak.web.spring_security.CustomUserDetails;
 import org.apache.catalina.Host;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,10 +19,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -30,6 +35,10 @@ public class HostController {
     private HostService hostService;
     @Autowired
     private GetUserNameService getUserNameService;
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private CreateHostMapper createHostMapper;
 
     @ModelAttribute("hostDto")
     public HostDto hostDto() {
@@ -186,23 +195,44 @@ public class HostController {
     public String photos(){
         return "host-pages/photos";
     }
+    @Value("${file.upload.directory}")
+    private String uploadDirectory;
     // ✅ 사진 저장 (사용자가 업로드한 이미지 리스트를 세션에 저장)
     @PostMapping("/photos/save")
     public String savePhotos(@ModelAttribute("hostDto") HostDto hostDto,
-                             @RequestParam("photoUrls") String photoUrlsJson) {
-        ObjectMapper objectMapper = new ObjectMapper();
+                             @RequestParam("files") MultipartFile[] files) {
 
-        try {
-            List<CreateImageDto> imageFiles = objectMapper.readValue(photoUrlsJson, new TypeReference<List<CreateImageDto>>() {});
-            hostDto.setImageFiles(imageFiles);
-            System.out.println("📌 저장된 이미지 개수: " + imageFiles.size());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            System.out.println("❌ JSON 변환 오류 발생!");
+        List<String> fileUrls = new ArrayList<>();
+        for(MultipartFile file : hostDto.getFiles()) {
+            try {
+                String originalFilename = file.getOriginalFilename();
+                String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+
+
+                //실제로 파일을 저장할 위치
+                Path filePath = Paths.get(uploadDirectory, uniqueFilename);
+                Files.copy(file.getInputStream(), filePath);
+
+                ImageFileDto imageFile = hostService.saveFile(uniqueFilename, originalFilename ,(int) file.getSize(),0 ,"rooms");
+                fileUrls.add(uniqueFilename);
+
+            } catch (IOException e) {
+                System.out.println(e);
+                return "redirect:/host/photos";
+            }
         }
+
+        hostDto.setFileUrls(fileUrls);
+
+        System.out.println(Arrays.toString(files));
+
 
         return "redirect:/host/roomName";
     }
+
+
+
+
 
     @GetMapping("/roomName")
     public String roomsName(){
@@ -294,7 +324,7 @@ public class HostController {
     @GetMapping("/receipt")
     public String reviewPage(@ModelAttribute("hostDto") HostDto hostDto, Model model) {
         // ✅ `imageFiles`가 null이면 빈 리스트 전달 (오류 방지)
-        model.addAttribute("imageFiles", hostDto.getImageFiles() != null ? hostDto.getImageFiles() : new ArrayList<>());
+
 
         return "host-pages/receipt";
     }
@@ -307,33 +337,19 @@ public class HostController {
 
     // ✅ 최종 등록 페이지 (숙소 등록 요청)
     @PostMapping("/register")
-    public ResponseEntity<?> registerRoom(@ModelAttribute("hostDto") HostDto hostDto,
-                                          @RequestParam(value = "imageFiles", required = false, defaultValue = "[]") String imageFilesJson,
-                                          @RequestParam(value = "optionIds", required = false, defaultValue = "[]") String optionIdsJson) {
+    public String registerRoom(@ModelAttribute("hostDto") HostDto hostDto){
+        List<String> fileUrls = hostDto.getFileUrls();  // HostDto에서 fileUrls를 가져옴
 
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            // 🔹 JSON 데이터를 Java 리스트로 변환
-            List<CreateImageDto> imageFiles = objectMapper.readValue(
-                    (imageFilesJson.equals("[]") || imageFilesJson.isBlank()) ? "[]" : imageFilesJson,
-                    new TypeReference<List<CreateImageDto>>() {});
-
-            List<Integer> optionIds = objectMapper.readValue(
-                    (optionIdsJson.equals("[]") || optionIdsJson.isBlank()) ? "[]" : optionIdsJson,
-                    new TypeReference<List<Integer>>() {});
-
-            // 🔹 DTO에 데이터 저장
-            hostDto.setImageFiles(imageFiles);
-            hostDto.setOptionIds(optionIds);
-
-            // ✅ 숙소 등록 실행
-            int roomId = hostService.insertRoom(hostDto);
-            return ResponseEntity.ok().body(Map.of("message", "숙소 등록 완료!", "roomId", roomId));
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ JSON 데이터 변환 오류");
+        hostService.insertRoom(hostDto);
+        int roomId = hostDto.getRoomId();  // 생성된 roomId를 가져옴
+        createHostMapper.insertRoomOptions(hostDto.getRoomId(),hostDto.getOptionIds());
+        for (String fileUrl : fileUrls){
+            hostService.updateRoomImages(fileUrl, roomId);
         }
+
+
+
+        return "redirect:/host/today";
     }
 }

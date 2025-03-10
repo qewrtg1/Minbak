@@ -147,11 +147,13 @@
   </form>
 </div>
 
-<script>
+<script th:inline="javascript">
   document.addEventListener("DOMContentLoaded", function() {
       const options = document.querySelectorAll(".option");
       const hiddenInput = document.getElementById("selectedOptionsInput");
       const form = document.querySelector("#optionForm");
+
+
 
       // ✅ 기존 선택된 옵션을 JavaScript에서 처리
       let selectedOptions = new Set();

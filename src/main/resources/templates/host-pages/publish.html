@@ -85,32 +85,6 @@
 
 <!-- ✅ 숙소 데이터 최종 전송 폼 -->
 <form th:action="@{/host/register}" method="post">
-  <input type="hidden" name="roomId" th:value="${hostDto.roomId}">
-  <input type="hidden" name="userId" th:value="${hostDto.userId}">
-  <input type="hidden" name="userName" th:value="${hostDto.userName}">
-  <input type="hidden" name="name" th:value="${hostDto.name}">
-  <input type="hidden" name="title" th:value="${hostDto.title}">
-  <input type="hidden" name="content" th:value="${hostDto.content}">
-  <input type="hidden" name="address" th:value="${hostDto.address}">
-  <input type="hidden" name="price" th:value="${hostDto.price}">
-  <input type="hidden" name="useGuide" th:value="${hostDto.useGuide}">
-  <input type="hidden" name="buildingType" th:value="${hostDto.buildingType}">
-  <input type="hidden" name="latitude" th:value="${hostDto.latitude}">
-  <input type="hidden" name="longitude" th:value="${hostDto.longitude}">
-  <input type="hidden" name="maxGuests" th:value="${hostDto.maxGuests}">
-  <input type="hidden" name="bedrooms" th:value="${hostDto.bedrooms}">
-  <input type="hidden" name="beds" th:value="${hostDto.beds}">
-  <input type="hidden" name="bathrooms" th:value="${hostDto.bathrooms}">
-
-  <!-- ✅ 이미지 리스트를 JSON 문자열로 변환하여 전달 -->
-  <input type="hidden" name="imageFiles"
-         th:if="${hostDto.imageFiles != null and not #lists.isEmpty(hostDto.imageFiles)}"
-         th:value="${hostDto.imageFiles}">
-
-  <!-- ✅ 옵션 리스트를 JSON 문자열로 변환하여 전달 -->
-  <input type="hidden" name="optionIds"
-         th:if="${hostDto.optionIds != null and not #lists.isEmpty(hostDto.optionIds)}"
-         th:value="${hostDto.optionIds}">
   <button type="submit" class="start-btn">시작하기</button>
 </form>
 

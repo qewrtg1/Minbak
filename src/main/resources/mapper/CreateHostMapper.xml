@@ -6,10 +6,10 @@
 
     <!-- 숙소 등록 -->
     <insert id="insertRoom" useGeneratedKeys="true" keyProperty="roomId">
-        INSERT INTO rooms (user_id, name, title, content, address, price, use_guide, building_type, latitude, longitude, max_guests, bedrooms, beds, bathrooms)
+        INSERT INTO rooms (user_id, name, title, content, address, price, use_guide,
+        building_type, latitude, longitude, max_guests, bedrooms, beds, bathrooms)
         VALUES (
-        (SELECT user_id FROM users WHERE name = #{userName}),  -- ✅ JOIN으로 user_id 가져오기
-        #{name}, #{title}, #{content}, #{address}, #{price}, #{useGuide}, #{buildingType},
+        #{userId},#{name}, #{title}, #{content}, #{address}, #{price}, #{useGuide}, #{buildingType},
         #{latitude}, #{longitude}, #{maxGuests}, #{bedrooms}, #{beds}, #{bathrooms}
         )
     </insert>
@@ -18,7 +18,7 @@
     <insert id="insertRoomImages">
         INSERT INTO image_files (file_url, file_name, file_size, uploaded_at, user_id, entity_type, entity_id)
         VALUES
-        <foreach collection="hostDto.imageFiles" item="image" separator=",">
+        <foreach collection="hostDto.files" item="image" separator=",">
             (#{image.fileUrl}, #{image.fileName}, #{image.fileSize}, NOW(), #{image.userId}, 'rooms', #{roomId})
         </foreach>
     </insert>
@@ -37,7 +37,11 @@
     </select>
 
 
-
+    <update id="updateRoomImages">
+        UPDATE image_files
+        SET entity_id = #{roomId}
+        WHERE file_url = #{fileUrl}
+    </update>
 
 
 

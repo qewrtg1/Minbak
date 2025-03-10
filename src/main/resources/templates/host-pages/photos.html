@@ -78,96 +78,32 @@
 <p>최소 1장, 최대 5장의 사진을 업로드하세요.</p>
 
 <!-- ✅ 사진 업로드 -->
-<div class="upload-container" onclick="document.getElementById('photoUpload').click()">
-  <i class="fas fa-upload"></i>
-  <span>클릭하여 사진 추가</span>
-  <input type="file" id="photoUpload" accept="image/*" multiple>
-</div>
+<form action="/host/photos/save" method="post" enctype="multipart/form-data">
 
-<!-- ✅ 선택된 사진 미리보기 -->
-<div class="photo-preview" id="photoPreview">
-  <div th:each="image, iterStat : ${hostDto.imageFiles}" class="photo-item">
-    <img th:src="${image.fileUrl}" alt="숙소 이미지"/>
-    <button class="delete-btn" type="button" th:data-index="${iterStat.index}" onclick="deletePhoto(this)">x</button>
+  <label for="photoUpload" class="upload-container">
+    <i class="fas fa-upload"></i>
+    <span>클릭하여 사진 추가</span>
+  </label>
+  <input type="file" id="photoUpload" name="files" accept="image/*" multiple>
+
+
+
+  <!-- ✅ 선택된 사진 미리보기
+  <div class="photo-preview" id="photoPreview">
+    <div th:each="image, iterStat : ${hostDto.imageFiles}" class="photo-item">
+      <img th:src="${image.fileUrl}" alt="숙소 이미지"/>
+      <button class="delete-btn" type="button" th:data-index="${iterStat.index}" onclick="deletePhoto(this)">x</button>
+    </div>
   </div>
-</div>
 
-<!-- ✅ 다음 버튼 -->
-<form action="/host/photos/save" method="post">
-  <input type="hidden" name="photoUrls" id="photoUrls">
-  <button type="submit" class="next-btn" onclick="savePhotos()">다음</button>
+   ✅ 다음 버튼 -->
+
+
+  <button type="submit" class="next-btn">다음</button>
 </form>
 
 <script>
-  let uploadedPhotos = [];  // ✅ 이미지 리스트 저장
 
-  // ✅ 기존 이미지 불러오기 (뒤로 가기 시 유지)
-  document.addEventListener("DOMContentLoaded", function() {
-    const savedPhotos = document.querySelectorAll(".photo-item img");
-    savedPhotos.forEach((img) => {
-        uploadedPhotos.push({ fileUrl: img.src, fileName: "" }); // ✅ 객체로 저장
-    });
-});
-
-  document.getElementById("photoUpload").addEventListener("change", function(event) {
-    const files = event.target.files;
-
-    if (uploadedPhotos.length + files.length > 5) {
-        alert("최대 5장의 사진만 업로드 가능합니다.");
-        return;
-    }
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            if (uploadedPhotos.length < 5) {
-                uploadedPhotos.push({ fileUrl: e.target.result, fileName: file.name });
-                displayPhoto(e.target.result, uploadedPhotos.length - 1);
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-
-    event.target.value = "";  // ✅ 파일 선택 창 리셋
-  });
-
-  function displayPhoto(photo, index) {
-    const div = document.createElement("div");
-    div.classList.add("photo-item");
-
-    const img = document.createElement("img");
-    img.src = photo;
-    div.appendChild(img);
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.innerText = "x";
-    deleteBtn.classList.add("delete-btn");
-    deleteBtn.setAttribute("data-index", index);
-    deleteBtn.onclick = function() { deletePhoto(this); };
-    div.appendChild(deleteBtn);
-
-    document.getElementById("photoPreview").appendChild(div);
-  }
-
-  function deletePhoto(element) {
-    const index = parseInt(element.getAttribute("data-index"));
-    uploadedPhotos.splice(index, 1);
-    document.getElementById("photoPreview").innerHTML = "";
-
-    uploadedPhotos.forEach((photo, i) => displayPhoto(photo, i));
-    console.log("🗑️ 삭제 후 남은 사진:", uploadedPhotos);
-  }
-
-  function savePhotos() {
-    if (uploadedPhotos.length === 0) {
-        alert("최소 1장의 사진을 업로드해주세요!");
-        return;
-    }
-
-    document.getElementById("photoUrls").value = JSON.stringify(uploadedPhotos);
-    console.log("✅ 저장된 이미지 리스트:", document.getElementById("photoUrls").value);
-}
 </script>
 
 </body>
