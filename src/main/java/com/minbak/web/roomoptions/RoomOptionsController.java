@@ -104,7 +104,7 @@ public class RoomOptionsController {
     public String filterRoomOptions(Model model) {
         List<RoomOptionsDto> options = roomOptionsService.getAllRoomOptions();
 
-        // 🔥 디버깅 코드 추가
+        // 디버깅 코드
         System.out.println("Thymeleaf로 전달하는 options: " + options);
 
         model.addAttribute("options", options);  // 모델에 데이터 추가

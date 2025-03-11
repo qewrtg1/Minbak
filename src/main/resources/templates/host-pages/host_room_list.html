@@ -212,11 +212,11 @@
       <tr th:each="room : ${rooms}" class="clickable-row" th:data-href="@{/host/room/edit/{id}(id=${room.roomId})}">
         <td>
           <div style="display: flex; align-items: center; gap: 15px;">
-            <!-- ✅ 대표 이미지 /'/admin/api/file/list/' + "@{.../-->
-            <img th:src="@{${room.roomId}}"
-                 onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span style=\'color:red;\'>X</span>');"
-                 class="img-thumbnail"
-                 width="100">
+<!--            &lt;!&ndash;대표 이미지 /'/admin/api/file/list/' + "@{.../&ndash;&gt;-->
+<!--            <img th:src="@{${room.roomId}}"-->
+<!--                 onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span style=\'color:red;\'>X</span>');"-->
+<!--                 class="img-thumbnail"-->
+<!--                 width="100">-->
             <img th:src="${room.roomImageUrl}"
                  alt="숙소 이미지"
                  class="img-fluid rounded"
