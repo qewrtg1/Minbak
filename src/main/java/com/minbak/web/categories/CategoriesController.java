@@ -1,8 +1,10 @@
 package com.minbak.web.categories;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -32,7 +34,7 @@ public class CategoriesController {
 
     // [C] 신규 카테고리 등록 처리
     @PostMapping
-    public String createCategory(@ModelAttribute("category") CategoriesDto categoriesDto) {
+    public String createCategory(@Valid @ModelAttribute("category") CategoriesDto categoriesDto, BindingResult result) {
         categoriesService.createCategory(categoriesDto);
         return "redirect:/admin/categories"; // 리다이렉트 URL 수정
     }

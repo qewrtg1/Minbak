@@ -26,16 +26,16 @@ public class RoomOptionsDto {
 
 
 
-// 이하 dto는 테스트용임 //
+    // 이하 dto는 테스트용임 //
     private int roomId;
     private String content;
     private String address;
     private int price;
     private String amenities;
-    // ✅ 추가: 편의시설을 List로 변환하여 사용할 수 있도록 함
+    // 편의시설을 List로 변환
     public List<String> getAmenitiesList() {
         if (amenities != null && !amenities.isEmpty()) {
-            return Arrays.asList(amenities.split(", "));  // 쉼표를 기준으로 나누어 리스트로 변환
+            return Arrays.asList(amenities.split(", "));  // 쉼표를 기준으로 나눔
         }
         return List.of(); // 빈 리스트 반환
     }
