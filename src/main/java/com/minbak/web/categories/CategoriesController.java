@@ -35,8 +35,11 @@ public class CategoriesController {
     // [C] 신규 카테고리 등록 처리
     @PostMapping
     public String createCategory(@Valid @ModelAttribute("category") CategoriesDto categoriesDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return "admin/category-Create"; // 유효성 검사 실패 시 다시 입력 폼으로 이동
+        }
         categoriesService.createCategory(categoriesDto);
-        return "redirect:/admin/categories"; // 리다이렉트 URL 수정
+        return "redirect:/admin/categories"; // 성공 시 카테고리 목록 페이지로 이동
     }
 
     // [U] 기존 카테고리 수정 폼 표시
