@@ -27,8 +27,8 @@
     </resultMap>
 
     <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
-        insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
-        values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{status}, #{userId}, #{roomId})
+        insert into books(start_date, end_date, guests_num, request, user_id, room_id)
+        values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{userId}, #{roomId})
     </insert>
 
     <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">

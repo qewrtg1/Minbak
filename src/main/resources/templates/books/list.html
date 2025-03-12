@@ -172,6 +172,12 @@
                       <input type="radio" name="statusFilter" value="대기">대기
                     </label>
                     <label>
+                      <input type="radio" name="statusFilter" value="수락">수락
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="거절">거절
+                    </label>
+                    <label>
                       <input type="radio" name="statusFilter" value="완료">완료
                     </label>
                     <label>
@@ -218,6 +224,8 @@
               <form th:action="@{|/admin/books/updateStatus/${books.bookId}|}" method="post">
                 <select name="status" th:value="${books.status}" onchange="this.form.submit()" class="form-control">
                   <option value="대기" th:selected="${books.status == '대기'}">대기</option>
+                  <option value="수락" th:selected="${books.status == '수락'}">수락</option>
+                  <option value="거절" th:selected="${books.status == '거절'}">거절</option>
                   <option value="완료" th:selected="${books.status == '완료'}">완료</option>
                   <option value="취소" th:selected="${books.status == '취소'}">취소</option>
                 </select>

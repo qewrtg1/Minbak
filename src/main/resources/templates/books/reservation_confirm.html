@@ -35,6 +35,9 @@
       border-radius: 8px;
       padding: 4px;
     }
+    .txtarea1 div {
+      display: flex;
+    }
     .msgToHost {
       border: none;
       margin: 0;
@@ -85,7 +88,7 @@
         <div>
           <div class="txtarea1">
             <div dir="ltr">
-              <textarea class="msgToHost" placeholder='예: "안녕하세요. 파트너와 함께 친구 결혼식에 참석할 예정인데, 숙소가 결혼식장에서 가까워서 마음에 듭니다."'></textarea>
+              <textarea id="msgToHostText" class="msgToHost" placeholder='예: "안녕하세요. 파트너와 함께 친구 결혼식에 참석할 예정인데, 숙소가 결혼식장에서 가까워서 마음에 듭니다."'></textarea>
             </div>
           </div>
         </div>
@@ -114,6 +117,7 @@
           <input type="hidden" name="endDate" id="hiddenCheckOutDate" th:value="${checkOutDate}">
           <input type="hidden" name="guestsNum" id="hiddenGuestCount" th:value="${guestCount}">
           <input type="hidden" name="totalPrice" id="hiddenTotalPrice">
+          <input type="hidden" name="request" id="hiddenRequest">
 
           <h5>요금 세부정보</h5>
           <p>
@@ -215,12 +219,14 @@ flatpickr("#checkOutDate", {
     const totalPriceText = document.getElementById("totalPrice");
     const finalTotalText = document.getElementById("finalTotal");
     const pricePerNight = [[${room.pricePerNight}]];
+    const msgToHostText = document.getElementById("msgToHostText");
 
 
     const hiddenCheckIn = document.getElementById("hiddenCheckInDate");
     const hiddenCheckOut = document.getElementById("hiddenCheckOutDate");
     const hiddenGuestCount = document.getElementById("hiddenGuestCount");
     const hiddenTotalPrice = document.getElementById("hiddenTotalPrice");
+    const hiddenRequest = document.getElementById("hiddenRequest");
 function updatePrice() {
     const checkInDate = new Date(checkInInput.value);
     const checkOutDate = new Date(checkOutInput.value);
@@ -260,6 +266,16 @@ function updatePrice() {
     });
 
     updatePrice();
+
+    // 메시지가 변경될 때마다 hidden 필드에 값 전달
+    msgToHostText.addEventListener("input", function () {
+        hiddenRequest.value = msgToHostText.value;
+    });
+
+    // 예약 버튼 클릭 시에도 처리
+    document.getElementById("reservationForm").addEventListener("submit", function (event) {
+        hiddenRequest.value = msgToHostText.value; // 폼 제출 전에 최종 값 전달
+    });
 });
 
 </script>
