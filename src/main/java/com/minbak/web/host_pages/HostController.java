@@ -323,9 +323,15 @@ public class HostController {
 
     @GetMapping("/receipt")
     public String reviewPage(@ModelAttribute("hostDto") HostDto hostDto, Model model) {
-        // ✅ `imageFiles`가 null이면 빈 리스트 전달 (오류 방지)
+        // ✅ 이미지 파일 URL이 없으면 기본 이미지 설정
+        if (hostDto.getFileUrls() == null || hostDto.getFileUrls().isEmpty()) {
+            List<String> defaultImages = new ArrayList<>();
+            defaultImages.add("https://via.placeholder.com/500x300?text=No+Image");
+            hostDto.setFileUrls(defaultImages);
+        }
 
-
+        model.addAttribute("imageFiles", hostDto.getFileUrls());
+        System.out.println("📌 [이미지 파일 리스트]: " + hostDto.getFileUrls());
         return "host-pages/receipt";
     }
 

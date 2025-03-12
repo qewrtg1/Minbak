@@ -103,16 +103,16 @@
 <div class="preview-container">
   <!-- ✅ 첫 번째 이미지 표시 (없으면 기본 이미지) -->
   <img id="roomImage"
-       th:src="${#lists.isEmpty(imageFiles) ? 'https://via.placeholder.com/500x300?text=No+Image' : imageFiles[0].fileUrl}"
+       th:src="${(imageFiles != null and not #lists.isEmpty(imageFiles)) ? '/uploads/' + imageFiles[0] : 'https://via.placeholder.com/500x300?text=No+Image'}"
        alt="숙소 이미지"
        class="main-image">
 
+
   <!-- ✅ 숙소 정보 -->
   <div class="room-info">
-    <h2 th:text="${hostDto.title}">숙소 제목</h2>
+    <h2 th:text="${hostDto.title}"></h2>
+    <p th:text="${hostDto.address}">숙소 위치가 여기에 표시됩니다.</p>
     <p class="price" th:text="|₩${#numbers.formatInteger(hostDto.price, 3, 'COMMA')} /박|">₩ 숙소 가격</p>
-    <h2>숙소 설명</h2>
-    <p th:text="${hostDto.content}">숙소 설명이 여기에 표시됩니다.</p>
   </div>
 </div>
 
@@ -120,11 +120,10 @@
 <a href="/host/publish" class="next-btn">다음</a>
 
 <script th:inline="javascript">
-  /* 🔍 디버깅용 콘솔 로그 추가 */
-  let images = [[${imageFiles}]];
+  let images = [[${hostDto.fileUrls}]];
   console.log("📌 [이미지 개수]:", images.length);
   if (images.length > 0) {
-      console.log("📌 [첫 번째 이미지 URL]:", images[0].fileUrl);
+      console.log("📌 [첫 번째 이미지 URL]:", images[0]);
   }
 </script>
 

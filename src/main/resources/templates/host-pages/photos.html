@@ -34,8 +34,8 @@
     .photo-preview { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
     .photo-item {
       position: relative;
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
@@ -84,10 +84,9 @@
     <i class="fas fa-upload"></i>
     <span>클릭하여 사진 추가</span>
   </label>
-  <input type="file" id="photoUpload" name="files" accept="image/*" multiple>
-
-
-
+  <input type="file" id="photoUpload" name="files" accept="image/*" multiple hidden>
+  <!-- ✅ 선택된 사진 미리보기 -->
+  <div class="photo-preview" id="photoPreview"></div>
   <!-- ✅ 선택된 사진 미리보기
   <div class="photo-preview" id="photoPreview">
     <div th:each="image, iterStat : ${hostDto.imageFiles}" class="photo-item">
@@ -103,7 +102,89 @@
 </form>
 
 <script>
+  const fileInput = document.getElementById("photoUpload");
+  const previewContainer = document.getElementById("photoPreview");
+  let selectedFiles = []; // 선택된 파일 리스트
 
+  fileInput.addEventListener("change", function(event) {
+      const files = Array.from(event.target.files);
+
+      if (selectedFiles.length + files.length > 5) {
+          alert("최대 5장의 사진만 업로드할 수 있습니다.");
+          return;
+      }
+
+      files.forEach(file => {
+          if (selectedFiles.length >= 5) return;
+
+          selectedFiles.push(file); // 파일 배열에 추가
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              const photoItem = document.createElement("div");
+              photoItem.classList.add("photo-item");
+
+              const imgElement = document.createElement("img");
+              imgElement.src = e.target.result;
+
+              const deleteButton = document.createElement("button");
+              deleteButton.classList.add("delete-btn");
+              deleteButton.innerHTML = "×";
+
+              const fileIndex = selectedFiles.length - 1;
+              deleteButton.setAttribute("data-index", fileIndex);
+              deleteButton.onclick = function() {
+                  removePhoto(fileIndex);
+              };
+
+              photoItem.appendChild(imgElement);
+              photoItem.appendChild(deleteButton);
+              previewContainer.appendChild(photoItem);
+          };
+          reader.readAsDataURL(file);
+      });
+
+      updateFileInput();
+  });
+
+  function removePhoto(index) {
+      selectedFiles.splice(index, 1); // 파일 리스트에서 제거
+      renderPreview();
+      updateFileInput();
+  }
+
+  function renderPreview() {
+      previewContainer.innerHTML = "";
+      selectedFiles.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              const photoItem = document.createElement("div");
+              photoItem.classList.add("photo-item");
+
+              const imgElement = document.createElement("img");
+              imgElement.src = e.target.result;
+
+              const deleteButton = document.createElement("button");
+              deleteButton.classList.add("delete-btn");
+              deleteButton.innerHTML = "×";
+              deleteButton.setAttribute("data-index", index);
+              deleteButton.onclick = function() {
+                  removePhoto(index);
+              };
+
+              photoItem.appendChild(imgElement);
+              photoItem.appendChild(deleteButton);
+              previewContainer.appendChild(photoItem);
+          };
+          reader.readAsDataURL(file);
+      });
+  }
+
+  function updateFileInput() {
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => dataTransfer.items.add(file));
+      fileInput.files = dataTransfer.files; // ✅ input 파일 리스트 업데이트
+  }
 </script>
 
 </body>
