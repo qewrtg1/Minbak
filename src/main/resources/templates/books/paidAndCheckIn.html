@@ -53,49 +53,38 @@
 <th:block layout:fragment="content">
     <main class="main-content">
         <div class="books">
-            <!--헤더-->
-            <div class="booksHead">
-                <h3 class="text-center">예약 관리</h3>
-                <div class="menu">
-                    <a href="/admin/books" class="btn btn-primary">예약목록</a>
-                    <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
-                    <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
-                    <a href="/admin/books/paidAndCheckIn" class="btn btn-secondary">투숙예정</a>
-                </div>
-            </div>
-        </div>
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>투숙일</th>
-                <th>숙소명</th>
-                <th>예약자명</th>
-                <th>연락처</th>
-                <th>입금확인일</th>
-                <th>결제금액</th>
-                <th>입금상태</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="book : ${paidAndCheckIn}">
-                <td th:text="${book.startDate}"></td>
-                <td th:text="${book.room.name}"></td>
-                <td th:text="${book.user.name}"></td>
-                <td th:text="${book.user.phoneNumber}"></td>
-                <td th:text="${book.payment.paidAt}"></td>
-                <td th:text="${book.payment.amount}"></td>
-                <td th:text="${book.payment.status}"
-                    th:class="${book.payment.status.equals('결제 완료')} ? 'confirmed' :
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>투숙일</th>
+                    <th>숙소명</th>
+                    <th>예약자명</th>
+                    <th>연락처</th>
+                    <th>입금확인일</th>
+                    <th>결제금액</th>
+                    <th>입금상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book : ${paidAndCheckIn}">
+                    <td th:text="${book.startDate}"></td>
+                    <td th:text="${book.room.name}"></td>
+                    <td th:text="${book.user.name}"></td>
+                    <td th:text="${book.user.phoneNumber}"></td>
+                    <td th:text="${book.payment.paidAt}"></td>
+                    <td th:text="${book.payment.amount}"></td>
+                    <td th:text="${book.payment.status}"
+                        th:class="${book.payment.status.equals('결제 완료')} ? 'confirmed' :
                           (${book.payment.status.equals('결제 대기')} ? 'pending' : 'cancelled')"></td>
-            </tr>
-            </tbody>
-        </table>
+                </tr>
+                </tbody>
+            </table>
 
-        <!--푸터-->
-        <div class="booksFoot">
-            <hr>
-            <h4>Copyright &copy; All rights reserved.</h4>
+            <!--푸터-->
+            <div class="booksFoot">
+                <hr>
+                <h4>Copyright &copy; All rights reserved.</h4>
+            </div>
         </div>
     </main>
 </th:block>

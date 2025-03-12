@@ -108,10 +108,15 @@
     </select>
 
     <update id="editBook" parameterType="com.minbak.web.books.BooksDto">
-        update books
-        set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestsNum}, request=#{request},
-        status=#{status}
-        where book_id=#{bookId}
+        UPDATE books b
+        JOIN rooms r ON r.name = #{roomName}
+        SET b.start_date = #{startDate},
+        b.end_date = #{endDate},
+        b.guests_num = #{guestsNum},
+        b.request = #{request},
+        b.status = #{status},
+        b.room_id = r.room_id
+        WHERE b.book_id = #{bookId};
     </update>
 
     <delete id="deleteBook" parameterType="Integer">
@@ -135,6 +140,7 @@
         join rooms r on b.room_id = r.room_id
         join users u on b.user_id = u.user_id
         where b.status = '대기'
+        and b.start_date > current_date()
         order by b.start_date;
     </select>
 
@@ -144,6 +150,7 @@
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
+        where b.start_date > current_date()
         order by b.start_date
     </select>
 
