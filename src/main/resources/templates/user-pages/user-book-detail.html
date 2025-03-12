@@ -166,10 +166,14 @@
         <i class="bi bi-chat-dots me-2"></i>
         <div>
           <p class="mb-0 fw-bold">호스트에게 메시지 보내기</p>
-          <div>
-            컴포넌트
-          </div>
           <p class="text-muted small" th:text="${book.user.name}">키다리여우</p>
+          <div class="chat-input">
+            <form id="messageForm">
+              <input type="text" class="form-control messageContent" placeholder="메시지를 입력하세요..." style="height: 100px; width: 100%; font-size: 16px;" />
+              <input type="number" style="display:none" class="form-control" id="chatRoomId" th:value="${book.user.userId}" />
+              <button class="btn btn-primary">보내기</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
