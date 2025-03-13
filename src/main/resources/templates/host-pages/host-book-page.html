@@ -162,7 +162,7 @@
         let hasVisibleReservations = false;
 
         reservations.forEach(reservation => {
-            let reservationStatus = reservation.querySelector(".status-대기, .status-수락, .status-거절");
+            let reservationStatus = reservation.querySelector(".status-대기, .status-수락, .status-거절, .status-완료, .status-취소");
 
             if (!reservationStatus) return;
 
