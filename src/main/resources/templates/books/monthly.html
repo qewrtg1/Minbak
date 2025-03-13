@@ -7,16 +7,14 @@
   <title>월별 예약현황</title>
   <th:block layout:fragment="css">
     <style>
-      /* main-content 너비 설정 */
       .main-content {
         width: 1680px;
         height: 100vh;
-        overflow-y:auto;
+        overflow-y: auto;
         padding: 20px;
         margin: 50px auto;
       }
 
-      /* 메뉴 스타일 */
       .menu {
         display: flex;
         justify-content: center;
@@ -41,7 +39,6 @@
         align-items: center;
       }
 
-      /* 검색 및 테이블 스타일 */
       table {
         margin-bottom: 30px;
         width: 100%;
@@ -54,17 +51,47 @@
         text-align: center;
       }
 
-      td:first-child {
-        white-space: nowrap;
-        max-width: 200px;
-        overflow: hidden;
-        text-overflow:
+      /* 숙소명 칸 스타일 (가로 정렬 유지) */
+        td:first-child {
+            white-space: nowrap;  /* 줄바꿈 방지 */
+            max-width: 200px;  /* 최대 너비 설정 (조절 가능) */
+            overflow: hidden;
+            text-overflow: ellipsis;  /* 너무 길면 '...' 처리 */
+        }
+
+      /* 예약 상태별 색상 */
+      .status-대기 { background-color: yellow; }
+      .status-완료 { background-color: lightgreen; }
+
+      /* 검색 및 필터 */
+      .filter-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
       }
 
-      /* 푸터 스타일 */
-      .booksFoot h4 {
-        text-align: center;
-        margin-top: 30px;
+      /* 모달 스타일 */
+      .modal {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .modal .close {
+        float: right;
+        cursor: pointer;
+      }
+
+      /* 통계 그래프 */
+      .chart-container {
+        margin-top: 20px;
+        width: 50%;
       }
     </style>
   </th:block>
@@ -74,11 +101,27 @@
   <main class="main-content">
     <div class="books">
       <div class="MonthlyBook">
+
+        <!-- 필터 -->
+        <div class="filter-container">
+          <input type="text" id="search-room" placeholder="숙소명 검색">
+          <select id="status-filter" onchange="filterByStatus()">
+            <option value="">전체</option>
+            <option value="대기">대기</option>
+            <option value="완료">완료</option>
+            <option value="취소">취소</option>
+          </select>
+          <button onclick="downloadExcel()">Excel 다운로드</button>
+        </div>
+
+        <!-- 월별 이동 -->
         <div class="month-pagination">
           <a th:href="@{/admin/books/monthly(year=${prevYear}, month=${prevMonth})}" class="btn btn-primary">«</a>
           <div th:text="${selectedYear} + '년' + ${selectedMonth} + '월'"></div>
           <a th:href="@{/admin/books/monthly(year=${nextYear}, month=${nextMonth})}" class="btn btn-primary">»</a>
         </div>
+
+        <!-- 예약 현황 테이블 -->
         <table>
           <thead>
           <tr>
@@ -92,18 +135,22 @@
             <td th:each="date : ${datesInMonth}">
               <span th:if="${entry.value.containsKey(date)}"
                     th:text="${entry.value.get(date)}"
-                    th:clallappend="${
-                          entry.value.get(date) == '대기' ? '대기' :
-                          entry.value.get(date) == '완료' ? '완료' : ''
-                    }">
+                    th:classappend="'status-' + ${entry.value.get(date)}"
+                    th:onclick="showDetails('숙소: ' + [[${entry.key}]] + ', 날짜: ' + [[${date}]] + ', 상태: ' + [[${entry.value.get(date)}]])">
               </span>
             </td>
           </tr>
           </tbody>
         </table>
+
+        <!-- 예약 상세 모달창 -->
+        <div id="reservation-modal" class="modal">
+          <span onclick="closeModal()" class="close">&times;</span>
+          <p id="reservation-details"></p>
+        </div>
       </div>
 
-      <!--푸터-->
+      <!-- 푸터 -->
       <div class="booksFoot">
         <hr>
         <h4>Copyright &copy; All rights reserved.</h4>
@@ -112,6 +159,41 @@
   </main>
 </th:block>
 <th:block layout:fragment="js">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // 숙소 검색 필터
+    function filterRooms() {
+      let searchText = document.getElementById("search-room").value.toLowerCase();
+      document.querySelectorAll("tbody tr").forEach(row => {
+        let roomName = row.cells[0].innerText.toLowerCase();
+        row.style.display = roomName.includes(searchText) ? "" : "none";
+      });
+    }
+
+    // 예약 상태 필터
+    function filterByStatus() {
+      let selectedStatus = document.getElementById("status-filter").value;
+      document.querySelectorAll("tbody td span").forEach(cell => {
+        let status = cell.innerText;
+        cell.parentElement.style.display = selectedStatus === "" || status === selectedStatus ? "" : "none";
+      });
+    }
+
+    // 예약 상세 모달창
+    function showDetails(details) {
+      document.getElementById("reservation-details").innerText = details;
+      document.getElementById("reservation-modal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("reservation-modal").style.display = "none";
+    }
+
+    // 예약 데이터 다운로드 (Excel)
+    function downloadExcel() {
+      window.location.href = "/admin/books/download-excel"; // 서버에서 파일 생성 후 다운로드
+    }
+  </script>
 </th:block>
 </body>
 </html>

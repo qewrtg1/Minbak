@@ -59,10 +59,16 @@ public class BooksService {
         for (Map<String, Object> booking : bookings) {
             String roomName = (String) booking.get("roomName");
             LocalDate startDate = ((java.sql.Date) booking.get("start_date")).toLocalDate();
+            LocalDate endDate = ((java.sql.Date) booking.get("end_date")).toLocalDate();
             String status = (String) booking.get("status");
 
             roomStatusMap.putIfAbsent(roomName, new HashMap<>());
-            roomStatusMap.get(roomName).put(startDate, status);
+            Map<LocalDate, String> roomStatus = roomStatusMap.get(roomName);
+
+            // 체크인 날짜부터 체크아웃 전날까지 같은 상태 유지
+            for (LocalDate date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
+                roomStatus.putIfAbsent(date, status);
+            }
         }
         return roomStatusMap;
     }

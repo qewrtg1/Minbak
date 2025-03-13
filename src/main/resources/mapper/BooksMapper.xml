@@ -135,7 +135,7 @@
     </select>
 
     <select id="selectWaitings" resultType="com.minbak.web.books.BooksDto">
-        select b.start_date, r.name as roomName, u.name as userName, u.phone_number as phoneNumber, b.request
+        select b.start_date, r.name as roomName, b.user_id, u.name as userName, u.phone_number as phoneNumber, b.request
         from books b
         join rooms r on b.room_id = r.room_id
         join users u on b.user_id = u.user_id
