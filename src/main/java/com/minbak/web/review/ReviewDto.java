@@ -21,6 +21,7 @@ public class ReviewDto {
     private String content;    // 리뷰 내용
     private double score;      // 리뷰 점수
     private String email;      // 회원 이메일
+    private int isBlinded; // 블라인드 여부 (true: 블라인드 처리됨, false: 정상 표시)
 
 
     private int hostId;        // 호스트 ID

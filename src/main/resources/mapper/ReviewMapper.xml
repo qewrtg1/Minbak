@@ -61,6 +61,24 @@
     </delete>
 
 
+    <!-- 블라인드 처리: is_blinded 값을 1로 변경 -->
+    <update id="blindReview">
+        UPDATE review SET is_blinded = 1 WHERE review_id = #{reviewId}
+    </update>
+
+    <!-- 블라인드 처리: is_blinded 값을 1로 변경 -->
+    <update id="unblindReview">
+        UPDATE review SET is_blinded = 0 WHERE review_id = #{reviewId}
+    </update>
+
+    <!-- 부적절한 리뷰로 표시 (리뷰 내용을 기본 메시지로 변경) -->
+    <update id="markAsInappropriate">
+        UPDATE review
+        SET content = '이 리뷰는 부적절한 내용으로 인해 숨겨졌습니다.'
+        WHERE review_id = #{reviewId}
+    </update>
+
+
 
 
     <!-- 호스트가 아직 답변하지 않은 리뷰 목록을 조회하는 쿼리 -->

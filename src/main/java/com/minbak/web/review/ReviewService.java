@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class ReviewService {
 
     // 검색어에 맞는 리뷰 리스트를 반환하는 메서드
     public List<ReviewDto> getReviews(int offset, int size) {  // 리턴 타입과 메서드 이름을 명확히 작성
+        List<ReviewDto> reviews = reviewMapper.getReviews(offset, size);
         return reviewMapper.getReviews(offset, size);  // Mapper에서 검색된 리뷰 리스트를 반환
     }
 
@@ -67,22 +69,33 @@ public class ReviewService {
         reviewMapper.deleteReview(id);
     }
 
-    // 리뷰 추가
-    public void createReview(ReviewDto reviewDto) {
-        reviewMapper.createReview(reviewDto);
+    // 블라인드 처리 기능 (새로운 기능 추가)
+    public void blindReview(int reviewId, int isBlind) {
+        if(isBlind == 0) reviewMapper.blindReview(reviewId);
+        else reviewMapper.unblindReview(reviewId);
     }
 
-
-    // 특정 호스트가 답변해야 할 리뷰 목록을 가져오는 서비스 메서드
-    public List<ReviewDto> getUnansweredReviews(int hostId) {
-        // 리뷰 목록을 가져오는 Mapper 메서드 호출
-        return reviewMapper.findUnansweredReviewsByHost(hostId);  // 해당 호스트의 답변하지 않은 리뷰 리스트 반환
+    // 부적절한 리뷰 표시 기능 (새로운 기능 추가)
+    public void markAsInappropriate(int reviewId) {
+        reviewMapper.markAsInappropriate(reviewId);
     }
 
-    // 특정 리뷰에 대한 호스트의 답변을 저장하는 서비스 메서드
-    public void addHostReply(int reviewId, String hostReply) {
-        // 리뷰 ID와 답변 내용을 전달하여 Mapper 메서드 호출
-        reviewMapper.updateHostReply(reviewId, hostReply);  // 해당 리뷰에 답변을 추가
-    }
+//    // 리뷰 추가
+//    public void createReview(ReviewDto reviewDto) {
+//        reviewMapper.createReview(reviewDto);
+//    }
+
+
+//    // 특정 호스트가 답변해야 할 리뷰 목록을 가져오는 서비스 메서드
+//    public List<ReviewDto> getUnansweredReviews(int hostId) {
+//        // 리뷰 목록을 가져오는 Mapper 메서드 호출
+//        return reviewMapper.findUnansweredReviewsByHost(hostId);  // 해당 호스트의 답변하지 않은 리뷰 리스트 반환
+//    }
+//
+//    // 특정 리뷰에 대한 호스트의 답변을 저장하는 서비스 메서드
+//    public void addHostReply(int reviewId, String hostReply) {
+//        // 리뷰 ID와 답변 내용을 전달하여 Mapper 메서드 호출
+//        reviewMapper.updateHostReply(reviewId, hostReply);  // 해당 리뷰에 답변을 추가
+//    }
 
 }

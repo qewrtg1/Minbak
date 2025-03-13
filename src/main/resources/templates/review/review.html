@@ -81,7 +81,7 @@
       <tr th:each="review : ${reviewPageDto.objects}">
         <td th:text="${review.email}"></td>
         <td th:text="${review.createdAt}"></td>
-        <td th:text="${review.content}"></td>
+        <td th:text="${review.isBlinded == 1 ? '🔒 블라인드 처리됨' : review.content}"></td>
         <td>
           <span class="stars" th:with="stars=${#strings.repeat('★', review.score)}" th:text="${stars}"></span>
           (<span th:text="${review.score}"></span>/5)
