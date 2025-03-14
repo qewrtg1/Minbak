@@ -43,6 +43,9 @@ public interface MessageMapper {
 
     //    메세지 삭제
     void deleteMessage(int message_id);
+    //    메세지 비활성화
+    void blindMessage(int messageId);
+
 //메세지 생성
     void createMessage(MessageDto messageDto);
 

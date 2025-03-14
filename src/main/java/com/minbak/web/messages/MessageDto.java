@@ -15,4 +15,5 @@ public class MessageDto {
     private String content;
     private LocalDateTime sentAt;
     private int isRead;
+    private int isBlinded;
 }

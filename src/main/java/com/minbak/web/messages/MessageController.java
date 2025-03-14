@@ -145,6 +145,15 @@ public class MessageController {
 
         return "redirect:/admin/message/list";
     }
+//메세지 비활성화
+    @GetMapping("/list/isBlinded/{message_id}")
+    public String blindMessage(@PathVariable("message_id") int message_id,RedirectAttributes redirectAttributes){
+        messageService.blindMessage(message_id);
+        redirectAttributes.addFlashAttribute("blindOk","메세지 아이디 "+message_id +" 비활성완료");
+
+
+        return "redirect:/admin/message/list";
+    }
 // ------------------------------------------유저페이지 기능------------------------------------
 
 }

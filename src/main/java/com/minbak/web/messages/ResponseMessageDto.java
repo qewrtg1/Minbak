@@ -21,4 +21,5 @@ public class ResponseMessageDto {
     private String senderPhoneNumber;
     private String receiverPhoneNumber;
 
+    private Integer isBlinded;
 }

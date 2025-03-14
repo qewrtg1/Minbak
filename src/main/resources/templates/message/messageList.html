@@ -122,6 +122,9 @@
             <div th:if="${deleteOk != null}" class="alert alert-success">
                 <p th:text="${deleteOk}"></p>
             </div>
+            <div th:if="${blindOk != null}" class="alert alert-success">
+                <p th:text="${blindOk}"></p>
+            </div>
 
             <!-- 메시지 생성 폼 -->
             <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#createMessageFormCollapse" aria-expanded="false" aria-controls="createMessageFormCollapse">
@@ -209,7 +212,7 @@
                         <input type="date" id="endDate" name="endDate" class="form-control border" th:value="${messageFilterDto.endDate} != null ? ${messageFilterDto.endDate} : '' ">
                     </div>
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-2 mb-3">
                         <label for="userName" class="form-label">User Name</label>
                         <input type="text" id="userName" name="userName" class="form-control border" placeholder="User Name" th:value="${messageFilterDto.userName} != null ? ${messageFilterDto.userName} : '' ">
                     </div>
@@ -218,6 +221,18 @@
                         <label for="userPhoneNumber" class="form-label">User Phone Number</label>
                         <input type="text" id="userPhoneNumber" name="userPhoneNumber" class="form-control border" placeholder="User Phone Number" th:value="${messageFilterDto.userPhoneNumber} != null ? ${messageFilterDto.userPhoneNumber} : '' ">
                     </div>
+
+
+                        <div class="col-md-1 mb-3">
+                            <div>
+                                <label>활성/비활성</label>
+                                <br>
+                                <input type="radio" id="isBlindedInactive" name="isBlinded" value="0" th:checked="${messageFilterDto.isBlinded == false}"> 활성
+                                <br>
+                                <input type="radio" id="isBlindedActive" name="isBlinded" value="1" th:checked="${messageFilterDto.isBlinded == true}"> 비활성
+                            </div>
+                        </div>
+
                 </div>
 
                 <button type="submit" class="btn btn-success">검색</button>
@@ -240,6 +255,7 @@
                     <th>받은 사람 전화번호</th>
                     <th>메시지 내용</th>
                     <th>보낸 시간</th>
+                    <th>활성/비활성</th>
                     <th> </th>
                 </tr>
                 </thead>
@@ -272,6 +288,11 @@
                         </div>
                     </td>
                     <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <form th:action="@{/admin/message/list/isBlinded/{message_id}(message_id=${message.messageId})}" method="get">
+                        <button type="submit" class="btn btn-danger btn-sm"><span  th:text="${message.isBlinded == 0 ? '활성' :'비활성'}"></span></button>
+                        </form>
+                    </td>
                     <td>
                         <form th:action="@{/admin/message/list/delete/{message_id}(message_id=${message.messageId})}" method="get">
                             <button type="submit" class="btn btn-danger btn-sm">메시지 삭제</button>
