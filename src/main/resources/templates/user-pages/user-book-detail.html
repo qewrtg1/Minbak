@@ -169,7 +169,7 @@
           <div class="chat-input">
             <form id="messageForm">
               <input type="text" class="form-control messageContent" placeholder="메시지를 입력하세요..." style="height: 100px; width: 100%; font-size: 16px;" />
-              <input type="number" style="display:none" class="form-control" id="chatRoomId" th:value="${book.user.userId}" />
+              <input type="number" style="display:none" class="form-control" id="receiverId" th:value="${book.user.userId}" />
               <button class="btn btn-primary">보내기</button>
             </form>
           </div>
@@ -292,12 +292,14 @@
   </div>
 </div>
 
+<!-- 카카오 주소 검색 API -->
+<!--<script type="text/javascript" src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>-->
 <script>
   var map, geocoder, marker;
 
   function initMap() {
       console.log("🚀 지도 로딩 중...");
-      var defaultLocation = new kakao.maps.LatLng(37.5665, 126.9780); // 초기 위치 (서울 시청)
+      var defaultLocation = new kakao.maps.LatLng([[${book.room.latitude}]], [[${book.room.longitude}]]); // 초기 위치 (서울 시청)
 
       map = new kakao.maps.Map(document.getElementById('map'), {
           center: defaultLocation,
@@ -337,29 +339,78 @@
       }).open();
   }
 
-  window.onload = function() {
-      initMap();
-  };
+
+
 </script>
-<!--날짜 계산 스크립트-->
-<script defer>
+
+<script>
+  //날짜 계산 스크립트
+
   // Thymeleaf에서 전달된 문자열을 JavaScript Date 객체로 변환
-  let startDate = new Date([[${book.startDate}]]);
-  let endDate = new Date([[${book.endDate}]]);
-  let pricePerDay = [[${book.room.price}]];
+  function calculateDays(){
+let startDate = new Date("[[${book.startDate}]]");
+let endDate = new Date("[[${book.endDate}]]");
+let pricePerDay = [[${book.room.price}]];
+
+// 두 날짜의 차이 계산 (밀리초 단위)
+let timeDiff = endDate - startDate;
+
+// 밀리초를 일(day) 단위로 변환
+let daysDiff = Math.abs(timeDiff / (1000 * 3600 * 24));
+
+// 총액 계산
+let totalPrice = daysDiff * pricePerDay;
 
 
-   // 두 날짜의 차이 계산
-  let daysDiff = startDate - endDate;
-  // let daysDiff = dateDiff / (1000 * 3600 * 24);
 
-  // 총액 계산
-  let totalPrice = daysDiff * pricePerDay
-
+  console.log("날짜 차이: " + daysDiff + "일");
+  console.log("총액: " + totalPrice + "원");
    document.querySelector(".daysDiff").textContent = daysDiff ;
    document.querySelector(".totalPrice").textContent = totalPrice.toLocaleString() ;
+}
+ window.onload = function() {calculateDays(); initMap();}
 
+ //메세지 관련
 
+  document.getElementById('messageForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // 페이지 리로딩을 방지
+
+      let content = document.querySelector('.messageContent').value;
+      let receiverId = document.getElementById('receiverId').value;
+
+    // 메시지 전송
+fetch('/user/messageList/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    content: content,    // 메시지 내용
+    receiverId: receiverId
+  })
+})
+  .then(response => {
+    // 응답 상태 코드 확인
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();  // 성공적인 응답이라면 JSON 파싱
+  })
+  .then(data => {
+    // 성공적으로 메시지가 전송된 경우
+    if (data.success) {
+      alert("메세지가 성공적으로 발송되었습니다.");
+       document.querySelector('.messageContent').value = '';
+    } else {
+      // 서버에서 success가 false인 경우
+      alert("메시지 전송에 실패했습니다. 다시 시도해주세요.");
+    }
+  })
+  .catch(error => {
+    // 네트워크 에러나 기타 오류 처리
+    console.error('Error:', error);
+    alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
+  })});
 </script>
 
 <!-- Bootstrap JS -->

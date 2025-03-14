@@ -136,6 +136,7 @@
     message m
     WHERE
     (m.sender_id = #{user_id} OR m.receiver_id = #{user_id})  -- 유저 8과 관련된 메시지
+    AND m.is_blinded = 0
     AND m.message_id = (
     SELECT MAX(message_id)
     FROM message
@@ -150,17 +151,15 @@
         UPDATE message
         SET is_read = 1
         WHERE
-        (sender_id = #{userId} AND receiver_id = #{chatRoomId})
-        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId})
+        sender_id = #{chatRoomId} AND receiver_id = #{userId}
 </update>
 
     <select id="countMessagesByIds" resultType="Integer" parameterType="int">
         select count(is_read)
         from message
         WHERE
-        ((sender_id = #{userId} AND receiver_id = #{chatRoomId})
-        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId}))
-        AND is_read = 0
+        (sender_id = #{chatRoomId} AND receiver_id = #{userId})
+        AND is_read = 0 AND is_blinded = 0
     </select>
 
 </mapper>
