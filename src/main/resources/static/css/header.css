@@ -62,3 +62,54 @@
   margin-left: 10px;
 }
 
+/* 공통 버튼 스타일 */
+.social-btn {
+  display: inline-flex;        /* 가로 배치 + 수평 정렬 */
+  align-items: center;         /* 수직 중앙 정렬 */
+  justify-content: center;     /* 내용 가운데 정렬 */
+  width: 280px;                /* 버튼 너비 (원하는 대로 조정) */
+  padding: 12px 20px;          /* 안쪽 여백 */
+  margin: 10px 0;              /* 버튼 간격 */
+  color: #fff;                 /* 텍스트 색상 (흰색) */
+  font-size: 16px;             /* 글자 크기 */
+  font-weight: 600;            /* 글자 두께 */
+  text-decoration: none;       /* 링크 밑줄 제거 */
+  border-radius: 4px;          /* 모서리 둥글게 */
+  transition: background-color 0.3s ease;  /* 호버 시 배경색 전환 효과 */
+}
+.button-container {
+  text-align: center; /* 내부에 있는 인라인/인라인-블록 요소를 중앙 정렬 */
+}
+
+.social-btn {
+  display: inline-block; /* 인라인-블록으로 지정해야 text-align이 적용됨 */
+  margin: 10px;         /* 버튼 사이 간격 */
+}
+/* 아이콘(이미지) 스타일 - 크기, 여백 등 */
+.social-icon {
+  margin-right: 8px;           /* 텍스트와 아이콘 사이 간격 */
+  font-size: 20px;             /* 폰트 아이콘인 경우 크기 */
+  width: 20px;                 /* 이미지인 경우 */
+  height: 20px;                /* 이미지인 경우 */
+}
+
+/* 네이버 버튼 색상 */
+.naver-btn {
+  background-color: #03C75A;    /* 네이버 메인 컬러 */
+}
+.naver-btn:hover {
+  background-color: #02b24f;    /* 호버 시 조금 더 어둡게 */
+}
+
+/* 구글 버튼 색상 */
+.google-btn {
+  background-color: #4285F4;    /* 구글 메인 컬러(파란색 계열) */
+}
+.google-btn:hover {
+  background-color: #357ae8;    /* 호버 시 조금 더 어둡게 */
+}
+.social-icon-n {
+  width: 20px;  /* 원하는 크기로 조정 */
+  height: 20px;
+  margin-right: 8px;
+}

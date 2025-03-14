@@ -37,8 +37,9 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="userMenuDropdown">
           <li><a class="dropdown-item" href="/user/book/list">내 예약</a></li>
-          <li><a class="dropdown-item" href="/profile">내 프로필</a></li>
-          <li><a class="dropdown-item" href="/settings">설정</a></li>
+          <li><a class="dropdown-item" href="/user/messageList">내 메시지</a></li>
+          <li><a class="dropdown-item" href="#">내 프로필</a></li>
+          <li><a class="dropdown-item" href="#">설정</a></li>
           <li><hr class="dropdown-divider"></li>
           <li>
             <button class="dropdown-item text-danger" id="logout-button">로그아웃</button>
@@ -78,12 +79,22 @@
                 <p id="loginError" class="text-danger text-center"></p>
               </form>
             </div>
-            <a href="/oauth2/authorization/naver" class="naver-login-btn">
-              <span class="naver-login-text">네이버 로그인</span>
-            </a>
-            <a href="/oauth2/authorization/google" class="google-login-btn">
-              <span class="google-login-text">구글 로그인</span>
-            </a>
+
+            <!-- 부모 요소 -->
+            <div class="button-container">
+              <!-- 네이버 로그인 버튼 -->
+              <a href="/oauth2/authorization/naver" class="social-btn naver-btn">
+                <img src="/logo/naverIcon.png" alt="Naver" class="social-icon-n" />
+                네이버로 로그인하기
+              </a>
+
+              <!-- 구글 로그인 버튼 -->
+              <a href="/oauth2/authorization/google" class="social-btn google-btn">
+                <i class="social-icon fa-brands fa-google"></i>
+                구글로 로그인하기
+              </a>
+            </div>
+
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
               <a href="/signup" class="btn btn-success">회원가입</a> <!-- ✅ 회원가입 버튼 추가 -->

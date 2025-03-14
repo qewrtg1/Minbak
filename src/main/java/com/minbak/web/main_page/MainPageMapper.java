@@ -17,6 +17,9 @@ public interface MainPageMapper {
     // 최신 숙소 20개 가져오기
     List<MainRoomDto> findRecentRooms();
 
+    //서치한 숙소 가져오기
+    List<MainRoomDto> searchRoomsByDestination(String destination);
+
     // 특정 숙소의 이미지 가져오기
     MainImageFileDto findRoomImages(int roomId);
 

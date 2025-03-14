@@ -28,9 +28,19 @@ public class MainPageService {
         // 카테고리 정보
         response.setCategories(mainPageMapper.findCategories());
 
-        // 옵션 정보
-        response.setOptions(mainPageMapper.findOptions());
 
         return response;
+    }
+
+    public List<MainRoomDto> getSearchPageData(String destination) {
+
+        // 숙소 정보 가져오기
+        List<MainRoomDto> rooms = mainPageMapper.searchRoomsByDestination(destination);
+        for (MainRoomDto room : rooms) {
+            room.setImages(mainPageMapper.findRoomImages(room.getRoomId()));
+            room.setRecentReview(mainPageMapper.findRecentReviewByRoom(room.getRoomId()));
+        }
+
+        return rooms;
     }
 }

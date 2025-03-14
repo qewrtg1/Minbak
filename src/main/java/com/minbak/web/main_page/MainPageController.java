@@ -11,4 +11,6 @@ public class MainPageController {
     public String mainPage(){
         return "user-pages/user-main";
     }
+
+
 }

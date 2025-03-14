@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>404 - Not Found</title>
+    <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          background-color: #ffffff;
+          color: #333333;
+          height: 100%;
+        }
+
+        body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+
+        .container {
+          text-align: center;
+          max-width: 600px;
+          margin: 50px;
+        }
+
+        .error-code {
+          font-size: 72px;
+          font-weight: bold;
+          margin: 0;
+          margin-bottom: 20px;
+        }
+
+        .error-message {
+          font-size: 18px;
+          margin: 10px 0 30px;
+        }
+
+        .error-description {
+          font-size: 14px;
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+
+        .links {
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+
+        .links a {
+          color: #0366d6;
+          text-decoration: none;
+          margin: 0 8px;
+        }
+
+        .links a:hover {
+          text-decoration: underline;
+        }
+
+        .octocat {
+          display: block;
+          margin: 20px auto 0;
+          width: 40px;  /* GitHub 아이콘 크기 조절 */
+          height: 40px;
+          opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="error-code">404</h1>
+    <div class="error-message">여기는 저희 민박페이지가 아닙니다.</div>
+    <p class="error-description">
+        이전 페이지를 눌러 다시 진행하실 수 있고,
+        <a href="/">메인페이지</a>
+        로 돌아가서 처음부터 진행하실 수 있습니다.
+    </p>
+
+    <div class="links">
+        <a href="/login">로그인</a>
+        |
+        <a href="#">민박 시그니처 로고</a>
+    </div>
+
+    <!-- 아래 이미지는 GitHub의 Octocat 로고 예시 (CDN) -->
+    <img
+            src="/logo/logo-img.png"
+            alt="minbak Logo"
+            class="octocat"
+    />
+</div>
+</body>
+</html>
