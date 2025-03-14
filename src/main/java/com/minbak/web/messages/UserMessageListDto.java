@@ -14,6 +14,6 @@ public class UserMessageListDto {
     private Integer lastMessageId;
     private LocalDateTime lastMessageTime;
     private String lastMessageContent;
-    private Integer isRead;
+    private Integer isUnRead;
 
 }
