@@ -188,6 +188,33 @@ public class HostController {
             System.out.println("❌ 옵션 변환 오류 발생!");
         }
 
+        return "redirect:/host/category"; // 다음 단계로 이동
+    }
+
+    @GetMapping("/category")
+    public String roomsCategories() {
+        return "host-pages/category";
+    }
+
+    // ✅ 선택한 카테고리 저장 (사용자가 선택한 카테고리를 세션에 저장)
+    @PostMapping("/category/save")
+    public String saveCategories(@ModelAttribute("hostDto") HostDto hostDto,
+                                 @RequestParam("categoryIds") String categoryIdsString) {
+        try {
+            // ✅ 쉼표(,)로 구분된 문자열을 `List<Integer>`로 변환
+            List<Integer> selectedCategories = Arrays.stream(categoryIdsString.split(","))
+                    .map(String::trim)  // 공백 제거
+                    .map(Integer::parseInt) // Integer 변환
+                    .collect(Collectors.toList());
+
+            hostDto.setCategoryIds(selectedCategories);
+            System.out.println("📌 [저장된 숙소 카테고리] " + selectedCategories);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ 카테고리 변환 오류 발생!");
+        }
+
         return "redirect:/host/photos"; // 다음 단계로 이동
     }
 
@@ -350,6 +377,7 @@ public class HostController {
         hostService.insertRoom(hostDto);
         int roomId = hostDto.getRoomId();  // 생성된 roomId를 가져옴
         createHostMapper.insertRoomOptions(hostDto.getRoomId(),hostDto.getOptionIds());
+        createHostMapper.insertRoomCategories(hostDto.getRoomId(), hostDto.getCategoryIds());
         for (String fileUrl : fileUrls){
             hostService.updateRoomImages(fileUrl, roomId);
         }

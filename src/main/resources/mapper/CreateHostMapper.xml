@@ -32,6 +32,18 @@
         </foreach>
     </insert>
 
+    <!-- 카테고리 저장 -->
+    <insert id="insertRoomCategories">
+        INSERT INTO rooms_categories (room_id, category_id)
+        VALUES
+        <foreach collection="categoryIds" item="categoryId" separator=",">
+            (#{roomId}, #{categoryId})
+        </foreach>
+    </insert>
+
+
+
+
     <select id="getUserNameById" parameterType="int" resultType="String">
         SELECT name FROM users WHERE user_id = #{userId}
     </select>

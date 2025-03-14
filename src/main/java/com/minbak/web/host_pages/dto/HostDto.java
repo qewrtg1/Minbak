@@ -26,6 +26,7 @@ public class HostDto {
     private String buildingType;  // 건물 유형 (아파트, 주택, 빌라)
     private MultipartFile[] files;
 
+    private List<Integer> categoryIds;
     private List<String> fileUrls;
    // private List<CreateImageDto> imageFiles; // 추가: 이미지 URL 리스트
     private List<Integer> optionIds; // 선택한 옵션 ID 리스트 (rooms_room_options 테이블 저장용)

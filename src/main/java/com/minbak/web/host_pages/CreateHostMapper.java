@@ -21,4 +21,6 @@ public interface CreateHostMapper {
     String getUserNameById(@Param("userId") int userId);
 
     void updateRoomImages(String fileUrl, int roomId);
+
+    void insertRoomCategories(@Param("roomId") int roomId, @Param("categoryIds") List<Integer> categoryIds);
 }

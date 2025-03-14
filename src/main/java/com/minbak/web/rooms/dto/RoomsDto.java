@@ -2,7 +2,7 @@ package com.minbak.web.rooms.dto;
 
 import lombok.Data;
 
-
+import java.util.List;
 
 
 @Data
@@ -21,4 +21,5 @@ public class RoomsDto {
     private Integer userId;    // 등록한 사용자 ID
     private String userName;   // 사용자의 이름
     private String categoryNames;
+    private List<String> imageUrls;
 }
