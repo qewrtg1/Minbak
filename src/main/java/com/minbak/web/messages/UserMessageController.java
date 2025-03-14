@@ -28,6 +28,7 @@ public class UserMessageController {
     @GetMapping("/messageList")
     public String showUserMessageList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 // 채팅방 리스트
+        //리시버아이디가 내 거인 메시지만 is_read 카운트
         List<UserMessageListDto> userMessageLists=messageService.showUserMessageList(userDetails.getUserId());
         for (UserMessageListDto userMessageList : userMessageLists){
             userMessageList.setIsUnRead(messageService.countMessagesByIds(userDetails.getUserId(),userMessageList.getChatRoomId()));
@@ -58,7 +59,9 @@ public class UserMessageController {
 //채팅방 리스트
         List<UserMessageListDto> userMessageLists=messageService.showUserMessageList(userDetails.getUserId());
 //        읽음 처리
-        messageService.checkIsRead(userDetails.getUserId(),chatRoomId);
+//        if(){ 리시버 아이디가 유저 아이디가 맞다면
+            messageService.checkIsRead(userDetails.getUserId(),chatRoomId);
+//        }
 //        읽음 안읽음 체크
         for (UserMessageListDto userMessageList:userMessageLists){
             userMessageList.setIsUnRead(messageService.countMessagesByIds(userDetails.getUserId(),userMessageList.getChatRoomId()));
