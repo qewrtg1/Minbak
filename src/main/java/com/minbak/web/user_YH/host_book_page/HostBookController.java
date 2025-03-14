@@ -38,4 +38,10 @@ public class HostBookController {
         hostBookService.approveReservation(bookId);
         return ResponseEntity.ok("예약이 승인되었습니다.");
     }
+
+    @PutMapping("/host/decline/{bookId}")
+    public ResponseEntity<String> declineReservation(@PathVariable("bookId") Integer bookId) {
+        hostBookService.declineReservation(bookId);
+        return ResponseEntity.ok("예약이 거절되었습니다.");
+    }
 }

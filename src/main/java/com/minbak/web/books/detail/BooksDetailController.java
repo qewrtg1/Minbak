@@ -45,7 +45,7 @@ public class BooksDetailController {
         RoomDetailDto roomDetail = roomDetailService.getRoomDetail(roomId);
 
         System.out.println(roomDetail.getRoom().getPricePerNight());
-        model.addAttribute("nights",nights );
+        model.addAttribute("nights", nights);
         model.addAttribute("room", roomDetail.getRoom());
         model.addAttribute("checkInDate", checkInDate);
         model.addAttribute("checkOutDate", checkOutDate);

@@ -81,21 +81,17 @@
 <th:block layout:fragment="content">
   <main class="main-content">
     <div class="books">
-      <div class="booksHead">
-        <h3 class="text-center">예약 관리</h3>
-        <div class="menu">
-          <a href="/admin/books" class="btn btn-primary">예약목록</a>
-          <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
-          <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
-          <a href="/admin/books/paidAndCheckIn" class="btn btn-secondary">투숙예정</a>
-        </div>
-      </div>
       <div class="booksSec">
         <h3 class="text-center">예약 수정하기</h3>
       </div>
 
       <!-- 예약 수정 폼 -->
       <form th:action="@{|/admin/books/edit/${books.bookId}|}" method="post">
+        <div class="form-container">
+          <label for="roomName">숙소명:</label>
+          <input type="text" id="roomName" name="roomName" th:value="${books.roomName}" required>
+        </div>
+
         <div class="form-container">
           <label for="startDate">체크인 날짜:</label>
           <input type="date" id="startDate" name="startDate" th:value="${books.startDate}" required>
@@ -118,7 +114,13 @@
 
         <div class="form-container">
           <label for="status">예약 상태:</label>
-          <input type="text" id="status" name="status" th:value="${books.status}" required>
+          <select id="status" name="status" required>
+            <option value="대기" th:selected="${books.status == '대기'}">대기</option>
+            <option value="수락" th:selected="${books.status == '수락'}">수락</option>
+            <option value="거절" th:selected="${books.status == '거절'}">거절</option>
+            <option value="완료" th:selected="${books.status == '완료'}">완료</option>
+            <option value="취소" th:selected="${books.status == '취소'}">취소</option>
+          </select>
         </div>
 
         <div class="form-container">

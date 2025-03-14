@@ -28,7 +28,7 @@
 
       /* 검색 및 테이블 스타일 */
       .tbl_frm01 {
-        margin-bottom: 30px;
+        margin-bottom: 15px;
       }
 
       .w100 {
@@ -72,6 +72,19 @@
         margin-right: 10px;
       }
 
+      .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        line-height: 1.5;
+        transition: background-color 0.3s;
+      }
+
+      .btn-custom:hover {
+        background-color: #0056b3;
+      }
+
       .pagination {
         justify-content: center;
         margin-top: 20px;
@@ -89,18 +102,7 @@
 <th:block layout:fragment="content">
   <main class="main-content">
     <div class="books">
-      <div class="booksHead">
-        <h3 class="text-center">예약 관리</h3>
-        <div class="menu">
-          <a href="/admin/books" class="btn btn-primary">예약목록</a>
-          <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
-          <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
-          <a href="/admin/books/paidAndCheckIn" class="btn btn-secondary">투숙예정</a>
-        </div>
-      </div>
-
       <div class="search">
-        <h3 class="text-center">기본 검색</h3>
         <script>
           function searchBooks() {
             let keyword = document.getElementsByName("keyword")[0].value.trim();
@@ -162,16 +164,16 @@
                       <input type="radio" name="statusFilter" value="대기">대기
                     </label>
                     <label>
+                      <input type="radio" name="statusFilter" value="수락">수락
+                    </label>
+                    <label>
+                      <input type="radio" name="statusFilter" value="거절">거절
+                    </label>
+                    <label>
                       <input type="radio" name="statusFilter" value="완료">완료
                     </label>
                     <label>
-                      <input type="radio" name="statusFilter" value="만료">만료
-                    </label>
-                    <label>
-                      <input type="radio" name="statusFilter" value="이용자 취소">이용자 취소
-                    </label>
-                    <label>
-                      <input type="radio" name="statusFilter" value="숙박업자 취소">숙박업자 취소
+                      <input type="radio" name="statusFilter" value="취소">취소
                     </label>
                   </div>
                 </td>
@@ -187,7 +189,6 @@
       </div>
 
       <div id="blist">
-        <h3 class="text-center">예약 리스트</h3>
         <table class="table table-striped">
           <thead>
           <tr>
@@ -198,19 +199,34 @@
             <th>체크아웃 날짜</th>
             <th>특별 요청사항</th>
             <th>예약상태</th>
-            <th>상세보기</th>
+            <th>편집</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="books : ${booksPage.objects}">
-            <td th:text="${books.bookId}"></td>
+            <td>
+              <a th:href="@{|/admin/books/${books.bookId}|}" th:text="${books.bookId}"></a>
+            </td>
             <td th:text="${books.user.name}"></td>
             <td th:text="${books.user.phoneNumber}"></td>
             <td th:text="${books.startDate}"></td>
             <td th:text="${books.endDate}"></td>
             <td th:text="${books.request}"></td>
-            <td th:text="${books.status}"></td>
-            <td><a th:href="@{|/admin/books/${books.bookId}|}" class="btn btn-info">상세보기</a></td>
+            <td>
+              <form th:action="@{|/admin/books/updateStatus/${books.bookId}|}" method="post">
+                <select name="status" th:value="${books.status}" onchange="this.form.submit()" class="form-control">
+                  <option value="대기" th:selected="${books.status == '대기'}">대기</option>
+                  <option value="수락" th:selected="${books.status == '수락'}">수락</option>
+                  <option value="거절" th:selected="${books.status == '거절'}">거절</option>
+                  <option value="완료" th:selected="${books.status == '완료'}">완료</option>
+                  <option value="취소" th:selected="${books.status == '취소'}">취소</option>
+                </select>
+              </form>
+            </td>
+            <td>
+              <a th:href="@{|/admin/books/edit/${books.bookId}|}" class="btn btn-custom" style="margin-right: 5px;">수정</a>
+              <a th:href="@{|/admin/books/delete/${books.bookId}|}" class="btn btn-danger">삭제</a>
+            </td>
           </tr>
           </tbody>
         </table>
