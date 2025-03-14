@@ -62,13 +62,26 @@
 
 
     <!-- destination 파라미터를 이용해 title 또는 name 검색 (활성화된 숙소만) -->
-    <select id="searchRoomsByDestination"  resultType="com.minbak.web.main_page.dto.MainRoomDto">
-        SELECT *
-        FROM rooms
-        WHERE (title LIKE CONCAT('%', #{destination}, '%')
-        OR name LIKE CONCAT('%', #{destination}, '%')
-        OR address LIKE CONCAT('%', #{destination}, '%'))
-        AND is_active = 1
+    <select id="searchRoomsByDestination" resultType="com.minbak.web.main_page.dto.MainRoomDto">
+        SELECT
+        r.room_id AS roomId,
+        r.name,
+        r.address,
+        r.price,
+        r.title,
+        COUNT(rv.review_id) AS reviewCount,
+        COALESCE(AVG(rv.score), 0) AS reviewScore
+        FROM rooms r
+        LEFT JOIN books b ON r.room_id = b.room_id
+        LEFT JOIN review rv ON b.book_id = rv.book_id
+        WHERE (r.title LIKE CONCAT('%', #{destination}, '%')
+        OR r.name LIKE CONCAT('%', #{destination}, '%')
+        OR r.address LIKE CONCAT('%', #{destination}, '%'))
+        AND r.is_active = 1
+        GROUP BY r.room_id
+        ORDER BY r.room_id DESC
+        LIMIT 20
     </select>
+
 
 </mapper>
