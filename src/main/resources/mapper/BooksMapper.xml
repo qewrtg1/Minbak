@@ -21,16 +21,22 @@
             <result property="paidAt" column="paid_at"/>
             <result property="status" column="status"/>
         </association>
+        <association property="file" javaType="com.minbak.web.file_upload.ImageFileDto">
+            <result property="fileUrl" column="file_url"/>
+        </association>
     </resultMap>
 
     <insert id="createBook" parameterType="com.minbak.web.books.BooksDto">
-        insert into books(start_date, end_date, guests_num, request, status, user_id, room_id)
-        values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{status}, #{userId}, #{roomId})
+        insert into books(start_date, end_date, guests_num, request, user_id, room_id)
+        values(#{startDate}, #{endDate}, #{guestsNum}, #{request}, #{userId}, #{roomId})
     </insert>
 
     <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">
         select b.book_id, u.name as user_name, u.phone_number as user_phone, u.email as email, r.name as room_name,
-        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status
+        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status,
+        (SELECT file_url FROM image_files
+        WHERE entity_id = b.room_id AND entity_type = 'rooms'
+        ORDER BY uploaded_at ASC LIMIT 1) AS file_url
         from books b
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
@@ -102,10 +108,15 @@
     </select>
 
     <update id="editBook" parameterType="com.minbak.web.books.BooksDto">
-        update books
-        set start_date=#{startDate}, end_date=#{endDate}, guests_num=#{guestsNum}, request=#{request},
-        status=#{status}
-        where book_id=#{bookId}
+        UPDATE books b
+        JOIN rooms r ON r.name = #{roomName}
+        SET b.start_date = #{startDate},
+        b.end_date = #{endDate},
+        b.guests_num = #{guestsNum},
+        b.request = #{request},
+        b.status = #{status},
+        b.room_id = r.room_id
+        WHERE b.book_id = #{bookId};
     </update>
 
     <delete id="deleteBook" parameterType="Integer">
@@ -124,11 +135,12 @@
     </select>
 
     <select id="selectWaitings" resultType="com.minbak.web.books.BooksDto">
-        select b.start_date, r.name as roomName, u.name as userName, u.phone_number as phoneNumber, b.request
+        select b.start_date, r.name as roomName, b.user_id, u.name as userName, u.phone_number as phoneNumber, b.request
         from books b
         join rooms r on b.room_id = r.room_id
         join users u on b.user_id = u.user_id
         where b.status = '대기'
+        and b.start_date > current_date()
         order by b.start_date;
     </select>
 
@@ -138,6 +150,7 @@
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
+        where b.start_date > current_date()
         order by b.start_date
     </select>
 

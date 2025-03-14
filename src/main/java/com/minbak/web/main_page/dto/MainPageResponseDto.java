@@ -12,5 +12,4 @@ public class MainPageResponseDto {
     private List<MainRoomDto> rooms; // 숙소 목록
     private List<CategoryDto> categories; // 카테고리 목록
     private List<MainOptionDto> options; // 옵션 목록
-    private UserDto user; // 로그인한 사용자 정보
 }

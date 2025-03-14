@@ -18,7 +18,7 @@ public interface MainPageMapper {
     List<MainRoomDto> findRecentRooms();
 
     // 특정 숙소의 이미지 가져오기
-    List<MainImageFileDto> findRoomImages(@Param("roomId") int roomId);
+    MainImageFileDto findRoomImages(int roomId);
 
     // 카테고리 목록 가져오기 (order 순)
     List<CategoryDto> findCategories();

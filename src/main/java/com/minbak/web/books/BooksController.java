@@ -37,6 +37,15 @@ public class BooksController {
         return "books/list";
     }
 
+    @PostMapping("/updateStatus/{bookId}")
+    public String updateStatus(@PathVariable("bookId") Integer bookId, @RequestParam String status, Model model) {
+        BooksDto booksDto = booksService.selectBookById(bookId);
+        booksDto.setStatus(status);
+        booksService.editBook(booksDto);
+        model.addAttribute("books", booksDto);
+        return "redirect:/admin/books";
+    }
+
     @GetMapping("/{bookId}")
     public String selectBookById(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto booksDto = booksService.selectBookById(bookId);

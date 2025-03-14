@@ -1,10 +1,13 @@
 package com.minbak.web.config;
 
+import com.minbak.web.spring_security.OAuth2.CustomOAuth2UserService;
+import com.minbak.web.spring_security.OAuth2.CustomSuccessHandler;
 import com.minbak.web.spring_security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,10 +24,16 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomOAuth2UserService customOAuth2UserService,CustomSuccessHandler customSuccessHandler) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customSuccessHandler = customSuccessHandler;
+
     }
+
 
     @Bean  // 해당 메서드가 빈에 등록된다는 어노테이션.
     @Order(1)
@@ -83,7 +92,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    // API 서버용 시큐리티 설정 (JSON 기반)
+    // USER 시큐리티 설정 (JWT 기반)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
@@ -113,10 +122,30 @@ public class SecurityConfig {
     }
 
     @Bean
-    //BCrypt를 권장한다고 함 spring security가.
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    @Order(3)
+    // OAuth2 시큐리티 설정 (JWT 기반)
+    public SecurityFilterChain OAuth2SecurityFilterChain(HttpSecurity http) throws Exception {
 
-        return new BCryptPasswordEncoder();
+        http
+                .securityMatcher("/login/**", "/oauth2/**")
+
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService))
+                        //jwt 발급필터
+                        .successHandler(customSuccessHandler))
+
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll())
+
+
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        return http.build();
     }
 
     @Bean

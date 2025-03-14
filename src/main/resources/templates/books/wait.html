@@ -41,21 +41,12 @@
 <th:block layout:fragment="content">
     <main class="main-content">
         <div class="books">
-            <div class="booksHead">
-                <h3 class="text-center">예약 관리</h3>
-                <div class="menu">
-                    <a href="/admin/books" class="btn btn-primary">예약목록</a>
-                    <a href="/admin/books/monthly" class="btn btn-secondary">월별 예약현황</a>
-                    <a href="/admin/books/wait" class="btn btn-secondary">예약대기자</a>
-                    <a href="/admin/books/paidAndCheckIn" class="btn btn-secondary">투숙예정</a>
-                </div>
-            </div>
-
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>체크인 날짜</th>
                     <th>숙소명</th>
+                    <th>예약자 ID</th>
                     <th>예약자명</th>
                     <th>연락처</th>
                     <th>요청사항</th>
@@ -66,6 +57,7 @@
                 <tr th:each="book : ${waitingBooks}">
                     <td th:text="${book.startDate}"></td>
                     <td th:text="${book.roomName}"></td>
+                    <td th:text="${book.userId}"></td>
                     <td th:text="${book.userName}"></td>
                     <td th:text="${book.phoneNumber}"></td>
                     <td th:text="${book.request}"></td>

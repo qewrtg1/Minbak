@@ -41,7 +41,7 @@ public interface UsersMapper {
     public UserDto findUserByEmail(String email);
 
     //username으로 사용자 조회
-    int findUserIdByEmail(String email);
+    Integer findUserIdByEmail(String email);
 
     // 사용자 ID로 역할 조회
     public List<RoleDto> findRolesByUserId(Integer userId);
@@ -171,4 +171,11 @@ public interface UsersMapper {
 
     // 새로운 숙소 옵션 추가
     void insertRoomOptions(@Param("roomId") int roomId, @Param("optionIds") List<Integer> optionIds);
+
+    public String selectLoginFromByLoginFrom(String loginFrom);
+    public void signUp(UserDto userDto);
+    public void insertUserRole(int userId, int roleId);
+    public Integer selectUserIdByLoginFrom(String loginFrom);
+    public List<String> selectUserRoles(int userId);
+
 }

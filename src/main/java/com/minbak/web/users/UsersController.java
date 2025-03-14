@@ -51,17 +51,17 @@ public class UsersController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "/spring-security/login";
+        return "spring-security/login";
     }
 
     @GetMapping
     public String adminPage() {
-        return "/spring-security/admin";
+        return "spring-security/admin";
     }
 
     @GetMapping("/signup")
     public String signup() {
-        return "/spring-security/signup";
+        return "spring-security/signup";
     }
 
     @PostMapping("/signup")
@@ -98,7 +98,7 @@ public class UsersController {
         model.addAttribute("id", email);
         model.addAttribute("role", role);
 
-        return "/spring-security/mypage";
+        return "spring-security/mypage";
     }
 
 
@@ -122,7 +122,7 @@ public class UsersController {
             model.addAttribute("message","에러남");
             return null;
         }
-        return "/spring-security/home";
+        return "spring-security/home";
     }
 
 
@@ -139,7 +139,7 @@ public class UsersController {
 
         model.addAttribute("userDto",usersService.findUserByUserId(userId));
 
-        return "/users/edit";
+        return "users/edit";
     }
 
 
@@ -171,7 +171,7 @@ public class UsersController {
         model.addAttribute("endDate", endDate);
         model.addAttribute("bookCount", bookCount);
 
-        return "/users/main";
+        return "users/main";
     }
 
 
@@ -203,7 +203,7 @@ public class UsersController {
         model.addAttribute("bookCount", bookCount);
         model.addAttribute("isVerified", isVerified);
 
-        return "/users/host";
+        return "users/host";
     }
 
     @GetMapping("/users/detail/{id}")
@@ -224,7 +224,7 @@ public class UsersController {
         model.addAttribute("hostDto",usersService.findHostByUserId(userId));
 
 
-        return "/users/user-detail";
+        return "users/user-detail";
     }
 
     @GetMapping("/users/report")
@@ -276,7 +276,7 @@ public class UsersController {
     public String createHostPage(@RequestParam int userId,Model model){
 
         model.addAttribute("userId",userId);
-        return "/users/create-host";
+        return "users/create-host";
     }
 
     @PostMapping("/users/create/host")
@@ -301,7 +301,7 @@ public class UsersController {
 
         model.addAttribute("hostId",hostId);
         model.addAttribute("userDto",usersService.findUserByUserId(userId));
-        return "/users/license-create";
+        return "users/license-create";
     }
 
     @PostMapping("/users/license/create")
@@ -350,10 +350,10 @@ public class UsersController {
         // 영업신고증 파일 삭제
         try {
             boolean isFileDeleted = fileService.deleteFile(fileService.findLicenseImagesUrlByHostId(hostId));
-            if (!isFileDeleted) {
-                redirectAttributes.addFlashAttribute("message", "파일 삭제 중 오류가 발생했습니다.");
-                return "redirect:/admin/users";
-            }
+//            if (!isFileDeleted) {
+//                redirectAttributes.addFlashAttribute("message", "파일 삭제 중 오류가 발생했습니다.");
+//                return "redirect:/admin/users";
+//            }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "파일 삭제 실패: " + e.getMessage());
             return "redirect:/admin/users";
@@ -376,7 +376,7 @@ public class UsersController {
     @GetMapping("/rooms/create")
     public String createRoomPage(@RequestParam("userId") int userId,Model model){
         model.addAttribute("userId",userId);
-        return "/users/create-room";
+        return "users/create-room";
     }
 
     @PostMapping("/rooms/create")
@@ -420,7 +420,7 @@ public class UsersController {
         model.addAttribute("categories", categories);
         model.addAttribute("optionsByCategory", optionsByCategory);
 
-        return "/users/categories-options"; // Thymeleaf 페이지
+        return "users/categories-options"; // Thymeleaf 페이지
     }
 
     @PostMapping("/rooms/{roomId}/categories-options")

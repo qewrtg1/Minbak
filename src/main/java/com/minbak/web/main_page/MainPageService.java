@@ -3,6 +3,7 @@ package com.minbak.web.main_page;
 import com.minbak.web.main_page.dto.MainPageResponseDto;
 import com.minbak.web.main_page.dto.MainRoomDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -12,7 +13,8 @@ public class MainPageService {
     @Autowired
     private MainPageMapper mainPageMapper;
 
-    public MainPageResponseDto getMainPageData(int userId) {
+    @Cacheable(value = "mainPageData")
+    public MainPageResponseDto getMainPageData() {
         MainPageResponseDto response = new MainPageResponseDto();
 
         // 숙소 정보 가져오기
@@ -28,11 +30,6 @@ public class MainPageService {
 
         // 옵션 정보
         response.setOptions(mainPageMapper.findOptions());
-
-        // 로그인한 사용자 정보
-        if (userId > 0) {
-            response.setUser(mainPageMapper.findUserById(userId));
-        }
 
         return response;
     }

@@ -167,7 +167,7 @@
             .then(data => {
                 if (data.success) {
                     alert("결제 검증 성공!\n결제 금액: " + data.amount + "원");
-                    window.location.href = "/payment/success"; // 결제 성공 페이지로 이동
+                    window.location.href = "/user/book/list"; // 결제 성공 페이지로 이동
                 } else {
                     alert("결제 검증 실패: " + data.error);
                 }

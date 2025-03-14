@@ -49,10 +49,14 @@
 
     <update id="approveReservation" parameterType="Integer">
         UPDATE books
-        SET status = '완료'
+        SET status = '수락'
         WHERE book_id = #{bookId}
     </update>
 
-
+    <update id="declineReservation" parameterType="Integer">
+        UPDATE books
+        SET status = '거절'
+        WHERE book_id = #{bookId}
+    </update>
 
 </mapper>
