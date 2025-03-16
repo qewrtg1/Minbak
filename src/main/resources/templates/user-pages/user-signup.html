@@ -31,7 +31,19 @@
             </div>
             <div class="mb-3">
               <label for="phone_number" class="form-label">전화번호</label>
-              <input type="text" class="form-control" id="phone_number" name="phone_number">
+              <div class="input-group">
+                <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+                <button type="button" class="btn btn-secondary" id="sendSmsBtn">인증 요청</button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="sms_code" class="form-label">인증번호 입력</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="sms_code" required>
+                <button type="button" class="btn btn-primary" id="verifySmsBtn">인증 확인</button>
+              </div>
+              <small id="smsMessage"></small>
             </div>
             <div class="mb-3">
               <label for="signup-password" class="form-label">비밀번호</label>
@@ -59,15 +71,14 @@
     const openModalBtn2 = document.getElementById("openLoginModal2");
     const loginModalElement = document.getElementById("loginModal");
     const loginModal = new bootstrap.Modal(loginModalElement);
+    const sendSmsBtn = document.getElementById("sendSmsBtn");
+    const verifySmsBtn = document.getElementById("verifySmsBtn");
+    const smsMessage = document.getElementById("smsMessage");
 
     openModalBtn2.addEventListener("click", function() {
       console.log("로그인 모달 열기 버튼 클릭됨!");
       loginModal.show(); // 모달 열기
     });
-
-
-
-
 
     function validatePassword() {
       let password = document.getElementById("signup-password").value;
@@ -75,82 +86,132 @@
       let message = document.getElementById("passwordMessage");
 
       if (password !== confirmPassword) {
-          message.textContent = "비밀번호가 일치하지 않습니다.";
-          message.style.color = "red";
-          return false;
+        message.textContent = "비밀번호가 일치하지 않습니다.";
+        message.style.color = "red";
+        return false;
       } else {
-          message.textContent = "";
-          return true;
+        message.textContent = "";
+        return true;
       }
     }
-
 
     const signupForm = document.getElementById("signupForm");
     const signupMessage = document.getElementById("signupMessage");
 
     signupForm.addEventListener("submit", async function (event) {
-        event.preventDefault(); // 기본 폼 제출 막기
+      event.preventDefault(); // 기본 폼 제출 막기
 
-        // 비밀번호 유효성 검사
-        if (!validatePassword()) return;
+      // 비밀번호 유효성 검사
+      if (!validatePassword()) return;
 
-        const userData = {
-            name: document.getElementById("name").value.trim(),
-            email: document.getElementById("signup-email").value.trim(),
-            phoneNumber: document.getElementById("phone_number").value.trim(),
-            password: document.getElementById("signup-password").value.trim(),
-        };
+      const userData = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("signup-email").value.trim(),
+        phoneNumber: document.getElementById("phone_number").value.trim(),
+        password: document.getElementById("signup-password").value.trim(),
+      };
 
-        console.log("회원가입 요청 데이터:", userData);
+      console.log("회원가입 요청 데이터:", userData);
 
-        try {
-            const response = await fetch("/api/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(userData),
-            });
+      try {
+        const response = await fetch("/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
+        });
 
-            const data = await response.json(); // 응답 데이터
+        const data = await response.json(); // 응답 데이터
 
-            if (response.ok) {
-                signupMessage.textContent = "🎉 회원가입이 완료되었습니다! 로그인하세요.";
-                signupMessage.style.color = "green";
-                setTimeout(() => window.location.href = "/", 1000); // 2초 후 홈 페이지로 이동
-            } else {
-                signupMessage.textContent = "❌ 회원가입 실패: " + (data.message || "다시 시도해주세요.");
-                signupMessage.style.color = "red";
-            }
-        } catch (error) {
-            console.error("회원가입 오류:", error);
-            signupMessage.textContent = "❌ 서버 오류가 발생했습니다.";
-            signupMessage.style.color = "red";
+        if (response.ok) {
+          signupMessage.textContent = "🎉 회원가입이 완료되었습니다! 로그인하세요.";
+          signupMessage.style.color = "green";
+          setTimeout(() => window.location.href = "/", 1000); // 2초 후 홈 페이지로 이동
+        } else {
+          signupMessage.textContent = "❌ 회원가입 실패: " + (data.message || "다시 시도해주세요.");
+          signupMessage.style.color = "red";
         }
+      } catch (error) {
+        console.error("회원가입 오류:", error);
+        signupMessage.textContent = "❌ 서버 오류가 발생했습니다.";
+        signupMessage.style.color = "red";
+      }
     });
 
     function validatePassword() {
-        let password = document.getElementById("signup-password").value.trim();
-        let confirmPassword = document.getElementById("confirm_password").value.trim();
-        let message = document.getElementById("passwordMessage");
+      let password = document.getElementById("signup-password").value.trim();
+      let confirmPassword = document.getElementById("confirm_password").value.trim();
+      let message = document.getElementById("passwordMessage");
 
-        if (password.length < 6) {
-            message.textContent = "비밀번호는 최소 6자 이상이어야 합니다.";
-            message.style.color = "red";
-            return false;
-        }
+      if (password.length < 6) {
+        message.textContent = "비밀번호는 최소 6자 이상이어야 합니다.";
+        message.style.color = "red";
+        return false;
+      }
 
-        if (password !== confirmPassword) {
-            message.textContent = "비밀번호가 일치하지 않습니다.";
-            message.style.color = "red";
-            return false;
-        }
+      if (password !== confirmPassword) {
+        message.textContent = "비밀번호가 일치하지 않습니다.";
+        message.style.color = "red";
+        return false;
+      }
 
-        message.textContent = "비밀번호가 일치합니다.";
-        message.style.color = "green";
-        return true;
+      message.textContent = "비밀번호가 일치합니다.";
+      message.style.color = "green";
+      return true;
     }
   });
 
+  // ✅ 인증번호 요청
+  sendSmsBtn.addEventListener("click", async function () {
+    const phoneNumber = document.getElementById("phone_number").value.trim();
+    if (!phoneNumber) {
+      alert("전화번호를 입력하세요.");
+      return;
+    }
 
+    try {
+      const response = await fetch("/api/send-sms?phoneNumber=" + phoneNumber, {
+        method: "POST"
+      });
+      const data = await response.json();
+      smsMessage.textContent = data.message;
+      smsMessage.style.color = "blue";
+    } catch (error) {
+      console.error("SMS 전송 오류:", error);
+      smsMessage.textContent = "SMS 전송 실패!";
+      smsMessage.style.color = "red";
+    }
+  });
+
+  // ✅ 인증번호 확인
+  verifySmsBtn.addEventListener("click", async function () {
+    const phoneNumber = document.getElementById("phone_number").value.trim();
+    const smsCode = document.getElementById("sms_code").value.trim();
+
+    if (!smsCode) {
+      alert("인증번호를 입력하세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/verify-sms?phoneNumber=${phoneNumber}&code=${smsCode}`, {
+        method: "POST"
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        smsMessage.textContent = "✅ 인증 성공!";
+        smsMessage.style.color = "green";
+        document.getElementById("phone_number").setAttribute("readonly", true);
+      } else {
+        smsMessage.textContent = "❌ 인증 실패: " + data.message;
+        smsMessage.style.color = "red";
+      }
+    } catch (error) {
+      console.error("인증 확인 오류:", error);
+      smsMessage.textContent = "서버 오류 발생!";
+      smsMessage.style.color = "red";
+    }
+  });
 </script>
 
 </body>

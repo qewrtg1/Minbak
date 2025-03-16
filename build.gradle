@@ -39,6 +39,7 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4' //mybatis
 	runtimeOnly 'com.mysql:mysql-connector-j' //mysql
 	implementation 'org.springframework.boot:spring-boot-starter-mail' //email
+	implementation 'com.twilio.sdk:twilio:9.3.0' //twilio 문자인증
 	implementation 'net.nurigo:sdk:4.3.2' // nurigo 문자인증
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' //타임리프
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' //타임리프 레이아웃
