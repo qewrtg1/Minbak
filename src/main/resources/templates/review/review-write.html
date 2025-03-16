@@ -25,28 +25,30 @@
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
-            .rating {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 8px;
-                padding: 10px 0;
-            }
-            .rating input {
-                display: none;
-            }
-            .rating label {
-                font-size: 35px;
-                cursor: pointer;
-                transition: transform 0.2s;
-                color: #e0e0e0;
-            }
-            .rating input:checked ~ label,
-            .rating label:hover,
-            .rating label:hover ~ label {
-                color: #ffcc00;
-                transform: scale(1.2);
-            }
+           .rating {
+    display: flex;
+    flex-direction: row-reverse; /* 오른쪽에서 왼쪽으로 표시되도록 반전 */
+    justify-content: center; /* 별을 가운데 정렬 */
+    gap: 5px; /* 별 간격 */
+}
+
+.rating input {
+    display: none; /* 라디오 버튼 자체는 숨김 */
+}
+
+.rating label {
+    font-size: 2em;
+    color: #333; /* 기본 색상은 회색 */
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s; /* 색상과 크기 변환에 부드러운 전환 추가 */
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+    color: #ffcc00; /* 마우스를 올리거나 선택된 별의 색은 노란색 */
+    transform: scale(1.2); /* 마우스를 올렸을 때 별 크기 확대 */
+}
             .btn-submit {
                 display: block;
                 width: 100%;
@@ -91,16 +93,17 @@
                 <input type="hidden" name="bookId" th:value="${books.bookId}">
                 <input type="hidden" name="userId" th:value="${books.userId}">
                 <input type="hidden" name="hostId" th:value="${books.hostId}">
+                <input type="hidden" name="roomId" th:value="${books.roomId}">
 
                 <label for="content">리뷰 내용:</label>
                 <textarea id="content" name="content" rows="12" style="width:100%; margin-bottom:10px;" placeholder="리뷰를 작성해주세요."></textarea>
 
                 <div class="rating">
-                    <input type="radio" id="star5" name="score" value="5"><label for="star5">★</label>
-                    <input type="radio" id="star4" name="score" value="4"><label for="star4">★</label>
-                    <input type="radio" id="star3" name="score" value="3"><label for="star3">★</label>
-                    <input type="radio" id="star2" name="score" value="2"><label for="star2">★</label>
                     <input type="radio" id="star1" name="score" value="1"><label for="star1">★</label>
+                    <input type="radio" id="star2" name="score" value="2"><label for="star2">★</label>
+                    <input type="radio" id="star3" name="score" value="3"><label for="star3">★</label>
+                    <input type="radio" id="star4" name="score" value="4"><label for="star4">★</label>
+                    <input type="radio" id="star5" name="score" value="5"><label for="star5">★</label>
                 </div>
 
                 <button type="submit" class="btn-submit">리뷰 등록</button>

@@ -27,6 +27,7 @@ public class ReviewDto {
     private int hostId;        // 호스트 ID
     private String hostReply;  // 호스트 답글 (null 가능)
 
+    private int roomId;        // Room ID
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt; // 리뷰 작성 일시

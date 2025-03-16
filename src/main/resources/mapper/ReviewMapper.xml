@@ -78,6 +78,12 @@
         WHERE review_id = #{reviewId}
     </update>
 
+    <!--  User가 리뷰 등록할때   -->
+    <insert id="createReview">
+        INSERT into review
+        (user_id, book_id, content, score, host_id)
+        values (#{userId}, #{bookId}, #{content}, #{score}, #{hostId})
+    </insert>
 
 
 

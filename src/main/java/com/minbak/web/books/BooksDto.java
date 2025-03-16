@@ -20,6 +20,7 @@ public class BooksDto {
     private UserDto user;
     private RoomsDto room;
     private PaymentDto payment;
+    private Integer hostId;
 
     private String userName;
     private String phoneNumber;

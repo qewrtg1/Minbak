@@ -9,4 +9,5 @@ public class EmailDto {
     private String to;
     private String title;
     private String message;
+//    public Builder(){};
 }
