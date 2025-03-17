@@ -29,4 +29,7 @@ public interface HostEditRoomMapper {
     // roomId로 호스트(user_id) 조회
     int getHostUserIdByRoomId(int roomId);
 
+    //해당 room의 유저가 isVerified인지
+    boolean getHostIsVerifiedByRoomId(int roomId);
+
 }

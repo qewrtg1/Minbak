@@ -22,14 +22,19 @@ public class HostEditRoomApiController {
             return ResponseEntity.badRequest().body("roomId와 isActive 필드가 필요합니다.");
         }
 
-        // todo 호스트가 검증됐는지 확인 후 처리코드 추가
 
         int roomId = (Integer) requestData.get("roomId");
+
+        // todo 호스트가 검증됐는지 확인 후 처리코드 추가
+        if(!hostEditRoomService.getHostIsVerifiedByRoomId(roomId)){
+            return ResponseEntity.ok(Map.of("message", "영업검증을 먼저 진행하여 주십시오.","success", false));
+        }
+
         boolean isActive = (Boolean) requestData.get("isActive");
 
         hostEditRoomService.toggleRoomActiveStatus(roomId, isActive);
 
-        return ResponseEntity.ok(Map.of("message", "숙소 상태가 변경되었습니다.", "isActive", isActive));
+        return ResponseEntity.ok(Map.of("message", "숙소 상태가 변경되었습니다.", "success", true));
     }
 
     // 특정 숙소의 활성화 상태 조회 API

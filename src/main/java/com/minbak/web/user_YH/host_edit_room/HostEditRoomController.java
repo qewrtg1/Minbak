@@ -23,9 +23,9 @@ public class HostEditRoomController {
                                    Model model) {
 
         //숙소를 등록한 유저인지 확인
-//        if(hostEditRoomService.getHostUserIdByRoomId(roomId) != userDetails.getUserId()){
-//            return "/";
-//        }
+        if(hostEditRoomService.getHostUserIdByRoomId(roomId) != userDetails.getUserId()){
+            return "error";
+        }
 
         // 숙소 정보 가져오기
         HostRoomEditDto roomData = hostEditRoomService.getHostRoomData(roomId);
@@ -33,6 +33,6 @@ public class HostEditRoomController {
         // 모델에 데이터 추가
         model.addAttribute("room", roomData);
 
-        return "/host-pages/edit-room";
+        return "host-pages/edit-room";
     }
 }

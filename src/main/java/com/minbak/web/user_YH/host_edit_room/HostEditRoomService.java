@@ -45,4 +45,8 @@ public class HostEditRoomService {
     public int getHostUserIdByRoomId(int roomId) {
         return hostEditRoomMapper.getHostUserIdByRoomId(roomId);
     }
+
+    public boolean getHostIsVerifiedByRoomId(int roomId){
+        return hostEditRoomMapper.getHostIsVerifiedByRoomId(roomId);
+    }
 }

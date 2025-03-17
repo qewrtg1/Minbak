@@ -62,4 +62,10 @@
         SELECT user_id FROM rooms WHERE room_id = #{roomId}
     </select>
 
+    <select id="getHostIsVerifiedByRoomId">
+        SELECT CASE WHEN h.is_verified = 1 THEN true ELSE false END AS isVerified
+        FROM rooms r
+        INNER JOIN host h ON r.user_id = h.user_id
+        WHERE r.room_id = #{roomId}
+    </select>
 </mapper>
