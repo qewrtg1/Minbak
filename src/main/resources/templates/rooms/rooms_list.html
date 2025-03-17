@@ -139,14 +139,15 @@
       <div class="d-flex justify-content-center">
         <ul class="pagination">
           <li class="page-item" th:if="${roomsPage.prev}">
-            <a class="page-link" th:href="@{/admin/rooms(page=${roomsPage.page - 1}, size=${roomsPage.size}, keyword=${keyword})}">Previous</a>
+            <a class="page-link" th:href="@{/admin/rooms(page=${roomsPage.page - 1}, size=${roomsPage.size}, keyword=${keyword})}">이전</a>
           </li>
-          <li class="page-item" th:each="i : ${#numbers.sequence(roomsPage.start, roomsPage.end)}">
-            <a class="page-link" th:href="@{/admin/rooms(page=${i}, size=${roomsPage.size}, keyword=${keyword})}" th:text="${i}"
-               th:classappend="${i == roomsPage.page} ? ' active' : ''"></a>
+          <li class="page-item" th:each="i : ${#numbers.sequence(roomsPage.start, roomsPage.end)}"
+              th:classappend="${i == roomsPage.page} ? 'active' : ''">
+            <a class="page-link" th:href="@{/admin/rooms(page=${i}, size=${roomsPage.size}, keyword=${keyword})}" th:text="${i}"></a>
           </li>
+
           <li class="page-item" th:if="${roomsPage.next}">
-            <a class="page-link" th:href="@{/admin/rooms(page=${roomsPage.page + 1}, size=${roomsPage.size}, keyword=${keyword})}">Next</a>
+            <a class="page-link" th:href="@{/admin/rooms(page=${roomsPage.page + 1}, size=${roomsPage.size}, keyword=${keyword})}">다음</a>
           </li>
         </ul>
       </div>

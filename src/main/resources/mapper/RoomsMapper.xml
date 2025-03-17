@@ -73,7 +73,7 @@
 
 
     <!-- 상세보기 -->
-    <select id="getRoomsList" resultType="com.minbak.web.rooms.dto.RoomsDto">
+    <select id="getRoomsList" resultMap="roomResultMap">
         SELECT
         r.room_id AS roomId,
         r.title,
@@ -87,15 +87,35 @@
         r.max_guests AS maxGuests,
         r.user_id AS userId,
         u.name AS userName,
-        GROUP_CONCAT(c.name) AS categoryNames
+        GROUP_CONCAT(DISTINCT c.name) AS categoryNames,
+        GROUP_CONCAT(DISTINCT i.file_url) AS imageUrls -- ✅ 이미지 리스트를 쉼표로 결합
         FROM rooms r
         JOIN users u ON r.user_id = u.user_id
         LEFT JOIN rooms_categories rc ON r.room_id = rc.room_id
         LEFT JOIN categories c ON rc.category_id = c.category_id
+        LEFT JOIN image_files i ON r.room_id = i.entity_id AND i.entity_type = 'rooms'
         WHERE r.room_id = #{roomId}
-        GROUP BY r.room_id
+        GROUP BY r.room_id;
     </select>
-    <!-- ✅ 추가: 숙소의 이미지 리스트 가져오기 -->
+    <resultMap id="roomResultMap" type="com.minbak.web.rooms.dto.RoomsDto">
+        <id property="roomId" column="roomId"/>
+        <result property="title" column="title"/>
+        <result property="name" column="name"/>
+        <result property="content" column="content"/>
+        <result property="address" column="address"/>
+        <result property="price" column="price"/>
+        <result property="useGuide" column="useGuide"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="maxGuests" column="maxGuests"/>
+        <result property="userId" column="userId"/>
+        <result property="userName" column="userName"/>
+        <result property="categoryNames" column="categoryNames"/>
+        <result property="imageUrlsRaw" column="imageUrls"/>
+        <!-- ✅ 이미지 리스트를 `List<String>`으로 매핑 -->
+        <collection property="imageUrls" column="imageUrl" javaType="ArrayList"/>
+
+    </resultMap>
     <select id="getRoomImages" resultType="string">
         SELECT file_url
         FROM image_files

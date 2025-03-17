@@ -47,6 +47,7 @@ public class RoomsController {
         model.addAttribute("rooms", rooms);  // 모델에 방 정보를 담아서 뷰로 전달
         return "rooms/rooms_detail";  // rooms/detail.html 페이지로 이동
     }
+
     //  목록으로 돌아가기
 //    @GetMapping("/rooms/rooms_list")
 //    public String returnList(@RequestParam(name = "page", defaultValue = "1") int page,
