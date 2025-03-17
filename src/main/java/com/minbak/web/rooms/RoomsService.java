@@ -41,15 +41,10 @@ public class RoomsService {
         return new RoomsPageDto(page, size, totalElements, rooms);
     }
     // 상세 보기
-    public RoomsDto getRoomList(int roomId){
+    public RoomsDto getRoomList(int roomId) {
         RoomsDto room = roomsMapper.getRoomsList(roomId);
-
-        if (room != null) {
-            List<String> imageUrls = roomsMapper.getRoomImages(roomId); // ✅ 이미지 조회
-            room.setImageUrls(imageUrls); // ✅ DTO에 이미지 추가
-            System.out.println("이미지 리스트: " + imageUrls); // 디버깅용
-        }
-
+        System.out.println("🔥 [DEBUG] imageUrlsRaw: " + room.getImageUrlsRaw()); // ✅ 값 확인
+        System.out.println("🔥 [DEBUG] imageUrls: " + room.getImageUrls()); // ✅ 변환 결과 확인
         return room;
     }
     // 수정 페이지

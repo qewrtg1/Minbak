@@ -2,6 +2,7 @@ package com.minbak.web.rooms.dto;
 
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -21,5 +22,14 @@ public class RoomsDto {
     private Integer userId;    // 등록한 사용자 ID
     private String userName;   // 사용자의 이름
     private String categoryNames;
+
+    private String imageUrlsRaw;
     private List<String> imageUrls;
+
+    public List<String> getImageUrls() {
+        if (imageUrls == null && imageUrlsRaw != null) {
+            imageUrls = Arrays.asList(imageUrlsRaw.split(",")); // ✅ 쉼표 기준으로 리스트 변환
+        }
+        return imageUrls;
+    }
 }
