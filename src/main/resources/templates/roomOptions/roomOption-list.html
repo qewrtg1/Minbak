@@ -17,28 +17,29 @@
 <th:block layout:fragment="content">
 
     <main class="container mt-5">
-        <h1 class="text-center">편의시설 목록</h1>
+        <h1 class="text-center mt-5">편의시설 목록</h1>
 
     <!-- 생성하기 버튼 -->
 
     <div class="text-end mb-3">
         <a th:href="@{/admin/roomoptions/create}" class="btn btn-primary">새 편의시설 추가</a>
     </div>
-
         <!-- 편의시설 목록 -->
         <div class="table-responsive">
             <table class="table table-hover align-middle table-bordered">
                 <thead class="table-dark">
                 <tr>
                     <th scope="col" class="text-center">ID</th>
-                    <th scope="col">이름</th>
+                    <th scope="col" class="text-center">이름</th>
+                    <th scope="col" class="text-center">카테고리</th>
                     <th scope="col" class="text-center">액션</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="option : ${options}">
                     <td class="text-center" th:text="${option.optionId}"></td>
-                    <td th:text="${option.name}"></td>
+                    <td class="text-center" th:text="${option.name}"></td>
+                    <td class="text-center" th:text="${option.optionsCategory}"></td> <!-- 카테고리 표시 -->
                     <td>
                         <div class="d-flex gap-2 justify-content-center">
                             <a th:href="@{/admin/roomoptions/update/{id}(id=${option.optionId})}" class="btn btn-warning btn-sm">수정</a>
@@ -50,6 +51,7 @@
                 </tr>
                 </tbody>
             </table>
+
         </div>
 
     </main>

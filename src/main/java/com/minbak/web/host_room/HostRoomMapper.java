@@ -9,14 +9,15 @@ import java.util.List;
 public interface HostRoomMapper {
     //숙소 목록 조회
     List<HostRoomDTO> findRoomsByHost(@Param("userId") int userId);
-    // 숙소 생성
-    void insertHostRoom(HostRoomDTO hostRoomDTO);
     // 특정 숙소 정보 불러오기 (수정 시 사용)
     HostRoomDTO findRoomById(@Param("roomId") Integer roomId);
-    // 숙소 정보 수정
-    void updateHostRoom(HostRoomDTO hostRoomDTO);
-    // 숙소 삭제
-    void deleteHostRoom(@Param("roomId") int roomId);
 
 
+
+//    // 숙소 생성 // 사용 안하기로 함
+//    void insertHostRoom(HostRoomDTO hostRoomDTO);
+//    // 숙소 정보 수정
+//    void updateHostRoom(HostRoomDTO hostRoomDTO);
+//    // 숙소 삭제
+//    void deleteHostRoom(@Param("roomId") int roomId);
 }

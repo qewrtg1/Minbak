@@ -7,25 +7,26 @@
 
     <!-- 1. 전체 조회 -->
     <select id="findAllRoomOptions" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
-        SELECT option_id, name FROM room_options
+        SELECT option_id, name, options_category  FROM room_options
     </select>
 
     <!-- 2. 단일 편의시설 조회 (ID 기준) -->
     <select id="findRoomOptionById" parameterType="int" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
-        SELECT option_id, name
+        SELECT option_id, name, options_category
         FROM room_options
         WHERE option_id = #{optionId}
     </select>
 
     <!-- 3. 새 편의시설 삽입 -->
     <insert id="createRoomOption" parameterType="com.minbak.web.roomoptions.RoomOptionsDto" useGeneratedKeys="true" keyProperty="optionId">
-        INSERT INTO room_options (name) VALUES (#{name})
+        INSERT INTO room_options (name, options_category)
+        VALUES (#{name}, #{optionsCategory})
     </insert>
 
     <!-- 4. 편의시설 수정 -->
     <update id="updateRoomOption" parameterType="com.minbak.web.roomoptions.RoomOptionsDto">
         UPDATE room_options
-        SET name = #{name}
+        SET name = #{name}, options_category = #{optionsCategory}
         WHERE option_id = #{optionId}
     </update>
 
@@ -35,13 +36,14 @@
     </delete>
 
 
-<!-- 다대다 기능으로 필요 없을 걸로 추정-->
     <select id="getAllRoomOption" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
         SELECT * FROM rooms
     </select>
-    <!-- 5.사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회 -->
+    <!-- 6. 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회 -->
     <select id="getRoomsByAmenities" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
-        SELECT r.*
+        SELECT
+            r.room_id, r.name, r.address, r.price,
+            GROUP_CONCAT(ro.name SEPARATOR ', ') AS amenities
         FROM rooms r
         JOIN rooms_room_options rro ON r.room_id = rro.room_id
         JOIN room_options ro ON rro.option_id = ro.option_id

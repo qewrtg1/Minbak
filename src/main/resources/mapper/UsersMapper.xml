@@ -458,7 +458,7 @@
     </insert>
 
     <!-- 모든 카테고리 가져오기 (단, "인기 숙소"는 제외) -->
-    <select id="getAllCategories" resultType="com.minbak.web.categores.CategoryDto">
+    <select id="getAllCategories" resultType="com.minbak.web.categories.CategoryDto">
         SELECT category_id, name
         FROM categories
         WHERE name != '인기 숙소'
@@ -466,7 +466,7 @@
     </select>
 
     <!-- 모든 옵션을 카테고리별로 그룹화해서 가져오기 -->
-    <select id="getOptionsGroupedByCategory" resultType="com.minbak.web.categores.OptionDto">
+    <select id="getOptionsGroupedByCategory" resultType="com.minbak.web.categories.OptionDto">
         SELECT option_id, name, options_category
         FROM room_options
         ORDER BY options_category, option_id;

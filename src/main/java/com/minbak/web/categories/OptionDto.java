@@ -1,4 +1,4 @@
-package com.minbak.web.categores;
+package com.minbak.web.categories;
 
 import lombok.Getter;
 import lombok.Setter;

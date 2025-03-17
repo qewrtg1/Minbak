@@ -1,40 +1,121 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
 <head>
+    <meta charset="UTF-8">
     <title>편의시설 필터링된 숙소 목록</title>
+
+    <th:block layout:fragment="css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </th:block>
+
+
+    <style>
+        /* 필터 체크박스 정렬 */
+        .form-check {
+            margin-bottom: 10px;
+        }
+
+        /* 테이블 행 높이 균일화 */
+        .table th, .table td {
+            vertical-align: middle;
+        }
+    </style>
+
 </head>
 <body>
-<h1>편의시설 필터링된 숙소 목록</h1>
+<th:block layout:fragment="content">
+    <main class="container mt-5">
+        <h1 class="text-center mt-5">편의시설 필터링된 숙소 목록</h1>
 
-<!-- 편의시설 필터링 폼 -->
-<form method="get" action="/admin/roomoptions/test">
-    <label><input type="checkbox" name="amenities" value="와이파이"> 와이파이</label>
-    <label><input type="checkbox" name="amenities" value="주차 공간"> 주차 공간</label>
-    <label><input type="checkbox" name="amenities" value="에어컨"> 에어컨</label>
-    <label><input type="checkbox" name="amenities" value="전용 욕실"> 전용 욕실</label>
-    <button type="submit">검색</button>
-</form>
+        <!-- 편의시설 필터링 폼 -->
+        <form id="filterForm" action="/admin/roomoptions/test" method="GET">
+            <div class="mb-3">
+<!--                <label class="form-label">편의시설 선택해주세요</label>-->
+                </br>
 
-<!-- 필터링된 숙소 리스트 -->
-<table border="1">
-    <thead>
-    <tr>
-        <th>숙소 ID</th>
-        <th>숙소 이름</th>
-        <th>주소</th>
-        <th>가격</th>
-        <th>편의시설</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="room : ${rooms}">
-        <td th:text="${room.roomId}"></td>
-        <td th:text="${room.name}"></td>
-        <td th:text="${room.address}"></td>
-        <td th:text="${room.price}"></td>
-        <td th:text="${room.amenities}"></td>
-    </tr>
-    </tbody>
-</table>
+                <div class="d-flex justify-content-center my-4">
+                    <div class="row row-cols-4">
+                    <th:block th:each="option : ${options}">
+                        <div class="col form-check">
+                            <input type="checkbox" name="amenities" th:value="${option.name}"
+                                   th:id="'option-' + ${option.optionId}" class="form-check-input">
+                            <label th:for="'option-' + ${option.optionId}" th:text="${option.name}" class="form-check-label"></label>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                <button type="submit" class="btn btn-primary px-4 py-2">필터 적용</button>
+            </div>
+        </form>
+
+
+
+
+
+        <!-- 필터링된 숙소 리스트 -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-bordered text-center">
+                <thead class="table-dark">
+                <tr>
+                    <th>숙소 ID</th>
+                    <th>숙소 이름</th>
+                    <th>주소</th>
+                    <th>가격</th>
+                    <th id="amenitiesColumn" style="display: none;">편의시설</th>
+                    <th id="categoryColumn" style="display: none;">카테고리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="room : ${rooms}">
+                    <td th:text="${room.roomId}"></td>
+                    <td th:text="${room.name}"></td>
+                    <td th:text="${room.address}"></td>
+                    <td th:text="${room.price}"></td>
+                    <td class="amenities" th:text="${room.amenities}" style="display: none;"></td>
+                    <td class="category" th:text="${room.optionsCategory}" style="display: none;"></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+
+
+        <script>
+            window.onload = function() {
+                let showAmenities = false;
+                let showCategory = false;
+
+                document.querySelectorAll(".amenities").forEach(cell => {
+                    if (cell.textContent.trim() !== "") {
+                        showAmenities = true;
+                    }
+                });
+
+                document.querySelectorAll(".category").forEach(cell => {
+                    if (cell.textContent.trim() !== "") {
+                        showCategory = true;
+                    }
+                });
+
+                if (showAmenities) {
+                    document.getElementById("amenitiesColumn").style.display = "table-cell";
+                    document.querySelectorAll(".amenities").forEach(cell => cell.style.display = "table-cell");
+                }
+
+                if (showCategory) {
+                    document.getElementById("categoryColumn").style.display = "table-cell";
+                    document.querySelectorAll(".category").forEach(cell => cell.style.display = "table-cell");
+                }
+            };
+        </script>
+
+
+    </main>
+</th:block>
 </body>
 </html>

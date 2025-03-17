@@ -40,7 +40,9 @@
 <main>
   <h1>카테고리 수정</h1>
 
-  <form th:action="@{/admin/categories/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
+
+    <form th:action="@{/admin/categories/edit/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
+
     <!-- 카테고리 이름 수정 -->
     <div class="form-group">
       <label for="name">카테고리 이름:</label>
