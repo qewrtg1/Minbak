@@ -279,7 +279,7 @@
                         <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse"
                                 th:data-bs-target="'#content-full-' + ${message.messageId}"
                                 aria-expanded="false" th:aria-controls="'content-full-' + ${message.messageId}">
-                            더보기
+                            상세보기
                         </button>
                         <div class="collapse" th:id="'content-full-' + ${message.messageId}">
                             <div class="card card-body mt-2">
@@ -290,12 +290,12 @@
                     <td th:text="${#temporals.format(message.sentAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td>
                         <form th:action="@{/admin/message/list/isBlinded/{message_id}(message_id=${message.messageId})}" method="get">
-                        <button type="submit" class="btn btn-danger btn-sm"><span  th:text="${message.isBlinded == 0 ? '활성' :'비활성'}"></span></button>
+                        <button type="submit" class="btn btn-dark btn-sm"><span  th:text="${message.isBlinded == 0 ? '활성' :'비활성'}"></span></button>
                         </form>
                     </td>
                     <td>
                         <form th:action="@{/admin/message/list/delete/{message_id}(message_id=${message.messageId})}" method="get">
-                            <button type="submit" class="btn btn-danger btn-sm">메시지 삭제</button>
+                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                         </form>
                     </td>
                 </tr>
