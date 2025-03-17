@@ -61,7 +61,7 @@
 <h1>숙박 요금을 입력하세요</h1>
 
 <!-- ✅ 주중 요금 입력 폼 -->
-<form action="/host/price/save" method="post">
+<form action="/user/price/save" method="post">
   <input type="number" id="weekDayPrice" name="price" placeholder="주중 요금을 입력하세요"
          min="0" th:value="${hostDto.price}">
   <div class="result" id="result"></div>

@@ -259,4 +259,15 @@ public class UsersService {
         }
     }
 
+    public void createHostRoleByUserIdAndRoleId(int userId, int role){
+        usersMapper.createUserRoleByUserIdAndRoleId(userId, role);
+    }
+
+    public List<RoleDto> findRolesByUserId(int userId){
+        return usersMapper.findRolesByUserId(userId);
+    }
+
+    public String findUserEmailByUserId(int userId){
+        return  usersMapper.findUserEmailByUserId(userId);
+    }
 }

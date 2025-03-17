@@ -175,4 +175,5 @@ public interface UsersMapper {
     public Integer selectUserIdByLoginFrom(String loginFrom);
     public List<String> selectUserRoles(int userId);
 
+    public String findUserEmailByUserId(int userId);
 }

@@ -7,11 +7,20 @@ import com.minbak.web.file_upload.FileService;
 import com.minbak.web.file_upload.ImageFileDto;
 import com.minbak.web.host_pages.dto.CreateImageDto;
 import com.minbak.web.spring_security.CustomUserDetails;
+import com.minbak.web.spring_security.CustomUserDetailsService;
+import com.minbak.web.spring_security.jwt.JwtUtil;
+import com.minbak.web.users.RoleDto;
+import com.minbak.web.users.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Host;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.ui.Model;
 import com.minbak.web.host_pages.dto.HostDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/host")
+@RequestMapping("/user")
 @SessionAttributes("hostDto")
 public class HostController {
     @Autowired
@@ -39,6 +48,9 @@ public class HostController {
     private FileService fileService;
     @Autowired
     private CreateHostMapper createHostMapper;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @ModelAttribute("hostDto")
     public HostDto hostDto() {
@@ -132,7 +144,7 @@ public class HostController {
         System.out.println("위도: " + latitude);
         System.out.println("경도: " + longitude);
 
-        return "redirect:/host/floor-plan"; // 다음 페이지로 이동
+        return "redirect:/user/floor-plan"; // 다음 페이지로 이동
     }
 
     @GetMapping("/floor-plan")
@@ -157,7 +169,7 @@ public class HostController {
         System.out.println("침대 수: " + hostDto.getBeds());
         System.out.println("욕실 수: " + hostDto.getBathrooms());
 
-        return "redirect:/host/charm"; // ✅ 다음 페이지로 이동
+        return "redirect:/user/charm"; // ✅ 다음 페이지로 이동
     }
 
     @GetMapping("/charm")
@@ -188,7 +200,7 @@ public class HostController {
             System.out.println("❌ 옵션 변환 오류 발생!");
         }
 
-        return "redirect:/host/category"; // 다음 단계로 이동
+        return "redirect:/user/category"; // 다음 단계로 이동
     }
 
     @GetMapping("/category")
@@ -215,7 +227,7 @@ public class HostController {
             System.out.println("❌ 카테고리 변환 오류 발생!");
         }
 
-        return "redirect:/host/photos"; // 다음 단계로 이동
+        return "redirect:/user/photos"; // 다음 단계로 이동
     }
 
     @GetMapping("/photos")
@@ -245,7 +257,7 @@ public class HostController {
 
             } catch (IOException e) {
                 System.out.println(e);
-                return "redirect:/host/photos";
+                return "redirect:/user/photos";
             }
         }
 
@@ -254,7 +266,7 @@ public class HostController {
         System.out.println(Arrays.toString(files));
 
 
-        return "redirect:/host/roomName";
+        return "redirect:/user/roomName";
     }
 
 
@@ -270,7 +282,7 @@ public class HostController {
                                @RequestParam("name") String name){
         hostDto.setName(name);
         System.out.println("📌 [저장된 숙소 이름]: " + name);
-        return "redirect:/host/title"; // ✅ 다음 페이지 이동
+        return "redirect:/user/title"; // ✅ 다음 페이지 이동
     }
 
 
@@ -282,13 +294,13 @@ public class HostController {
     public String saveTitle(@ModelAttribute("hostDto") HostDto hostDto,
                             @RequestParam("title") String title){
         if(title == null || title.trim().isEmpty()){
-            return "redirect:/host/title?error";
+            return "redirect:/user/title?error";
         }
 
         hostDto.setTitle(title);
         System.out.println("📌 [숙소 제목 저장 완료]: " + hostDto.getTitle());
 
-        return "redirect:/host/description";
+        return "redirect:/user/description";
 
     }
 
@@ -300,13 +312,13 @@ public class HostController {
     public String saveDescription(@ModelAttribute("hostDto") HostDto hostDto,
                                   @RequestParam("content") String content){
         if(content == null || content.trim().isEmpty()){
-            return "redirect:/host/description?error"; // 빈 값이면 다시 입력
+            return "redirect:/user/description?error"; // 빈 값이면 다시 입력
         }
 
         hostDto.setContent(content);
         System.out.println("📌 [숙소 설명 저장 완료]: " + hostDto.getContent());
 
-        return "redirect:/host/useGuide";
+        return "redirect:/user/useGuide";
     }
 
     @GetMapping("useGuide")
@@ -317,13 +329,13 @@ public class HostController {
     public String saveUseGuide(@ModelAttribute("hostDto") HostDto hostDto,
                                @RequestParam("useGuide") String useGuide){
         if(useGuide == null || useGuide.trim().isEmpty()){
-            return "redirect:/host/useGuide?error"; // 빈 값이면 다시 입력
+            return "redirect:/user/useGuide?error"; // 빈 값이면 다시 입력
         }
 
         hostDto.setUseGuide(useGuide);
         System.out.println("📌 [숙소 이용 가이드 저장 완료]: " + hostDto.getUseGuide());
 
-        return  "redirect:/host/finish-setup";
+        return  "redirect:/user/finish-setup";
     }
 
     @GetMapping("/finish-setup")
@@ -339,13 +351,13 @@ public class HostController {
     public String savePrice(@ModelAttribute("hostDto") HostDto hostDto,
                             @RequestParam("price") Integer price){
         if(price == null || price <= 0){
-            return "redirect:/host/price?error";
+            return "redirect:/user/price?error";
         }
 
         hostDto.setPrice(price);
         System.out.println("📌 [저장된 숙박 요금]: " + hostDto.getPrice());
 
-        return "redirect:/host/receipt";
+        return "redirect:/user/receipt";
     }
 
     @GetMapping("/receipt")
@@ -368,11 +380,21 @@ public class HostController {
         return "host-pages/publish";
     }
 
+    @Autowired
+    UsersService usersService;
+
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
+
+    @Value("${jwt.refresh-token-expiration-time}")
+    private long REFRESH_TOKEN_EXPIRATION_TIME;
+
     // ✅ 최종 등록 페이지 (숙소 등록 요청)
     @PostMapping("/register")
-    public String registerRoom(@ModelAttribute("hostDto") HostDto hostDto){
-        List<String> fileUrls = hostDto.getFileUrls();  // HostDto에서 fileUrls를 가져옴
+    public String registerRoom(@ModelAttribute("hostDto") HostDto hostDto,
+                               HttpServletRequest request, HttpServletResponse response){
 
+        List<String> fileUrls = hostDto.getFileUrls();  // HostDto에서 fileUrls를 가져옴
 
         hostService.insertRoom(hostDto);
         int roomId = hostDto.getRoomId();  // 생성된 roomId를 가져옴
@@ -381,8 +403,37 @@ public class HostController {
         for (String fileUrl : fileUrls){
             hostService.updateRoomImages(fileUrl, roomId);
         }
+        for (RoleDto role : usersService.findRolesByUserId(hostDto.getUserId())){
+            if(role.getRole().equals("ROLE_HOST")){
+                return "redirect:/host/today";
+            }
+        }
 
+        usersService.createHostRoleByUserIdAndRoleId(hostDto.getUserId(),2);
 
+        String username = usersService.findUserEmailByUserId(hostDto.getUserId());
+
+        String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
+        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+        //해당 인증객체의 roles가져와서
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        // 새로운 Access Token 생성
+        String newAccessToken = jwtUtil.generateAccessToken(username, roles);
+        String newRefreshToken = jwtUtil.generateRefreshToken(username);
+
+        //토큰을 createRefreshCookie메서드(아래정의됨)로 쿠키에 추가
+        response.addCookie(jwtUtil.createRefreshCookie("refreshToken", newRefreshToken));
+
+        //엑세스토큰도 생성해서 쿠키로 전달
+        response.addCookie(jwtUtil.createAccessCookie("jwtToken",newAccessToken));
+
+        usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
 
         return "redirect:/host/today";
     }

@@ -34,6 +34,10 @@
         SELECT email FROM users WHERE email = #{email}
     </select>
 
+    <select id="findUserEmailByUserId" resultType="String">
+        SELECT email FROM users WHERE user_id = #{UserId}
+    </select>
+
     <select id="getUserInfo" resultType="com.minbak.web.user_YH.dto.DetailUserResponse">
         select user_id, name, email, phone_number
         from users

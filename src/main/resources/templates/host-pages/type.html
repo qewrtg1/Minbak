@@ -72,7 +72,7 @@
 </div>
 
 <!-- ✅ "다음" 버튼: 선택한 값이 있을 때만 활성화 -->
-<a href="/host/location" class="next-btn" id="next-btn" style="display: none;">다음</a>
+<a href="/user/location" class="next-btn" id="next-btn" style="display: none;">다음</a>
 
 <script>
   $(document).ready(function() {
@@ -80,7 +80,7 @@
           var selectedType = $(this).data("value");
 
           // AJAX 요청으로 선택한 값 저장
-          $.post("/host/type/save", { buildingType: selectedType }, function(response) {
+          $.post("/user/type/save", { buildingType: selectedType }, function(response) {
               if (response === "success") {
                   console.log("✅ 숙소 유형 저장됨:", selectedType);
 

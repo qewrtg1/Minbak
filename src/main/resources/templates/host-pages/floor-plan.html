@@ -93,7 +93,7 @@
     <h1>숙소 기본 정보를 알려주세요.</h1>
 
     <!-- ✅ Form 추가하여 데이터 전송 -->
-    <form id="floorPlanForm" action="/host/floor-plan/save" method="post">
+    <form id="floorPlanForm" action="/user/floor-plan/save" method="post">
         <!-- ✅ 숨겨진 입력 필드 (세션 값 유지) -->
         <input type="hidden" id="maxGuests" name="maxGuests" th:value="${hostDto.maxGuests} ?: 0">
         <input type="hidden" id="bedrooms" name="bedrooms" th:value="${hostDto.bedrooms} ?: 0">

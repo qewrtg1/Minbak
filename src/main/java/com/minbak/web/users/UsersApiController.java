@@ -179,7 +179,12 @@ public class UsersApiController {
                 jwtCookie.setMaxAge(0);
                 jwtCookie.setPath("/");
 
+                Cookie refCookie = new Cookie("refreshToken", null);
+                refCookie.setMaxAge(0);
+                refCookie.setPath("/");
+
                 response.addCookie(jwtCookie);
+                response.addCookie(refCookie);
 
                 return ResponseEntity.status(HttpServletResponse.SC_OK)
                         .body(Map.of("message", "로그아웃 되었습니다."));
