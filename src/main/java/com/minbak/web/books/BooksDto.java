@@ -1,5 +1,6 @@
 package com.minbak.web.books;
 
+import com.minbak.web.file_upload.ImageFileDto;
 import com.minbak.web.payments.PaymentDto;
 import com.minbak.web.rooms.RoomsDto;
 import com.minbak.web.users.UserDto;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Data
 public class BooksDto {
     private Integer bookId;
-    private String status = "대기";
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer guestsNum;
@@ -20,6 +21,7 @@ public class BooksDto {
     private UserDto user;
     private RoomsDto room;
     private PaymentDto payment;
+    private ImageFileDto file;
     private Integer hostId;
 
     private String userName;

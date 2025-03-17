@@ -14,13 +14,7 @@
         .status-declined { color: #f44336; font-weight: bold; }
         .btn-action { margin-right: 5px; }
 
-        /* ✅ 헤더 스타일 */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #ddd; background: white; }
-        .menu { display: flex; gap: 20px; font-weight: 500; }
-        .menu a { text-decoration: none; color: black; transition: 0.2s; }
-        .menu a:hover { color: #ff385c; }
-        .user-menu { display: flex; align-items: center; gap: 15px; }
-        .profile-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
 
         /* ✅ 섹션 스타일 */
         .section { padding-top: 64px; color: #222; }
@@ -39,28 +33,7 @@
     </style>
 </head>
 <body>
-<!-- ✅ 헤더 -->
-<div class="header">
-    <a href="/">
-        <img src="/uploads/logo-text.png" alt="로고" height="30"> <!-- 로고 -->
-    </a>
-
-    <!-- ✅ 중앙 메뉴 -->
-    <nav class="menu">
-        <a href="/host/today">투데이</a>
-        <a href="/host/rooms">숙소</a>
-        <a href="/host/messages">메시지</a>
-        <a href="/host/books">예약</a>
-        <a href="/host/new-room">새로운 숙소 등록하기</a>
-    </nav>
-
-    <!-- ✅ 우측 유저 정보 -->
-    <div class="user-menu">
-        <button class="btn btn-light">🔔 알림</button>
-        <img th:src="${headerUser.profileImageUrl}" alt="프로필 이미지" class="profile-img">
-        <span th:text="${headerUser.name}">사용자 이름</span>
-    </div>
-</div>
+<div th:replace="~{host-pages/common/header}"></div>
 
 <!-- ✅ 섹션 영역 -->
 <div class="section">
@@ -70,7 +43,7 @@
             <span>숙소 등록 후 24시간이 지나면 게스트가 숙소를 예약할 수 있습니다. 예약을 받을 수 있도록 숙소 설정을 마쳐보세요.</span>
         </h2>
         <!--등록된 숙소가 존재하지 않을 경우-->
-        <div class="roomList">
+        <div th:if="${!hasRooms}" class="roomList">
             <div class="room-item">
                 <div style="color: red">중요 정보 입력하기</div>
                 <div style="color: red">숙소 등록을 완료하려면 필수</div>

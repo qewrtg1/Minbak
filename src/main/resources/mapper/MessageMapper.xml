@@ -27,6 +27,15 @@
         WHERE sender_id = #{user_id} OR receiver_id = #{user_id}
 
     </select>
+    <!-- 챗룸아이디랑 유저본인아이디로 메세지 조회-->
+    <select id="findMessagesByIds" resultType="com.minbak.web.messages.MessageDto">
+        SELECT message_id, sender_id, receiver_id, content, sent_at, is_read
+        FROM message
+        where
+        (sender_id = #{userId} AND receiver_id = #{chatRoomId})
+        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId})
+
+    </select>
     
     <!--오늘 메세지 목록 뽑아서 카운트로 세기    -->
     <select id="countMessagesToday" resultType="int">
@@ -144,5 +153,14 @@
         (sender_id = #{userId} AND receiver_id = #{chatRoomId})
         OR (sender_id = #{chatRoomId} AND receiver_id = #{userId})
 </update>
+
+    <select id="countMessagesByIds" resultType="Integer" parameterType="int">
+        select count(is_read)
+        from message
+        WHERE
+        ((sender_id = #{userId} AND receiver_id = #{chatRoomId})
+        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId}))
+        AND is_read = 0
+    </select>
 
 </mapper>

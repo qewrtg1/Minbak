@@ -6,8 +6,10 @@ import com.minbak.web.spring_security.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -40,10 +43,20 @@ public class UsersApiController {
     private final CustomUserDetailsService customUserDetailsService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, String>> signup(@RequestBody UserDto userDTO) {
-        usersService.createUser(userDTO);
+    public ResponseEntity<Map<String, String>> signup(@Valid @RequestBody UserDto userDTO, BindingResult bindingResult) {
+
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Signup successful");
+
+        if(bindingResult.hasErrors()){
+            String errorMessage = bindingResult.getFieldError() != null
+                    ? bindingResult.getFieldError().getDefaultMessage()
+                    : "유효성 검사 오류가 발생했습니다.";
+            response.put("message", errorMessage);
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        usersService.createUser(userDTO);
+        response.put("message", "회원가입이 완료되었습니다.");
         return ResponseEntity.ok(response);
     }
 
@@ -51,6 +64,8 @@ public class UsersApiController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> user, HttpServletResponse response) {
         try {
+
+
             // AuthenticationManager.authenticate()가 호출될 때 CustomUserDetailService 실행
             //AuthenticationManager는 Spring Sequrity 인증관리 객체
             //UsernamePasswordAuthenticationToken는 username과 password를 받아서 인증확인
@@ -91,40 +106,42 @@ public class UsersApiController {
         }
     }
 
-    @PostMapping("/refresh")
-    //HttpServletRequest 서블릿은 클라이언트의 요청을 받아오는 자바객체
-    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request,HttpServletResponse response) {
 
-        String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
-
-        if (!jwtUtil.validateToken(refreshToken)) {
-            //401에러 전달 로그인페이지로 이동시켜야함
-            //로컬데이터에 엑세스토큰삭제해야함
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid Refresh Token"));
-        }
-
-        //리프레시토큰의 유저네임 받아와서
-        String username = jwtUtil.extractUsername(refreshToken);
-        //유저네임으로 UserDetails생성
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        //Refresh Rotate(리프레시토큰 재발급)
-        String newRefreshToken = jwtUtil.generateRefreshToken(username);
-        response.addCookie(jwtUtil.createRefreshCookie("refreshToken", newRefreshToken));
-
-        //발급한 토큰 데이터베이스에 저장
-        usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
-
-        //발급했던 토큰 데이터 삭제
-        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
-        
-        //accessToken 전달(클라이언트서버에서 로컬에 저장)
-        String newAccessToken = jwtUtil.generateAccessToken(username, roles);
-        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
-    }
+    //필터단으로 코드 옮김
+//    @PostMapping("/refresh")
+//    //HttpServletRequest 서블릿은 클라이언트의 요청을 받아오는 자바객체
+//    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request,HttpServletResponse response) {
+//
+//        String refreshToken = jwtUtil.getRefreshTokenFromCookies(request);
+//
+//        if (!jwtUtil.validateToken(refreshToken)) {
+//            //401에러 전달 로그인페이지로 이동시켜야함
+//            //로컬데이터에 엑세스토큰삭제해야함
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid Refresh Token"));
+//        }
+//
+//        //리프레시토큰의 유저네임 받아와서
+//        String username = jwtUtil.extractUsername(refreshToken);
+//        //유저네임으로 UserDetails생성
+//        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//
+//        //Refresh Rotate(리프레시토큰 재발급)
+//        String newRefreshToken = jwtUtil.generateRefreshToken(username);
+//        response.addCookie(jwtUtil.createRefreshCookie("refreshToken", newRefreshToken));
+//
+//        //발급한 토큰 데이터베이스에 저장
+//        usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
+//
+//        //발급했던 토큰 데이터 삭제
+//        usersService.deleteRefreshTokenDataByRefreshToken(refreshToken);
+//
+//        //accessToken 전달(클라이언트서버에서 로컬에 저장)
+//        String newAccessToken = jwtUtil.generateAccessToken(username, roles);
+//        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+//    }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<String> user(@PathVariable String username,

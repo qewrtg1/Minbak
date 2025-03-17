@@ -29,6 +29,8 @@ public class UserDto {
 
     private boolean enabled = true;   // 계정 활성화 여부 (기본값 true)
 
+    private String loginFrom;
+
     private LocalDateTime createdAt;  // 계정 생성일
 
     private LocalDateTime updatedAt;  // 계정 수정일

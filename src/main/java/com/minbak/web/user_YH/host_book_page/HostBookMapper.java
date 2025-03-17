@@ -14,5 +14,6 @@ public interface HostBookMapper {
     DetailUserResponse findUserDetailByUserId(Integer userId);
     List<Map<String, String>> fineHostingRoomByUserId(Integer userId);
     int approveReservation(Integer bookId);
+    int declineReservation(Integer bookId);
 
 }

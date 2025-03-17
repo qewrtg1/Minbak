@@ -76,8 +76,8 @@
 <div class="container reservation-container">
     <ul class="nav nav-tabs mb-3">
         <li class="nav-item"><button class="nav-link active" onclick="filterReservations('대기')">대기 중</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('완료')">승인됨</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('취소')">거절됨</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('수락')">승인됨</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('거절')">거절됨</button></li>
         <li class="nav-item"><button class="nav-link" onclick="filterReservations('ALL')">전체</button></li>
     </ul>
 
@@ -119,6 +119,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         updateNoReservationMessage();
+        filterReservations('대기'); // 페이지 로드 시 "대기 중" 예약 목록이 기본으로 보이게 설정
     });
 
     function updateNoReservationMessage() {
@@ -141,7 +142,7 @@
 
 
     function declineReservation(bookId) {
-        axios.put(`/api/host/reservations/${bookId}/decline`)
+        axios.put(`/host/decline/${bookId}`)
             .then(response => {
                 alert("예약이 거절되었습니다.");
                 document.getElementById(`reservation-${bookId}`).remove();
@@ -155,17 +156,13 @@
         alert(`필터 적용됨: 숙소 - ${selectedRoom || '전체'}`);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        filterReservations('대기'); // 페이지 로드 시 "대기 중" 예약 목록이 기본으로 보이게 설정
-    });
-
     function filterReservations(status) {
         let reservations = document.querySelectorAll(".card.mb-3");
         let noReservationsMsg = document.getElementById("noReservations");
         let hasVisibleReservations = false;
 
         reservations.forEach(reservation => {
-            let reservationStatus = reservation.querySelector(".status-대기, .status-완료, .status-취소");
+            let reservationStatus = reservation.querySelector(".status-대기, .status-수락, .status-거절, .status-완료, .status-취소");
 
             if (!reservationStatus) return;
 

@@ -315,12 +315,24 @@
     <!--관리자 권한 추가 요청-->
     <script>
         document.getElementById("make-admin-btn").addEventListener("click", function() {
-            const userId = document.getElementById("userId").value;  // 현재 유저 ID
+            const userId = document.getElementById("userId").value;
 
-            // 관리자 등록 API 요청
-            axios.post('/admin/api/users/makeAdmin', {
-                userId: userId  // 유저 ID를 서버로 전송
-            })
+            // CSRF 토큰과 헤더 이름을 메타 태그에서 가져오기
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+            axios.post('/admin/api/users/makeAdmin',
+                {
+                    userId: userId
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        // 메타 태그에서 가져온 헤더 이름을 동적으로 사용
+                        [csrfHeader]: csrfToken
+                    }
+                }
+            )
             .then(response => {
                 if (response.data.success) {
                     alert("성공적으로 관리자로 등록되었습니다.");

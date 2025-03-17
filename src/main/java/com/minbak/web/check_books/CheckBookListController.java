@@ -38,12 +38,12 @@ public class CheckBookListController {
         for(int i = 0;i<booksPageDto.getObjects().size();i++){
 
             booksPageDto.getObjects().get(i).setRoomUrl(checkBookService.findRoomImageUrlByRoomId(booksPageDto.getObjects().get(i).getRoomId()));
-
+            booksPageDto.getObjects().get(i).setHostName(checkBookService.
+                    findUserNameByUserId(booksPageDto.getObjects().get(i).getRoom().getUserId()));
         }
         for(int i = 0;i<booksPageDto.getObjects().size();i++){
 
             booksPageDto.getObjects().get(i).setUser(checkBookService.findUserByUserId(booksPageDto.getObjects().get(i).getUserId()));
-
         }
 
          model.addAttribute("booksPageDto",booksPageDto);
@@ -56,6 +56,7 @@ public class CheckBookListController {
                                       @PathVariable("bookId") int bookId,
                                       Model model){
 
+//        예약id로 조회 테이블 조인으로 room연결,유저연결
         CheckBookDto checkBookDto=checkBookService.findBookByBookId(bookId);
         checkBookDto.setUser(checkBookService.findUserByUserId(checkBookDto.getRoom().getUserId()));
         checkBookDto.setRoomUrls(checkBookService.findRoomImageUrlsByRoomId(checkBookService.findBookByBookId(bookId).getRoomId()));

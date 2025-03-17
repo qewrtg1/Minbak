@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String requestURI = request.getRequestURI();
 
-        // ✅ "/admin/**" 경로에서는 JWT 필터 실행하지 않음
+        // "/admin/**" 경로에서는 JWT 필터 실행하지 않음
         return requestURI.startsWith("/admin/");
     }
 

@@ -30,6 +30,22 @@
         font-size: 18px;
         font-weight: bold;
     }
+    .txtarea1 {
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .txtarea1 div {
+      display: flex;
+    }
+    .msgToHost {
+      border: none;
+      margin: 0;
+      color: inherit;
+      width: 100%;
+      height: 110px;
+      padding: 8px;
+    }
   </style>
 </head>
 <body class="bg-light">
@@ -59,14 +75,25 @@
       <div class="mb-3">
         <label class="form-label">게스트 수</label>
         <select class="form-select" id="guestCount" name="guestCount">
-          <option th:each="num : ${#numbers.sequence(1, guestCount)}"
+          <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
                   th:value="${num}"
                   th:text="|게스트 ${num}명|"
                   th:selected="${num == guestCount}"></option>
         </select>
       </div>
-
-
+      <hr style="color: #aaa;">
+      <div class="mb-3">
+        <h3>호스트에게 메시지 보내기</h3>
+        <p>예약을 계속 진행하기 전에 기민 님에게 여행 목적과 이 숙소를 예약하고 싶은 이유를 간단히 알려주셔야 합니다.</p>
+        <div>
+          <div class="txtarea1">
+            <div dir="ltr">
+              <textarea id="msgToHostText" class="msgToHost" placeholder='예: "안녕하세요. 파트너와 함께 친구 결혼식에 참석할 예정인데, 숙소가 결혼식장에서 가까워서 마음에 듭니다."'></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr style="color: #aaa;">
       <p class="text-muted">숙소 이용 규칙을 준수해주세요.</p>
     </div>
 
@@ -90,6 +117,7 @@
           <input type="hidden" name="endDate" id="hiddenCheckOutDate" th:value="${checkOutDate}">
           <input type="hidden" name="guestsNum" id="hiddenGuestCount" th:value="${guestCount}">
           <input type="hidden" name="totalPrice" id="hiddenTotalPrice">
+          <input type="hidden" name="request" id="hiddenRequest">
 
           <h5>요금 세부정보</h5>
           <p>
@@ -191,12 +219,14 @@ flatpickr("#checkOutDate", {
     const totalPriceText = document.getElementById("totalPrice");
     const finalTotalText = document.getElementById("finalTotal");
     const pricePerNight = [[${room.pricePerNight}]];
+    const msgToHostText = document.getElementById("msgToHostText");
 
 
     const hiddenCheckIn = document.getElementById("hiddenCheckInDate");
     const hiddenCheckOut = document.getElementById("hiddenCheckOutDate");
     const hiddenGuestCount = document.getElementById("hiddenGuestCount");
     const hiddenTotalPrice = document.getElementById("hiddenTotalPrice");
+    const hiddenRequest = document.getElementById("hiddenRequest");
 function updatePrice() {
     const checkInDate = new Date(checkInInput.value);
     const checkOutDate = new Date(checkOutInput.value);
@@ -236,6 +266,16 @@ function updatePrice() {
     });
 
     updatePrice();
+
+    // 메시지가 변경될 때마다 hidden 필드에 값 전달
+    msgToHostText.addEventListener("input", function () {
+        hiddenRequest.value = msgToHostText.value;
+    });
+
+    // 예약 버튼 클릭 시에도 처리
+    document.getElementById("reservationForm").addEventListener("submit", function (event) {
+        hiddenRequest.value = msgToHostText.value; // 폼 제출 전에 최종 값 전달
+    });
 });
 
 </script>

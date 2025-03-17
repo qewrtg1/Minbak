@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
 public class UserMessageListDto {
     private Integer userId;
     private Integer chatRoomId;
+    private String chatRoomUserName;
     private Integer lastMessageId;
     private LocalDateTime lastMessageTime;
     private String lastMessageContent;
-    private Integer isRead;
+    private Integer isUnRead;
 
 }

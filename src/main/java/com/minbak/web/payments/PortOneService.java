@@ -94,6 +94,8 @@ public class PortOneService {
         payment.setStatus("결제 완료");
 
         paymentsMapper.updatePaymentStatus(payment);
+
+        paymentsMapper.updateBookStatus("완료", paymentsMapper.findBookIdByMerchantUid(merchantUid));
     }
 
 

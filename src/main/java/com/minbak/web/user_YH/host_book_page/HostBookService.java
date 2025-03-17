@@ -34,4 +34,11 @@ public class HostBookService {
             throw new IllegalStateException("예약 승인 실패: 해당 bookId가 존재하지 않거나 이미 승인됨.");
         }
     }
+
+    public void declineReservation(Integer bookId) {
+        int updatedRows = hostBookMapper.declineReservation(bookId);
+        if (updatedRows == 0) {
+            throw new IllegalStateException("예약 거절 실패: 해당 bookId가 존재하지 않거나 이미 거절됨.");
+        }
+    }
 }

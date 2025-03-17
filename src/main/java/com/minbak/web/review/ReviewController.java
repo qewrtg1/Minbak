@@ -56,16 +56,6 @@ public class ReviewController {
         return  "review/review-detail"; // review.html 파일을 반환
     }
 
-//    // 리뷰 수정시 페이지를 보여주는 메서드
-//    @GetMapping("/edit/{id}")
-//    public String reviewUpdate(@PathVariable("id") int id, Model model){
-//        ReviewDto review = reviewService.findReviewById(id);
-////        if (review == null) {
-////            throw new ReviewException("데이터를 찾을 수 없습니다.");
-////        }
-////        model.addAttribute("review", review);     // 모델에 가져온 리뷰 정보를 추가하여 뷰에 전달
-//        return "review/review-edit"; // 'review/review-edit' 뷰로 이동, 리뷰 수정 페이지를 렌더링
-//    }
 
     // 업데이트 클릭시 상세보기로 리다이렉팅
     @PostMapping("/edit")
@@ -78,8 +68,6 @@ public class ReviewController {
     @PostMapping("/delete/{id}")
     public String deleteReview(@PathVariable("id") int id, Model model){
         reviewService.deleteReview(id);
-//        List<ReviewDto> review = reviewService.findAllReview();
-//        model.addAttribute("review", review);  // "review"라는 이름으로 템플릿에 전달
         return "redirect:/admin/review";  // review.html 파일을 렌더링
     }
 
