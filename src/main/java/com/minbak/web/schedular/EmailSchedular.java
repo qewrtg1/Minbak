@@ -17,7 +17,7 @@ public class EmailSchedular {
 
     private final ReviewService reviewService;
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 41 17 * * *")
     public void printDate(){
         List<EmailDto> emailList = reviewService.setEmail();
         for(EmailDto emailDto : emailList) {

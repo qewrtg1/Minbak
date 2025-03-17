@@ -4,6 +4,8 @@ import com.minbak.web.books.BooksDto;
 import com.minbak.web.email.EmailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -94,11 +96,16 @@ public class ReviewService {
     //////////////////// Email ////////////////////
 
     public List<EmailDto> setEmail(){
-        List<Map<String, Object>> booksDtoList = reviewBooksMapper.getWaitingReview();
-        List<EmailDto> emailDtoList = null;
-        for(Map<String, Object> booksDto : booksDtoList){
-            EmailDto emailDto =  EmailDto.builder().to((String)booksDto.get("email")).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요!").build();
-            emailDtoList.add(emailDto);
+        List<BooksDto> booksDtoList = reviewBooksMapper.getWaitingReview();
+        List<EmailDto> emailDtoList = new ArrayList<>();
+        for( BooksDto booksDto : booksDtoList){
+            if (((String)booksDto.getUser().getEmail()).equals("dlsxotjd15@naver.com")){
+                EmailDto emailDto =  EmailDto.builder().to((String)booksDto.getUser().getEmail()).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요! \n link:localhost:8080/books/review/" + booksDto.getBookId()).build();
+                emailDtoList.add(emailDto);
+            }
+
+//            EmailDto emailDto =  EmailDto.builder().to((String)booksDto.get("email")).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요!").build();
+////            emailDtoList.add(emailDto);
         }
         return emailDtoList;
     }

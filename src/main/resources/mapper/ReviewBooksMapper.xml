@@ -45,7 +45,7 @@
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
-        where b.end_date = DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY), '%Y-%m-%d') and b.book_id not in (select book_id from reviews)
+        where b.end_date = DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY), '%Y-%m-%d') and b.book_id not in (select book_id from review)
     </select>
 
     <!-- 호스트가 특정 리뷰에 대한 답변을 남기는 SQL -->

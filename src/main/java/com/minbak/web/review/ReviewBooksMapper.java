@@ -10,7 +10,7 @@ import java.util.Map;
 public interface ReviewBooksMapper {
 
     BooksDto selectBookById (Integer bookId);
-    List<Map<String, Object>> getWaitingReview();
+    List<BooksDto> getWaitingReview();
 
     ////////////////////// host ///////////////////////////////
     // 호스트가 답변해야 할 리뷰 목록을 가져오는 메서드
