@@ -13,7 +13,7 @@ public interface RoomsMapper {
 
     // rooms 의 디테일
     RoomsDto getRoomsList(int roomId);
-
+    List<String> getRoomImages(@Param("roomId") int roomId);
 
 
     // rooms 의 전체 리스트

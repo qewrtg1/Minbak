@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>숙소 검토하기</title>
   <style>
-    /* 기본 스타일 설정 */
     body {
         font-family: Arial, sans-serif;
-        background-color: #fff;
+        background-color: #f9f9f9;
         color: #333;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
         margin: 0;
+        padding: 20px;
         text-align: center;
     }
 
     h1 {
         font-size: 24px;
-        color: #000;
+        margin-bottom: 10px;
     }
 
     p {
@@ -28,52 +27,70 @@
         color: #555;
     }
 
-    /* 미리보기 박스 */
+    /* ✅ 미리보기 컨테이너 */
     .preview-container {
-        width: 350px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        background-color: #fff8e1;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .preview-container img {
         width: 100%;
-        height: auto;
+        max-width: 500px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* ✅ 메인 이미지 */
+    .main-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
         border-radius: 10px;
     }
 
-    .title {
-        font-size: 20px;
-        font-weight: bold;
+    /* ✅ 숙소 정보 */
+    .room-info {
+        width: 100%;
+        text-align: left;
         margin-top: 10px;
     }
 
-    .price {
+    .room-info h2 {
         font-size: 18px;
+        margin: 10px 0 5px;
+    }
+
+    .room-info p {
+        font-size: 14px;
+        color: #666;
+        margin: 2px 0;
+    }
+
+    .price {
+        font-size: 16px;
+        font-weight: bold;
         color: #ff9800;
         margin-top: 5px;
     }
 
-    /* 다음 버튼 스타일 */
+    /* ✅ 다음 버튼 */
     .next-btn {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #ffeb3b;
-        color: #333;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ff9800;
         border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
         border-radius: 5px;
-        font-size: 16px;
+        color: #fff;
         cursor: pointer;
         text-decoration: none;
-        font-weight: bold;
     }
 
     .next-btn:hover {
-        background-color: #fdd835;
+        background-color: #e68900;
     }
   </style>
 </head>
@@ -82,15 +99,33 @@
 <h1>숙소 검토하기</h1>
 <p>게스트에게 표시되는 정보는 다음과 같습니다. 모든 정보가 정확한지 확인하세요.</p>
 
-<!-- 미리보기 컨테이너 -->
+<!-- ✅ 미리보기 컨테이너 -->
 <div class="preview-container">
-  <img src="숙소_이미지_URL" alt="숙소 이미지">
-  <p class="title">숙소 제목</p>
-  <p class="price">₩ 숙소 가격</p>
+  <!-- ✅ 첫 번째 이미지 표시 (없으면 기본 이미지) -->
+  <img id="roomImage"
+       th:src="${(imageFiles != null and not #lists.isEmpty(imageFiles)) ? '/uploads/' + imageFiles[0] : 'https://via.placeholder.com/500x300?text=No+Image'}"
+       alt="숙소 이미지"
+       class="main-image">
+
+
+  <!-- ✅ 숙소 정보 -->
+  <div class="room-info">
+    <h2 th:text="${hostDto.title}"></h2>
+    <p th:text="${hostDto.address}">숙소 위치가 여기에 표시됩니다.</p>
+    <p class="price" th:text="|₩${#numbers.formatInteger(hostDto.price, 3, 'COMMA')} /박|">₩ 숙소 가격</p>
+  </div>
 </div>
 
-<!-- 다음 버튼 -->
-<a href="#" class="next-btn">다음</a>
+<!-- ✅ 다음 버튼 -->
+<a href="/host/publish" class="next-btn">다음</a>
+
+<script th:inline="javascript">
+  let images = [[${hostDto.fileUrls}]];
+  console.log("📌 [이미지 개수]:", images.length);
+  if (images.length > 0) {
+      console.log("📌 [첫 번째 이미지 URL]:", images[0]);
+  }
+</script>
 
 </body>
 </html>

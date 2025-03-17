@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.host_pages.CreateHostMapper">
+
+    <!-- 숙소 등록 -->
+    <insert id="insertRoom" useGeneratedKeys="true" keyProperty="roomId">
+        INSERT INTO rooms (user_id, name, title, content, address, price, use_guide,
+        building_type, latitude, longitude, max_guests, bedrooms, beds, bathrooms)
+        VALUES (
+        #{userId},#{name}, #{title}, #{content}, #{address}, #{price}, #{useGuide}, #{buildingType},
+        #{latitude}, #{longitude}, #{maxGuests}, #{bedrooms}, #{beds}, #{bathrooms}
+        )
+    </insert>
+
+    <!-- 이미지 저장 -->
+    <insert id="insertRoomImages">
+        INSERT INTO image_files (file_url, file_name, file_size, uploaded_at, user_id, entity_type, entity_id)
+        VALUES
+        <foreach collection="hostDto.files" item="image" separator=",">
+            (#{image.fileUrl}, #{image.fileName}, #{image.fileSize}, NOW(), #{image.userId}, 'rooms', #{roomId})
+        </foreach>
+    </insert>
+
+    <!-- 옵션 저장 -->
+    <insert id="insertRoomOptions">
+        INSERT INTO rooms_room_options (room_id, option_id)
+        VALUES
+        <foreach collection="optionIds" item="optionId" separator=",">
+            (#{roomId}, #{optionId})
+        </foreach>
+    </insert>
+
+    <!-- 카테고리 저장 -->
+    <insert id="insertRoomCategories">
+        INSERT INTO rooms_categories (room_id, category_id)
+        VALUES
+        <foreach collection="categoryIds" item="categoryId" separator=",">
+            (#{roomId}, #{categoryId})
+        </foreach>
+    </insert>
+
+
+
+
+    <select id="getUserNameById" parameterType="int" resultType="String">
+        SELECT name FROM users WHERE user_id = #{userId}
+    </select>
+
+
+    <update id="updateRoomImages">
+        UPDATE image_files
+        SET entity_id = #{roomId}
+        WHERE file_url = #{fileUrl}
+    </update>
+
+
+
+
+
+</mapper>

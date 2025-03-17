@@ -42,7 +42,15 @@ public class RoomsService {
     }
     // 상세 보기
     public RoomsDto getRoomList(int roomId){
-        return roomsMapper.getRoomsList(roomId);
+        RoomsDto room = roomsMapper.getRoomsList(roomId);
+
+        if (room != null) {
+            List<String> imageUrls = roomsMapper.getRoomImages(roomId); // ✅ 이미지 조회
+            room.setImageUrls(imageUrls); // ✅ DTO에 이미지 추가
+            System.out.println("이미지 리스트: " + imageUrls); // 디버깅용
+        }
+
+        return room;
     }
     // 수정 페이지
     public RoomsDto getRoomById(int roomId){

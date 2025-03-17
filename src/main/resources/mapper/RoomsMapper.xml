@@ -95,6 +95,13 @@
         WHERE r.room_id = #{roomId}
         GROUP BY r.room_id
     </select>
+    <!-- ✅ 추가: 숙소의 이미지 리스트 가져오기 -->
+    <select id="getRoomImages" resultType="string">
+        SELECT file_url
+        FROM image_files
+        WHERE entity_type = 'rooms' AND entity_id = #{roomId}
+    </select>
+
 
     <!-- 방 수정 페이지 -->
     <select id="getRoomById" parameterType="int" resultType="com.minbak.web.rooms.dto.RoomsDto">

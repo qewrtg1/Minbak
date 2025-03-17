@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>숙소 카테고리 선택</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+    .container {
+        width: 90%;
+        max-width: 700px;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        justify-content: center;
+    }
+    .category {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 120px;
+        height: 120px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+        background: white;
+        font-size: 14px;
+        text-align: center;
+        padding: 10px;
+        font-weight: 500;
+    }
+    .category i {
+        font-size: 24px;
+        margin-bottom: 6px;
+        color: #555;
+    }
+    .category.selected {
+        background-color: #ff9800;
+        color: white;
+        border-color: #ff9800;
+    }
+    .category.selected i {
+        color: white;
+    }
+    .next-btn {
+        margin-top: 20px;
+        background-color: #ff9800;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>숙소 카테고리를 선택하세요.</h2>
+
+  <form id="categoriesForm" action="/host/category/save" method="post">
+    <input type="hidden" id="selectedCategoriesInput" name="categoryIds">
+    <div class="grid">
+      <div class="category" data-category-id="1"><i class="fas fa-tree"></i> 통나무집</div>
+      <div class="category" data-category-id="2"><i class="fas fa-star"></i> 인기 숙소</div>
+      <div class="category" data-category-id="3"><i class="fas fa-city"></i> 도시</div>
+      <div class="category" data-category-id="4"><i class="fas fa-ship"></i> 섬</div>
+      <div class="category" data-category-id="5"><i class="fas fa-campground"></i> 캠핑</div>
+      <div class="category" data-category-id="6"><i class="fas fa-leaf"></i> 숲</div>
+      <div class="category" data-category-id="7"><i class="fas fa-umbrella-beach"></i> 제주 한달살기</div>
+      <div class="category" data-category-id="8"><i class="fas fa-golf-ball"></i> 골프</div>
+      <div class="category" data-category-id="9"><i class="fas fa-baby"></i> 키즈</div>
+      <div class="category" data-category-id="10"><i class="fas fa-caravan"></i> 카라반</div>
+      <div class="category" data-category-id="11"><i class="fas fa-tractor"></i> 시골</div>
+      <div class="category" data-category-id="12"><i class="fas fa-home"></i> 한옥</div>
+      <div class="category" data-category-id="13"><i class="fas fa-landmark"></i> 전통</div>
+      <div class="category" data-category-id="14"><i class="fas fa-water"></i> 호수</div>
+      <div class="category" data-category-id="15"><i class="fas fa-gem"></i> 고급</div>
+      <div class="category" data-category-id="16"><i class="fas fa-mountain"></i> 산</div>
+      <div class="category" data-category-id="17"><i class="fas fa-water"></i> 바다</div>
+      <div class="category" data-category-id="18"><i class="fas fa-star"></i> 독특한 테마</div>
+      <div class="category" data-category-id="19"><i class="fas fa-swimming-pool"></i> 수영장</div>
+      <div class="category" data-category-id="20"><i class="fas fa-skiing"></i> 스키장</div>
+      <div class="category" data-category-id="21"><i class="fas fa-water"></i> 서핑</div>
+      <div class="category" data-category-id="22"><i class="fas fa-paw"></i> 반려동물</div>
+    </div>
+    <button type="submit" class="next-btn">다음</button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const categories = document.querySelectorAll(".category");
+      const hiddenInput = document.getElementById("selectedCategoriesInput");
+      let selectedCategories = new Set();
+
+      categories.forEach(category => {
+          category.addEventListener("click", function() {
+              let categoryId = this.dataset.categoryId;
+              if (selectedCategories.has(categoryId)) {
+                  selectedCategories.delete(categoryId);
+                  this.classList.remove("selected");
+              } else {
+                  selectedCategories.add(categoryId);
+                  this.classList.add("selected");
+              }
+              hiddenInput.value = Array.from(selectedCategories).join(",");
+          });
+      });
+  });
+</script>
+
+</body>
+</html>
+

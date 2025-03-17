@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <title>숙소 설명 작성</title>
@@ -24,10 +24,12 @@
     p {
         font-size: 1rem;
         margin-bottom: 30px;
+        max-width: 600px;
+        line-height: 1.5;
     }
     textarea {
-        width: 600px; /* 박스의 너비를 600px로 설정 */
-        height: 200px; /* 박스의 높이를 200px로 설정 */
+        width: 600px;
+        height: 200px;
         font-size: 1.2rem;
         padding: 10px;
         margin-bottom: 20px;
@@ -45,6 +47,7 @@
         color: white;
         text-decoration: none;
         border-radius: 5px;
+        cursor: pointer;
     }
     .next-btn:hover {
         background-color: #e68900;
@@ -53,12 +56,15 @@
 </head>
 <body>
 
-<h1>숙소 설명 작성</h1>
-<p>당신의 숙소를 설명해 주세요.</p>
+<h1>숙소를 더욱 특별하게 만들어 보세요</h1>
+<p>당신의 공간은 어떤 매력을 가지고 있나요?
+  게스트가 머무를 때 느낄 따뜻한 분위기, 독특한 인테리어, 특별한 경험에 대해 이야기해주세요.</p>
 
-<textarea placeholder="숙소 설명을 입력해주세요."></textarea>
-
-<a href="#" class="next-btn">다음</a>
+<!-- ✅ 숙소 설명 입력 폼 -->
+<form action="/host/description/save" method="post">
+  <textarea name="content" placeholder="당신의 숙소를 매력적으로 소개해 주세요!" th:text="${hostDto.content}"></textarea>
+  <button type="submit" class="next-btn">다음</button>
+</form>
 
 </body>
 </html>

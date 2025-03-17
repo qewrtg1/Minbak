@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>숙소 편의시설 선택</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
   <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Noto Sans KR', sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -22,33 +21,34 @@
     }
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
         justify-content: center;
     }
     .category {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
     .option {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
         border: 2px solid #ddd;
         border-radius: 10px;
         cursor: pointer;
         transition: 0.2s;
         background: white;
-        font-size: 12px;
+        font-size: 14px;
         text-align: center;
-        padding: 5px;
+        padding: 10px;
+        font-weight: 500;
     }
     .option i {
-        font-size: 20px;
-        margin-bottom: 4px;
-        color: #666;
+        font-size: 24px;
+        margin-bottom: 6px;
+        color: #555;
     }
     .option.selected {
         background-color: #ff9800;
@@ -58,18 +58,20 @@
     .option.selected i {
         color: white;
     }
+    /* ✅ "다음" 버튼을 오른쪽 하단에 고정 */
     .next-btn {
-        display: block;
-        margin: 20px auto;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
         background-color: #ff9800;
         border: none;
-        padding: 12px 24px;
-        font-size: 1rem;
+        padding: 15px 30px;
+        font-size: 1.2rem;
         border-radius: 5px;
         color: #fff;
         cursor: pointer;
         text-decoration: none;
-        text-align: center;
+        display: inline-block;
     }
     .next-btn:hover {
         background-color: #e68900;
@@ -81,66 +83,117 @@
 <div class="container">
   <h2>숙소에 제공되는 편의시설을 선택하세요.</h2>
 
-  <div class="category">
-    <h3>필수</h3>
-    <div class="grid">
-      <div class="option"><i class="fas fa-wifi"></i> 와이파이</div>
-      <div class="option"><i class="fas fa-utensils"></i> 주방</div>
-      <div class="option"><i class="fas fa-tshirt"></i> 세탁기</div>
-      <div class="option"><i class="fas fa-wind"></i> 건조기</div>
-      <div class="option"><i class="fas fa-snowflake"></i> 에어컨</div>
-      <div class="option"><i class="fas fa-thermometer-half"></i> 난방</div>
-      <div class="option"><i class="fas fa-laptop"></i> 업무 공간</div>
-      <div class="option"><i class="fas fa-tv"></i> TV</div>
-      <div class="option"><i class="fas fa-wind"></i> 헤어드라이어</div>
-      <div class="option"><i class="fa-solid fa-shirt"></i> 다리미</div>
-    </div>
-  </div>
+  <!-- ✅ Thymeleaf에서 옵션 데이터를 서버로 전송하는 폼 -->
+  <form id="optionForm" action="/host/option/save" method="post">
+    <!-- ✅ 선택된 옵션 ID를 저장하는 hidden input -->
+    <input type="hidden" id="selectedOptionsInput" name="optionIds">
 
-  <div class="category">
-    <h3>특징</h3>
-    <div class="grid">
-      <div class="option"><i class="fas fa-swimmer"></i> 수영장</div>
-      <div class="option"><i class="fas fa-bath"></i> 대형 욕조</div>
-      <div class="option"><i class="fas fa-parking"></i> 무료 주차</div>
-      <div class="option"><i class="fas fa-charging-station"></i> 전기차 충전</div>
-      <div class="option"><i class="fas fa-baby"></i> 아기 침대</div>
-      <div class="option"><i class="fas fa-bed"></i> 킹사이즈 침대</div>
-      <div class="option"><i class="fas fa-dumbbell"></i> 헬스장</div>
-      <div class="option"><i class="fas fa-fire"></i> 바비큐</div>
-      <div class="option"><i class="fas fa-coffee"></i> 조식</div>
-      <div class="option"><i class="fa-solid fa-fire"></i> 벽난로</div>
-      <div class="option"><i class="fas fa-smoking"></i> 흡연 가능</div>
+    <!-- ✅ "필수" 카테고리 -->
+    <div class="category">
+      <h3>필수</h3>
+      <div class="grid">
+        <div class="option" data-option-id="1"><i class="fas fa-wifi"></i> 와이파이</div>
+        <div class="option" data-option-id="2"><i class="fas fa-utensils"></i> 주방</div>
+        <div class="option" data-option-id="3"><i class="fas fa-tshirt"></i> 세탁기</div>
+        <div class="option" data-option-id="4"><i class="fas fa-wind"></i> 건조기</div>
+        <div class="option" data-option-id="5"><i class="fas fa-snowflake"></i> 에어컨</div>
+        <div class="option" data-option-id="6"><i class="fas fa-thermometer-half"></i> 난방</div>
+        <div class="option" data-option-id="7"><i class="fas fa-laptop"></i> 업무 공간</div>
+        <div class="option" data-option-id="8"><i class="fas fa-tv"></i> TV</div>
+        <div class="option" data-option-id="9"><i class="fas fa-wind"></i> 헤어드라이어</div>
+        <div class="option" data-option-id="10"><i class="fas fa-shirt"></i> 다리미</div>
+      </div>
     </div>
-  </div>
 
-  <div class="category">
-    <h3>위치</h3>
-    <div class="grid">
-      <div class="option"><i class="fas fa-umbrella-beach"></i> 해변</div>
-      <div class="option"><i class="fas fa-water"></i> 수변</div>
-      <div class="option"><i class="fas fa-skiing"></i> 스키 출입</div>
+    <!-- ✅ "특징" 카테고리 -->
+    <div class="category">
+      <h3>특징</h3>
+      <div class="grid">
+        <div class="option" data-option-id="11"><i class="fas fa-swimmer"></i> 수영장</div>
+        <div class="option" data-option-id="12"><i class="fas fa-bath"></i> 대형 욕조</div>
+        <div class="option" data-option-id="13"><i class="fas fa-parking"></i> 무료 주차</div>
+        <div class="option" data-option-id="14"><i class="fas fa-charging-station"></i> 전기차 충전</div>
+        <div class="option" data-option-id="15"><i class="fas fa-baby"></i> 아기 침대</div>
+        <div class="option" data-option-id="16"><i class="fas fa-bed"></i> 킹사이즈 침대</div>
+        <div class="option" data-option-id="17"><i class="fas fa-dumbbell"></i> 헬스장</div>
+        <div class="option" data-option-id="18"><i class="fas fa-fire"></i> 바비큐</div>
+        <div class="option" data-option-id="19"><i class="fas fa-coffee"></i> 조식</div>
+        <div class="option" data-option-id="20"><i class="fas fa-fire-alt"></i> 벽난로</div>
+        <div class="option" data-option-id="21"><i class="fas fa-smoking"></i> 흡연 가능</div>
+      </div>
     </div>
-  </div>
 
-  <div class="category">
-    <h3>안전</h3>
-    <div class="grid">
-      <div class="option"><i class="fas fa-bell"></i> 화재경보기</div>
-      <div class="option"><i class="fas fa-exclamation-triangle"></i> 일산화탄소 경보기</div>
+    <!-- ✅ "위치" 카테고리 -->
+    <div class="category">
+      <h3>위치</h3>
+      <div class="grid">
+        <div class="option" data-option-id="22"><i class="fas fa-umbrella-beach"></i> 해변</div>
+        <div class="option" data-option-id="23"><i class="fas fa-water"></i> 수변</div>
+        <div class="option" data-option-id="24"><i class="fas fa-skiing"></i> 스키 출입</div>
+      </div>
     </div>
-  </div>
 
+    <!-- ✅ "안전" 카테고리 -->
+    <div class="category">
+      <h3>안전</h3>
+      <div class="grid">
+        <div class="option" data-option-id="25"><i class="fas fa-bell"></i> 화재경보기</div>
+        <div class="option" data-option-id="26"><i class="fas fa-exclamation-triangle"></i> 일산화탄소 경보기</div>
+      </div>
+    </div>
+
+    <!-- ✅ "다음" 버튼 (폼 제출) -->
+    <button type="submit" class="next-btn">다음</button>
+  </form>
 </div>
 
-<a href="#" class="next-btn">다음</a>
+<script th:inline="javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+      const options = document.querySelectorAll(".option");
+      const hiddenInput = document.getElementById("selectedOptionsInput");
+      const form = document.querySelector("#optionForm");
 
-<script>
-  const options = document.querySelectorAll('.option');
 
-  options.forEach(option => {
-      option.addEventListener('click', () => {
-          option.classList.toggle('selected');
+
+      // ✅ 기존 선택된 옵션을 JavaScript에서 처리
+      let selectedOptions = new Set();
+
+      // ✅ Thymeleaf에서 기존 선택된 옵션 유지
+      let existingOptions = [[${hostDto.optionIds}]];
+      if (existingOptions && Array.isArray(existingOptions)) {
+          existingOptions.forEach(id => selectedOptions.add(parseInt(id)));
+      }
+
+      // ✅ 선택된 옵션 표시 (초기 로드 시)
+      options.forEach(option => {
+          let optionId = parseInt(option.dataset.optionId);
+          if (selectedOptions.has(optionId)) {
+              option.classList.add("selected");
+          }
+      });
+
+      // ✅ 옵션 클릭 시 선택/해제 처리
+      options.forEach(option => {
+          option.addEventListener("click", function() {
+              let optionId = parseInt(this.dataset.optionId);
+              if (selectedOptions.has(optionId)) {
+                  selectedOptions.delete(optionId);
+                  this.classList.remove("selected");
+              } else {
+                  selectedOptions.add(optionId);
+                  this.classList.add("selected");
+              }
+
+              // ✅ 쉼표로 구분된 문자열로 변환하여 hidden input에 저장
+              hiddenInput.value = Array.from(selectedOptions).join(",");
+              console.log("📌 선택된 옵션 ID:", hiddenInput.value);
+          });
+      });
+
+      // ✅ form 제출 시 `optionIds`를 쉼표로 구분된 문자열로 변환하여 보냄
+      form.addEventListener("submit", function(event) {
+          hiddenInput.value = Array.from(selectedOptions).join(",");
+          console.log("🚀 최종 전송 데이터:", hiddenInput.value);
       });
   });
 </script>
