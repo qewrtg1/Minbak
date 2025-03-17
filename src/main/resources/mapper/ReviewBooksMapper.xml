@@ -48,4 +48,11 @@
         where b.end_date = DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY), '%Y-%m-%d') and b.book_id not in (select book_id from reviews)
     </select>
 
+    <!-- 호스트가 특정 리뷰에 대한 답변을 남기는 SQL -->
+    <update id="replyReview"> <!-- 주어진 리뷰 ID에 대해 호스트의 답변을 업데이트 -->
+        UPDATE review
+        SET host_reply = #{hostReply}  <!-- 호스트의 답변을 저장 -->
+        WHERE review_id = #{reviewId}  <!-- 특정 리뷰 ID에 해당하는 리뷰를 업데이트 -->
+    </update>
+
 </mapper>

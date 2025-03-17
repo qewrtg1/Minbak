@@ -53,4 +53,9 @@ public interface ReviewMapper {
 
 
 
+     //////////// Host ///////////
+
+    Integer findUserIdByHostId(int hostId);
+
+
 }

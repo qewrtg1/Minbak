@@ -32,23 +32,7 @@
     gap: 5px; /* 별 간격 */
 }
 
-.rating input {
-    display: none; /* 라디오 버튼 자체는 숨김 */
-}
 
-.rating label {
-    font-size: 2em;
-    color: #333; /* 기본 색상은 회색 */
-    cursor: pointer;
-    transition: color 0.3s, transform 0.3s; /* 색상과 크기 변환에 부드러운 전환 추가 */
-}
-
-.rating input:checked ~ label,
-.rating label:hover,
-.rating label:hover ~ label {
-    color: #ffcc00; /* 마우스를 올리거나 선택된 별의 색은 노란색 */
-    transform: scale(1.2); /* 마우스를 올렸을 때 별 크기 확대 */
-}
             .btn-submit {
                 display: block;
                 width: 100%;
@@ -81,32 +65,23 @@
 <th:block layout:fragment="content">
     <main class="main-content">
         <div class="booking-summary">
-            <div><strong>예약 번호:</strong> <span th:text="${books.bookId}"></span></div>
-            <div><strong>숙소명:</strong> <span th:text="${books.room.name}"></span></div>
-            <div><strong>체크인:</strong> <span th:text="${books.startDate}"></span></div>
-            <div><strong>체크아웃:</strong> <span th:text="${books.endDate}"></span></div>
+            <div><strong>예약 번호:</strong> <span th:text="${review.bookId}"></span></div>
         </div>
 
         <div class="review-section">
-            <h3 class="text-center">리뷰 작성</h3>
-            <form th:action="@{/books/review/{id}(id=${books.bookId})}" method="post">
-                <input type="hidden" name="bookId" th:value="${books.bookId}">
-                <input type="hidden" name="userId" th:value="${books.userId}">
-                <input type="hidden" name="hostId" th:value="${books.hostId}">
-                <input type="hidden" name="roomId" th:value="${books.roomId}">
+            <h3 class="text-center">리뷰 답변 작성</h3>
+            <form th:action="@{/review/host/{id}(id=${review.reviewId})}" method="post">
+                <input type="hidden" name="bookId" th:value="${review.bookId}">
+                <input type="hidden" name="reviewId" th:value="${review.reviewId}">
+                <input type="hidden" name="userId" th:value="${review.userId}">
+                <input type="hidden" name="hostId" th:value="${review.hostId}">
+                <input type="hidden" name="roomId" th:value="${review.roomId}">
+                <input type="text" name="content" th:value="${review.content}">
+                <label for="hostReply">리뷰 답변 내용:</label>
+                <textarea id="hostReply" name="hostReply" rows="12" style="width:100%; margin-bottom:10px;" placeholder="리뷰를 작성해주세요."></textarea>
 
-                <label for="content">리뷰 내용:</label>
-                <textarea id="content" name="content" rows="12" style="width:100%; margin-bottom:10px;" placeholder="리뷰를 작성해주세요."></textarea>
 
-                <div class="rating">
-                    <input type="radio" id="star1" name="score" value="5" ><label for="star1">★</label>
-                    <input type="radio" id="star2" name="score" value="4" ><label for="star2">★</label>
-                    <input type="radio" id="star3" name="score" value="3" ><label for="star3">★</label>
-                    <input type="radio" id="star4" name="score" value="2" ><label for="star4">★</label>
-                    <input type="radio" id="star5" name="score" value="1" ><label for="star5">★</label>
-                </div>
-
-                <button type="submit" class="btn-submit">리뷰 등록</button>
+                <button type="submit" class="btn-submit">답변 등록</button>
             </form>
         </div>
     </main>

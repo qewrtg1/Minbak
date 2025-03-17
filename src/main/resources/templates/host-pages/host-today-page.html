@@ -138,6 +138,13 @@
                             </div>
                         </div>
                     `;
+                    if(status === 'pending-review') {
+                            reservationElement.innerHTML += `
+                            <div class="card-footer">
+                                <button class="btn btn-primary btn-action" onclick="location.href='/review/host/${item.reviewId}'">후기 작성</button>
+                            </div>
+                           `;
+                        }
                         reservationListContainer.appendChild(reservationElement);
                     });
                 }

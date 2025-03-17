@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping
+@RequestMapping("/review/host")
 public class ReviewHostController {
 
     @Autowired
@@ -21,30 +21,39 @@ public class ReviewHostController {
     @Autowired
     private Util util;
 
-    @GetMapping("/host/review/{id}")
-    public String getUnrepliedReview(Model model,
-                                     @AuthenticationPrincipal CustomUserDetails userDetails,
-                                     @PathVariable("id") int hostId){
-        if(!util.checkAuthority(userDetails, hostId)){
+    @GetMapping("/{id}")
+    public String writeReply(Model model,
+     @AuthenticationPrincipal CustomUserDetails userDetails,
+     @PathVariable("id") int reviewId){
+        ReviewDto review = reviewService.findReviewById(reviewId);
+        int hostId = review.getHostId();
+        int userId = (int)reviewService.findUserIdByHostId(hostId);
+        if(!util.checkAuthority(userDetails, userId)){
             throw new ReviewException("권한이 없습니다.");
         }
-
-        List<ReviewDto> reviews = reviewService.getUnrepliedReview(hostId);
-        model.addAttribute("reviews", reviews);
-        return "review/unreplied_review";
+        model.addAttribute("review", review);
+        return "review/review-reply";
     }
 
-    @PostMapping("/host/review/{id}")
+    @PostMapping("/{id}")
     public String replyReview (Model model, @PathVariable("id") int reviewId,
                                @AuthenticationPrincipal CustomUserDetails userDetails,
-                               @RequestBody ReviewDto reviewDto) {
-        if(!util.checkAuthority(userDetails, reviewDto.getHostId())){
-            throw new ReviewException("권한이 없습니다.");
+                              ReviewDto reviewDto) {
+        int hostId = reviewDto.getHostId();
+        int userId = (int)reviewService.findUserIdByHostId(hostId);
+        if(!util.checkAuthority(userDetails, userId)){
+            throw new ReviewException("답변 권한이 없습니다.");
         }
 
-        Integer result = reviewService.replyReview(reviewId);
-        return "redirect:/host/review/{id}";
+        Integer result = reviewService.replyReview(reviewDto);
+        if (result == 0 ){
+            throw new ReviewException("답변 작성에 실패했습니다.");
+        }
+
+        return "redirect:/host/today";
     }
+
+
 
     @PutMapping("/host/review/{id}")
     public String deleteReply(Model model, @PathVariable("id") int reviewId, @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ReviewDto reviewDto) {

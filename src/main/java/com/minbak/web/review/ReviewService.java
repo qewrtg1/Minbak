@@ -109,9 +109,10 @@ public class ReviewService {
         return reviewBooksMapper.getUnrepliedReview(hostId);
     }
 
-    public Integer replyReview(int reviewId){
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewId(reviewId);
+    public Integer replyReview(ReviewDto reviewDto){
+        System.out.println(reviewDto.getHostId());
+        System.out.println(reviewDto.getHostReply());
+
         if(reviewBooksMapper.replyReview(reviewDto) >= 1){
             return 1;
         }else{
@@ -125,6 +126,10 @@ public class ReviewService {
         }else{
             return 0;
         }
+    }
+
+    public Integer findUserIdByHostId(int hostId){
+        return reviewMapper.findUserIdByHostId(hostId);
     }
 
     ////////////////////// room ///////////////////////////////
