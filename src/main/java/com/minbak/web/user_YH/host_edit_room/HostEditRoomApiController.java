@@ -25,7 +25,7 @@ public class HostEditRoomApiController {
 
         int roomId = (Integer) requestData.get("roomId");
 
-        // todo 호스트가 검증됐는지 확인 후 처리코드 추가
+
         if(!hostEditRoomService.getHostIsVerifiedByRoomId(roomId)){
             return ResponseEntity.ok(Map.of("message", "영업검증을 먼저 진행하여 주십시오.","success", false));
         }

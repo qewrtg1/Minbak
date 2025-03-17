@@ -22,5 +22,6 @@ public class RequestMessageFilterDto {
         private LocalDate endDate;
         private Integer limit;
         private Integer offset;
+        private Integer isBlinded;
 
 }

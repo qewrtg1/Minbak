@@ -29,11 +29,12 @@
     </select>
     <!-- 챗룸아이디랑 유저본인아이디로 메세지 조회-->
     <select id="findMessagesByIds" resultType="com.minbak.web.messages.MessageDto">
-        SELECT message_id, sender_id, receiver_id, content, sent_at, is_read
+        SELECT message_id, sender_id, receiver_id, content, sent_at, is_read, is_blinded
         FROM message
         where
-        (sender_id = #{userId} AND receiver_id = #{chatRoomId})
-        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId})
+        ((sender_id = #{userId} AND receiver_id = #{chatRoomId})
+        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId}))
+        AND is_blinded = 0
 
     </select>
     
@@ -83,13 +84,15 @@
         (#{endDate} IS NULL OR m.sent_at &lt;= #{endDate}) AND
         (#{userName} IS NULL OR s.name LIKE CONCAT('%',  #{userName}, '%') OR r.name LIKE CONCAT('%',  #{userName}, '%')) AND
         (#{userEmail} IS NULL OR s.email = #{userEmail} OR r.email = #{userEmail}) AND
-        (#{userPhoneNumber} IS NULL OR s.phone_number LIKE CONCAT('%',  #{userPhoneNumber}, '%') OR r.phone_number  LIKE CONCAT('%',  #{userPhoneNumber}, '%'))
+        (#{userPhoneNumber} IS NULL OR s.phone_number LIKE CONCAT('%',  #{userPhoneNumber}, '%') OR r.phone_number  LIKE CONCAT('%',  #{userPhoneNumber}, '%')) AND
+        (#{isBlinded} IS NULL OR m.is_blinded = #{isBlinded})
+
     </select>
 
     <!--    필터링,검색한 메시지 조회-->
     <select id="findMessagesWithUser" resultType="com.minbak.web.messages.ResponseMessageDto" parameterType="com.minbak.web.messages.RequestMessageFilterDto">
         SELECT m.message_id, m.sender_id, m.receiver_id,
-        m.content, m.sent_at,
+        m.content, m.sent_at,m.is_blinded,
         s.name AS sender_name, s.email AS sender_email,
         r.name AS receiver_name, r.email AS receiver_email,
         s.phone_number AS sender_phone_number, r.phone_number AS receiver_phone_number
@@ -105,6 +108,8 @@
         (#{userName} IS NULL OR s.name LIKE CONCAT('%',  #{userName}, '%') OR r.name LIKE CONCAT('%',  #{userName}, '%')) AND
         (#{userEmail} IS NULL OR s.email = #{userEmail} OR r.email = #{userEmail}) AND
         (#{userPhoneNumber} IS NULL OR s.phone_number LIKE CONCAT('%',  #{userPhoneNumber}, '%') OR r.phone_number  LIKE CONCAT('%',  #{userPhoneNumber}, '%'))
+        AND
+        (#{isBlinded} IS NULL OR m.is_blinded = #{isBlinded})
         order by sent_at DESC
         LIMIT #{limit} OFFSET #{offset};
 
@@ -116,6 +121,16 @@
         delete from message
         where message_id = #{message_id}
     </delete>
+<!--    메세지 비활성화 -->
+    <update id="blindMessage">
+        UPDATE message
+        SET is_blinded = CASE
+        WHEN is_blinded = 0 THEN 1
+        WHEN is_blinded = 1 THEN 0
+        END
+        WHERE message_id = #{messageId};
+
+    </update>
 <!--메세지 생성-->
     <insert id="createMessage" useGeneratedKeys="true" keyProperty="messageId">
         INSERT INTO message (sender_id ,receiver_id, content)
@@ -136,12 +151,13 @@
     message m
     WHERE
     (m.sender_id = #{user_id} OR m.receiver_id = #{user_id})  -- 유저 8과 관련된 메시지
+    AND m.is_blinded = 0
     AND m.message_id = (
     SELECT MAX(message_id)
     FROM message
     WHERE (sender_id = m.sender_id AND receiver_id = m.receiver_id)
     OR (sender_id = m.receiver_id AND receiver_id = m.sender_id)
-    )  -- 해당 채팅방에서 최신 메시지를 필터링
+    ) AND m.is_blinded = 0 -- 해당 채팅방에서 최신 메시지를 필터링
     ORDER BY
     m.sent_at DESC;
 </select>
@@ -150,17 +166,15 @@
         UPDATE message
         SET is_read = 1
         WHERE
-        (sender_id = #{userId} AND receiver_id = #{chatRoomId})
-        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId})
+        sender_id = #{chatRoomId} AND receiver_id = #{userId}
 </update>
 
     <select id="countMessagesByIds" resultType="Integer" parameterType="int">
         select count(is_read)
         from message
         WHERE
-        ((sender_id = #{userId} AND receiver_id = #{chatRoomId})
-        OR (sender_id = #{chatRoomId} AND receiver_id = #{userId}))
-        AND is_read = 0
+        (sender_id = #{chatRoomId} AND receiver_id = #{userId})
+        AND is_read = 0 AND is_blinded = 0
     </select>
 
 </mapper>

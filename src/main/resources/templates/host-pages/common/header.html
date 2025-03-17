@@ -1,4 +1,4 @@
-<!-- 적용방식 : <div th:replace="~{host-pages/common/header}"></div> -->
+<!-- 적용방식 : <div th:replace="~{user-pages/common/header}"></div> -->
 
 <!-- css -->
 <link rel="stylesheet" href="/css/header.css">
@@ -27,7 +27,13 @@
 
     <!-- ✅ 유저 정보가 있을 때 -->
     <div th:if="${headerUser != null}" class="d-flex align-items-center gap-3">
-
+      <!-- ✅ 호스트 여부에 따른 동적 링크 -->
+      <div th:if="${headerUser != null}">
+        <a th:href="${headerUser.isHost} ? '/host/today' : '/host/room/create'"
+           class="btn btn-outline-primary">
+          <span th:text="${headerUser.isHost} ? '호스트 모드 전환' : '숙소 등록하기'"></span>
+        </a>
+      </div>
       <button class="btn btn-light">🔔 알림</button>
       <img th:src="${headerUser.profileImageUrl != null} ? ${headerUser.profileImageUrl} : '/uploads/3966f510-65f8-46e7-af79-5f23ae159e6b_user-1.png'"
            alt="프로필 이미지" class="profile-img">

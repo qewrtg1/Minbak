@@ -32,7 +32,6 @@ public class MainPageApiController {
         return mainPageService.getMainPageData();
 
     }
-
     @GetMapping("/search")
     public List<MainRoomDto> searchRooms(
             @RequestParam(required = false) String destination) {

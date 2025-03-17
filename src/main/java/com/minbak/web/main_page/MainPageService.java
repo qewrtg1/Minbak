@@ -28,6 +28,8 @@ public class MainPageService {
         // 카테고리 정보
         response.setCategories(mainPageMapper.findCategories());
 
+        // 옵션 정보
+        response.setOptions(mainPageMapper.findOptions());
 
         return response;
     }

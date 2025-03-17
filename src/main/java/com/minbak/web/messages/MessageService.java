@@ -90,6 +90,10 @@ public class MessageService {
     public void deleteMessage(int message_id){
         messageMapper.deleteMessage(message_id);
     }
+    // 메세지 비활성화
+    public void blindMessage(int messageId){
+        messageMapper.blindMessage(messageId);
+    }
 //    아이디 입력하여 메세지 생성
     public void  createMessageByEmail(String receiverEmail, MessageDto messageDto, CustomUserDetails userDetails){
 
