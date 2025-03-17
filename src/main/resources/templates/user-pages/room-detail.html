@@ -13,45 +13,105 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <!-- flatpickr JS -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://kit.fontawesome.com/18733371c0.js" crossorigin="anonymous"></script>
+
 
 
   <style>
+    .title{
+      width: 1300px;
+      margin: 0 auto;
+      display: flex;
+    }
     .gallery-container {
-        max-width: 900px;
+        width: 1300px;
+        height: 560px;
         margin: 0 auto;
+        /* border: 1px solid #000; */
+        display: flex;
+        padding: 0 !important;
     }
-    .main-image {
-        width: 100%;
-        height: 400px;
-        object-fit: cover;
-        border-radius: 8px;
+    .thumbnail-container {
+      width: 700px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2열 */
+      grid-template-rows: auto auto;         /* 2행 (자동 높이) */
+      gap: 8px;                              /* 카드 사이 간격 */
+      margin-left: 10px;
     }
+
+    .subImg {
+      flex: 0 0 auto;
+      width: 23%;
+      height: 23%;
+    }
+
+    .mainImg {
+      width: 700px;
+      height: 560px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .mainImg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      /* border: 1px solid #000; */
+    }
+
+    .subImg {
+      width: 340px;
+      height: 275px;
+      border-radius: 8px;
+      overflow: hidden;
+      padding: 0 !important;
+    }
+
+
+    .likeBtn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.8); /* 약간 투명한 흰 배경 */
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 10;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
     .thumbnail-container img {
-        width: 100%;
-        height: 100px;
+        width: 341px;
+        height: 278px;
         object-fit: cover;
         border-radius: 8px;
         cursor: pointer;
         transition: opacity 0.3s;
+        margin-top: 1px;
     }
+
     .thumbnail-container img:hover {
         opacity: 0.7;
     }
-  </style>
 
 
-  <style>
     .map-container {
         width: 100%;
         height: 400px;
         border-radius: 8px;
     }
-  </style>
-  <style>
+
     .flatpickr-input {
       background-color: #fff;
       cursor: pointer;
+      border-radius: 5px;
     }
+    .input-group .form-control {
+  border-radius: 8px !important; /* 원하는 둥근 정도로 */
+}
+
   </style>
 
 </head>
@@ -60,24 +120,27 @@
 <!--헤더-->
 <div th:replace="~{user-pages/common/header}"></div>
 
+<div class="title">
+  <h2 style="width: 80%;" th:text="${room.name}"> fffffffffffffffffff</h2>
+  <div style="padding: 10px 10px; width: 200px; text-align: right;" ><i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp공유하기</div>
+  <div style="padding: 10px 10px; width: 100px; text-align: right;"><i class="fa-regular fa-heart"></i>&nbsp저장</div>
+</div>
 
 
-<div class="container mt-4 gallery-container">
-  <h2 th:text="${room.name}"></h2>
 
+<div class="container gallery-container">
   <!--todo 찜하기 버튼-->
-  <div>찜버튼 생성 예정</div>
-
-  <!-- 첫 번째 이미지 (메인 이미지 대신) -->
-  <div>
-    <img id="mainImage" th:src="${room.imageUrls[0]}" alt="숙소 이미지" class="main-image">
+  <div class="mainImg">
+    <img id="mainImage" th:src="${room.imageUrls[0]}" alt="숙소 이미지">
   </div>
 
+
   <!-- 썸네일 이미지 리스트 (최대 5개만) -->
-  <div class="row mt-2 thumbnail-container">
-    <div class="col-3" th:each="image, iterStat : ${room.imageUrls}" th:if="${iterStat.index < 4}">
+  <div class="row thumbnail-container">
+    <div class="subImg" th:each="image, iterStat : ${room.imageUrls}" th:if="${iterStat.index < 4}">
       <img th:src="${image}" alt="숙소 이미지" class="thumbnail" onclick="changeImage(this)">
     </div>
+
   </div>
 </div>
 
@@ -135,40 +198,35 @@
     <div class="col-md-5">
       <div class="card p-3 shadow-sm">
         <div class="d-flex justify-content-between">
-          <span class="fw-bold fs-5 text-danger" th:text="'₩' + ${room.pricePerNight}">₩60,000</span> /박
+          <span class="fw-bold fs-5 text-danger" th:text="'₩' + ${room.pricePerNight} + ' /박'">₩60,000</span>
         </div>
 
         <!-- 예약 폼 -->
         <form class="mt-3" th:action="@{/user/room/{roomId}/confirm(roomId=${room.roomId})}" method="GET">
           <!-- 체크인 & 체크아웃 입력 필드 -->
-          <div class="mb-3">
-            <label class="form-label fw-bold text-muted">체크인</label>
-            <input type="text" class="form-control rounded-3 p-2 border-secondary" id="checkInDate" name="checkInDate" placeholder="날짜 선택" required>
+          <div class="input-group">
+            <label class="form-label mt-2">체크인 &nbsp&nbsp&nbsp&nbsp</label>
+            <input type="text" class="form-control flatpickr-input" id="checkInDate" name="checkInDate" placeholder="날짜 선택" required>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label fw-bold text-muted">체크아웃</label>
-            <input type="text" class="form-control rounded-3 p-2 border-secondary" id="checkOutDate" name="checkOutDate" placeholder="날짜 선택" required>
+          <div class="input-group mt-2">
+            <label class="form-label mt-2" >체크아웃&nbsp&nbsp</label>
+            <input type="text" class="form-control flatpickr-input" id="checkOutDate" name="checkOutDate" placeholder="날짜 선택" required>
           </div>
 
           <!-- 인원 선택 -->
-          <div class="mb-3">
-            <label class="form-label mt-2">인원</label>
-            <select class="form-select rounded-3 p-2 border-secondary" name="guestsNum" required>
-              <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
-                      th:value="${num}" th:text="|게스트 ${num}명|"></option>
-            </select>
-          </div>
+          <label class="form-label mt-2">인원</label>
+          <select class="form-select" name="guestsNum" required>
+            <option th:each="num : ${#numbers.sequence(1, room.maxGuests)}"
+                    th:value="${num}" th:text="|게스트 ${num}명|"></option>
+          </select>
 
           <!-- ✅ 예약하기 버튼 -->
-          <button type="submit" class="btn w-100 text-white fw-bold p-3"
-                  style="background-color: #FF385C; border-radius: 12px; font-size: 16px;"
-                  onmouseover="this.style.backgroundColor='#E12D50'"
-                  onmouseout="this.style.backgroundColor='#FF385C'">예약하기</button>
+          <button type="submit" class="btn btn-danger w-100 mt-3">예약하기</button>
         </form>
 
 
-        <p class="text-muted mt-2">예약 확정 전에는 요금이 청구되지 않습니다. (수수료 시스템 추가 예정)</p>
+        <p class="text-muted mt-2">예약 확정 전에는 요금이 청구되지 않습니다.</p>
 
         <hr>
 
@@ -182,16 +240,16 @@
 
         <div class="d-flex justify-content-between fw-bold">
           <span>총액</span>
-          <span id="finalTotal">₩60,000</span>
+          <span id="finalTotal" th:text="'₩' + ${room.pricePerNight}">₩60,000</span>
         </div>
       </div>
 
 
       <!-- 요금 안내 -->
-<!--      <div class="alert alert-light mt-3">-->
-<!--        <span>💰</span> 요금 인하<br>-->
-<!--        지난 60일간 평균 요금보다 <span class="fw-bold text-danger" th:text="'₩' + ${room.discountAmount}">₩38,338</span> 저렴합니다.-->
-<!--      </div>-->
+      <!--      <div class="alert alert-light mt-3">-->
+      <!--        <span>💰</span> 요금 인하<br>-->
+      <!--        지난 60일간 평균 요금보다 <span class="fw-bold text-danger" th:text="'₩' + ${room.discountAmount}">₩38,338</span> 저렴합니다.-->
+      <!--      </div>-->
 
       <!-- 신고 버튼 url연결-->
       <button class="btn btn-outline-secondary w-100 mt-2">🏠 숙소 신고하기</button>
@@ -244,7 +302,7 @@
   <div th:each="categoryEntry : ${room.options}">
     <h5 th:text="${categoryEntry.key}">카테고리 이름</h5>
     <div class="row">
-      <div class="col-md-4 mb-2" th:each="option : ${categoryEntry.value}">
+      <div class="col-md-6 mb-2" th:each="option : ${categoryEntry.value}">
         <span>✔️</span> <span th:text="${option}">편의시설 항목</span>
       </div>
     </div>
@@ -279,20 +337,19 @@
       </div>
     </div>
 
-      <h5>호스트 상세 정보</h5>
-      <p>취미: <strong th:text="${host.hobby}">100%</strong></p>
-      <p>소개: <strong th:text="${host.introduction}">100%</strong></p>
-<!--      <p>1시간 이내 응답</p>-->
+    <h5 style="margin-top: 10px;">호스트 상세 정보</h5>
+    <p>취미: <strong th:text="${host.hobby}">100%</strong></p>
+    <p>소개: <strong th:text="${host.introduction}">100%</strong></p>
+    <!--      <p>1시간 이내 응답</p>-->
 
-      <button class="btn btn-dark w-100">호스트에게 메시지 보내기</button>
+    <button class="btn btn-dark w-100">호스트에게 메시지 보내기</button>
 
-      <p class="text-muted mt-3">
-        안전한 결제를 위해 항상 에어비앤비를 통해 송금하고 호스트와 소통하세요.
-      </p>
-    </div>
+    <p class="text-muted mt-3">
+      안전한 결제를 위해 항상 에어비앤비를 통해 송금하고 호스트와 소통하세요.
+    </p>
   </div>
 </div>
-
+</div>
 
 <!-- Bootstrap JS (Popper.js 포함) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,25 +1,110 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>Login</title>
 
-  <!--    csrf활성화시 html head태그에 추가해야함 없어도 잘 되긴함-->
-  <!--    <meta name="_csrf" content="{{_csrf.token}}"/>-->
-  <!--    <meta name="_csrf_header" content="{{_csrf.headerName}}"/>-->
+  <style>
+    /* 전체 페이지 스타일 */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0 auto;
+    }
+
+    /* 로그인 폼 스타일 */
+    form {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      height: 350px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    /* 입력 필드 스타일 */
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    /* 로그인 버튼 스타일 */
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      border: none;
+      background-color: #FFC107;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #FFB300;
+    }
+
+
+
+    .nologin {
+      padding: 20px 20px 0 20px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .logomain {
+      display: flex;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .bigBox {
+      display: flex;
+    }
+
+    .ghldnjsrkdlq {
+      background-color: skyblue;
+    }
+
+
+
+  </style>
 </head>
 <body>
-로그인 페이지
-<hr>
+
+<!-- 로그인 폼 -->
 <form action="/admin/login" method="post" name="login">
-  <input id="username" type="email" name="username" placeholder="id"/>
-  <input id="password" type="password" name="password" placeholder="password"/>
-  <!--      csrf가 enable상태일 때 post문에 토큰데이터를 포함시켜줘야함(이유는 아직 모름)-->
+  <div class="logomain">
+    <img src="/logo/logo-img.png" alt="Logo" width="100" height="100">
+    <img src="/logo/logo-text.png" alt="Logo" width="250" height="100">
+  </div>
+
   <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-  <input type="submit" value="login"/>
+
+  <input id="username" type="email" name="username" placeholder="ID를 입력하세요" required />
+  <input id="password" type="password" name="password" placeholder="비밀번호를 입력하세요" required />
+
+  <input type="submit" value="관리자 로그인"/>
+
 </form>
 </body>
 </html>

@@ -2,9 +2,15 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{base/layout-sample}">
+
 <head>
   <meta charset="UTF-8">
   <title>Host Management</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/reset.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
   <th:block layout:fragment="css">
     <style>
       .main-content {
@@ -13,6 +19,17 @@
           overflow-y:auto;
           padding: 20px;
           margin: 50px auto;
+      }
+
+      .fomBox{
+        width: 100%;
+        height: 160px;
+        /* border: 1px solid #000; */
+        display: flex;
+        border-radius: 25px;
+        overflow: hidden;
+        background-color: #eee;
+        color: #000;
       }
       .stats-container {
           display: flex;
@@ -30,8 +47,6 @@
       }
       .search-box {
           display: flex;
-          justify-content: center;
-          align-items: center;
           margin-bottom: 20px;
       }
       .search-box input {
@@ -52,78 +67,128 @@
       }
       .host-table th {
           background-color: #f2f2f2;
+
       }
+      tr {
+      border-top: 1px solid #ddd !important;
+      border-bottom: 1px solid #ddd !important;
+      }
+      .fomBox input{
+        border-color: #444;
+      }
+      .fomBox #isVerified,#enabled{
+        border-color: #444;
+      }
+
       .page-nav {
           margin-top: 20px;
+          cursor: pointer;
       }
       #hostTable {
           background-color: #fff;
       }
+      .fac {
+        display: flex;
+        justify-content: center;
+    }
+      #hostTable {
+        text-align: center;
+    }
+    .fomBox .rtfom{
+      width: 250px;
+      height: 100%;
+      /* border-right: 1px solid #bbb; */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      background-color: #eee;
+    }
+    .fomBox .mailBox{
+      display: flex;
+      gap: 40px;
+      padding-top: 10px;
+    }
+    .fomBox .wndBox{
+      padding: 0 85px 0px 60px;
+    }
+
+    .fomBox .mBox{
+      gap: 30px;
+    }
+
+    .page-item a {
+          font-size: 18px;
+          padding: 10px 15px;
+    }
+    .trhead th{
+      padding: 15px 0;
+    }
     </style>
   </th:block>
 </head>
 <body>
 <th:block layout:fragment="content">
 
-
   <main class="main-content">
 
     <!-- 검색 폼 -->
-    <form th:action="@{/admin/users/host}" method="get" class="container mt-4">
-      <div class="form-row d-flex align-items-center justify-content-between" style="flex-wrap: wrap; gap: 15px;">
-        <!-- 검색 버튼을 왼쪽에 배치 -->
-        <div class="col-auto">
-          <button type="submit" class="btn btn-primary mb-2" style="align-self: center;">검색</button>
+    <form th:action="@{/admin/users/host}" method="get" class="fomBox">
+      <div class="rtfom">검색조건</div>
+      <div class="wndBox">
+        <div class="form-row align-items-center mailBox" style="flex-wrap: wrap;">
+          <!-- 이름 입력 필드 -->
+          <div class="col-auto">
+            <label for="name" class="mt-1" style="font-weight: bold;">이름</label>
+            <input type="text" id="name" name="name" class="form-control mt-1" style="width: 350px;" placeholder="이름 검색" th:value="${name}" />
+          </div>
+          <!-- 이메일 입력 필드 -->
+          <div class="col-auto">
+            <label for="email" class="mt-1" style="font-weight: bold;" >이메일</label>
+            <input type="text" id="email" name="email" class="form-control mt-1" style="width: 350px;" placeholder="이메일 검색" th:value="${email}" />
+          </div>
+          <div class="col-auto fac">
+            <button type="submit" class="btn btn-primary rbtn d-flex" style="margin-top: 19px; align-items: center; justify-content: center; width: 180px; height:40px; font-size: 25px; background-color: blue;" >검색</button>
+          </div>
         </div>
+        <div class="form-row d-flex align-items-center justify-content-between mt-2 mBox" style="flex-wrap: wrap;">
+          <!-- 활성화 여부 선택 -->
+          <div class="col-auto">
+            <label for="enabled" class="mt-2" style="font-weight: bold;">활성화 여부</label>
+            <select id="enabled" name="enabled" class="form-control mt-1" style="width: 200px;">
+              <option value="">선택</option>
+              <option value="true" th:selected="${enabled == true}">활성화</option>
+              <option value="false" th:selected="${enabled == false}">비활성화</option>
+            </select>
+          </div>
 
-        <!-- 이름 입력 필드 -->
-        <div class="col-auto">
-          <label for="name" class="mr-2">이름:</label>
-          <input type="text" id="name" name="name" class="form-control mb-2" style="width: 150px;" placeholder="이름 검색" th:value="${name}" />
-        </div>
+          <div class="col-auto">
+            <label for="isVerified" class="mt-2" style="font-weight: bold;">호스트 검증 여부</label>
+            <select id="isVerified" name="isVerified" class="form-control mt-1" style="width: 200px;">
+              <option value="">선택</option>
+              <option value="검증" th:selected="${isVerified == '검증'}">검증</option>
+              <option value="검증 중" th:selected="${isVerified == '검증 중'}">검증 중</option>
+              <option value="미검증" th:selected="${isVerified == '미검증'}">미검증</option>
+            </select>
+          </div>
 
-        <!-- 이메일 입력 필드 -->
-        <div class="col-auto">
-          <label for="email" class="mr-2">이메일:</label>
-          <input type="text" id="email" name="email" class="form-control mb-2" style="width: 150px;" placeholder="이메일 검색" th:value="${email}" />
-        </div>
+          <!-- 가입일 (시작) -->
+          <div class="col-auto">
+            <label for="startDate" class="mt-2" style="font-weight: bold;">가입일 (시작)</label>
+            <input type="date" id="startDate" name="startDate" class="form-control mt-1" style="width: 200px;" th:value="${startDate}" />
+          </div>
+          <div class="" style="font-size: 35px; height: 100%; padding-top: 10px;"><strong>~</strong></div>
+          <!-- 가입일 (끝) -->
+          <div class="col-auto">
+            <label for="endDate" class="mt-2" style="font-weight: bold;">가입일 (끝)</label>
+            <input type="date" id="endDate" name="endDate" class="form-control mt-1" style="width: 200px;" th:value="${endDate}" />
+          </div>
 
-        <!-- 활성화 여부 선택 -->
-        <div class="col-auto">
-          <label for="enabled" class="mr-2">활성화 여부:</label>
-          <select id="enabled" name="enabled" class="form-control mb-2" style="width: 150px;">
-            <option value="">선택</option>
-            <option value="true" th:selected="${enabled == true}">활성화</option>
-            <option value="false" th:selected="${enabled == false}">비활성화</option>
-          </select>
-        </div>
-
-        <div class="col-auto">
-          <label for="isVerified" class="mr-2">호스트 검증 여부:</label>
-          <select id="isVerified" name="isVerified" class="form-control mb-2" style="width: 150px;">
-            <option value="">선택</option>
-            <option value="검증" th:selected="${isVerified == '검증'}">검증</option>
-            <option value="검증 중" th:selected="${isVerified == '검증 중'}">검증 중</option>
-            <option value="미검증" th:selected="${isVerified == '미검증'}">미검증</option>
-          </select>
-        </div>
-
-        <!-- 가입일 (시작) -->
-        <div class="col-auto">
-          <label for="startDate" class="mr-2">가입일 (시작):</label>
-          <input type="date" id="startDate" name="startDate" class="form-control mb-2" style="width: 150px;" th:value="${startDate}" />
-        </div>
-
-        <!-- 가입일 (끝) -->
-        <div class="col-auto">
-          <label for="endDate" class="mr-2">가입일 (끝):</label>
-          <input type="date" id="endDate" name="endDate" class="form-control mb-2" style="width: 150px;" th:value="${endDate}" />
-        </div>
-
-        <!-- 최소 숙소개수 -->
-        <div class="col-auto">
-          <label for="minPropertyCount" class="mr-2">최소 숙소개수:</label>
-          <input type="text" id="minPropertyCount" name="minPropertyCount" class="form-control mb-2" style="width: 150px;" th:value="${minPropertyCount}" />
+          <!-- 최소 숙소개수 -->
+          <div class="col-auto">
+            <label for="minPropertyCount" class="mt-2" style="font-weight: bold;">숙소개수</label>
+            <input type="text" id="minPropertyCount" name="minPropertyCount" class="form-control mt-1" style="width: 200px;" th:value="${minPropertyCount}" />
+          </div>
         </div>
       </div>
     </form>
@@ -132,10 +197,10 @@
     <hr>
 
     <!-- 호스트 정보 테이블 -->
-    <table class="table table-bordered table-striped table-hover" id="hostTable">
-      <thead class="thead-light">
-      <tr>
-        <th>ID</th>
+    <table class="table table-bordered table-hover" id="hostTable">
+      <thead class="thead-light" style= "text-align: center;">
+      <tr class="trhead" style="font-size: 20px; border-bottom: 1px solid #000; " >
+        <th class="";>ID</th>
         <th>이름</th>
         <th>이메일</th>
         <th>전화번호</th>
@@ -147,25 +212,24 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="host : ${hostPageDto.objects}" class="clickable-row" th:data-href="@{/admin/users/detail/{id}(id=${host.userId})}">
+      <tr th:each="host : ${hostPageDto.objects}">
         <td th:text="${host.hostId}">1</td>
         <td th:text="${host.name}">John Doe</td>
-        <td th:text="${host.email}">johndoe@example.com</td>
-<!--    <td><a th:href="@{/admin/users/detail/{id}(id=${host.userId})}" th:text="${host.email}">johndoe@example.com</a></td>
--->
+        <td>
+          <a th:href="@{/admin/users/detail/{id}(id=${host.userId})}" th:text="${host.email}">johndoe@example.com</a>
+        </td>
         <td th:text="${host.phoneNumber}">Admin</td>
         <td th:text="${host.userEnabled ? 'Active' : 'Inactive'}">Active</td>
         <td th:text="${host.isVerified}">Active</td>
-        <td th:text="${host.roomCount}">5</td>  <!-- 숙소개수 출력 -->
+        <td th:text="${host.roomCount}">5</td>
         <td th:text="${host.createdAt}">2022-03-15</td>
-<!--        <td>-->
-<!--          <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm">Delete</a>-->
-<!--        </td>-->
         <td>
-          <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm" onclick="event.stopPropagation();">Delete</a>
+          <a th:href="@{/admin/hosts/delete/{id}(id=${host.hostId})}" class="btn btn-danger btn-sm">Delete</a>
         </td>
-
       </tr>
+
+
+
       </tbody>
     </table>
 
@@ -182,24 +246,11 @@
     </nav>
 
   </main>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".clickable-row").forEach(function (row) {
-        row.addEventListener("click", function () {
-          window.location.href = this.getAttribute("data-href");
-        });
-      });
-    });
-  </script>
-
 </th:block>
 <th:block layout:fragment="js">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Axios CDN을 통해 추가 -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </th:block>
-
-
 </body>
 </html>
