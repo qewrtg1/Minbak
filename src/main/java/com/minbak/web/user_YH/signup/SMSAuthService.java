@@ -1,47 +1,47 @@
 package com.minbak.web.user_YH.signup;
 
-import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-import net.nurigo.sdk.message.service.DefaultMessageService;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Random;
 
 @Service
 public class SMSAuthService {
-    private final DefaultMessageService messageService;
-    private final String senderNumber = "010-7720-5232"; // 발신자 번호
+    @Value("${twilio.account_sid}")
+    private String accountSid;
 
-    public SMSAuthService() {
-        // ✅ Coolsms API 초기화
-        this.messageService = NurigoApp.INSTANCE.initialize("NCS6Z8G5S8I33MXO", "REHSRBYAZFWSVODPTXYQU27NZE8LBPLZ", "https://api.coolsms.co.kr");
-    }
+    @Value("${twilio.auth_token}")
+    private String authToken;
 
-    // 인증번호 전송
-    public String sendVerificationCode(String phoneNumber) {
-        String verificationCode = generateCode();
+    @Value("${twilio.from_phone_number}")
+    private String fromPhoneNumber;
 
-        Message message = new Message();
-        message.setFrom(senderNumber);
-        message.setTo(phoneNumber);
-        message.setText("[Web] 인증번호: " + verificationCode);
-
-        try {
-            SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
-            System.out.println("SMS 전송 성공: " + response);
-            return verificationCode;
-        } catch (Exception e) {
-            System.err.println("SMS 전송 실패: " + e.getMessage());
-            return null;
+    private String convertToE164(String phoneNumber) {
+        phoneNumber = phoneNumber.replaceAll("[^0-9]", ""); // 숫자만 남기기
+        if (phoneNumber.startsWith("82")) {
+            return "+" + phoneNumber;
+        } else if (phoneNumber.startsWith("0")) {
+            return "+82" + phoneNumber.substring(1);
         }
+        return phoneNumber; // 이미 국제 형식이면 그대로 반환
     }
 
-    // 랜덤 6자리 인증번호 생성
-    private String generateCode() {
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // 6자리 숫자 생성
-        return String.valueOf(code);
+    public void sendSms(String to, String message) {
+        Twilio.init(accountSid, authToken);
+
+        // 전화번호 변환
+        String toE164 = convertToE164(to);
+
+        System.out.println("📨 문자 전송 시도...");
+        System.out.println("✅ 보내는 번호 (FROM): " + fromPhoneNumber);
+        System.out.println("✅ 받는 번호 (TO): " + toE164);
+
+        Message.creator(
+                new com.twilio.type.PhoneNumber(toE164),
+                new com.twilio.type.PhoneNumber(fromPhoneNumber),
+                message
+        ).create();
+
+        System.out.println("✅ 문자 전송 성공!");
     }
 }
