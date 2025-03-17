@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/roomoptions")  // 모든 요청의 기본 경로 설정
+@RequestMapping("/admin/rooms/roomoptions")  // 모든 요청의 기본 경로 설정
 public class RoomOptionsController {
 
     private final RoomOptionsService roomOptionsService;
@@ -45,7 +45,7 @@ public class RoomOptionsController {
             return "roomOption-create";
         }
         roomOptionsService.addRoomOption(roomOptionsDto);
-        return "redirect:/admin/roomoptions";  // 목록 페이지로 리다이렉트
+        return "redirect:/admin/rooms/roomoptions";  // 목록 페이지로 리다이렉트
     }
 
     // 3. 편의시설 수정 폼 표시
@@ -53,7 +53,7 @@ public class RoomOptionsController {
     public String showUpdateForm(@PathVariable int optionId, Model model) {
         RoomOptionsDto roomOption = roomOptionsService.getRoomOptionById(optionId);
         if (roomOption == null) {
-            return "redirect:/admin/roomoptions";
+            return "redirect:/admin/rooms/roomoptions";
         }
         model.addAttribute("roomOption", roomOption);
         return "roomOptions/roomOption-update";  // templates/roomOptions/roomOption-update.html 렌더링
@@ -72,7 +72,7 @@ public class RoomOptionsController {
         roomOptionsDto.setOptionId(optionId);
         roomOptionsService.updateRoomOption(roomOptionsDto);
 
-        return "redirect:/admin/roomoptions";
+        return "redirect:/admin/rooms/roomoptions";
     }
 
 
@@ -80,7 +80,7 @@ public class RoomOptionsController {
     @PostMapping("/delete/{optionId}")
     public String deleteRoomOption(@PathVariable int optionId) {
         roomOptionsService.deleteRoomOption(optionId);
-        return "redirect:/admin/roomoptions";
+        return "redirect:/admin/rooms/roomoptions";
     }
 
 

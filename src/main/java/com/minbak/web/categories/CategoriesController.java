@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/admin/categories")
+@RequestMapping("/admin/rooms/categories")
 public class CategoriesController {
 
     private final CategoriesService categoriesService;
@@ -39,7 +39,7 @@ public class CategoriesController {
             return "admin/category-Create"; // 유효성 검사 실패 시 다시 입력 폼으로 이동
         }
         categoriesService.createCategory(categoriesDto);
-        return "redirect:/admin/categories"; // 성공 시 카테고리 목록 페이지로 이동
+        return "redirect:/admin/rooms/categories"; // 성공 시 카테고리 목록 페이지로 이동
     }
 
     // [U] 기존 카테고리 수정 폼 표시
@@ -55,14 +55,14 @@ public class CategoriesController {
     public String updateCategory(@PathVariable int id, @ModelAttribute("category") CategoriesDto categoriesDto) {
         categoriesDto.setCategoryId(id);
         categoriesService.updateCategory(categoriesDto);
-        return "redirect:/admin/categories";
+        return "redirect:/admin/rooms/categories";
     }
 
     // [D] 카테고리 삭제 처리
     @PostMapping("/delete/{id}")
     public String deleteCategory(@PathVariable int id) {
         categoriesService.deleteCategory(id);
-        return "redirect:/admin/categories";
+        return "redirect:/admin/rooms/categories";
     }
 
 
