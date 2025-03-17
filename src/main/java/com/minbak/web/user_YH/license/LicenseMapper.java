@@ -29,4 +29,6 @@ public interface LicenseMapper {
     void deleteLicenseByHostId(int hostId);
 
     LicenseDto getLicenseByHostId(int hostId);
+
+    String getHostIsVerifiedByUserId(int userId);
 }

@@ -21,8 +21,8 @@ public class UserDto {
     @Email(message = "유효한 이메일 주소를 입력하세요.")  // 이메일 형식 검증
     private String email;             // 이메일
 
-    @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678")  // 전화번호 형식 검증
-    private String phoneNumber;       // 전화번호
+    @Pattern(regexp = "^010\\d{8}$", message = "전화번호 형식이 올바르지 않습니다. 예: 01012345678")
+    private String phoneNumber;
 
     @NotBlank(message = "비밀번호는 필수 항목입니다.")  // 비밀번호는 비어있을 수 없음
     private String password;          // 비밀번호

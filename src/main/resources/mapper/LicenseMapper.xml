@@ -49,4 +49,12 @@
     <select id="getLicenseByHostId" resultType="com.minbak.web.user_YH.license.LicenseDto">
         SELECT * FROM business_license WHERE host_id = #{hostId}
     </select>
+
+    <select id="getHostIsVerifiedByUserId" resultType="String">
+        SELECT is_verified
+        FROM host h
+        WHERE h.user_id = #{userId}
+        LIMIT 1;
+    </select>
+
 </mapper>
