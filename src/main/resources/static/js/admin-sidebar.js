@@ -38,11 +38,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     menuItems.forEach((item) => {
         item.addEventListener("click", function (event) {
-            // 대시보드는 기본 동작 수행하도록 예외 처리
-            if (this.getAttribute("href") !== "/admin/dashboard") {
+
+
+            // 대시보드와 로그아웃은 기본 동작 수행하도록 예외 처리
+            const href = this.getAttribute("href");
+            if (href !== "/admin/dashboard" && href !== "/admin/logout") {
                 event.preventDefault(); // 기본 동작 방지 (페이지 이동 방지)
             }
-
             // 현재 클릭한 요소가 이미 활성화된 상태인지 확인
             const isActive = this.parentElement.classList.contains("active");
 

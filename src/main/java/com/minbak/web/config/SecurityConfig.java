@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable())
 
                 .logout(auth -> auth
-                        .logoutUrl("/logout") //get메서드로 로그아웃 할 수 있게 함
+                        .logoutUrl("/admin/logout") //get메서드로 로그아웃 할 수 있게 함
                         .logoutSuccessUrl("/")
                 );
 
