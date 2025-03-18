@@ -20,9 +20,9 @@ public class ReviewController {
     // 리뷰 목록 페이지 (기본 1페이지, 5개씩 출력)
     @GetMapping
     public String getReviews(
-        @RequestParam(name="page", defaultValue = "1") int page,  // 현재 페이지 (기본값: 1)
-        @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
-        Model model) { //Thymeleaf에서 사용할 데이터를 모델에 담아 전달
+            @RequestParam(name="page", defaultValue = "1") int page,  // 현재 페이지 (기본값: 1)
+            @RequestParam(name ="size", defaultValue = "5") int size, // 한 페이지당 리뷰 개수 (기본값: 5)
+            Model model) { //Thymeleaf에서 사용할 데이터를 모델에 담아 전달
 
 
         List<ReviewDto> review = reviewService.getReviews(page*5-size, size); // 리뷰 목록 가져오기
@@ -56,15 +56,6 @@ public class ReviewController {
         return  "review/review-detail"; // review.html 파일을 반환
     }
 
-    @GetMapping("/edit/{id}")
-    public String reviewUpdate(@PathVariable("id") int id, Model model){
-        ReviewDto review = reviewService.findReviewById(id);
-//        if (review == null) {
-//            throw new ReviewException("데이터를 찾을 수 없습니다.");
-//        }
-        model.addAttribute("review", review);
-        return "review/review-edit";
-    }
 
     // 업데이트 클릭시 상세보기로 리다이렉팅
     @PostMapping("/edit")
@@ -73,11 +64,29 @@ public class ReviewController {
         return "redirect:/admin/review/detail/" + review.getReviewId();
     }
 
+    // 해당 리뷰 삭제하기 삭제 후 리뷰 리스트 페이지로
     @PostMapping("/delete/{id}")
     public String deleteReview(@PathVariable("id") int id, Model model){
         reviewService.deleteReview(id);
-        List<ReviewDto> review = reviewService.findAllReview();
-        model.addAttribute("reviews", review);  // "review"라는 이름으로 템플릿에 전달
-        return "review/review";  // review.html 파일을 렌더링
+        return "redirect:/admin/review";  // review.html 파일을 렌더링
     }
+
+
+    // 블라인드 처리 기능 (새로운 기능 추가)
+    @PostMapping("/blind/{id}")
+    public String blindReview(@PathVariable("id") int id, @RequestParam("isBlinded") int isBlind) {
+        System.out.println(isBlind);
+        reviewService.blindReview(id, isBlind);
+        return "redirect:/admin/review";
+    }
+
+    // 부적절한 리뷰 표시 기능 (새로운 기능 추가)
+    @PostMapping("/inappropriate/{id}")
+    public String markAsInappropriate(@PathVariable("id") int id) {
+        reviewService.markAsInappropriate(id);
+        return "redirect:/admin/review";
+    }
+
+
+
 }

@@ -60,14 +60,14 @@
     <select id="getPendingReviews" resultType="com.minbak.web.host_today.HostTodayDto">
         select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
         WHERE entity_id = r.room_id AND entity_type = 'rooms'
-        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
+        ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url, rv.review_id, h.host_id
         from books b
         join users u ON b.user_id = u.user_id
         join rooms r ON b.room_id = r.room_id
-        join review rv on b.book_id = rv.book_id
-        where r.user_id = #{userId}
-        and current_date() > b.end_date
-        and b.status = '완료'
-        and rv.review_id is null
+        join review rv ON b.book_id = rv.book_id
+        join host h ON h.user_id = r.user_id
+        where rv.host_reply is null and r.user_id = #{userId};
     </select>
+
+
 </mapper>

@@ -22,6 +22,7 @@ public class BooksDto {
     private RoomsDto room;
     private PaymentDto payment;
     private ImageFileDto file;
+    private Integer hostId;
 
     private String userName;
     private String phoneNumber;

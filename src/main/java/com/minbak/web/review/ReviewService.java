@@ -1,11 +1,11 @@
 package com.minbak.web.review;
 
-import com.minbak.web.board.categories.BoardCategoryDto;
+import com.minbak.web.books.BooksDto;
+import com.minbak.web.email.EmailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,14 +14,18 @@ public class ReviewService {
 
     @Autowired
     ReviewMapper reviewMapper;
+    @Autowired
+    ReviewBooksMapper reviewBooksMapper;
 
     @Autowired  // Spring에서 자동으로 의존성 주입
-    public ReviewService(ReviewMapper reviewMapper) {
+    public ReviewService(ReviewMapper reviewMapper, ReviewBooksMapper reviewBooksMapper) {
         this.reviewMapper = reviewMapper;
+        this.reviewBooksMapper = reviewBooksMapper;
     }
 
     // 검색어에 맞는 리뷰 리스트를 반환하는 메서드
     public List<ReviewDto> getReviews(int offset, int size) {  // 리턴 타입과 메서드 이름을 명확히 작성
+        List<ReviewDto> reviews = reviewMapper.getReviews(offset, size);
         return reviewMapper.getReviews(offset, size);  // Mapper에서 검색된 리뷰 리스트를 반환
     }
 
@@ -63,14 +67,83 @@ public class ReviewService {
     }
 
 
-    // 리뷰 삭제
-    public void deleteReview(int id) {
-        reviewMapper.deleteReview(id);
+    // 블라인드 처리 기능 (새로운 기능 추가)
+    public void blindReview(int reviewId, int isBlind) {
+        if(isBlind == 0) reviewMapper.blindReview(reviewId);
+        else reviewMapper.unblindReview(reviewId);
     }
 
-    // 리뷰 추가
-    public void createReview(ReviewDto reviewDto) {
-        reviewMapper.createReview(reviewDto);
+    // 부적절한 리뷰 표시 기능 (새로운 기능 추가)
+    public void markAsInappropriate(int reviewId) {
+        reviewMapper.markAsInappropriate(reviewId);
     }
+
+
+
+    ////////////////////// user ///////////////////////////////
+    public BooksDto getBookData(int bookId){
+        System.out.println(reviewBooksMapper.selectBookById(bookId));
+        return reviewBooksMapper.selectBookById(bookId);
+    }
+
+    public int createReview(ReviewDto reviewDto){
+        if (reviewMapper.createReview(reviewDto) >= 1){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    //////////////////// Email ////////////////////
+
+    public List<EmailDto> setEmail(){
+        List<BooksDto> booksDtoList = reviewBooksMapper.getWaitingReview();
+        List<EmailDto> emailDtoList = new ArrayList<>();
+        for( BooksDto booksDto : booksDtoList){
+            EmailDto emailDto =  EmailDto.builder().to((String)booksDto.getUser().getEmail()).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요! \n localhost:8080/books/review/" + booksDto.getBookId()).build();
+            emailDtoList.add(emailDto);
+        }
+        return emailDtoList;
+    }
+
+
+    ////////////////////// host ///////////////////////////////
+    public List<ReviewDto> getUnrepliedReview(int hostId){
+        return reviewBooksMapper.getUnrepliedReview(hostId);
+    }
+
+    public Integer replyReview(ReviewDto reviewDto){
+        System.out.println(reviewDto.getHostId());
+        System.out.println(reviewDto.getHostReply());
+
+        if(reviewBooksMapper.replyReview(reviewDto) >= 1){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public Integer deleteReview(int reviewId){
+        if(reviewBooksMapper.deleteReview(reviewId) >= 1){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public Integer findUserIdByHostId(int hostId){
+        return reviewMapper.findUserIdByHostId(hostId);
+    }
+
+    ////////////////////// room ///////////////////////////////
+    public List<ReviewDto> getRoomReviews(int hostId){
+        return reviewBooksMapper.getRoomReviews(hostId);
+    }
+
+
+
+
 
 }
+
+
+

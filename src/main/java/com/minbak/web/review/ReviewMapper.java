@@ -1,6 +1,6 @@
 package com.minbak.web.review;
 
-import com.minbak.web.board.categories.BoardCategoryDto;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,7 +29,7 @@ public interface ReviewMapper {
     List<ReviewDto> getReviews(@Param("offset") int offset, @Param("limit") int limit);
 
     // 리뷰 추가
-    void createReview(ReviewDto reviewDto);
+    int createReview(ReviewDto reviewDto);
 
     // 리뷰 수정
     void editReview(ReviewDto review);
@@ -37,11 +37,25 @@ public interface ReviewMapper {
     // 리뷰 삭제
     void deleteReview(int id);
 
+    // 블라인드 처리 기능 추가
+    void blindReview(@Param("reviewId") int reviewId);
+
+    void unblindReview(@Param("reviewId") int reviewId);
+
+    // 부적절 리뷰 처리 기능 추가
+    void markAsInappropriate(@Param("reviewId") int reviewId);
+
     // 리뷰 id랑 리뷰 order 받아서 리뷰 순서 업데이트
     void editReviewOrder(int id);
 
     // 특정 리뷰 조회
     ReviewDto findReviewById(int reviewId);
+
+
+
+     //////////// Host ///////////
+
+    Integer findUserIdByHostId(int hostId);
 
 
 }
