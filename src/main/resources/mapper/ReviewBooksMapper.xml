@@ -29,24 +29,28 @@
 
     <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">
         select b.book_id, u.name as user_name, u.phone_number as user_phone, u.email as email, b.user_id, r.name as room_name,
-        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status, r.user_id as host_id, r.room_id
+        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status, h.host_id, r.room_id
         from books b
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
+        join host h on h.user_id = r.user_id
         where b.book_id = #{bookId}
     </select>
 
 
     <select id="getWaitingReview" resultMap="bookWithUser">
         select b.book_id, u.name as user_name, u.phone_number as user_phone, u.email as email, b.user_id, r.name as room_name,
-        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status, r.user_id as host_id, r.room_id
+        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status, h.host_id, r.room_id
         from books b
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
+        join host h on h.user_id = r.user_id
         where b.end_date = DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY), '%Y-%m-%d') and b.book_id not in (select book_id from review)
     </select>
+
+
 
     <!-- 호스트가 특정 리뷰에 대한 답변을 남기는 SQL -->
     <update id="replyReview"> <!-- 주어진 리뷰 ID에 대해 호스트의 답변을 업데이트 -->
@@ -54,5 +58,16 @@
         SET host_reply = #{hostReply}  <!-- 호스트의 답변을 저장 -->
         WHERE review_id = #{reviewId}  <!-- 특정 리뷰 ID에 해당하는 리뷰를 업데이트 -->
     </update>
+
+
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview">
+        DELETE FROM review
+        WHERE review_id = #{reviewId}
+    </delete>
+
+
+
+
 
 </mapper>

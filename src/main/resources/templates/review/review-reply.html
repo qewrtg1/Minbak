@@ -5,89 +5,59 @@
     <title>리뷰 작성</title>
     <th:block layout:fragment="css">
         <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                background: #f8f9fa;
-                margin: 0;
-                padding: 0;
-            }
-
             .main-content {
                 width: 800px;
                 margin: 50px auto;
                 padding: 20px;
-                background: #ffffff;
-                border-radius: 10px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             }
-
             .booking-summary {
-                display: flex;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
                 padding: 15px;
                 background: #f0f0f0;
                 border-radius: 10px;
                 margin-bottom: 20px;
-                font-size: 16px;
-                font-weight: bold;
             }
-
             .review-section {
                 padding: 20px;
                 background: #fff;
                 border-radius: 10px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
+           .rating {
+    display: flex;
+    flex-direction: row-reverse; /* 오른쪽에서 왼쪽으로 표시되도록 반전 */
+    justify-content: center; /* 별을 가운데 정렬 */
+    gap: 5px; /* 별 간격 */
+}
 
-            h3 {
-                text-align: center;
-                color: #333;
-                margin-bottom: 20px;
-            }
-
-            input[type="text"], textarea {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                font-size: 16px;
-                margin-bottom: 15px;
-            }
-
-            /* 유저 리뷰 (읽기 전용) */
-            #content {
-                height: 130px;
-                background: #f8f9fa;
-                border: 1px solid #ccc;
-                cursor: not-allowed;
-                color: #555;
-            }
-
-            /* 호스트 답변 입력 */
-            #hostReply {
-                height: 200px;
-                resize: none;
-            }
 
             .btn-submit {
                 display: block;
                 width: 100%;
-                padding: 12px;
+                padding: 10px;
                 background: #ff5a5f;
                 color: white;
                 border: none;
                 border-radius: 5px;
                 cursor: pointer;
-                font-size: 18px;
-                font-weight: bold;
-                transition: background 0.3s, transform 0.1s;
+                transition: background 0.3s;
             }
-
             .btn-submit:hover {
                 background: #e04850;
-                transform: scale(1.02);
             }
-
+            /* 스타일 수정 */
+            #content {
+                font-size: 16px; /* 텍스트 크기 키우기 */
+                padding-left: 10px; /* 왼쪽 여백 추가 */
+                padding-top: 10px; /* 위쪽 여백 추가 */
+                width: 100%;
+                margin-bottom: 10px;
+                height: 150px; /* 텍스트 영역 높이 설정 */
+                border: 1px solid #ddd; /* 경계선 추가 */
+                border-radius: 5px; /* 테두리 둥글게 */
+            }
         </style>
     </th:block>
 </head>
@@ -99,21 +69,18 @@
         </div>
 
         <div class="review-section">
-            <h3>Host 리뷰 답변 쓰기</h3>
+            <h3 class="text-center">리뷰 답변 작성</h3>
             <form th:action="@{/review/host/{id}(id=${review.reviewId})}" method="post">
                 <input type="hidden" name="bookId" th:value="${review.bookId}">
                 <input type="hidden" name="reviewId" th:value="${review.reviewId}">
                 <input type="hidden" name="userId" th:value="${review.userId}">
                 <input type="hidden" name="hostId" th:value="${review.hostId}">
                 <input type="hidden" name="roomId" th:value="${review.roomId}">
-
-                <!-- 유저가 작성한 리뷰 (읽기 전용) -->
-                <label for="content">User 리뷰:</label>
-                <input type="text" id="content" name="content" th:value="${review.content}" readonly>
-
-                <!-- 호스트 답변 입력 -->
+                <input type="text" name="content" th:value="${review.content}"
+                       style="width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; overflow-y: auto;">
                 <label for="hostReply">Host 답변:</label>
-                <textarea id="hostReply" name="hostReply" placeholder="리뷰 답변을 입력하세요."></textarea>
+                <textarea id="hostReply" name="hostReply" rows="12" style="width:100%; margin-bottom:10px;" placeholder="리뷰를 작성해주세요."></textarea>
+
 
                 <button type="submit" class="btn-submit">답변 등록</button>
             </form>

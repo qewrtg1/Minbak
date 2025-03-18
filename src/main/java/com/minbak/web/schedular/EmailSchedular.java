@@ -17,7 +17,7 @@ public class EmailSchedular {
 
     private final ReviewService reviewService;
 
-    @Scheduled(cron = "0 41 17 * * *")
+    @Scheduled(cron = "0 00 12 * * *") // 이메일 전송 시간 설정 (초 분 시, 일 월 요일 순) - 매일 12:00에 메일 전송
     public void printDate(){
         List<EmailDto> emailList = reviewService.setEmail();
         for(EmailDto emailDto : emailList) {

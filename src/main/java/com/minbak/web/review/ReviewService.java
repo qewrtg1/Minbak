@@ -99,13 +99,8 @@ public class ReviewService {
         List<BooksDto> booksDtoList = reviewBooksMapper.getWaitingReview();
         List<EmailDto> emailDtoList = new ArrayList<>();
         for( BooksDto booksDto : booksDtoList){
-            if (((String)booksDto.getUser().getEmail()).equals("dlsxotjd15@naver.com")){
-                EmailDto emailDto =  EmailDto.builder().to((String)booksDto.getUser().getEmail()).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요! \n link:localhost:8080/books/review/" + booksDto.getBookId()).build();
-                emailDtoList.add(emailDto);
-            }
-
-//            EmailDto emailDto =  EmailDto.builder().to((String)booksDto.get("email")).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요!").build();
-////            emailDtoList.add(emailDto);
+            EmailDto emailDto =  EmailDto.builder().to((String)booksDto.getUser().getEmail()).title("리뷰 작성 요청").message("지난 여행은 즐거우셨나요? 리뷰를 작성해 주세요! \n localhost:8080/books/review/" + booksDto.getBookId()).build();
+            emailDtoList.add(emailDto);
         }
         return emailDtoList;
     }
@@ -143,6 +138,8 @@ public class ReviewService {
     public List<ReviewDto> getRoomReviews(int hostId){
         return reviewBooksMapper.getRoomReviews(hostId);
     }
+
+
 
 
 
