@@ -12,7 +12,7 @@
     <!-- 페이지네이션을 적용하여 리뷰 목록 가져오기 -->
     <select id="getReviews" resultType="com.minbak.web.review.ReviewDto">
         SELECT review.*, users.email FROM review
-        JOIN users ON users.user_id = review.review_id
+        JOIN users ON users.user_id = review.user_id
         ORDER BY review_id DESC  <!-- 최신 리뷰가 먼저 보이도록 정렬 -->
         LIMIT #{limit} OFFSET #{offset};  <!-- 페이지네이션 적용 -->
     </select>
