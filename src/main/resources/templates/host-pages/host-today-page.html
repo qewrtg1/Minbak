@@ -17,7 +17,7 @@
 
 
         /* ✅ 섹션 스타일 */
-        .section { padding-top: 64px; color: #222; }
+        .section { padding-top: 64px; color: #222; height: 200px;}
         .contents { padding: 0 80px; }
         .roomList { display: flex; }
         .room-item { margin-left: 10px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
@@ -66,7 +66,7 @@
 </div>
 
 <!-- ✅ 예약 영역 -->
-<div class="container reservation-container">
+<div class="container reservation-container" style="height:300px">
     <h1>예약</h1>
     <ul class="nav nav-tabs mb-3">
         <li class="nav-item"><button class="nav-link active" onclick="fetchData('checkout')">체크아웃 예정 <span id="count-checkout">(0건)</span></button></li>
@@ -187,6 +187,6 @@
         return `${year}-${month}-${day}`;
     }
 </script>
-
+<div th:replace="~{user-pages/common/footer}"></div>
 </body>
 </html>
