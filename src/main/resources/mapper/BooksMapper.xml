@@ -109,14 +109,13 @@
 
     <update id="editBook" parameterType="com.minbak.web.books.BooksDto">
         UPDATE books b
-        JOIN rooms r ON r.name = #{roomName}
         SET b.start_date = #{startDate},
         b.end_date = #{endDate},
         b.guests_num = #{guestsNum},
         b.request = #{request},
         b.status = #{status},
-        b.room_id = r.room_id
-        WHERE b.book_id = #{bookId};
+        b.room_id = #{roomId}
+        WHERE b.book_id = #{bookId}
     </update>
 
     <delete id="deleteBook" parameterType="Integer">
