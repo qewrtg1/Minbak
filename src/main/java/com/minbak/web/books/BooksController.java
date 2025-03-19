@@ -23,7 +23,7 @@ public class BooksController {
 
     @GetMapping
     public String searchBooks(@RequestParam(name="page", defaultValue = "1") int page,
-                              @RequestParam(name="size", defaultValue = "10") int size,
+                              @RequestParam(name="size", defaultValue = "5") int size,
                               @RequestParam(name="searchType", required = false) String searchType,
                               @RequestParam(name="keyword", required = false) String keyword,
                               @RequestParam(name="dateType", required = false) String dateType,
