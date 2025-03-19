@@ -12,5 +12,5 @@ public interface FileMapper {
     List<ImageFileDto> findImagesByRoomId(int roomId);
     String findLicenseImagesUrlByHostId(int hostId);
     void deleteFileDataByUrl(String fileUrl);
-
+    int getUserIdByRoomId(int roomId);
 }

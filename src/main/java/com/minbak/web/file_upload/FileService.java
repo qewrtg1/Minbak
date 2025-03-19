@@ -74,4 +74,8 @@ public class FileService {
     public String findLicenseImagesUrlByHostId(int hostId){
         return fileMapper.findLicenseImagesUrlByHostId(hostId);
     }
+
+    public int getUserIdByRoomId(int roomId){
+        return fileMapper.getUserIdByRoomId(roomId);
+    }
 }

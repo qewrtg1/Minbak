@@ -30,7 +30,7 @@ public interface MainPageMapper {
     List<MainOptionDto> findOptions();
 
     // 특정 숙소의 가장 최근 리뷰 가져오기
-    MainReviewDto findRecentReviewByRoom(@Param("roomId") int roomId);
+    MainReviewDto findRecentReviewByRoom(int roomId);
 
     // 로그인한 사용자 정보 가져오기
     UserDto findUserById(@Param("userId") int userId);

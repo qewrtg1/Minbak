@@ -25,4 +25,10 @@
         DELETE FROM image_files WHERE file_url = #{fileUrl}
     </delete>
 
+    <select id="getUserIdByRoomId">
+        select user_id
+        from rooms
+        where room_id = #{roomId};
+    </select>
+
 </mapper>

@@ -397,7 +397,7 @@
               <h6 class="card-title">${room.title}</h6>
               <p class="card-text">${room.address}</p>
               <p class="card-text"><strong>₩${room.price.toLocaleString()} / 박</strong></p>
-              <p class="card-text">⭐ ${room.reviewScore} (리뷰 ${room.reviewCount}개)</p>
+              <p class="card-text">⭐ ${room.reviewScore.toFixed(1)} (리뷰 ${room.reviewCount}개)</p>
               ${room.recentReview ? `
                 <div class="review-box">
                   <p><strong>${room.recentReview.userName}</strong>: ${room.recentReview.content} (⭐ ${room.recentReview.score})</p>

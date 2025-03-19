@@ -71,19 +71,20 @@
         u.name AS "user.name",
         u.email AS "user.email",
         u.phone_number AS "user.phoneNumber",
-        (
-        SELECT file_url
+        COALESCE(
+        (SELECT file_url
         FROM image_files
         WHERE entity_id = u.user_id
         AND entity_type = 'users'
         ORDER BY uploaded_at DESC
-        LIMIT 1
+        LIMIT 1),
+        '/uploads/e1ed440b-0d2e-4580-8dc1-2457c0933ef9_basic-profile.png'
         ) AS "user.profileImageUrl"
         FROM review rv
         LEFT JOIN users u ON rv.user_id = u.user_id
         JOIN books b ON rv.book_id = b.book_id
         WHERE b.room_id = #{roomId}
-        ORDER BY rv.created_at DESC
+        ORDER BY rv.created_at DESC;
     </select>
 
 
@@ -108,20 +109,28 @@
 
     <!--host프로필 가져오기-->
     <select id="getHostProfileImage" resultType="string">
-        SELECT file_url
+        SELECT COALESCE(
+        (SELECT file_url
         FROM image_files
         WHERE user_id = (SELECT user_id FROM host WHERE host_id = #{hostId})
         AND entity_type = 'users'
         ORDER BY image_id DESC
-        LIMIT 1
+        LIMIT 1),
+        '/uploads/e1ed440b-0d2e-4580-8dc1-2457c0933ef9_basic-profile.png'
+        ) AS fileUrl;
+
     </select>
 
     <!--userId로 프로필 가져오기-->
     <select id="findImageUrlsByUserId" parameterType="int" resultType="string">
-        SELECT file_url
+        SELECT COALESCE(
+        (SELECT file_url
         FROM image_files
-        WHERE entity_id = #{userId} and entity_type = 'users'
-        LIMIT 1
+        WHERE entity_id = #{userId}
+        AND entity_type = 'users'
+        LIMIT 1),
+        '/uploads/e1ed440b-0d2e-4580-8dc1-2457c0933ef9_basic-profile.png'
+        ) AS fileUrl;
     </select>
 
 </mapper>

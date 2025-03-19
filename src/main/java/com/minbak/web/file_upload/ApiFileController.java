@@ -28,6 +28,7 @@ public class ApiFileController {
     @Autowired
     FileService fileService;
 
+
     @PostMapping("/upload-multiple")
     public ResponseEntity<?> uploadMultipleFiles(
             @RequestParam("roomId") int roomId,
@@ -42,6 +43,8 @@ public class ApiFileController {
 
         for (MultipartFile file : files) {
             try {
+//                int userId = fileService.getUserIdByRoomId(roomId);
+//                ImageFileDto imageFile = fileService.saveFile(file, roomId,"rooms",userId);
                 ImageFileDto imageFile = fileService.saveFile(file, roomId,"rooms",userDetails.getUserId());
                 uploadedFiles.add(imageFile);
             } catch (IOException e) {
@@ -65,6 +68,7 @@ public class ApiFileController {
 
         try {
             ImageFileDto imageFile = fileService.saveFile(file, userId, "users",userDetails.getUserId());
+//            ImageFileDto imageFile = fileService.saveFile(file, userId, "users",userId);
             return ResponseEntity.ok(imageFile);
 
         } catch (IOException e) {

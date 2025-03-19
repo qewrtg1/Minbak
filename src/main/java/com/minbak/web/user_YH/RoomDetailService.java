@@ -18,6 +18,9 @@ public class RoomDetailService {
     public RoomDetailDto getRoomDetail(int roomId) {
         DetailRoomResponse room = roomDetailMapper.getRoomDetail(roomId);
         DetailHostResponse host = roomDetailMapper.getHostDetail(roomId);
+        if(host.getImageUrl() == null){
+
+        }
         DetailBookResponse booking = roomDetailMapper.getBookingDetail(roomId);
         List<DetailReviewResponse> reviews = roomDetailMapper.getRoomReviews(roomId);
         host.setImageUrl(roomDetailMapper.getHostProfileImage(host.getHostId()));
