@@ -49,7 +49,7 @@ public class UserMessageController {
         model.addAttribute("detailUserResponseLists",detailUserResponseList);
 
 
-        return "/user-pages/user-message";
+        return "user-pages/user-message";
     }
 //    메세지 상세보기
     @GetMapping("/messageList/{chatRoomId}")
@@ -91,7 +91,7 @@ public class UserMessageController {
         model.addAttribute("userId",userDetails.getUserId());
         model.addAttribute("chatRoomName",chatRoomName);
         model.addAttribute("chatRoomId",chatRoomId);
-        return "/user-pages/user-message";
+        return "user-pages/user-message";
     }
     //    유저 읽음,안읽음 체크 기능
     @PostMapping("/messageList")

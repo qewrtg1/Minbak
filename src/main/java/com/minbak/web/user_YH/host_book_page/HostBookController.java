@@ -30,7 +30,7 @@ public class HostBookController {
 
         model.addAttribute("user",hostBookService.findUserDetailByUserId(userId));
         model.addAttribute("books", books);
-        return "/host-pages/host-book-page";
+        return "host-pages/host-book-page";
     }
 
     @PutMapping("/host/approve/{bookId}")

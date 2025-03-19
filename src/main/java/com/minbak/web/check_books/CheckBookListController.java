@@ -48,7 +48,7 @@ public class CheckBookListController {
 
          model.addAttribute("booksPageDto",booksPageDto);
 
-        return "/user-pages/user-book-list";
+        return "user-pages/user-book-list";
     }
 
     @GetMapping("/book/detail/{bookId}")
@@ -74,6 +74,6 @@ public class CheckBookListController {
         model.addAttribute("yearsOfExperience",yearsOfExperience);
 
 
-        return "/user-pages/user-book-detail";
+        return "user-pages/user-book-detail";
     }
 }

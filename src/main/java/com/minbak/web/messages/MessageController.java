@@ -40,7 +40,7 @@ public class MessageController {
         //유저 목록 받아서 model로 전달
         List<UserDto> users= messageService.findAllUsers();
         model.addAttribute("users",users);
-        return "/message/userMessage";
+        return "message/userMessage";
     }
 
 //    유저아이디로  메세지 확인
@@ -49,14 +49,14 @@ public class MessageController {
         model.addAttribute("user_id",user_id);
         model.addAttribute("messages", messageService.findMessagesById(user_id)  );
 
-    return "/message/userMessageDetail";
+    return "message/userMessageDetail";
     }
 
 //    메인페이지, 오늘자 메세지 개수 조회
     @GetMapping("")
     public String mainMessage(Model model){
         model.addAttribute("countMessagesToday", messageService.countMessagesToday());
-        return "/message/messageMain";
+        return "message/messageMain";
     }
 // 메세지 리스트 페이지
     @GetMapping("/list")
@@ -70,7 +70,7 @@ public class MessageController {
         model.addAttribute("messageFilterDto",requestMessageFilterDto);
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
-        return"/message/messageList";
+        return"message/messageList";
     }
 //메세지 검색,필터링 요청
     @PostMapping("/list")
@@ -84,7 +84,7 @@ public class MessageController {
         model.addAttribute("messageFilterDto",requestMessageFilterDto);
         model.addAttribute("messagePageDto",filteredResponseMessageDto);
 
-        return "/message/messageList";
+        return "message/messageList";
     }
 
 //   ------------------------------------메세지 생성 관련-----------------------------------------

@@ -28,12 +28,12 @@ public class FileController {
 
     @GetMapping("/fileform")
     public String fileForm() {
-        return "/file-form/file-test";
+        return "file-form/file-test";
     }
 
     @GetMapping("/getfile")
     public String getFileForm() {
-        return "/file-form/get-img-test";
+        return "file-form/get-img-test";
     }
 
     @PostMapping("/upload")

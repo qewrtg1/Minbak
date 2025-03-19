@@ -38,7 +38,7 @@ public class UserPaymentController {
             model.addAttribute("totalAmount",totalAmount);
             model.addAttribute("roomImageUrl",userPaymentService.getRoomImageUrl(book.getRoomId()));
 
-            return "/user-pages/user-payment"; // checkout.html 페이지로 이동
+            return "user-pages/user-payment"; // checkout.html 페이지로 이동
         }else {
             return "redirect:/room/1";
         }

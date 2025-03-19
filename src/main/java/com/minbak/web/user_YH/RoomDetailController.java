@@ -38,6 +38,6 @@ public class RoomDetailController {
         model.addAttribute("reservedDates", reservedDates);
 
         System.out.println(roomDetail.getHost());
-        return "/user-pages/room-detail";
+        return "user-pages/room-detail";
     }
 }

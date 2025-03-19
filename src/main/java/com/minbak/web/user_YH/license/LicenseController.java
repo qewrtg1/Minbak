@@ -34,7 +34,7 @@ public class LicenseController {
 
     @GetMapping
     public String hostLicensePage(){
-        return "/host-pages/business_license";
+        return "host-pages/business_license";
     }
 
     @PostMapping("/add")
