@@ -52,9 +52,9 @@ public class BooksService {
         booksMapper.deleteBook(bookId);
     }
 
-    public Map<String, Map<LocalDate, String>> findMonthlyBooks(int year, int month) {
+    public Map<String, Map<LocalDate, List<String>>> findMonthlyBooks(int year, int month) {
         List<Map<String, Object>> bookings = booksMapper.findMonthlyBooks(year, month);
-        Map<String, Map<LocalDate, String>> roomStatusMap = new HashMap<>();
+        Map<String, Map<LocalDate, List<String>>> roomStatusMap = new HashMap<>();
 
         for (Map<String, Object> booking : bookings) {
             String roomName = (String) booking.get("roomName");
@@ -63,11 +63,12 @@ public class BooksService {
             String status = (String) booking.get("status");
 
             roomStatusMap.putIfAbsent(roomName, new HashMap<>());
-            Map<LocalDate, String> roomStatus = roomStatusMap.get(roomName);
+            Map<LocalDate, List<String>> roomStatus = roomStatusMap.get(roomName);
 
             // 체크인 날짜부터 체크아웃 전날까지 같은 상태 유지
             for (LocalDate date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
-                roomStatus.putIfAbsent(date, status);
+                roomStatus.putIfAbsent(date, new ArrayList<>());
+                roomStatus.get(date).add(status);
             }
         }
         return roomStatusMap;

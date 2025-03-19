@@ -58,6 +58,20 @@
             overflow: hidden;
             text-overflow: ellipsis;  /* 너무 길면 '...' 처리 */
         }
+      /* 하나의 셀에 여러 상태를 표시하고 줄바꿈을 허용 */
+        td div {
+            display: flex;
+            flex-direction: column; /* 세로로 상태 표시 */
+            align-items: center;
+            justify-content: center;
+        }
+
+        td span {
+            display: block; /* 각 상태가 줄바꿈되도록 */
+            margin: 2px 0;  /* 상태 간의 간격 */
+            padding: 2px;
+            word-wrap: break-word;
+        }
 
       /* 예약 상태별 색상 */
       .status-대기 { background-color: yellow; }
@@ -109,9 +123,7 @@
             <option value="">전체</option>
             <option value="대기">대기</option>
             <option value="완료">완료</option>
-            <option value="취소">취소</option>
           </select>
-          <button onclick="downloadExcel()">Excel 다운로드</button>
         </div>
 
         <!-- 월별 이동 -->
@@ -133,11 +145,13 @@
           <tr th:each="entry : ${statusOfRoom}">
             <td th:text="${entry.key}"></td>
             <td th:each="date : ${datesInMonth}">
-              <span th:if="${entry.value.containsKey(date)}"
-                    th:text="${entry.value.get(date)}"
-                    th:classappend="'status-' + ${entry.value.get(date)}"
-                    th:onclick="showDetails('숙소: ' + [[${entry.key}]] + ', 날짜: ' + [[${date}]] + ', 상태: ' + [[${entry.value.get(date)}]])">
-              </span>
+              <div th:if="${entry.value.containsKey(date)}">
+                <span th:each="status : ${entry.value.get(date)}"
+                      th:text="${status}"
+                      th:classappend="'status-' + ${status}"
+                      th:onclick="showDetails('숙소: ' + [[${entry.key}]] + ', 날짜: ' + [[${date}]] + ', 상태: ' + [[${status}]])">
+                </span>
+              </div>
             </td>
           </tr>
           </tbody>
@@ -187,11 +201,6 @@
 
     function closeModal() {
       document.getElementById("reservation-modal").style.display = "none";
-    }
-
-    // 예약 데이터 다운로드 (Excel)
-    function downloadExcel() {
-      window.location.href = "/admin/books/download-excel"; // 서버에서 파일 생성 후 다운로드
     }
   </script>
 </th:block>

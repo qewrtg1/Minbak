@@ -83,7 +83,7 @@ public class BooksController {
         LocalDate prevMonth = currentMonth.minusMonths(1);
         LocalDate nextMonth = currentMonth.plusMonths(1);
 
-        Map<String, Map<LocalDate, String>> statusOfRoom = booksService.findMonthlyBooks(year, month);
+        Map<String, Map<LocalDate, List<String>>> statusOfRoom = booksService.findMonthlyBooks(year, month);
 
 //        이번 달 모든 날짜 리스트 생성
         int daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
