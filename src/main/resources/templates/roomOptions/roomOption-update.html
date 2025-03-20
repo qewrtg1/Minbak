@@ -16,7 +16,7 @@
     <h1 class="text-center mt-5">편의시설 수정</h1>
 
     <div class="card p-4 shadow-sm mx-auto" style="max-width: 500px;">
-      <form th:action="@{/admin/roomoptions/update/{id}(id=${roomOption.optionId})}" method="post" th:object="${roomOption}">
+      <form th:action="@{/admin/rooms/roomoptions/update/{id}(id=${roomOption.optionId})}" method="post" th:object="${roomOption}">
 
         <div class="mb-3">
           <label class="form-label">이름</label>
