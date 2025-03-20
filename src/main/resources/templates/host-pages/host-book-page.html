@@ -55,10 +55,10 @@
 <!-- ✅ 예약 목록 -->
 <div class="container reservation-container" style="height:300px">
     <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><button class="nav-link active" onclick="filterReservations('대기')">대기 중</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('수락')">승인됨</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('거절')">거절됨</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="filterReservations('ALL')">전체</button></li>
+        <li class="nav-item"><button class="nav-link active" onclick="filterReservations('대기')">대기 중 <span id="count-pending">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('수락')">승인됨 <span id="count-approved">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('거절')">거절됨 <span id="count-declined">(0건)</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="filterReservations('ALL')">전체 <span id="count-all">(0건)</span></button></li>
     </ul>
 
     <p class="text-center text-muted" id="noReservations" style="display: none;">예정된 예약이 없습니다</p>
@@ -99,12 +99,33 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         updateNoReservationMessage();
+        updateReservationCounts(); // 예약 건수 업데이트 추가
         filterReservations('대기'); // 페이지 로드 시 "대기 중" 예약 목록이 기본으로 보이게 설정
     });
 
     function updateNoReservationMessage() {
         const reservations = document.querySelectorAll(".card");
         document.getElementById("noReservations").style.display = reservations.length ? "none" : "block";
+    }
+
+    function updateReservationCounts() {
+        let counts = { "대기": 0, "수락": 0, "거절": 0, "전체": 0 };
+
+        document.querySelectorAll(".card").forEach(reservation => {
+            let statusElem = reservation.querySelector(".status-대기, .status-수락, .status-거절, .status-완료, .status-취소");
+            if (statusElem) {
+                let statusText = statusElem.textContent.trim();
+                if (counts[statusText] !== undefined) {
+                    counts[statusText]++;
+                }
+                counts["전체"]++;
+            }
+        });
+
+        document.getElementById("count-pending").textContent = `(${counts["대기"]}건)`;
+        document.getElementById("count-approved").textContent = `(${counts["수락"]}건)`;
+        document.getElementById("count-declined").textContent = `(${counts["거절"]}건)`;
+        document.getElementById("count-all").textContent = `(${counts["전체"]}건)`;
     }
 
     function approveReservation(bookId) {
