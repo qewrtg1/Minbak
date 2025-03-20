@@ -175,6 +175,11 @@
 <th:block layout:fragment="js">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // 검색어 입력 시 필터링 실행
+      document.getElementById("search-room").addEventListener("input", filterRooms);
+    });
+
     // 숙소 검색 필터
     function filterRooms() {
       let searchText = document.getElementById("search-room").value.toLowerCase();

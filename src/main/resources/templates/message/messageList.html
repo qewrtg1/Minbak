@@ -146,7 +146,7 @@
                         <!-- 받는이(유저 ID) -->
                         <div id="receiverIdInput" style="display:block;">
                             <label for="createMessageById" class="form-label">받는이(유저 ID)</label>
-                            <input type="number" class="form-control" name="receiverId" id="createMessageById" placeholder="받는이 ID 입력">
+                            <input type="number" class="form-control" name="receiverId" id="createMessageById" placeholder="받는이 ID 입력" th:value="${param.receiverId} ?: ''">
                         </div>
 
                         <!-- 받는이(유저 이메일) -->

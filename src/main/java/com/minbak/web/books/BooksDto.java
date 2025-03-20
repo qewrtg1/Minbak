@@ -25,6 +25,7 @@ public class BooksDto {
     private Integer hostId;
 
     private String userName;
+    private String email;
     private String phoneNumber;
     private String roomName;
 

@@ -44,25 +44,29 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
+                    <th>예약번호</th>
                     <th>체크인 날짜</th>
                     <th>숙소명</th>
                     <th>예약자 ID</th>
                     <th>예약자명</th>
-                    <th>연락처</th>
+                    <th>이메일</th>
                     <th>요청사항</th>
-                    <th>SMS</th>
+                    <th>메시지</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="book : ${waitingBooks}">
+                    <td>
+                        <a th:href="@{|/admin/books/${book.bookId}|}" th:text="${book.bookId}"></a>
+                    </td>
                     <td th:text="${book.startDate}"></td>
                     <td th:text="${book.roomName}"></td>
                     <td th:text="${book.userId}"></td>
                     <td th:text="${book.userName}"></td>
-                    <td th:text="${book.phoneNumber}"></td>
+                    <td th:text="${book.email}"></td>
                     <td th:text="${book.request}"></td>
                     <td>
-                        <a href="/admin/message/list" class="btn btn-info">SMS 발송</a>
+                        <a th:href="@{/admin/message/list(receiverId=${book.userId})}" class="btn btn-info">메시지 발송</a>
                     </td>
                 </tr>
                 </tbody>

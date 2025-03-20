@@ -56,6 +56,7 @@ public class BooksController {
     @GetMapping("/edit/{bookId}")
     public String editBook(@PathVariable("bookId") Integer bookId, Model model) {
         BooksDto dto = booksService.selectBookById(bookId);
+        System.out.println("roomId: " + dto.getRoomId());
         model.addAttribute("books", dto);
         return "books/edit";
     }
