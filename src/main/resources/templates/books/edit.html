@@ -112,9 +112,9 @@
           <input type="text" id="request" name="request" th:value="${books.request}">
         </div>
 
-        <div class="form-container">
-          <label for="status">예약 상태:</label>
-          <select id="status" name="status" required>
+        <div class="mb-3">
+          <label for="status" class="form-label">예약 상태:</label>
+          <select id="status" class="form-control" name="status" required>
             <option value="대기" th:selected="${books.status == '대기'}">대기</option>
             <option value="수락" th:selected="${books.status == '수락'}">수락</option>
             <option value="거절" th:selected="${books.status == '거절'}">거절</option>

@@ -29,6 +29,7 @@
         join users u ON b.user_id = u.user_id
         join rooms r ON b.room_id = r.room_id
         where r.user_id = #{userId}
+        and b.status = '완료'
         and current_date() between b.start_date and b.end_date
     </select>
 
@@ -66,7 +67,8 @@
         join rooms r ON b.room_id = r.room_id
         join review rv ON b.book_id = rv.book_id
         join host h ON h.user_id = r.user_id
-        where rv.host_reply is null and r.user_id = #{userId};
+        where rv.host_reply is null and r.user_id = #{userId}
+        and b.status = '완료';
     </select>
 
 

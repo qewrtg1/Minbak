@@ -58,17 +58,20 @@
                 <tr>
                     <th>투숙일</th>
                     <th>숙소명</th>
+                    <th>예약자 ID</th>
                     <th>예약자명</th>
                     <th>연락처</th>
                     <th>입금확인일</th>
                     <th>결제금액</th>
                     <th>입금상태</th>
+                    <th>작업</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="book : ${paidAndCheckIn}">
                     <td th:text="${book.startDate}"></td>
                     <td th:text="${book.room.name}"></td>
+                    <td th:text="${book.userId}"></td>
                     <td th:text="${book.user.name}"></td>
                     <td th:text="${book.user.phoneNumber}"></td>
                     <td th:text="${book.payment.paidAt}"></td>
@@ -76,6 +79,10 @@
                     <td th:text="${book.payment.status}"
                         th:class="${book.payment.status.equals('결제 완료')} ? 'confirmed' :
                           (${book.payment.status.equals('결제 대기')} ? 'pending' : 'cancelled')"></td>
+                    <td>
+                        <a th:href="@{/admin/message/list(receiverId=${book.userId})}" class="btn btn-info">메시지 발송</a>
+                        <a th:href="@{/admin/payments/edit/{paymentId}(paymentId=${book.payment.paymentId})}" class="btn btn-warning">수정</a>
+                    </td>
                 </tr>
                 </tbody>
             </table>

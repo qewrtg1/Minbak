@@ -8,6 +8,8 @@
         <result property="guestsNum" column="guests_num"/>
         <result property="request" column="request"/>
         <result property="status" column="status"/>
+        <result property="userId" column="user_id"/>
+        <result property="roomId" column="room_id"/>
         <association property="user" javaType="com.minbak.web.users.UserDto">
             <result property="name" column="user_name"/>
             <result property="phoneNumber" column="user_phone"/>
@@ -17,6 +19,7 @@
             <result property="name" column="room_name"/>
         </association>
         <association property="payment" javaType="com.minbak.web.payments.PaymentDto">
+            <result property="paymentId" column="payment_id"/>
             <result property="amount" column="amount"/>
             <result property="paidAt" column="paid_at"/>
             <result property="status" column="status"/>
@@ -33,7 +36,7 @@
 
     <select id="selectBookById" parameterType="Integer" resultMap="bookWithUser">
         select b.book_id, u.name as user_name, u.phone_number as user_phone, u.email as email, r.name as room_name,
-        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status,
+        b.start_date, b.end_date, b.guests_num, p.amount as amount, b.request, b.status, b.room_id,
         (SELECT file_url FROM image_files
         WHERE entity_id = b.room_id AND entity_type = 'rooms'
         ORDER BY uploaded_at ASC LIMIT 1) AS file_url
@@ -109,12 +112,12 @@
 
     <update id="editBook" parameterType="com.minbak.web.books.BooksDto">
         UPDATE books b
-        SET b.start_date = #{startDate},
+        SET b.room_id = #{roomId},
+        b.start_date = #{startDate},
         b.end_date = #{endDate},
         b.guests_num = #{guestsNum},
         b.request = #{request},
-        b.status = #{status},
-        b.room_id = #{roomId}
+        b.status = #{status}
         WHERE b.book_id = #{bookId}
     </update>
 
@@ -134,7 +137,7 @@
     </select>
 
     <select id="selectWaitings" resultType="com.minbak.web.books.BooksDto">
-        select b.start_date, r.name as roomName, b.user_id, u.name as userName, u.phone_number as phoneNumber, b.request
+        select b.book_id, b.start_date, r.name as roomName, b.user_id, u.name as userName, u.email as email, b.request
         from books b
         join rooms r on b.room_id = r.room_id
         join users u on b.user_id = u.user_id
@@ -144,12 +147,12 @@
     </select>
 
     <select id="paidAndCheckIn" resultMap="bookWithUser">
-        select b.start_date, r.name as room_name, u.name as user_name, u.phone_number as user_phone, p.paid_at as paid_at, p.amount as amount, p.status as status
+        select b.start_date, r.name as room_name, u.name as user_name, u.phone_number as user_phone, p.payment_id, p.paid_at as paid_at, p.amount as amount, p.status as status, b.user_id
         from books b
         join users u on b.user_id = u.user_id
         join rooms r on b.room_id = r.room_id
         join payments p on p.book_id = b.book_id
-        where b.start_date > current_date()
+        where b.start_date >= current_date()
         order by b.start_date
     </select>
 
