@@ -63,7 +63,7 @@
     </select>
 
     <select id="getHostIsVerifiedByRoomId">
-        SELECT CASE WHEN h.is_verified = 1 THEN true ELSE false END AS isVerified
+        SELECT CASE WHEN h.is_verified = '검증' THEN true ELSE false END AS isVerified
         FROM rooms r
         INNER JOIN host h ON r.user_id = h.user_id
         WHERE r.room_id = #{roomId}
