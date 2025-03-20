@@ -270,4 +270,8 @@ public class UsersService {
     public String findUserEmailByUserId(int userId){
         return  usersMapper.findUserEmailByUserId(userId);
     }
+
+    public void insertNewHost(int userId, String isVerified){
+        usersMapper.insertNewHost(userId,isVerified);
+    }
 }

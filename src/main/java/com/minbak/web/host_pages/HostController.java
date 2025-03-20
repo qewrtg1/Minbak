@@ -435,6 +435,8 @@ public class HostController {
 
         usersService.createRefreshTokenData(username,newRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
 
+
+        usersService.insertNewHost(hostDto.getUserId(),"미검증");
         return "redirect:/host/today";
     }
 }

@@ -176,4 +176,6 @@ public interface UsersMapper {
     public List<String> selectUserRoles(int userId);
 
     public String findUserEmailByUserId(int userId);
+
+    void insertNewHost(int userId, String isVerified);
 }

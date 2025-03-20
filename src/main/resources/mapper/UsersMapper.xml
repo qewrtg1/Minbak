@@ -439,6 +439,11 @@
         VALUES (#{userId}, #{hobby}, #{introduction}, #{isVerified}, #{accountNumber})
     </insert>
 
+    <insert id="insertNewHost">
+        INSERT INTO host (user_id, is_verified)
+        VALUES (#{userId},#{isVerified})
+    </insert>
+
     <!-- 호스트 삭제 -->
     <delete id="deleteHostByUserId">
         DELETE FROM host WHERE user_id = #{userId}
