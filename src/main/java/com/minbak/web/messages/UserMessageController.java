@@ -26,12 +26,12 @@ public class UserMessageController {
     UsersService usersService;
 
     @GetMapping("/messageList")
-    public String showUserMessageList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
+    public String showUserMessageList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 // 채팅방 리스트
         //리시버아이디가 내 거인 메시지만 is_read 카운트
-        List<UserMessageListDto> userMessageLists=messageService.showUserMessageList(userDetails.getUserId());
-        for (UserMessageListDto userMessageList : userMessageLists){
-            userMessageList.setIsUnRead(messageService.countMessagesByIds(userDetails.getUserId(),userMessageList.getChatRoomId()));
+        List<UserMessageListDto> userMessageLists = messageService.showUserMessageList(userDetails.getUserId());
+        for (UserMessageListDto userMessageList : userMessageLists) {
+            userMessageList.setIsUnRead(messageService.countMessagesByIds(userDetails.getUserId(), userMessageList.getChatRoomId()));
         }
         // DetailUserResponse 리스트를 생성
         List<DetailUserResponse> detailUserResponseList = new ArrayList<>();
@@ -45,26 +45,27 @@ public class UserMessageController {
             detailUserResponseList.add(detailUserResponse);
         }
         Collections.sort(userMessageLists, (m1, m2) -> m2.getLastMessageTime().compareTo(m1.getLastMessageTime()));
-        model.addAttribute("userMessageLists",userMessageLists);
-        model.addAttribute("detailUserResponseLists",detailUserResponseList);
+        model.addAttribute("userMessageLists", userMessageLists);
+        model.addAttribute("detailUserResponseLists", detailUserResponseList);
 
 
         return "user-pages/user-message";
     }
-//    메세지 상세보기
+
+    //    메세지 상세보기
     @GetMapping("/messageList/{chatRoomId}")
     public String showUserMessageDetail(@PathVariable("chatRoomId") int chatRoomId,
                                         @AuthenticationPrincipal CustomUserDetails userDetails,
-                                        Model model){
+                                        Model model) {
 //채팅방 리스트
-        List<UserMessageListDto> userMessageLists=messageService.showUserMessageList(userDetails.getUserId());
+        List<UserMessageListDto> userMessageLists = messageService.showUserMessageList(userDetails.getUserId());
 //        읽음 처리
 //        if(){ 리시버 아이디가 유저 아이디가 맞다면
-            messageService.checkIsRead(userDetails.getUserId(),chatRoomId);
+        messageService.checkIsRead(userDetails.getUserId(), chatRoomId);
 //        }
 //        읽음 안읽음 체크
-        for (UserMessageListDto userMessageList:userMessageLists){
-            userMessageList.setIsUnRead(messageService.countMessagesByIds(userDetails.getUserId(),userMessageList.getChatRoomId()));
+        for (UserMessageListDto userMessageList : userMessageLists) {
+            userMessageList.setIsUnRead(messageService.countMessagesByIds(userDetails.getUserId(), userMessageList.getChatRoomId()));
         }
         // DetailUserResponse 리스트를 생성
         List<DetailUserResponse> detailUserResponseList = new ArrayList<>();
@@ -79,25 +80,26 @@ public class UserMessageController {
         }
 //        정렬
         Collections.sort(userMessageLists, (m1, m2) -> m2.getLastMessageTime().compareTo(m1.getLastMessageTime()));
-        model.addAttribute("userMessageLists",userMessageLists);
-        model.addAttribute("detailUserResponseLists",detailUserResponseList);
+        model.addAttribute("userMessageLists", userMessageLists);
+        model.addAttribute("detailUserResponseLists", detailUserResponseList);
 
 //채팅 메세지 내용
-        Integer userId =userDetails.getUserId();
-        List<MessageDto> userMessagesDetail=messageService.showUserMessageDetail(userId,chatRoomId);
-        String chatRoomName=usersService.findUserByUserId(chatRoomId).getName();
+        Integer userId = userDetails.getUserId();
+        List<MessageDto> userMessagesDetail = messageService.showUserMessageDetail(userId, chatRoomId);
+        String chatRoomName = usersService.findUserByUserId(chatRoomId).getName();
         Collections.sort(userMessagesDetail, (m1, m2) -> m1.getSentAt().compareTo(m2.getSentAt()));
-        model.addAttribute("userMessages",userMessagesDetail);
-        model.addAttribute("userId",userDetails.getUserId());
-        model.addAttribute("chatRoomName",chatRoomName);
-        model.addAttribute("chatRoomId",chatRoomId);
+        model.addAttribute("userMessages", userMessagesDetail);
+        model.addAttribute("userId", userDetails.getUserId());
+        model.addAttribute("chatRoomName", chatRoomName);
+        model.addAttribute("chatRoomId", chatRoomId);
         return "user-pages/user-message";
     }
+
     //    유저 읽음,안읽음 체크 기능
     @PostMapping("/messageList")
-    public void checkUserMessage(@RequestParam int chatRoomId, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public void checkUserMessage(@RequestParam int chatRoomId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        messageService.checkIsRead(userDetails.getUserId(),chatRoomId);
+        messageService.checkIsRead(userDetails.getUserId(), chatRoomId);
 
     }
     // 메세지 보내기(유저)
@@ -115,5 +117,4 @@ public class UserMessageController {
 //
 //
 //    }
-
 }

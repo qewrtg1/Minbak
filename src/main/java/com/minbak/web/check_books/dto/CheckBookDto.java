@@ -27,7 +27,7 @@ public class CheckBookDto {
         private CheckBookRoomDto room;
         private PaymentDto payment;
         private String roomUrl;
-        private String userUrl; //호스트쪽 유저 url
+        private String userUrl; //호스트 유저 url
         private List<String> roomUrls;
         private String searchType; // 예약번호, 예약자명, 연락처 등
         private String keyword; // 검색어

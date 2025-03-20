@@ -10,8 +10,6 @@ import java.time.LocalDate;
 
 public class CheckBookHostDto {
 
-
-
         private int hostId;
         private int userId;  // 유저 ID
         private String hostName;

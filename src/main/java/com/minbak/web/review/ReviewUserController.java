@@ -30,7 +30,7 @@ public class ReviewUserController  {
     private Util util;
 
 
-    @GetMapping("/books/review/{id}")
+    @GetMapping("/user/books/review/{id}")
     public String writeReview(Model model,
           @AuthenticationPrincipal CustomUserDetails userDetails,
           @PathVariable("id") int bookId) {
@@ -43,7 +43,7 @@ public class ReviewUserController  {
         return "review/review-write";
     }
 
-    @PostMapping("/books/review/{id}")
+    @PostMapping("/user/books/review/{id}")
     public String createReview (Model model, @PathVariable("id") int bookId,
         @AuthenticationPrincipal CustomUserDetails userDetails,
         ReviewDto reviewDto) { //Thymeleaf에서 사용할 데이터를 모델에 담아 전달

@@ -25,7 +25,28 @@
           <span th:text="${headerUser.isHost} ? '호스트 모드 전환' : '숙소 등록하기'"></span>
         </a>
       </div>
-      <button class="btn btn-light">🔔 알림</button>
+
+      <!-- 알림 버튼 -->
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          🔔 알림
+          <!-- 알림 수 표시 (조건부로 보여줌) -->
+          <div th:if="${totalUnReadCount} != 0" th:text="${totalUnReadCount}" style="color:red; position:absolute; top:-7px; right:-7px; border-radius:50%; background-color:red; color:white; width:20px; height:20px; line-height:18px; font-weight: bold;"></div>
+        </button>
+
+        <!-- 알림 목록 드롭다운 -->
+        <ul class="dropdown-menu" aria-labelledby="notificationDropdown">
+          <li th:if="${totalUnReadCount} != 0">
+            <a class="dropdown-item" href="/user/messageList">읽지 않은 메시지가 있습니다.</a>
+          </li>
+          <li th:if="${totalUnReadCount} == 0">
+            <a class="dropdown-item" href="/user/messageList">새로운 알림이 없습니다.</a>
+          </li>
+        </ul>
+      </div>
+
+
+
       <img th:src="${headerUser.profileImageUrl != null} ? ${headerUser.profileImageUrl} : '/uploads/3966f510-65f8-46e7-af79-5f23ae159e6b_user-1.png'"
            alt="프로필 이미지" class="profile-img">
       <span th:text="${headerUser.name}">사용자 이름</span>
@@ -207,4 +228,6 @@
           alert("로그아웃 중 오류가 발생했습니다.");
       });
   });
+
+
 </script>
