@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <title>편의시설 추가</title>
-
   <th:block layout:fragment="css">
   </th:block>
 </head>
@@ -16,7 +15,7 @@
     <h1 class="text-center mt-5">새 편의시설 추가</h1>
 
     <div class="card p-4 shadow-sm mx-auto" style="max-width: 500px;">
-      <form th:action="@{/admin/roomoptions/create}" method="post" th:object="${roomOption}">
+      <form th:action="@{/admin/rooms/roomoptions/create}" method="post" th:object="${roomOption}">
 
         <div class="mb-3">
           <label class="form-label">이름</label>
@@ -37,7 +36,7 @@
 
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary">추가</button>
-          <a href="/admin/roomoptions" class="btn btn-secondary">목록으로 돌아가기</a>
+          <a href="/admin/rooms/roomoptions" class="btn btn-secondary">목록으로 돌아가기</a>
         </div>
       </form>
     </div>
