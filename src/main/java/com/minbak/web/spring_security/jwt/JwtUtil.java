@@ -142,7 +142,7 @@ public class JwtUtil {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) REFRESH_TOKEN_EXPIRATION_TIME / 1000);
-        cookie.setAttribute("SameSite", "Strict"); // CSRF 방지
+        cookie.setAttribute("SameSite", "None"); // CSRF 방지
 
         return cookie;
     }
@@ -155,7 +155,7 @@ public class JwtUtil {
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) ACCESS_TOKEN_EXPIRATION_TIME / 1000);
-        cookie.setAttribute("SameSite", "Strict"); // CSRF 방지
+        cookie.setAttribute("SameSite", "None"); // CSRF 방지
 
         return cookie;
     }
