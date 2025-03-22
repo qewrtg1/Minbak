@@ -139,7 +139,7 @@ public class JwtUtil {
         Cookie cookie = new Cookie(key, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) REFRESH_TOKEN_EXPIRATION_TIME / 1000);
         cookie.setAttribute("SameSite", "None"); // CSRF 방지
@@ -152,7 +152,7 @@ public class JwtUtil {
         Cookie cookie = new Cookie(key, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) ACCESS_TOKEN_EXPIRATION_TIME / 1000);
         cookie.setAttribute("SameSite", "None"); // CSRF 방지
